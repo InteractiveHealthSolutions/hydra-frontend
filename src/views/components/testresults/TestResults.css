@@ -1,0 +1,32 @@
+.lts-main-header {
+    width: 100%;
+    margin-top: 50px;
+    margin-left : 5px;
+    margin-right : 5px;
+    overflow: hidden
+
+}
+.btn-add-order {
+    margin-top: 35px;
+    margin-left: 700px
+}
+.lts-main-card {
+    margin-left: 5px;
+    margin-right: 15px;
+    margin-top: 5px;
+    width: 100%;
+    height: 500px;
+
+    overflow: hidden;
+}
+.sb-button {
+    margin-top : 9px;
+    margin-left: 520px
+}
+.cancel-button {
+    margin-left : 8px;
+
+  }
+.tr-select-dropdown {
+    width: 305px
+}

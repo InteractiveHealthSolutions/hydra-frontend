@@ -1,0 +1,12 @@
+.workforce-btn {
+    border: none;
+    color: white;
+    padding: 2px 12px;
+    font-size: 12px;
+    float: right;
+    height: 32px;
+    
+}
+.rm-paadding {
+    padding: 0px !important;
+}

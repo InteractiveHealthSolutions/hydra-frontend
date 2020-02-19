@@ -1,0 +1,2 @@
+export const GET_ALL_LABTEST = "GET_ALL_LABTEST";
+export const CREATE_LABTEST = "CREATE_LABTEST";

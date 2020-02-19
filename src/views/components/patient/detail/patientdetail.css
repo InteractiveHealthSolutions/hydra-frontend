@@ -1,0 +1,82 @@
+.pd-main-container{
+  margin-top: 100px;
+  margin-left: 8px;
+}
+
+.pd-lb{
+    border: none;
+    color: blue;
+    padding: 2px 12px;
+    font-size: 14px;
+    float: right;
+    height: 32px;
+  }
+  .right-space{
+      padding-right: 20px;
+      color: var(--label-color);
+  }
+  .name-font{
+    font-size: large;
+    font-weight: bold;
+  }
+  .icon-padding{
+    padding-right: 25px;
+  }
+
+  .s-font{
+      font-size: 12px;
+  }
+  
+  .m-font{
+    font-size: 16px;
+}
+  
+.l-font{
+    font-size: 24px;
+}
+.pd-row-space{
+    margin: 20px;
+}
+.typography-space{
+    margin-top: 10px;
+}
+
+
+  
+  #action {
+    top: 20px;
+    background: var(--theme-background-color)
+  }
+
+  #back{
+    top: 80px;
+    background:var(--theme-background-color)
+  }
+
+  .gradient{
+    color: var(--theme-secondary-color);
+  }
+  /* .modal-header{
+    background:var(--theme-background-color);
+    color: white;
+  } */
+  .pd-actions-list{
+    cursor: pointer;
+    margin: 10px;
+  }
+  .pd-actions-btn{
+    cursor: pointer;
+  }
+  /* .modal-body{
+    height: 250px;
+    overflow-y: auto;
+} */
+/* 
+@media (min-height: 500px) {
+    .modal-body { height: 400px; }
+}
+
+@media (min-height: 800px) {
+    .modal-body { height: 600px;
+    }
+} */

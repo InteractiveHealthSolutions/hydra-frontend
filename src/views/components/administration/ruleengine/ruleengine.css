@@ -1,0 +1,69 @@
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 0 auto;
+  }
+.control-contaier{
+    padding: 20px;
+
+}
+
+.ah-container{
+  margin-top: 85px;
+}
+.control-btn{
+  width: 50px;
+  padding: initial;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+  .circle.purple {
+    background: purple;
+  }
+  .circle.gray {
+    background: gray;
+  }
+  .circle.active{
+      background: var(--bg);
+  }
+  .circle.orange {
+    background: orange;
+  }
+  .circle.green {
+    background: green;
+  }
+
+  .circleTo {
+    margin-top: 80px;
+  }
+  .progress-container{
+    margin-top: 10px;
+    width: 67%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+
+
+  }
+
+  .progress-span{
+    cursor: pointer;
+    color: white;
+    padding: 8px;
+    padding-left: 14px;
+    font-size: medium;
+  }
+  .line{
+    height: 4px;
+    width: 14%;
+    float: left;
+    margin: 14px 0px;
+    padding: 0px;
+  }
+  .save-btn {
+    position: absolute;
+    right: 0;
+    margin-bottom:80px ;
+  }

@@ -1,0 +1,46 @@
+@import "//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css";
+
+.lt-main-header {
+    width: 100%;
+    margin-top: 50px;
+    margin-left : 5px;
+    margin-right : 5px;
+    overflow: hidden
+
+}
+.lt-heading {
+    margin-left: -80px
+}
+
+.lt-main-card {
+    margin-left: 5px;
+    margin-right: 15px;
+    margin-top: 5px;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+}
+
+.lt-input-search {
+    background: white !important;
+    width: 25px
+    
+
+}
+.search-btn{
+    margin-left: 45px;
+    width: 250px
+
+}
+.btn-add-test {
+    margin-top: 35px;
+    margin-left: 750px
+}
+.content {
+    margin-left: 100px
+ 
+}
+.form-group.required .col-form-label:after {
+    content:"*";
+    color:red;
+  }

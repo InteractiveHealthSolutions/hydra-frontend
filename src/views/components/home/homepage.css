@@ -1,0 +1,347 @@
+.home-div {
+    width : 100%;
+    height: 100%;
+    background: #DCDCDC	;
+    margin-top : 70px;
+    margin-bottom: -10px
+    
+}
+
+
+
+#information{
+    max-height:530px;
+    height:525px;
+    width: 300px;
+    overflow-y: auto;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    margin-top: -10px;
+    font-weight: 200px
+    
+}
+#for-info {
+    width : 250px;
+    background-color: rgb(57, 154, 211);
+    color: #335fff;
+    height: 1px;
+    border: 0;
+    margin-left: -1px;
+    border-radius: 2rem;
+}
+#for-home {
+    width: 100%;
+    background-color: rgb(57, 154, 211);
+    color: #335fff;
+    height: 1px;
+    border: 0;
+    border-radius: 2rem;
+}
+#card-header {
+  background: #ffffff;
+  border: 0px;
+}
+
+#menu-icon {
+    max-height:100px;
+    height:300px;
+    width: 200px;
+    padding: 10px;
+    border : 4px
+}
+
+#menu {
+    height: 525px;
+    margin-top: -10px;
+    margin-left: -20px;
+    width: 1035px
+}
+#menu-row {
+    margin-left: 160px;
+    margin-top : 30px;
+    margin-right: 40px;
+    width : 700px
+}
+#menu-row2 {
+    margin-left: 249px;
+    margin-top : 15px;
+    margin-right: 40px;
+    width :700px
+}
+.box-first {
+    background: white;
+    border-radius: 10px;
+    width: 160px;
+    height: 160px;
+    box-shadow: 5px 6px 16px rgb(97, 94, 94);
+    /* box-shadow: 2px 2px 2px rgb(197, 195, 195);  */
+    /* border-color: rgb(57, 154, 211); */
+    border-color:#ffffff;
+    border-style: solid;
+    border-width: 2px
+    
+ }
+ .box-first:hover{
+    background:#DCDCDC;
+    
+ }
+ .box {
+    background: white;
+    border-radius: 10px;
+    width: 160px;
+    height: 160px;
+    box-shadow: 5px 6px 16px rgb(97, 94, 94);
+    border-color:#ffffff;
+    /* box-shadow: 2px 2px 2px rgb(197, 195, 195);
+    border-color: rgb(57, 154, 211); */
+    border-style: solid;
+    border-width: 2px
+ }
+ .box:hover {
+    background:#DCDCDC; 
+ }
+ .tag-box {
+    background: rgb(233, 237, 240);
+    border-radius: 15px;
+    width: 170px;
+    height: 30px;
+    margin-left: 15px;
+    margin-top: 20px;
+    color: rgb(57, 154, 211);
+    font-weight: 2px;
+ }
+ .tag-name {
+    margin-left: 35px;
+    margin-top: 30px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+.tag-name-reports {
+    margin-left: 50px;
+    margin-top: 30px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+
+.tag-name-events {
+    margin-left: 53px;
+    margin-top: 30px;
+    font: bold;
+    color:  rgb(102, 104, 105);
+
+}
+.tag-name-workflows {
+    margin-left: 40px;
+    margin-top: 30px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+.tag-name-system {
+    margin-left: 25px;
+    margin-top: 30px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+.tag-name-user {
+    margin-left: 47px;
+    margin-top: 20px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+.tag-name-help {
+    margin-left: 60px;
+    margin-top: 30px;
+    font: bold;
+    color: rgb(102, 104, 105);
+
+}
+.h5 {
+   font-size: 15px
+}
+.h6 {
+    font-size: 15px
+ }
+ #icon {
+     margin-top: 35px;
+     margin-left: 60px;
+     color: #ffffff
+ }
+ #icon-wide {
+    margin-top: 28px;
+    margin-left: 38px;
+    color: rgb(57, 154, 211)
+}
+#icon-img {
+    margin-top: 25px;
+    margin-left: 42px;
+    color: #ffffff;
+    height : 70px;
+    
+}
+a:hover {
+    text-decoration: none
+}
+
+ /*
+for ipad and notebook
+*/
+ @media only screen 
+ and (min-width : 768px) 
+ and (max-width : 1024px) {
+    #information{
+        max-height:500px;
+        height:500px;
+        width: 210px;
+    }
+    #menu {
+        height: 500px;
+        margin-top: -10px;
+        margin-left: -30px;
+        width: 770px
+    }
+    #menu-row {
+        margin-left: 110px;
+        margin-top : 30px;
+        margin-right: 40px;
+        width : 500px
+    }
+    #menu-row2 {
+        margin-left: 110px;
+        margin-top : 5px;
+        margin-right: 40px;
+        width :500px
+    }
+    .box-first:hover{
+        background:#DCDCDC;
+        
+     }
+     .box {
+        background: white;
+        border-radius: 10px;
+        width: 120px;
+        height: 120px;
+        box-shadow: 2px 2px 2px rgb(197, 195, 195);
+        /* border-color: rgb(57, 154, 211); */
+        border-style: solid;
+        border-width: 2px
+     }
+     .box-first {
+        background: white;
+        border-radius: 10px;
+        width: 120px;
+        height: 120px;
+        box-shadow: 2px 2px 2px rgb(197, 195, 195); 
+        /* border-color: rgb(57, 154, 211); */
+        border-style: solid;
+        border-width: 2px
+        
+     }
+     .box-first:hover{
+        background:#DCDCDC;
+        
+     }
+     #for-info {
+        width : 150px;
+        margin-left: 1px;
+        background-color: rgb(57, 154, 211)
+    }
+    #for-home {
+        width: 700px;
+        margin-left: 1px;
+        background-color: rgb(57, 154, 211)
+    }
+    .tag-box {
+        background: rgb(233, 237, 240);
+        border-radius: 15px;
+        width: 140px;
+        height: 40px;
+        margin-left: 5px;
+        margin-top: 20px;
+        color: rgb(57, 154, 211);
+        font-weight: 2px
+     }
+     .h5 {
+         margin-left: -15px;
+         margin-right : -15px
+     }
+     .h6 {
+        margin-left: 10px;
+        margin-right : -1px
+     }
+     #icon {
+        margin-top: 35px;
+        margin-left: 40px;
+        color: #ffffff
+    }
+    #icon-wide {
+       margin-top: 25px;
+       margin-left: 15px;
+       height: 50px;
+       color: rgb(57, 154, 211)
+   }
+   #icon-img {
+       margin-top: 25px;
+       margin-left: 50px;
+       color: #ffffff;
+       height : 50px;
+       margin-left: 32px
+       
+   }
+   .tag-name {
+    margin-left: 32px;
+    margin-top: 10px;
+    font: bold;
+    color:  rgb(57, 154, 211);
+
+}
+.tag-name-reports {
+    margin-left: 45px;
+    margin-top: 10px;
+    font: bold;
+    color: rgb(57, 154, 211);
+
+}
+
+.tag-name-events {
+    margin-left: 50px;
+    margin-top: 10px;
+    font: bold;
+    color:  rgb(57, 154, 211);
+
+}
+.tag-name-workflows {
+    margin-left: 37px;
+    margin-top: 10px;
+    font: bold;
+    color: rgb(57, 154, 211);
+
+}
+.tag-name-system {
+    margin-left: 4px;
+    margin-top: 10px;
+    font: bold;
+    font-size: 2px;
+    color: rgb(57, 154, 211);
+
+}
+.tag-name-user {
+    margin-left: 38px;
+    margin-top: 10px;
+    font: bold;
+    color: rgb(57, 154, 211);
+
+}
+.tag-name-help {
+    margin-left: 55px;
+    margin-top: 10px;
+    font: bold;
+    color: rgb(57, 154, 211);
+
+}
+     
+}

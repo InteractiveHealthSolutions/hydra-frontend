@@ -1,0 +1,336 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Sortable from 'react-sortablejs';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { componentService } from '../../../services';
+import './component.css';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import Card from '@material-ui/core/Card';
+import { componentAction } from '../../../state/ducks/stages'
+import { connect } from 'react-redux';
+import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
+
+class Component extends React.Component {
+    constructor(props) {
+        super(props);
+        this.sortable = null;
+        this.state = {
+            items: [],
+            openModal: false,
+            availableComponents: [],
+            componentToAdd: 0,
+            listItems: [],
+            components: [],
+            isCreateStage: false,
+            btnTxt: 'Create',
+            stageToAdd: '',
+            newItemList: []
+        };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.components = [];
+
+    }
+
+    async componentWillMount() {
+        await this.props.getAllComponents()
+        await this.props.getAllPhaseComponent()
+    }
+
+    async componentWillReceiveProps(newProps) {
+
+        if (newProps.phaseComponentList !== undefined) {
+            await this.setState({
+                newItemList: newProps.phaseComponentList,
+                loading: false
+            }, () => {
+                if (this.state.newItemList) {
+                    this.displayComponents();
+                }
+            })
+
+        }
+        if (newProps.componentList !== undefined) {
+            await this.setState({
+                availableComponents: newProps.componentList.components,
+                loading: false
+            }, () => {
+                if (this.state.availableComponents) {
+                    this.populateDropDown();
+                }
+            })
+        }
+    }
+
+    async saveComponent() {
+        let component = this.getComponentById()
+        let newComponentMap = {
+            "displayOrder": component.componentId,
+            "hydramoduleComponent": component.uuid,
+            "hydramodulePhase": localStorage.getItem("active-phases-uuid"),
+            "hydramoduleWorkflow": localStorage.getItem("active-workflow-uuid")
+        }
+
+        await this.props.savePhaseComponent(newComponentMap);
+        await this.props.getAllPhaseComponent();
+
+    }
+
+
+    async createStage() {
+        const newStage = {
+            name: this.state.stageToAdd
+        }
+        await this.props.saveComponent(newStage)
+        await this.props.getAllComponents();
+        this.state.stageToAdd = "";
+        this.setState({
+            isCreateStage: false
+        })
+
+    }
+
+
+    deleteComponents = (component) => {
+        confirmAlert({
+            title: 'Confirm to Delete',
+            message: 'Are you sure to do this ?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+
+                        this.deletePhaseComponents(component.uuid);
+
+                    }
+                },
+                {
+                    label: 'No',
+                    onClick: () => { }
+                }
+            ]
+        });
+    }
+
+    async deletePhaseComponents(uuid) {
+        await this.props.deletePhaseComponent(uuid);
+        await this.props.getAllPhaseComponent();
+    }
+
+
+    displayComponents() {
+        const { newItemList } = this.state
+        console.log("newItemList", newItemList);
+        this.setState({
+            items: newItemList,
+            listItems: newItemList.map(val =>
+                (
+                    <li className="block-list-component"
+                        key={val.hydramoduleComponent.componentId}
+                        data-id={val.hydramoduleComponent.componentId}>
+                        <Card style={{ margin: '4px' }}>
+                            <div className="row c-row" >
+                                <div className="col-sm-1 col-md-1 col-lg-1" style={{ cursor: 'pointer' }} onClick={((e) => this.handleClick(e, val))}>
+                                    <img className="component-icon" src={require('../../../assets/components.png')} alt="" />
+                                </div>
+                                <div className="col-sm-10 col-md-10 col-lg-10" style={{ cursor: 'pointer' }} onClick={((e) => this.handleClick(e, val))} >
+                                    <h6 className="list-content-component" > {val.hydramoduleComponent.name}</h6>
+                                </div>
+                                <div className="col-sm-1 col-md-1 col-lg-1" >
+                                    <span onClick={() => this.deleteComponents(val)} > <i className="fas fa-times delete-icon-component"></i></span>
+                                </div>
+                            </div>
+                        </Card>
+                    </li>))
+        });
+        //     this.getAllComponentOptions()
+        // });
+    }
+
+    getComponentById() {
+        let newComponent = {};
+        this.state.availableComponents.forEach(element => {
+            if (element.componentId == this.state.componentToAdd) {
+                newComponent = element;
+            }
+        });
+        return newComponent;
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.state.isCreateStage ? this.createStage() : this.saveComponent();
+        this.closeModal();
+    }
+
+    handleChange(e) {
+
+        this.state.isCreateStage ?
+            this.setState({ stageToAdd: e.target.value })
+            : this.setState({ componentToAdd: e.target.value });
+    }
+
+    openModal() {
+        this.setState({ openModal: true });
+    }
+
+    closeModal() {
+        this.setState({ openModal: false });
+    }
+    handleClick(e, val) {
+        if (val) {
+            this.props.setActiveComponent(val)
+        }
+    }
+
+    handleCreateStage = (e) => {
+        e.preventDefault();
+        this.state.isCreateStage ?
+            this.setState({ isCreateStage: false, btnTxt: 'Create' })
+            : this.setState({ isCreateStage: true, btnTxt: 'Add' })
+
+    }
+
+    itemIncludes(element) {
+        var includes = false;
+        for (var i = 0; i < this.state.items.length && includes === false; i++) {
+            if (this.state.items[i].componentUUID === element.uuid) includes = true;
+        }
+
+        return includes;
+
+    }
+
+    reorder(order) {
+        let tempArray = [];
+        for (var i = 0; i < order.length; i++) {
+            for (var j = 0; j < this.state.listItems.length; j++) {
+                if (order[i] == this.state.listItems[j].key) {
+                    tempArray.push(this.state.listItems[j]);
+                }
+            }
+        }
+        this.setState({ listItems: tempArray });
+    }
+
+    populateDropDown() {
+        this.components = [];
+        this.state.availableComponents.forEach(element => {
+            if (this.itemIncludes(element)) {
+                this.components.push(
+                    <option key={element.componentId} disabled>{element.name}</option>
+                );
+            }
+            else {
+                this.components.push(
+                    <option key={element.componentId} value={element.componentId}>{element.name}</option>
+                );
+            }
+        });
+        return this.components;
+    }
+
+    //this function needs to refactor
+    modalSWitch() {
+        switch (this.state.isCreateStage) {
+            case false:
+                return <div className="form-group" id="add">
+                    <label htmlFor="componentName">Select a Stage</label>
+                    <select className="form-control" name="componentName" value={this.state.componentToAdd} onChange={this.handleChange} required>
+                        <option></option>
+                        {this.components}
+                    </select>
+                </div>
+            case true:
+                return <div className="form-group" id="create">
+                    <label htmlFor="componentName">Create a Stage</label>
+                    <input type="text" className="form-control" value={this.state.stageToAdd} autoComplete="off" pattern="^[a-zA-Z\s]*$" name="stageName" onChange={this.handleChange} required />
+                </div>
+            default:
+        }
+    }
+
+    render() {
+        return (
+            <div className="main-cp">
+                <div className="row">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                        <h4 className="header_title">{localStorage.getItem("active-phases-name")} - Stages</h4>
+                    </div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                        <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Add Stage</button>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="card" id="component-maincard">
+                        <Sortable
+                            options={{
+                                animation: 100,
+                                easing: "cubic-bezier(1, 0, 0, 1)"
+                            }}
+                            ref={(c) => {
+                                if (c) {
+                                    this.sortable = c.sortable;
+                                }
+                            }}
+                            onChange={(order) => {
+                                this.reorder(order);
+                            }}
+                            tag="ul">
+                            {this.state.listItems}
+                        </Sortable>
+
+                    </div>
+                </div>
+                <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add Stage</Modal.Title>
+                    </Modal.Header>
+                    <form onSubmit={this.handleSubmit}>
+                        <Modal.Body>
+                            {
+                                this.modalSWitch()
+                            }
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type="submit" variant="primary">
+                                Save
+                            </Button>
+                            <button
+                                className="btn btn-primary"
+                                onClick={(e) => this.handleCreateStage(e)}
+                            >{this.state.btnTxt}
+                            </button>
+
+                        </Modal.Footer>
+                    </form>
+
+                </Modal>
+
+                <WorkflowSideBackButton
+                    navigateTo="phase"
+                ></WorkflowSideBackButton>
+            </div >
+        );
+    }
+
+
+}
+
+const mapStateToProps = state => ({
+    componentList: state.stages.components,
+    phaseComponentList: state.stages.phaseComponents
+})
+
+const mapsDispatchToProps = {
+    getAllComponents: componentAction.fetchcomponents,
+    saveComponent: componentAction.saveComponent,
+    setActiveComponent: componentAction.setActiveComponent,
+    savePhaseComponent: componentAction.savePhaseComponent,
+    getAllPhaseComponent: componentAction.fetchPhaseComponent,
+    deletePhaseComponent: componentAction.deletePhaseComponent
+
+}
+export default connect(mapStateToProps, mapsDispatchToProps)(Component);

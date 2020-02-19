@@ -1,0 +1,8 @@
+export const GET_ALL_WORKFLOW = "GET_ALL_WORKFLOW";
+export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
+export const UPDATE_WORKFLOW = "UPDATE_WORKFLOW";
+export const DELETE_WORKFLOW = "WORKFLOW_DELETE";
+export const ADD_TO_WORKFLOW = "ADD_TO_WORKFLOW";
+export const ACTIVE_WORKFLOW = "ACTIVE_WORKFLOW";
+export const API = "API";
+export const SET_PROJECT = "SET_PROJECT";
