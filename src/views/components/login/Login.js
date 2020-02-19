@@ -23,10 +23,9 @@ class Login extends React.Component {
     }
 
     async componentWillReceiveProps(nextProps) {
-        console.log("nextProps.authorized", nextProps.authorized)
         if (nextProps.authorized !== undefined) {
             await this.setState({
-                authorizedCredential: nextProps.authorized
+                authorizedCredenti  : nextProps.authorized
             })
         }
         if (nextProps.submitted !== undefined) {
@@ -34,6 +33,23 @@ class Login extends React.Component {
                 submitted: nextProps.submitted
             })
         }
+    }
+    componentDidMount() {
+        this.setState({
+            username: '',
+            password: '',
+            submitted: false,
+            authorizedCredential: false
+        })
+    }
+
+    componentWillUnmount() {
+        this.setState({
+            username: '',
+            password: '',
+            submitted: false,
+            authorizedCredential: false
+        })
     }
 
     //form event handlers
@@ -46,11 +62,7 @@ class Login extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        // localStorage.setItem('username', "irtiza.ahmed");
-        // localStorage.setItem('password', "Irtiza1234");
-        // history.push("/");
-        // this.setState({ submitted: true });
-        const { username, password } = this.state;
+        const { username, password } =  this.state;
         if (username && password) {
             this.props.login(username, password)
         }
@@ -70,7 +82,6 @@ class Login extends React.Component {
 
                         <form className="login100-form validate-form" onSubmit={this.handleSubmit}>
                             <span className="login100-form-title">
-                                {/* Lung  Health <span>Corporation</span> */}
                                 Sign In
                             </span>
 
@@ -79,6 +90,7 @@ class Login extends React.Component {
                                     className="input100"
                                     type="text"
                                     name="username"
+                                    placeholder="User Name"
                                     value={username}
                                     onChange={this.handleChange}
                                 />
@@ -130,50 +142,6 @@ class Login extends React.Component {
             </div>
 
         );
-
-        // <div className="login-container">
-
-        //     <div className="main-card">
-        //         <br /><br />
-        //         <h2 className="page-title" >Hydra Web App</h2>
-
-        //         <div className="card card-signin my-5">
-        //             <div className="card-body">
-        //                 <h5 className="card-title text-center">Sign In</h5>
-        //                 <form className="form-signin" onSubmit={this.handleSubmit}>
-        //                     <div className="form-group">
-        //                         <label htmlFor="username">
-        //                             Username
-        //             </label>
-        //                         <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} />
-        //                         {submitted && !username &&
-        //                             <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Username is required</div>
-        //                         }
-        //                     </div>
-        //                     <div className="form-group">
-        //                         <label htmlFor="password">
-        //                             Password
-        //             </label>
-        //                         <input type="password" className="form-control" name="password" value={password} onChange={this.handleChange} />
-        //                         {submitted && !password &&
-        //                             <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Password is required</div>
-        //                         }
-        //                     </div>
-        //                     {
-        //                         store.getState().authentication.authorized === false && submitted && username && password &&
-        //                         <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Invalid Credentials</div>
-        //                     }
-        //                     <button className="btn btn-lg btn-primary btn-block text-uppercase">Login</button>
-
-        //                 </form>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-
-
-
-
     }
 
 };

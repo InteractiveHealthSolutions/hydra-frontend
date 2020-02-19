@@ -17,7 +17,7 @@ const userReducer = createReducer(initialState)({
         ...state,
         current: payload,
         loading: true,
-        submitted:true,
+        submitted:false,
         error: null
     }),
 
@@ -26,22 +26,22 @@ const userReducer = createReducer(initialState)({
         ...state,
         loggedIn: true,
         user: payload,
-        submitted:true,
-        authorized: true
+        authorized: true,
+        submitted:true
     }),
 
     [types.LOGOUT]: (state, { payload }) => ({
         ...state,
         loggedIn: false,
         authorized: false,
-        submitted:true,
+        submitted:false,
     }),
     [types.LOGIN_FAILURE]: (state, { payload }) => ({
         ...state,
         loggedIn: false,
         payload,
-        submitted:true,
-        authorized: false
+        authorized: false,
+        submitted:true
     }),
 })
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import './findpatient.css';
-import { findpatientservice } from '../../../../services';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-import { Link } from 'react-router-dom';
-import { PatientActions } from '../../../../store/actions';
 import { connect } from 'react-redux';
-import {PatiendSideBackButton} from '../../common/sidebutton/SideBackButton'
+import { PatiendSideBackButton } from '../../common/sidebutton/SideBackButton'
+import { patientAction } from '../../../../state/ducks/patient'
+import Loaders from '../../loader/Loader';
+import moment from 'moment'
 
 class FindPatient extends React.Component {
 
@@ -43,7 +43,7 @@ class FindPatient extends React.Component {
                 }
                 ,
                 {
-                    headerName: "UUID", field: "uuid", width: 170,hide:true
+                    headerName: "UUID", field: "uuid", width: 170, hide: true
                 }
             ],
             rowData: []
@@ -51,17 +51,39 @@ class FindPatient extends React.Component {
 
     }
 
-    _handleKeyDown = (e) => {
-        e.preventDefault();
-        if (e.key === 'Enter') {
-            findpatientservice.getSearchPatient(this.state.searchQuery).then(data => {
-                console.log("Return patient :: ", JSON.stringify(data))
-                this.setState({
-                    rowData: data
-                })
+    async componentWillReceiveProps(nexProps) {
+        if (nexProps.searchPatientList !== undefined && nexProps.searchPatientList.results) {
+            await this.setState({
+                rowData: this.filterPatient(nexProps.searchPatientList.results)
             })
         }
     }
+
+    filterPatient(patientData) {
+        let filteredPatient = [];
+        patientData.forEach(element => {
+            filteredPatient.push({
+                "identifier": element.identifiers[0].identifier,
+                "given": element.person.preferredName.givenName,
+                "middle": element.person.preferredName.middleName,
+                "familyname": element.person.preferredName.familyName,
+                "age": element.person.age,
+                "gender": element.person.gender,
+                "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
+                "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
+                "uuid": element.uuid
+            });
+        });
+        return filteredPatient;
+    }
+
+    _handleKeyDown = (e) => {
+        e.preventDefault();
+        if (e.key === 'Enter') {
+            this.props.searchPatientByQuery(this.state.searchQuery);
+        }
+    }
+
 
     handleChange = e => {
         e.preventDefault();
@@ -71,30 +93,15 @@ class FindPatient extends React.Component {
 
     searchPatient = e => {
         e.preventDefault();
-        findpatientservice.getSearchPatient(this.state.searchQuery).then(data => {
-            console.log("Return patient :: ", JSON.stringify(data))
-            this.setState({
-                rowData: data
-            })
-        }
-        )
+        this.props.searchPatientByQuery(this.state.searchQuery);
     }
 
     searchIdhandleClick = e => {
         e.preventDefault();
         this.searchPatient(e);
     };
-
     onCellClicked = event => {
-        console.log('onCellClicked: ' + JSON.stringify(event.data));
-        console.log('onCellClicked: ' + JSON.stringify(event.name));
-        console.log('onCellClicked: ' + JSON.stringify(event.value));
-
-
-        const { dispatch } = this.props;
-        if (event.data) {
-            dispatch(PatientActions.setActivePatient(event.data));
-        }
+        this.props.setActivePatient(event.data)
     };
 
     onRowSelected = (event) => {
@@ -102,6 +109,7 @@ class FindPatient extends React.Component {
     };
 
     render() {
+        if (this.props.isloading) return <Loaders />;
         return (
             <div className="row container-fluid fp-main-container">
                 <div className="card fp-header">
@@ -129,9 +137,9 @@ class FindPatient extends React.Component {
                                 </span>
                             </div>
                             <div className="col-md-4 col-sm-2">
-                                <Link to="/PatientRegistration">
+                                {/* <Link to="/PatientRegistration">
                                     <button class="fp-btn btn btn-primary"><i class="fas fa-plus"></i> Create New</button>
-                                </Link>
+                                </Link> */}
                             </div>
                         </div>
                     </div>
@@ -170,7 +178,7 @@ class FindPatient extends React.Component {
                         </div>
                     </div>
                 </div>
-                
+
                 <PatiendSideBackButton
                     navigateTo=""
                 ></PatiendSideBackButton>
@@ -180,8 +188,14 @@ class FindPatient extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const Patient = state.patientreducer;
-    return { Patient };
+const mapStateToProps = (state) => ({
+    searchPatientList: state.patient.searchPatients,
+    isloading: state.patient.loading,
+})
+
+const mapDispatchToProps = {
+    searchPatientByQuery: patientAction.searchPatient,
+    setActivePatient: patientAction.setActivePatient
+
 }
-export default connect(mapStateToProps)(FindPatient);
+export default connect(mapStateToProps, mapDispatchToProps)(FindPatient);

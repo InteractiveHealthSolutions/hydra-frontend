@@ -52,7 +52,8 @@ class EventList extends React.Component {
             voidReason: "",
             deleteEvent: [],
             assetCost: 0,
-            personnelCost: 0
+            personnelCost: 0,
+            currentActiveEvent: ''
         };
 
         this.handleChangeDateFrom = this.handleChangeDateFrom.bind(this);
@@ -296,6 +297,7 @@ class EventList extends React.Component {
         await this.calculateCost(activeEvent)
         await this.calculatePersonnel(activeEvent)
         this.setState({
+            currentActiveEvent: activeEvent.uuid,
             eventType: activeEvent.eventType.name,
             eventName: activeEvent.name,
             startDate: moment(activeEvent.schedule.plannedDate).format("YYYY-MM-DD"),
@@ -504,76 +506,82 @@ class EventList extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="form-group">
-                            <div className="row">
-                                <ExpansionPanel style={{ width: '100%', margin: '18px' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        style={{ backgroundColor: "var(--label-color)", height: '45px' }}
-                                    >
-                                        <div className='row'>
-                                            <div className='col-sm-6'>
-                                                <label style={{ color: '#fff' }} >Total Cost</label>
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <label style={{ marginLeft: '349px', color: '#fff' }}>$712.15</label>
-                                            </div>
-                                        </div>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
+                            {
+                                (this.state.currentActiveEvent === '27f83f15-4980-42a7-8f3c-7e6468487084') ?
+                                    <>
+                                        <div className="row">
+                                            <ExpansionPanel style={{ width: '100%', margin: '18px' }}>
+                                                <ExpansionPanelSummary
+                                                    expandIcon={<ExpandMoreIcon />}
+                                                    aria-controls="panel1a-content"
+                                                    id="panel1a-header"
+                                                    style={{ backgroundColor: "var(--label-color)", height: '45px' }}
+                                                >
+                                                    <div className='row'>
+                                                        <div className='col-sm-6'>
+                                                            <label style={{ color: '#fff' }} >Total Cost</label>
+                                                        </div>
+                                                        <div className='col-sm-6'>
+                                                            <label style={{ marginLeft: '349px', color: '#fff' }}>$712.15</label>
+                                                        </div>
+                                                    </div>
+                                                </ExpansionPanelSummary>
+                                                <ExpansionPanelDetails>
 
-                                        <table className="" id="assetsTable">
-                                            <thead>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Total cost per screening</td>
-                                                    <td>$ 1.78</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Total cost per presumptive</td>
-                                                    <td>$ 11.87</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Total cost per patient</td>
-                                                    <td>$ 356.08</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Cost per hour</td>
-                                                    <td>$ 178.04</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                            <div className='row' style={{ marginBottom: '50px' }} >
-                                <div className="col-sm-2"></div>
-                                <div className="col-sm-4">
-                                    <div class="card" >
-                                        <div class="card-header" style={{ background: '#fff', height: '40px', height: '45px' }}>
-                                            <label style={{ fontSize: '13px', marginLeft: '18px' }}>Number Needed to Screen</label>
+                                                    <table className="" id="assetsTable">
+                                                        <thead>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Total cost per screening</td>
+                                                                <td>$ 1.78</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Total cost per presumptive</td>
+                                                                <td>$ 11.87</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Total cost per patient</td>
+                                                                <td>$ 356.08</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Cost per hour</td>
+                                                                <td>$ 178.04</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </ExpansionPanelDetails>
+                                            </ExpansionPanel>
                                         </div>
-                                        <div class="card-body" style={{ background: 'var(--label-color)', height: '50px', color: '#fff' }}>
-                                            <h2 style={{ marginTop: '-15px', marginLeft: '67px' }} >200</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-sm-4">
-                                    <div class="card" >
-                                        <div class="card-header" style={{ background: '#fff', height: '40px' }}>
-                                            <label style={{ fontSize: '13px', marginLeft: '66px' }}> Yield  (%)</label>
-                                        </div>
-                                        <div class="card-body" style={{ background: 'var(--label-color)', height: '54px', color: '#fff' }}>
-                                            <h2 style={{ marginTop: '-12px', marginLeft: '60px' }} >0.50</h2>
-                                        </div>
+                                        <div className='row' style={{ marginBottom: '50px' }} >
+                                            <div className="col-sm-2"></div>
+                                            <div className="col-sm-4">
+                                                <div class="card" >
+                                                    <div class="card-header" style={{ background: '#fff', height: '40px', height: '45px' }}>
+                                                        <label style={{ fontSize: '13px', marginLeft: '18px' }}>Number Needed to Screen</label>
+                                                    </div>
+                                                    <div class="card-body" style={{ background: 'var(--label-color)', height: '50px', color: '#fff' }}>
+                                                        <h2 style={{ marginTop: '-15px', marginLeft: '67px' }} >200</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-4">
+                                                <div class="card" >
+                                                    <div class="card-header" style={{ background: '#fff', height: '40px' }}>
+                                                        <label style={{ fontSize: '13px', marginLeft: '66px' }}> Yield  (%)</label>
+                                                    </div>
+                                                    <div class="card-body" style={{ background: 'var(--label-color)', height: '54px', color: '#fff' }}>
+                                                        <h2 style={{ marginTop: '-12px', marginLeft: '60px' }} >0.50</h2>
+                                                    </div>
 
-                                    </div>
-                                </div>
-                                <div className="col-sm-2"></div>
-                            </div>
-                            <BarChart></BarChart>
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-2"></div>
+                                        </div>
+                                        <BarChart></BarChart>
+                                    </>
+                                    : ""
+                            }
                             {/* total cost */}
                             <div className="row">
                                 <div className="card" style={{ width: '100%', margin: '20px' }}>
