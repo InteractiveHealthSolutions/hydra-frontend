@@ -25,9 +25,9 @@ import PatientRegistration from './patient/create/PatientRegistration';
 import AdministrationHome from './administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ManageLabTest from './managelabtest/ManageLabTest'
+import ManageLabTest from './manageLabTest/ManageLabTest'
 import AddLabTestAttribute from './addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './managelabtestattribute/ManageLabTestAttribute'
+import ManageLabTestAttribute from './manageLabTestAttribute/ManageLabTestAttribute'
 import TestOrderList from './labtestorder/TestOrderList'
 import AddTestOrder from './labtestorder/AddTestOrder';
 import SampleList from './labtestsample/samplelist';

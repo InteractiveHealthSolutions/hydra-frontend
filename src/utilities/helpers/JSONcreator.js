@@ -1,5 +1,26 @@
 
-
+export function editJSON(user) {
+    return {
+        "person" : {
+            "names" : [{
+                "givenName" : user.givenname,
+                "familyName" : user.familyname
+            }],
+            "gender" : user.gender,
+            "birthdate" : user.birthdate,
+            "attributes": [
+                 {
+                   "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",
+                   "value": user.cnic
+                 }
+             ]
+        },
+        "name": user.givenName,
+        "birthdate": user.dateofbirth,
+        "username" : user.username,
+        "roles" : user.role
+    };
+}
 export function registrationJSON(user) {
  
     return {
@@ -9,7 +30,7 @@ export function registrationJSON(user) {
                 "familyName" : user.familyname
             }],
             "gender" : user.gender,
-            "birthdate" : user.birthdate,
+            "birthdate" : user.dateofbirth,
             "attributes": [
                  {
                    "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",

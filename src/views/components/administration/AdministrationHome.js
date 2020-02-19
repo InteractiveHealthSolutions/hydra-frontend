@@ -91,15 +91,7 @@ export default class AdministrationHome extends Component {
                                 <NavText>
                                     User Management
                                 </NavText>
-                                {/* create/add */}
-                                <NavItem eventKey="/users" onClick={this.toggleSidebar}>
-                                    <NavText >
-                                        <Link className={expanded ? "formLink" : ""} to="/users" >
-                                            <i class="fas fa-user-plus" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Create User
-                                        </Link>
-                                    </NavText>
-                                </NavItem>
+                            
                                 {/* role */}
                                 <NavItem eventKey="/roles" onClick={this.toggleSidebar}>
                                     <NavText>
@@ -109,9 +101,19 @@ export default class AdministrationHome extends Component {
                                          </Link>
                                     </NavText>
                                 </NavItem>
+                                {/* create/add */}
+                                <NavItem eventKey="/users" onClick={this.toggleSidebar}>
+                                    <NavText >
+                                        <Link className={expanded ? "formLink" : ""} to="/users" >
+                                            <i class="fas fa-user-plus" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                            Users
+                                        </Link>
+                                    </NavText>
+                                </NavItem>
+
                             </NavItem>
                             {/* end */}
-
+                                
                             <NavItem eventKey="/location" onClick={this.toggleSidebar}>
                                 <NavIcon>
                                     <Link to="/location">
