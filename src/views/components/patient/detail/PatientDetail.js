@@ -195,21 +195,6 @@ class PatientDetail extends React.Component {
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>
                             </div>
-                            {/* <div className="col-md-6 col-sm-6">
-                            <Link to="/testorderlist">
-                            <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        //expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding" ><i class="fas fa-vials gradient"></i></span>
-                                        <Typography className="typography-space">Lab Test</Typography>
-                                    </ExpansionPanelSummary>
-                                 
-                                </ExpansionPanel>
-                            </Link>
-                            </div> */}
                         </div>
                     </div>
                     {/* end body */}
@@ -217,9 +202,9 @@ class PatientDetail extends React.Component {
                 <PatiendSideBackButton
                     navigateTo="FindPatient"
                 ></PatiendSideBackButton>
-                <div id="SidenavModal" class="sidenav">
+                {/* <div id="SidenavModal" class="sidenav">
                     <a id="action" className="pd-actions-btn  btn-primary" onClick={() => this.openModal()} >General Actions</a>
-                </div>
+                </div> */}
                 {/* general acions  */}
                 <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
                     <Modal.Header closeButton className="modal-header">

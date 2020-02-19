@@ -25,9 +25,9 @@ import PatientRegistration from './patient/create/PatientRegistration';
 import AdministrationHome from './administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ManageLabTest from './managelabtest/ManageLabTest'
+import ManageLabTest from './manageLabTest/ManageLabTest'
 import AddLabTestAttribute from './addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './managelabtestattribute/ManageLabTestAttribute'
+import ManageLabTestAttribute from './manageLabTestAttribute/ManageLabTestAttribute'
 import TestOrderList from './labtestorder/TestOrderList'
 import AddTestOrder from './labtestorder/AddTestOrder';
 import SampleList from './labtestsample/samplelist';
@@ -64,7 +64,7 @@ class App extends React.Component {
                     onIdle={this.onIdle}
                     onAction={this.onAction}
                     debounce={250}
-                    timeout={18000000}
+                    timeout={1800000}
                 />
                 <Router history={history}>
                     <Route path="/" component={Header} />

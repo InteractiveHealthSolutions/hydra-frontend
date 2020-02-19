@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './homepage.css';
 import Card from "@material-ui/core/Card";
 import Loaders from "../loader/Loader"
-import { userAction } from '../../../state/ducks/login';
+import { createNotification } from '../../../utilities/helpers/helper'
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -12,7 +12,8 @@ class HomePage extends React.Component {
             hover: '',
             loading: false
         };
-
+        
+        this.activeUser = localStorage.getItem('active_user')
 
     }
     onMouseHoverIn(tile) {
@@ -21,13 +22,18 @@ class HomePage extends React.Component {
     onMouseHoverOut() {
         this.setState({ hover: '' });
     }
-    redirectLink(){
+    redirectLink() {
         window.location.href = 'https://wiki.ihsinformatics.com/display/PROJ/Hydra+User+Guide'
+    }
+
+    handleDashBoard(e) {
+     e.preventDefault();
+     createNotification("info","Comming Soon")
+
     }
     render() {
         if (this.state.loading) return <Loaders />;
         return (
-
             <div className="home-div">
 
                 <br />
@@ -105,7 +111,7 @@ class HomePage extends React.Component {
                                     </Link>
                                 </div>
                                 <div className="col-md-3 col-sm-2">
-                                    <div className="box" onMouseEnter={() => this.onMouseHoverIn('Dashboard')} onMouseLeave={() => this.onMouseHoverOut()}>
+                                    <div className="box" onClick={this.handleDashBoard} onMouseEnter={() => this.onMouseHoverIn('Dashboard')} onMouseLeave={() => this.onMouseHoverOut()}>
                                         <img id="icon-img" src={require('../../../assets/dashboard.png')} alt="" />
                                         <div className="tag-name-workflows"><h5 className="h5">Dashboard</h5></div>
                                     </div>
@@ -123,11 +129,11 @@ class HomePage extends React.Component {
                                 </div>*/}
                                 <div className="col-md-3 col-sm-2">
                                     {/* <Link to="/formdesigner"> */}
-                                    <div className="box-first" onClick ={this.redirectLink} onMouseEnter={() => this.onMouseHoverIn('Help')} onMouseLeave={() => this.onMouseHoverOut()}>
-                                            <img id="icon-img" src={require('../../../assets/help.png')} alt="" />
-                                            <div className="tag-name-help">
-                                                <h5 className="h5">Help</h5>
-                                            </div>
+                                    <div className="box-first" onClick={this.redirectLink} onMouseEnter={() => this.onMouseHoverIn('Help')} onMouseLeave={() => this.onMouseHoverOut()}>
+                                        <img id="icon-img" src={require('../../../assets/help.png')} alt="" />
+                                        <div className="tag-name-help">
+                                            <h5 className="h5">Help</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
