@@ -7,12 +7,13 @@ import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import { userAction } from '../../../../state/ducks/user'
 import { rolesAction } from '../../../../state/ducks/roles';
-import { registrationJSON } from '../../../../utilities/helpers/JSONcreator'
+import { registrationJSON , editJSON} from '../../../../utilities/helpers/JSONcreator';
 import { createNotification } from '../../../../utilities/helpers/helper'
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
 import Loaders from '../../loader/Loader';
+import moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
@@ -102,6 +103,11 @@ class UserList extends React.Component {
         if (newProps.users != undefined) {
             this.setState({ rowData: newProps.users.results })
         }
+        if(newProps.rolesList != undefined) {
+            this.roleHelper();
+           
+        }
+   
     }
     roleHelper() {
         if (this.props.rolesList != undefined) {
@@ -146,13 +152,14 @@ class UserList extends React.Component {
                     familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
                     givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
                     username: event.data.display,
-                    gender: '',
+                    gender: event.data.person.gender,
                     provider: '',
                     password: '',
                     confirmpassword: '',
                     forcepwdchange: '',
-                    dateofbirth: '',
+                    dateofbirth: event.data.person.birthdate != null? moment(event.data.person.birthdate).toDate():'',
                     role: [],
+                    defaultRole:this.getDefaultRoles(event.data.roles),
                     cnic: ''
                 }
             })
@@ -246,8 +253,12 @@ class UserList extends React.Component {
 
             }
             else {
-
-                await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
+                if(user.password=='') {
+                    await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
+                }
+                else {
+                    await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
+                }
                 await this.setState({ forEdit: false });
             }
             this.props.userError ? createNotification('error', 'User Not Created') :
@@ -272,14 +283,28 @@ class UserList extends React.Component {
                 forcepwdchange: '',
                 dateofbirth: '',
                 role: [],
+                defaultRole:[],
                 cnic: ''
             },
             submitted: false,
             invalidPassword: false,
             noRoleSelected: false,
-
+            forEdit:false
 
         })
+    }
+    getDefaultRoles(roles) {
+        var defaultRoles = [];
+        if (roles) {
+            roles.map(data => {
+                defaultRoles.push({
+                    label: data.name,
+                    value: data.uuid
+                })
+            });
+        }
+        return defaultRoles;
+
     }
     render() {
         const { user, submitted, invalidPassword } = this.state;
@@ -349,7 +374,7 @@ class UserList extends React.Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="gender" value="M" onChange={this.handleChange} required />
+                                                <input className="form-check-input" type="radio" name="gender" value="M" checked={user.gender==='M'} onChange={this.handleChange} required />
                                                 <label className="form-check-label" htmlFor="gender" >
                                                     Male
                                     </label>
@@ -357,7 +382,8 @@ class UserList extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="gender" value="F" onChange={this.handleChange} />
+                                            <input className="form-check-input" type="radio" name="gender" value="F" checked={user.gender==='F'} onChange={this.handleChange}  />
+
                                                 <label className="form-check-label" htmlFor="gender">
                                                     Female
                                     </label>
@@ -396,15 +422,15 @@ class UserList extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group row ">
-                                <label htmlFor="password" class="col-sm-4 col-form-label required">Password</label>
+                                <label htmlFor="password" class={this.state.forEdit ? "col-sm-4 col-form-label": "col-sm-4 col-form-label required"}>Password</label>
                                 <div class="col-sm-8">
-                                    <input type="password" className="form-control" name="password" value={user.password} autoComplete="off" maxLength="15" title="Please enter password containing one uppercase letter, one lowercase letter and a number (min characters 8)" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,15}$" onChange={this.handleChange} required />
+                                    <input type="password" className="form-control" name="password" value={user.password} autoComplete="off" maxLength="15" title="Please enter password containing one uppercase letter, one lowercase letter and a number (min characters 8)" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,15}$" onChange={this.handleChange}  />
                                 </div>
                             </div>
                             <div className="form-group row ">
-                                <label htmlFor="confirmpassword" class="col-sm-4 col-form-label required">ConfirmPassword</label>
+                                <label htmlFor="confirmpassword" class={this.state.forEdit ? "col-sm-4 col-form-label": "col-sm-4 col-form-label required"}>ConfirmPassword</label>
                                 <div class="col-sm-8">
-                                    <input type="password" className="form-control" name="confirmpassword" maxLength="15" value={user.confirmpassword} onChange={this.handleChange} required />
+                                    <input type="password" className="form-control" name="confirmpassword" maxLength="15" value={user.confirmpassword} onChange={this.handleChange}  />
                                     {invalidPassword &&
                                         <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Password and Confirm Password do not match</div>
                                     }
@@ -456,6 +482,7 @@ class UserList extends React.Component {
                                 <label htmlFor="role" className="col-sm-4 col-form-label required">Roles</label>
                                 <div className="col-sm-8">
                                     <Select
+                                        defaultValue={this.state.user.defaultRole}
                                         options={this.state.allRoles}
                                         className="user-select-dropdown"
                                         name="statetype"
@@ -470,7 +497,7 @@ class UserList extends React.Component {
 
                             </div>
                             <Modal.Footer>
-                                <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Add User</button>
+                                <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Save</button>
                             </Modal.Footer>
 
                         </form>
