@@ -1,1 +1,0 @@
-export const GET_CONCEPT_BY_UUID = "GET_CONCEPT_BY_UUID";

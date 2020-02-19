@@ -1,1 +1,0 @@
-export const GET_ALL_ENCOUNTERS = "GET_ALL_ENCOUNTERS";
