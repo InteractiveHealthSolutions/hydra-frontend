@@ -1,0 +1,33 @@
+.MuiTypography-h5 {
+  font-size: 17px !important;
+}
+
+.fb-Card {
+  margin-bottom: 50px;
+}
+
+#formbuilderSidenav a {
+  position: absolute;
+  left: -50px;
+  transition: 0.3s;
+  padding: 10px;
+  height: 36px;
+  width: 89px;
+  text-decoration: none;
+  font-size: 10px;
+  color: white;
+  border-radius: 0 5px 5px 0;
+}
+
+#formbuilderSidenav a:hover {
+  left: 0;
+}
+
+#formback{
+  top: 11px;
+  background: var(--theme-background-color);
+}
+
+.question_title {
+  margin-left: 45px !important;
+}

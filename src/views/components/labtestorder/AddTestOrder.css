@@ -1,0 +1,30 @@
+.to-main-header {
+    width: 100%;
+    margin-top: 50px;
+    margin-left : 5px;
+    margin-right : 5px;
+}
+.to-main-card {
+    margin-left: 5px;
+    margin-right: 15px;
+    margin-top: 5px;
+    width: 100%;
+    height: 600px;
+   
+}
+.sb-button {
+    margin-top : 9px;
+    margin-left: 1080px
+}
+.cancel-button {
+    margin-top : 9px;
+    margin-left : 5px
+}
+.to-select-dropdown {
+    width: 220px;
+    margin-left: 1px
+}
+.required .col-form-label:after {
+    content:"*";
+    color:red;
+  }
