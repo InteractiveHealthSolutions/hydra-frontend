@@ -118,8 +118,11 @@ class Roles extends React.Component {
         await this.createPriviligesOption();
     }
     async componentWillReceiveProps(newProps) {
-        if (newProps.rolesList != undefined)
-            this.setState({ rowData: this.dataBuilder() })
+        if (newProps.rolesList != undefined) {
+            await this.setState({ rowData: this.dataBuilder() })
+           await this.createInheritedRoleOptions();
+        }
+         
     }
     async handleSubmit(event) {
         await event.preventDefault();
@@ -174,6 +177,7 @@ class Roles extends React.Component {
         this.setState({ openAddRoleModal: false })
     }
     createInheritedRoleOptions() {
+        
         this.props.rolesList.results.forEach(element => {
             this.inheritedRolesOption.push({
                 "label": element.name,
@@ -310,6 +314,9 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
+                        {/* {
+                            this.state.forEdit && <input type="checkbox"/>
+                        } */}
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
