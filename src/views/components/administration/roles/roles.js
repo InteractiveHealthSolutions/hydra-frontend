@@ -177,13 +177,15 @@ class Roles extends React.Component {
         this.setState({ openAddRoleModal: false })
     }
     createInheritedRoleOptions() {
-        
-        this.props.rolesList.results.forEach(element => {
-            this.inheritedRolesOption.push({
-                "label": element.name,
-                "value": element.uuid
+        if(this.props.rolesList != undefined) {
+            this.props.rolesList.results.forEach(element => {
+                this.inheritedRolesOption.push({
+                    "label": element.name,
+                    "value": element.uuid
+                })
             })
-        })
+        }
+      
     }
     createPriviligesOption() {
         this.props.priviligesList.results.forEach(element => {
@@ -266,7 +268,7 @@ class Roles extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Modal show={this.state.openAddRoleModal} onHide={() => this.closeAddRoleModal()} style={{ marginTop: '40px' }}>
+                <Modal show={this.state.openAddRoleModal} onHide={() => this.closeAddRoleModal()} backdrop="static" style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} Role</Modal.Title>
                     </Modal.Header>
