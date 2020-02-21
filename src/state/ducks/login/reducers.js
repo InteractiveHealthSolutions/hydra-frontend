@@ -9,6 +9,7 @@ const initialState = {
     user: [],
     authorized: false,
     submitted: false,
+    loading: false,
 };
 
 const userReducer = createReducer(initialState)({
@@ -17,7 +18,7 @@ const userReducer = createReducer(initialState)({
         ...state,
         current: payload,
         loading: true,
-        submitted:false,
+        submitted: false,
         error: null
     }),
 
@@ -27,21 +28,24 @@ const userReducer = createReducer(initialState)({
         loggedIn: true,
         user: payload,
         authorized: true,
-        submitted:true
+        loading: false,
+        submitted: true
     }),
 
     [types.LOGOUT]: (state, { payload }) => ({
         ...state,
         loggedIn: false,
         authorized: false,
-        submitted:false,
+        submitted: false,
+        loading: false
     }),
     [types.LOGIN_FAILURE]: (state, { payload }) => ({
         ...state,
         loggedIn: false,
         payload,
         authorized: false,
-        submitted:true
+        submitted: true,
+        loading: false
     }),
 })
 

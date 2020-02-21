@@ -5,6 +5,7 @@ import { history } from '../../../history';
 
 
 export const login = (username, password) => async dispatch => {
+  dispatch(setProject())
   const token = authenticationGenerator.generateAuthenticationToken(username, password);
   const requestOptions = {
     method: 'GET',
@@ -58,3 +59,8 @@ export const logout = () => async dispatch => {
 
 const requestLogout = () => { return { type: types.LOGOUT } };
 
+const setProject = () => ({
+
+  type: types.SET_PROJECT
+
+});

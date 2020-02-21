@@ -5,6 +5,7 @@ import './css/util.css'
 import './css/main-login.css'
 import './css/animate.css'
 import { userAction } from '../../../state/ducks/login';
+import Loader from 'react-loader-spinner'
 
 class Login extends React.Component {
 
@@ -15,7 +16,9 @@ class Login extends React.Component {
             username: '',
             password: '',
             submitted: false,
-            authorizedCredential: false
+            authorizedCredential: false,
+            userNameErr: '',
+            passwordErr: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,7 +28,7 @@ class Login extends React.Component {
     async componentWillReceiveProps(nextProps) {
         if (nextProps.authorized !== undefined) {
             await this.setState({
-                authorizedCredenti  : nextProps.authorized
+                authorizedCredenti: nextProps.authorized
             })
         }
         if (nextProps.submitted !== undefined) {
@@ -52,34 +55,55 @@ class Login extends React.Component {
         })
     }
 
-    //form event handlers
     handleChange(e) {
         e.preventDefault();
         const { name, value } = e.target;
         this.setState({ [name]: value });
-        this.setState({ submitted: false });
+        if (name === 'username') {
+            this.setState({ userNameErr: '' });
+        } else if (name === 'password') {
+            this.setState({ passwordErr: '' });
+        }
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        const { username, password } =  this.state;
-        if (username && password) {
+        const { username, password } = this.state;
+        if (this.validation()) {
             this.props.login(username, password)
         }
     }
 
-    render() {
+    validation() {
+        let isValid = true
+        const { username, password } = this.state;
+        if (!username) {
+            this.setState({
+                userNameErr: "Error"
+            })
+            isValid = false
+        }
+        if (!password) {
+            this.setState({
+                passwordErr: "Error"
+            })
+            isValid = false
+        }
+        console.log("validation", isValid)
+        return isValid
+    }
 
-        const { username, password, submitted, authorizedCredential } = this.state;
+    render() {
+        const { username, password, userNameErr, passwordErr, submitted, authorizedCredential } = this.state;
+        const { isLoading } = this.props
         return (
 
             <div className="limiter">
                 <div className="container-login100">
                     <div className="wrap-login100">
-                        <div className="login100-pic rotate" >
+                        <div className={(isLoading) ? "login100-pic rotate" : "login100-pic"}>
                             <img src={require('../../../assets/logo.png')} alt="IMG" />
                         </div>
-
                         <form className="login100-form validate-form" onSubmit={this.handleSubmit}>
                             <span className="login100-form-title">
                                 Sign In
@@ -98,11 +122,11 @@ class Login extends React.Component {
                                 <span className="symbol-input100">
                                     <i className="fa fa-envelope" aria-hidden="true"></i>
                                 </span>
-                                {submitted && !username &&
-                                    <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Username is required</div>
-                                }
-                            </div>
 
+                            </div>
+                            {userNameErr &&
+                                <span className="help-block error_spn">Username is required</span>
+                            }
                             <div className="wrap-input100 " >
                                 <input
                                     className="input100"
@@ -116,25 +140,24 @@ class Login extends React.Component {
                                 <span className="symbol-input100">
                                     <i className="fa fa-lock" aria-hidden="true"></i>
                                 </span>
-                                {submitted && !password &&
-                                    <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Password is required</div>
-                                }
                             </div>
-
+                            {passwordErr &&
+                                <span className="help-block error_spn">Password is required</span>
+                            }
                             <div class="container-login100-form-btn">
                                 {(authorizedCredential === false && submitted && username && password) ?
-                                    <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>Invalid Credentials</div>
+                                    <div className="help-block error_spn">Invalid Credentials</div>
                                     : ""
                                 }
-                                <button className="login100-form-btn">
+                                <button className={isLoading ? "login100-form-btn disabled_btn" : "login100-form-btn"} disabled={isLoading} >
                                     Login
                                 </button>
                             </div>
                             <div class="text-center p-t-136">
-                                <a class="txt2" href="#">
+                                <label class="txt2">
                                     Powered by
-                                </a>
-                                <b style={{ fontSize: '12px' }}> IHS</b>
+                                </label>
+                                <a href="http://www.ihsinformatics.com/"><b style={{ fontSize: '12px' }}> IHS</b></a>
                             </div>
                         </form>
                     </div>
@@ -147,7 +170,8 @@ class Login extends React.Component {
 };
 const mapStateToProps = (state) => ({
     authorized: state.login.authorized,
-    submitted: state.login.submitted
+    submitted: state.login.submitted,
+    isLoading: state.login.loading
 })
 const mapDispatchTopProps = ({
     login: userAction.login,
