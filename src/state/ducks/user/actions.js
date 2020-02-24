@@ -34,6 +34,12 @@ export const fetchUsers = () => async dispatch => {
 
 const userFetchAction = (payload) => ({ type: types.GET_ALL_USER, payload })
 
+export const deleteUser= (uuid) => async dispatch => {
+  fetch(DELETE, "user/"+uuid+"?!purge")
+  .then(res => dispatch(userDeleteAction(res))).catch(displayError)
+}
+
+const userDeleteAction = (payload) => ({type: types.DELETE_USER,payload})
 
 const setProject = () => ({
   type: types.SET_PROJECT

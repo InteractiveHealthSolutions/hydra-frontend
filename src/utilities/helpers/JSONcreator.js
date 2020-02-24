@@ -7,7 +7,7 @@ export function editJSON(user) {
                 "familyName" : user.familyname
             }],
             "gender" : user.gender,
-            "birthdate" : user.birthdate,
+            "birthdate" : user.dateofbirth,
             "attributes": [
                  {
                    "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",
@@ -16,7 +16,6 @@ export function editJSON(user) {
              ]
         },
         "name": user.givenName,
-        "birthdate": user.dateofbirth,
         "username" : user.username,
         "roles" : user.role
     };
@@ -39,7 +38,6 @@ export function registrationJSON(user) {
              ]
         },
         "name": user.givenName,
-        "birthdate": user.birthdate,
         "username" : user.username,
         "password" : user.password,
         "roles" : user.role
@@ -81,6 +79,7 @@ export function roleJSON(role) {
         "name" : role.name,
         "description" : role.description,
         "privileges" : priv,
-         "inheritedRoles" : iRole
+         "inheritedRoles" : iRole,
+         "retired" : role.retire
     }
 }

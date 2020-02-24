@@ -60,15 +60,13 @@ class Roles extends React.Component {
                 name: '',
                 description: '',
                 selectedIRoles: [],
-                selectedPriviliges: []
+                selectedPriviliges: [],
+                retire:false
             },
             rowData: [],
             forEdit: false,
-            selectedUUID: ''
-
-
-
-
+            selectedUUID: '',
+            //retire:false
         }
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.inheritedRolesOption = [];
@@ -116,38 +114,62 @@ class Roles extends React.Component {
         await this.props.getPriviliges();
         await this.createInheritedRoleOptions();
         await this.createPriviligesOption();
+       await console.log('helllo '+JSON.stringify(this.props.rolesList))
     }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
             await this.setState({ rowData: this.dataBuilder() })
            await this.createInheritedRoleOptions();
+         await console.log('helllo props'+JSON.stringify(this.state.rowData))
         }
          
     }
     async handleSubmit(event) {
-        await event.preventDefault();
-        if (this.state.forEdit == true) {
-            console.log('uuid ' + this.state.selectedUUID);
-            await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
-            await this.props.getRoles();
-        }
-        else
-            await this.props.postRole(this.state.roleFormData);
-            await this.props.getRoles();
+    await event.preventDefault();
+           if (this.state.forEdit == true) {
+               if(this.state.roleFormData.retire == true) {
+                  await this.props.deleteRole(this.state.selectedUUID)
+               }
+               else {
+                await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
+               }
+                console.log('uuid ' + this.state.selectedUUID);
+                //alert(JSON.stringify(this.state.roleFormData))
+              
+               await this.props.getRoles();
+            }
+            else
+                await this.props.postRole(this.state.roleFormData);
+                await this.props.getRoles();
+            
+        
         //console.log('submitted '+JSON.stringify(this.state.roleFormData))
         this.closeAddRoleModal();
     }
-    handleChange(event) {
-
-        const { name, value } = event.target;
-        const { roleFormData } = this.state;
-        this.setState({
-            roleFormData: {
-                ...roleFormData,
-                [name]: value
+     handleChange(event) {
+        
+            const { name, value } = event.target;
+            const { roleFormData } = this.state;
+            if(name == 'retire') {
+                this.setState({
+                    roleFormData: {
+                        ...roleFormData,
+                        retire: event.target.checked
+                    }
+                });
             }
-        });
-        console.log("on change " + name + " " + value);
+            else {
+                this.setState({
+                    roleFormData: {
+                        ...roleFormData,
+                        [name]: value
+                    }
+                });
+            }
+            
+        
+        
+        console.log("on change " + event.target.name + " " + this.state.retire);
     }
     dataBuilder() {
         if(this.props.rolesList != undefined) {
@@ -316,8 +338,12 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
-                        {/* {
-                            this.state.forEdit && <input type="checkbox"/>
+                         {/* {
+                            this.state.forEdit ?
+                            <div class="form-check">
+                            <input type="checkbox" name="retire" onChange={this.handleChange}/>
+                            <label>Retired</label> 
+                            </div> : ''
                         } */}
                             <button type="submit" class="btn btn-primary">
                                 Save
@@ -340,6 +366,7 @@ const mapsDispatchToProps = {
     getRoles: rolesAction.getRoles,
     getPriviliges: priviligesAction.getAllPriviliges,
     postRole: rolesAction.postRole,
-    editRole: rolesAction.putRole
+    editRole: rolesAction.putRole,
+    deleteRole: rolesAction.deleteRole
 }
 export default connect(mapStateToProps, mapsDispatchToProps)(Roles);

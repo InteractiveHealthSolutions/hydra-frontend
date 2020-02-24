@@ -37,6 +37,11 @@ const userReducer = createReducer(initialState)({
         loading: false,
         users: payload
     }),
+    [types.DELETE_USER]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        users: payload
+    })
 })
 export default userReducer
 

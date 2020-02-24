@@ -29,6 +29,11 @@ export const putRole = (data, uuid) => async dispatch =>
   fetch(POST, "/role/" + uuid, roleJSON(data)).
     then(res => { dispatch(postRoleOption(res)); dispatch(getRoles()) }).catch(displayError)
 
+export const deleteRole = (uuid,data) => async dispatch => 
+  fetch(DELETE,"/role/"+uuid+"?!purge").
+    then(res => {dispatch(deleteRoleOption(res))}).catch(displayError)
+
+const deleteRoleOption = payload => ({type : types.DELETE_ROLE, payload})
 const setProject = () => ({
   type: types.SET_PROJECT
 });   
