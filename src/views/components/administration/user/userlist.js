@@ -156,7 +156,7 @@ class UserList extends React.Component {
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
-            await alert(this.props.provider.results[0])
+          //  await alert(this.props.provider.results[0])
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
@@ -283,7 +283,7 @@ class UserList extends React.Component {
                 user : this.state.activeuserUUID,
                 retired : true
             }
-         //   await this.props.saveworkforce(data);
+            await this.props.saveworkforce(data);
             await this.closeModal();
             await this.props.getAllUsers();
         }
@@ -568,13 +568,13 @@ class UserList extends React.Component {
 
                             </div>
                             <Modal.Footer>
-                             {
+                             {/* {
                             this.state.forEdit ?
                             <div class="form-check">
                             <input type="checkbox" name="retire" style={{marginLeft:'-100px'}}onChange={this.handleChange}/>
                             <label>Retired</label> 
                             </div> : ''
-                        }
+                        } */}
                                 <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Save</button>
                             </Modal.Footer>
 
