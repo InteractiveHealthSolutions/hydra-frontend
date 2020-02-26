@@ -30,13 +30,18 @@ const userReducer = createReducer(initialState)({
     [types.CREATE_USER]: (state, { payload }) => ({
         ...state,
         loading: false,
-        users: payload
+        user: payload
     }),
     [types.UPDATE_USER]: (state, { payload }) => ({
         ...state,
         loading: false,
-        users: payload
+        user: payload
     }),
+    [types.DELETE_USER]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        users: payload
+    })
 })
 export default userReducer
 

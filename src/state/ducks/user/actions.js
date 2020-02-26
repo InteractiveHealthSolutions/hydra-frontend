@@ -5,7 +5,7 @@ import {
   GET,
   DELETE,
 } from "../../../utilities/constants/globalconstants";
-import { displayError, createNotification } from '../../../utilities/helpers/helper'
+import { displayError} from '../../../utilities/helpers/helper'
 
 export const searchUser = (name) => async dispatch =>
   fetch(GET, `user?v=full&&q=${name}`)
@@ -17,7 +17,7 @@ export const saveUser = (User) => async dispatch =>
   fetch(POST, "user", User)
     .then(res => dispatch(userSaveAction(res))).catch(displayError)
 
-const userSaveAction = (payload) => ({ type: types.GET_ALL_USER, payload })
+const userSaveAction = (payload) => ({ type: types.CREATE_USER, payload })
 
 export const editUsers = (uuid, user) => async dispatch =>
   fetch(POST, "user/" + uuid, user)
@@ -34,6 +34,12 @@ export const fetchUsers = () => async dispatch => {
 
 const userFetchAction = (payload) => ({ type: types.GET_ALL_USER, payload })
 
+export const deleteUser= (uuid) => async dispatch => {
+  fetch(DELETE, "user/"+uuid+"?!purge")
+  .then(res => dispatch(userDeleteAction(res))).catch(displayError)
+}
+
+const userDeleteAction = (payload) => ({type: types.DELETE_USER,payload})
 
 const setProject = () => ({
   type: types.SET_PROJECT
