@@ -8,8 +8,9 @@ import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import { userAction } from '../../../../state/ducks/user'
 import { rolesAction } from '../../../../state/ducks/roles';
 import { workforceAction } from '../../../../state/ducks/workforce'
-import { registrationJSON , editJSON} from '../../../../utilities/helpers/JSONcreator';
-import { createNotification } from '../../../../utilities/helpers/helper'
+import { registrationJSON , editJSON , providerJSON} from '../../../../utilities/helpers/JSONcreator';
+import { createNotification } from '../../../../utilities/helpers/helper';
+import { providerAction } from '../../../../state/ducks/provider';
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
@@ -154,6 +155,8 @@ class UserList extends React.Component {
             const { user } = this.state.user;
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
+            await this.props.getProviderByUser(event.data.uuid);
+            await alert(this.props.provider.results[0])
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
@@ -163,7 +166,7 @@ class UserList extends React.Component {
                     givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
                     username: event.data.display,
                     gender: event.data.person.gender,
-                    provider: '',
+                    provider: this.props.provider.results.length != 0?'yes':'no',
                     password: '',
                     confirmpassword: '',
                     forcepwdchange: '',
@@ -171,7 +174,8 @@ class UserList extends React.Component {
                     role: [],
                     defaultRole:this.getDefaultRoles(event.data.roles),
                     cnic: '',
-                    isProvider:event.data.provider != undefined?true:false,
+                    isProvider:this.props.provider.results.length != 0?true:false,
+                    currentProvider:this.props.provider.results.length != 0?this.props.provider.results[0]:'',
                     retire:false
                 }
             })
@@ -242,6 +246,16 @@ class UserList extends React.Component {
             });
             alert(JSON.stringify(this.state.user))
         }
+        else if(event.target.name=='provider' && this.state.forEdit) {
+            const { name, value } = event.target;
+            const { user } = this.state;
+            this.setState({
+                user: {
+                    ...user,
+                    [name]: value
+                }
+            });
+        }
         else {
             const { name, value } = event.target;
             const { user } = this.state;
@@ -265,6 +279,11 @@ class UserList extends React.Component {
         const { user } = this.state;
         if(user.retire == true) {
             await this.props.deleteUser(this.state.activeuserUUID);
+            var data = {
+                user : this.state.activeuserUUID,
+                retired : true
+            }
+         //   await this.props.saveworkforce(data);
             await this.closeModal();
             await this.props.getAllUsers();
         }
@@ -289,16 +308,26 @@ class UserList extends React.Component {
                 });
                 if (!this.state.forEdit) {
                     await this.props.saveUser(registrationJSON(user));
-    
+                    if(user.provider == 'yes' && this.props.createdUser != undefined) {
+                        await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                    }
                 }
                 else {
                     if(user.password=='') {
                         await console.log('submitt '+JSON.stringify(user))
                         await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
+                        
                     }
                     else {
                         await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
                     }
+                    if(user.isProvider && user.provider == 'no') {
+                        this.props.deleteProvider(user.currentProvider.uuid);
+                     }
+                     if(!user.isProvider && user.provider == 'yes') {
+                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                     }
+                   
                     await this.setState({ forEdit: false ,retire:false});
                 }
                 this.props.userError ? createNotification('error', 'User Not Created') :
@@ -440,7 +469,7 @@ class UserList extends React.Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios1" value="yes" onChange={this.handleChange} required  />
+                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios1" checked={user.provider=='yes'}value="yes" onChange={this.handleChange} required  />
                                                 <label className="form-check-label" htmlFor="gridRadios3" >
                                                     Yes
                                     </label>
@@ -448,7 +477,7 @@ class UserList extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios2" onChange={this.handleChange} value="no" />
+                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios2" checked={user.provider=='no'} onChange={this.handleChange} value="no" />
                                                 <label className="form-check-label" htmlFor="gridRadios4">
                                                     No
                                     </label>
@@ -539,13 +568,13 @@ class UserList extends React.Component {
 
                             </div>
                             <Modal.Footer>
-                            {/* {
+                             {
                             this.state.forEdit ?
                             <div class="form-check">
                             <input type="checkbox" name="retire" style={{marginLeft:'-100px'}}onChange={this.handleChange}/>
                             <label>Retired</label> 
                             </div> : ''
-                        } */}
+                        }
                                 <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Save</button>
                             </Modal.Footer>
 
@@ -560,7 +589,9 @@ const mapStateToProps = state => ({
     users: state.user.users,
     rolesList: state.roles.allRoles,
     isLoading: state.user.loading,
-    userError: state.user.userError
+    userError: state.user.userError,
+    createdUser: state.user.user,
+    provider: state.provider.provider
 
 });
 const mapDispatchToProps = {
@@ -570,5 +601,8 @@ const mapDispatchToProps = {
     getRoles: rolesAction.getRoles,
     deleteUser:userAction.deleteUser,
     saveworkforce: workforceAction.saveParticipant,
+    saveProvider:providerAction.saveProvider,
+    getProviderByUser:providerAction.getProviderByUser,
+    deleteProvider:providerAction.deleteProvider
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

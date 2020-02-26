@@ -25,3 +25,4 @@ export {default as concepts} from './concepts';
 export {default as systemSettings} from './systemsettings'
 export {default as formField} from './form'
 export {default as user} from './user'
+export {default as provider} from './provider'
