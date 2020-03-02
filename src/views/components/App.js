@@ -64,7 +64,7 @@ class App extends React.Component {
                     onIdle={this.onIdle}
                     onAction={this.onAction}
                     debounce={250}
-                    timeout={18000000}
+                    timeout={1800000}
                 />
                 <Router history={history}>
                     <Route path="/" component={Header} />

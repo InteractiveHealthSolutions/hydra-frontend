@@ -22,6 +22,9 @@
   body {
     background: #DCDCDC;;
   }
+  .disabled_btn{
+    background-color: grey !important;
+  }
   .login-container {
     /* background: linear-gradient(to right, #33AEFF, #33AEFF); */
     background: var(--theme-background-color) ;
@@ -117,4 +120,9 @@ for ipad and notebook
     height: 624px;
     
   }
+ }
+
+ .error_spn{
+   color: #ff0000;
+   margin-left: 30px;
  }

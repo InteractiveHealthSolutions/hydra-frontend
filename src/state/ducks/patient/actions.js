@@ -7,6 +7,17 @@ import {
 } from "../../../utilities/constants/globalconstants";
 import { REJECTED } from "../../../utilities/constants/globalconstants";
 import { displayError } from '../../../utilities/helpers/helper'
+import { history } from '../../../history';
+
+export const setActivePatient = (patient) => async dispatch => {
+
+  localStorage.setItem('active-patient', JSON.stringify(patient));
+  dispatch(setPatient({ patient }));
+  history.push('/PatientDetail');
+}
+
+const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
+
 
 
 export const savePatient = (Patient) => async dispatch =>
@@ -30,6 +41,13 @@ export const deletePatient = (uuid) => async dispatch => {
 }
 const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload })
 
+
+export const searchPatient = (query) => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/patient?v=full&q=" + query)
+    .then(res => dispatch(searchPatientAction(res))).catch(displayError)
+}
+const searchPatientAction = (payload) => ({ type: types.SEARCH_PATIENT, payload })
 
 
 const setProject = () => ({

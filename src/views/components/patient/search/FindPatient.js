@@ -18,6 +18,16 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
+import './findpatient.css';
+import { AgGridReact } from '@ag-grid-community/react';
+import { AllCommunityModules } from '@ag-grid-community/all-modules';
+import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
+import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
+import { connect } from 'react-redux';
+import { PatiendSideBackButton } from '../../common/sidebutton/SideBackButton'
+import { patientAction } from '../../../../state/ducks/patient'
+import Loaders from '../../loader/Loader';
+import moment from 'moment'
 
 class FindPatient extends React.Component {
 
@@ -52,7 +62,7 @@ class FindPatient extends React.Component {
                 }
                 ,
                 {
-                    headerName: "UUID", field: "uuid", width: 170,hide:true
+                    headerName: "UUID", field: "uuid", width: 170, hide: true
                 }
             ],
             rowData: [],
@@ -131,15 +141,36 @@ class FindPatient extends React.Component {
         });
     }
     
+    async componentWillReceiveProps(nexProps) {
+        if (nexProps.searchPatientList !== undefined && nexProps.searchPatientList.results) {
+            await this.setState({
+                rowData: this.filterPatient(nexProps.searchPatientList.results)
+            })
+        }
+    }
+
+    filterPatient(patientData) {
+        let filteredPatient = [];
+        patientData.forEach(element => {
+            filteredPatient.push({
+                "identifier": element.identifiers[0].identifier,
+                "given": element.person.preferredName.givenName,
+                "middle": element.person.preferredName.middleName,
+                "familyname": element.person.preferredName.familyName,
+                "age": element.person.age,
+                "gender": element.person.gender,
+                "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
+                "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
+                "uuid": element.uuid
+            });
+        });
+        return filteredPatient;
+    }
+
     _handleKeyDown = (e) => {
         e.preventDefault();
         if (e.key === 'Enter') {
-            findpatientservice.getSearchPatient(this.state.searchQuery).then(data => {
-                console.log("Return patient :: ", JSON.stringify(data))
-                this.setState({
-                    rowData: data
-                })
-            })
+            this.props.searchPatientByQuery(this.state.searchQuery);
         }
     }
     openAddPatientModal() {
@@ -160,13 +191,7 @@ class FindPatient extends React.Component {
 
     searchPatient = e => {
         e.preventDefault();
-        findpatientservice.getSearchPatient(this.state.searchQuery).then(data => {
-            console.log("Return patient :: ", JSON.stringify(data))
-            this.setState({
-                rowData: data
-            })
-        }
-        )
+        this.props.searchPatientByQuery(this.state.searchQuery);
     }
     populateDropDown() {
         let array = [];
@@ -183,17 +208,8 @@ class FindPatient extends React.Component {
         e.preventDefault();
         this.searchPatient(e);
     };
-
     onCellClicked = event => {
-        console.log('onCellClicked: ' + JSON.stringify(event.data));
-        console.log('onCellClicked: ' + JSON.stringify(event.name));
-        console.log('onCellClicked: ' + JSON.stringify(event.value));
-
-
-        const { dispatch } = this.props;
-        if (event.data) {
-            dispatch(PatientActions.setActivePatient(event.data));
-        }
+        this.props.setActivePatient(event.data)
     };
 
     onRowSelected = (event) => {
@@ -202,6 +218,7 @@ class FindPatient extends React.Component {
 
     render() {
         const {patient , identifierFormat} = this.state;
+        if (this.props.isloading) return <Loaders />;
         return (
             <div className="row container-fluid fp-main-container">
                 <div className="card fp-header">
@@ -230,6 +247,9 @@ class FindPatient extends React.Component {
                             </div>
                             <div className="col-md-4 col-sm-2">
                                     <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
+                                {/* <Link to="/PatientRegistration">
+                                    <button class="fp-btn btn btn-primary"><i class="fas fa-plus"></i> Create New</button>
+                                </Link> */}
                             </div>
                         </div>
                     </div>
@@ -268,7 +288,7 @@ class FindPatient extends React.Component {
                         </div>
                     </div>
                 </div>
-                
+
                 <PatiendSideBackButton
                     navigateTo=""
                 ></PatiendSideBackButton>
@@ -376,3 +396,10 @@ const mapDispatchToProps = {
     getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID
 }
 export default connect(mapStateToProps,mapDispatchToProps)(FindPatient);
+
+const mapDispatchToProps = {
+    searchPatientByQuery: patientAction.searchPatient,
+    setActivePatient: patientAction.setActivePatient
+
+}
+export default connect(mapStateToProps, mapDispatchToProps)(FindPatient);

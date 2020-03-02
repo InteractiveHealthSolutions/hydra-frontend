@@ -10,6 +10,7 @@ const initialState = {
     patient: [],
     patients: [],
     patientType: [],
+    searchPatients: [],
 };
 
 const patientReducer = createReducer(initialState)({
@@ -45,6 +46,11 @@ const patientReducer = createReducer(initialState)({
         ...state,
         loading: false,
         patient: payload
+    }),
+    [types.SEARCH_PATIENT]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        searchPatients: payload
     }),
 
 
