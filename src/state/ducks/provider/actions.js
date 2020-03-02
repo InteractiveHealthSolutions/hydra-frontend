@@ -15,7 +15,7 @@ export const saveProvider = (provider) => async dispatch =>
 const providerSaveAction = (payload) => ({ type: types.CREATE_PROVIDER, payload })
 
 export const deleteProvider = (uuid) => async dispatch =>
-  fetch(GET, "provider/"+uuid+"?!purge")
+  fetch(DELETE, "provider/"+uuid+"?!purge")
     .then(res => dispatch(providerDeleteAction(res))).catch(displayError)
 
 const providerDeleteAction = () => ({ type: types.GET_PROVIDER_BY_USER})

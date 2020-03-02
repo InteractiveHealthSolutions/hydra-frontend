@@ -34,20 +34,20 @@ class UserList extends React.Component {
                     headerName: 'System Id', field: 'systemId', width: '150'
                 },
                 {
-                    headerName: 'Username', field: 'display', width: '200'
+                    headerName: 'Username', field: 'display', width: '250'
                 },
                 {
-                    headerName: 'Name', field: 'person.display', width: '400'
+                    headerName: 'Name', field: 'person.display', width: '350'
                 },
                 {
-                    headerName: 'Gender', field: 'person.gender', width: '250'
+                    headerName: 'Gender', field: 'person.gender', width: '150'
                 },
                 {
                     headerName: 'Birthdate', field: 'person.birthdate', width: '450', hide: true
                 },
-                // {
-                //     headerName: 'Retired', field: 'retired', width: '150'
-                // },
+                {
+                     headerName: 'Retire Status', field: 'retired', width: '150'
+                },
                 {
                     headerName: "Edit", field: "edit", width: '150',
                     cellRenderer: 'buttonRenderer'
@@ -150,13 +150,12 @@ class UserList extends React.Component {
         });
     }
     async onCellClicked (event) {
-        if (event.column.colId == 'edit') {
+        if (event.column.colId == 'edit' && !event.data.retired) {
            // console.log('data date'+JSON.stringify(event.data.person.birthdate));
             const { user } = this.state.user;
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
-          //  await alert(this.props.provider.results[0])
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
@@ -179,6 +178,9 @@ class UserList extends React.Component {
                     retire:false
                 }
             })
+        }
+        if(event.column.colId == "edit" && event.data.retired) {
+            createNotification('error','Can not edit a retired user');
         }
     }
     setExistingRoles(roles) {
@@ -244,7 +246,6 @@ class UserList extends React.Component {
                     retire : event.target.checked
                 }
             });
-            alert(JSON.stringify(this.state.user))
         }
         else if(event.target.name=='provider' && this.state.forEdit) {
             const { name, value } = event.target;
@@ -279,11 +280,25 @@ class UserList extends React.Component {
         const { user } = this.state;
         if(user.retire == true) {
             await this.props.deleteUser(this.state.activeuserUUID);
-            var data = {
-                user : this.state.activeuserUUID,
-                retired : true
+            
+            await this.props.fetchParticipantByUser(this.state.activeuserUUID);
+
+            if(this.props.workforce != undefined) {
+                if(this.props.workforce.results != null) {
+                    var data = {
+                        user : this.state.activeuserUUID,
+                        retired : true,
+                        participantId : this.props.workforce.results[0].uuid
+                    }
+                await this.props.saveworkforce(data);
+                await console.log('participant '+JSON.stringify(this.props.workforce));
+                await console.log('participant '+JSON.stringify(data))
+                }
+                
             }
-            await this.props.saveworkforce(data);
+            if(user.provider == 'yes') {
+               this.props.deleteProvider(user.currentProvider.uuid);
+            }
             await this.closeModal();
             await this.props.getAllUsers();
         }
@@ -307,7 +322,7 @@ class UserList extends React.Component {
                     submitted: true
                 });
                 if (!this.state.forEdit) {
-                    await this.props.saveUser(registrationJSON(user));
+                    await this.props.saveUser(registrationJSON(this.state.user));
                     if(user.provider == 'yes' && this.props.createdUser != undefined) {
                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
                     }
@@ -568,14 +583,14 @@ class UserList extends React.Component {
 
                             </div>
                             <Modal.Footer>
-                             {/* {
+                             {
                             this.state.forEdit ?
                             <div class="form-check">
-                            <input type="checkbox" name="retire" style={{marginLeft:'-100px'}}onChange={this.handleChange}/>
-                            <label>Retired</label> 
+                            <input type="checkbox" name="retire" onChange={this.handleChange}/>
+                            <label > Retired</label> 
                             </div> : ''
-                        } */}
-                                <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Save</button>
+                        }
+                                <button type="submit" className="btn btn-primary" >Save</button>
                             </Modal.Footer>
 
                         </form>
@@ -591,7 +606,8 @@ const mapStateToProps = state => ({
     isLoading: state.user.loading,
     userError: state.user.userError,
     createdUser: state.user.user,
-    provider: state.provider.provider
+    provider: state.provider.provider,
+    workforce:state.workforce.workforce
 
 });
 const mapDispatchToProps = {
@@ -603,6 +619,7 @@ const mapDispatchToProps = {
     saveworkforce: workforceAction.saveParticipant,
     saveProvider:providerAction.saveProvider,
     getProviderByUser:providerAction.getProviderByUser,
-    deleteProvider:providerAction.deleteProvider
+    deleteProvider:providerAction.deleteProvider,
+    fetchParticipantByUser:workforceAction.fetchParticipantByUser
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

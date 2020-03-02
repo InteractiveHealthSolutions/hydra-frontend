@@ -348,7 +348,6 @@ class Roles extends React.Component {
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
-
                         </Modal.Footer>
                     </form>
                 </Modal>
