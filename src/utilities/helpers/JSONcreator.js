@@ -43,7 +43,16 @@ export function registrationJSON(user) {
         "roles" : user.role
     };
 }
-
+export function personJSON(gender , givenName , familyName , dateofbirth,age) {
+    return {
+        "gender": gender, 
+        "names": [
+            {"givenName":givenName, "familyName":familyName}
+        ],
+        "birthdate" : dateofbirth,
+        "age" : age
+    }
+}
 export function providerJSON(person,systemId)
 {
     return {

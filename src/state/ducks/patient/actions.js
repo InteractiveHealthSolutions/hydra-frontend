@@ -21,7 +21,7 @@ const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
 
 
 export const savePatient = (Patient) => async dispatch =>
-  fetch(POST, "hydra/Patient", Patient)
+  fetch(POST, "patient", Patient)
     .then(res => dispatch(patientAction(res))).catch(displayError)
 
 const patientAction = (payload) => ({
@@ -29,14 +29,14 @@ const patientAction = (payload) => ({
   payload
 })
 
-export const fetchPatients = () => async dispatch =>
-  fetch(GET, "hydra/Patient?v=full")
+export const fetchPatients = (query) => async dispatch =>
+  fetch(GET, "patient?v=full&q="+query)
     .then(res => dispatch(setpatientAction(res))).catch(displayError)
 
 const setpatientAction = (payload) => ({ type: types.GET_ALL_PATIENT, payload })
 
 export const deletePatient = (uuid) => async dispatch => {
-  fetch(DELETE, "hydra/Patient/" + uuid)
+  fetch(DELETE, "patient/" + uuid)
     .then(res => dispatch(deletepatientAction(res))).catch(displayError)
 }
 const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload })
