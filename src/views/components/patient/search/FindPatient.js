@@ -19,7 +19,6 @@ import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
 import './findpatient.css';
-import { patientAction } from '../../../../state/ducks/patient'
 import Loaders from '../../loader/Loader';
 import moment from 'moment'
 
