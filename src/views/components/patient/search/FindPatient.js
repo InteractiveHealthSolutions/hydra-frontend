@@ -116,6 +116,9 @@ class FindPatient extends React.Component {
             } ]
       }
       await this.props.savePatient(data);
+      await createNotification('success','Patient Created');
+      await this.closeAddPatientModal()
+
       await console.log(JSON.stringify(data));
 
 
@@ -138,7 +141,7 @@ class FindPatient extends React.Component {
         if (nexProps.searchPatientList !== undefined && nexProps.searchPatientList.results) {
             await this.setState({
                 rowData: this.filterPatient(nexProps.searchPatientList.results)
-            })
+            })  
         }
     }
 
