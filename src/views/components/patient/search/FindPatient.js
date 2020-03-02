@@ -385,14 +385,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     savePerson : personAction.savePerson,
     savePatient : patientAction.savePatient,
+    searchPatientByQuery: patientAction.searchPatient,
+    setActivePatient: patientAction.setActivePatient,
     getAllLocation: locationAction.fetchLocations,
     getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID
 }
 export default connect(mapStateToProps,mapDispatchToProps)(FindPatient);
-
-const mapDispatchToProps = {
-    searchPatientByQuery: patientAction.searchPatient,
-    setActivePatient: patientAction.setActivePatient
-
-}
-export default connect(mapStateToProps, mapDispatchToProps)(FindPatient);
