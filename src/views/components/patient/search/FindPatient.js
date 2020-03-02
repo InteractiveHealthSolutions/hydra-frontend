@@ -19,12 +19,6 @@ import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
 import './findpatient.css';
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-import { connect } from 'react-redux';
-import { PatiendSideBackButton } from '../../common/sidebutton/SideBackButton'
 import { patientAction } from '../../../../state/ducks/patient'
 import Loaders from '../../loader/Loader';
 import moment from 'moment'
