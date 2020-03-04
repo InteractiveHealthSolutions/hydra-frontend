@@ -1,0 +1,4 @@
+
+export const GET_VISITS_FOR_A_PATIENT = "GET_VISITS_FOR_A_PATIENT";
+export const CREATE_VISIT = "CREATE_VISIT";
+export const SET_PROJECT = "SET_PROJECT"

@@ -110,12 +110,18 @@ class Roles extends React.Component {
     };
     async componentWillMount() {
         await this.props.getRoles();
-        await this.setState({ rowData: this.dataBuilder() });
-        await this.props.getPriviliges();
-        await this.createInheritedRoleOptions();
-        await this.createPriviligesOption();
-       await console.log('helllo '+JSON.stringify(this.props.rolesList))
-    }
+        if(this.props.rolesList != undefined) {
+            await this.setState({ rowData: this.dataBuilder() });
+            await this.props.getPriviliges();
+            await this.createInheritedRoleOptions();
+            await this.createPriviligesOption();
+           await console.log('helllo '+JSON.stringify(this.props.rolesList))
+        
+        }
+        else {
+            window.reload(false)
+        }
+     }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
             await this.setState({ rowData: this.dataBuilder() })

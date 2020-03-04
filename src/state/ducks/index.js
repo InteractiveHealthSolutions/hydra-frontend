@@ -27,3 +27,4 @@ export {default as formField} from './form';
 export {default as user} from './user';
 export {default as provider} from './provider';
 export {default as person} from './person';
+export {default as visit} from './visit'
