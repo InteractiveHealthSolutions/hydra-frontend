@@ -61,8 +61,9 @@ class Roles extends React.Component {
                 description: '',
                 selectedIRoles: [],
                 selectedPriviliges: [],
-                retire:false
+                
             },
+            retire:false,
             rowData: [],
             forEdit: false,
             selectedUUID: '',
@@ -110,12 +111,18 @@ class Roles extends React.Component {
     };
     async componentWillMount() {
         await this.props.getRoles();
-        await this.setState({ rowData: this.dataBuilder() });
-        await this.props.getPriviliges();
-        await this.createInheritedRoleOptions();
-        await this.createPriviligesOption();
-       await console.log('helllo '+JSON.stringify(this.props.rolesList))
-    }
+        if(this.props.rolesList != undefined) {
+            await this.setState({ rowData: this.dataBuilder() });
+            await this.props.getPriviliges();
+            await this.createInheritedRoleOptions();
+            await this.createPriviligesOption();
+           await console.log('helllo '+JSON.stringify(this.props.rolesList))
+        
+        }
+        else {
+            window.reload(false)
+        }
+     }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
             await this.setState({ rowData: this.dataBuilder() })
@@ -127,7 +134,7 @@ class Roles extends React.Component {
     async handleSubmit(event) {
     await event.preventDefault();
            if (this.state.forEdit == true) {
-               if(this.state.roleFormData.retire == true) {
+               if(this.state.retire == true) {
                   await this.props.deleteRole(this.state.selectedUUID)
                }
                else {
@@ -135,7 +142,7 @@ class Roles extends React.Component {
                }
                 console.log('uuid ' + this.state.selectedUUID);
                 //alert(JSON.stringify(this.state.roleFormData))
-              
+               await this.setState({retire:false})
                await this.props.getRoles();
             }
             else
@@ -152,10 +159,7 @@ class Roles extends React.Component {
             const { roleFormData } = this.state;
             if(name == 'retire') {
                 this.setState({
-                    roleFormData: {
-                        ...roleFormData,
-                        retire: event.target.checked
-                    }
+                  retire : event.target.checked
                 });
             }
             else {
@@ -338,13 +342,13 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
-                         {/* {
+                          {
                             this.state.forEdit ?
                             <div class="form-check">
                             <input type="checkbox" name="retire" onChange={this.handleChange}/>
                             <label>Retired</label> 
                             </div> : ''
-                        } */}
+                        } 
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
