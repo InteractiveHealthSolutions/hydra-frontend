@@ -312,7 +312,6 @@ class QuestionList extends React.Component {
                 this.setState({ dataTypesToShow: this.state.allDatatypes });
             }
         } else {
-            alert('hi')
             if (e.uuid) {
                 this.setState({optionError : false})
 
@@ -442,7 +441,6 @@ class QuestionList extends React.Component {
         var questionConceptClass = this.state.conceptClass;
         var options = this.state.definedOptions;
         var questionDataType = this.state.dataType;
-        alert(JSON.stringify(this.state.dataType) + JSON.stringify(this.state.conceptClass) + questionWidgetType + this.state.displayText)
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;

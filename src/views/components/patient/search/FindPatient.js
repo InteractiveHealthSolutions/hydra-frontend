@@ -6,7 +6,8 @@ import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import {personAction} from '../../../../state/ducks/person'
+import {personAction} from '../../../../state/ducks/person';
+import {workflowAction} from '../../../../state/ducks/workflow';
 import { findpatientservice } from '../../../../services';
 import { locationAction } from '../../../../state/ducks/location';
 import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
@@ -69,7 +70,9 @@ class FindPatient extends React.Component {
                 location:''
             },
             location : [],
-            identifierFormat : ''
+            identifierFormat : '',
+            workflowModal : false,
+            workflowData : []
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
@@ -79,7 +82,8 @@ class FindPatient extends React.Component {
 
     }
     static propTypes = {
-        patients : PropTypes.array.isRequired
+        patients : PropTypes.array.isRequired,
+        workflows : PropTypes.array.isRequired
     }
     handleChange(event) {
         const { name, value } = event.target;
@@ -92,6 +96,12 @@ class FindPatient extends React.Component {
         });
 
     }
+    openWorkflowModal() {
+        this.setState({workflowModal:true});
+    }
+    closeWorkflowModal() {
+        this.setState({workflowModal:false})
+    }
     async componentDidMount() {
         await this.props.getAllLocation();
         await this.populateDropDown();
@@ -99,6 +109,22 @@ class FindPatient extends React.Component {
         await this.setState({
             identifierFormat: this.props.setting.value
         });
+        await this.props.getAllWorkflows();
+        await this.setState({workflowData:this.createWorkflowCheckBox()})
+        await this.setState({openWorkflowModal:true})
+    }
+    createWorkflowCheckBox() {
+        let workflowsData = [];
+
+        if(this.props.workflows.workflows != undefined) {
+            this.props.workflows.workflows.forEach(element => {
+                workflowsData.push({
+                    "label" : element.name,
+                    "value" : element.uuid
+                })
+            })
+        }
+        return workflowsData;
     }
     async handleSubmit(event) {
       event.preventDefault();
@@ -140,11 +166,14 @@ class FindPatient extends React.Component {
         });
     }
     
-    async componentWillReceiveProps(nexProps) {
-        if (nexProps.patients !== undefined && nexProps.patients.results) {
+    async componentWillReceiveProps(nextProps) {
+        if (nextProps.patients !== undefined && nextProps.patients.results) {
             await this.setState({
-                rowData: this.filterPatient(nexProps.patients.results)
+                rowData: this.filterPatient(nextProps.patients.results)
             })  
+        }
+        if(nextProps.workflows != undefined && nextProps.workflows.workflows) {
+            await this.setState({workflowData:this.createWorkflowCheckBox()})
         }
     }
 
@@ -386,6 +415,14 @@ class FindPatient extends React.Component {
                         </form>
                     </Modal.Body>
                 </Modal>
+                <Modal show={this.state.openWorkflowModal} onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '40px' }}>
+                <Modal.Header>
+                    Select A Workflow
+                </Modal.Header>
+                <Modal.Body>
+                  {JSON.stringify(this.state.workflowData)}
+                </Modal.Body>
+                </Modal>
             </div>
         );
     }
@@ -395,7 +432,8 @@ const mapStateToProps = (state) => ({
     person : state.person.person,
     patients : state.patient.searchPatients,
     locationLists: state.location.locations,
-    setting: state.systemSettings.systemSetting
+    setting: state.systemSettings.systemSetting,
+    workflows: state.workflow.workflows
 })
 const mapDispatchToProps = {
     savePerson : personAction.savePerson,
@@ -403,6 +441,7 @@ const mapDispatchToProps = {
     searchPatientByQuery: patientAction.searchPatient,
     setActivePatient: patientAction.setActivePatient,
     getAllLocation: locationAction.fetchLocations,
-    getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID
+    getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID,
+    getAllWorkflows : workflowAction.getAllWorkflow
 }
 export default connect(mapStateToProps,mapDispatchToProps)(FindPatient);
