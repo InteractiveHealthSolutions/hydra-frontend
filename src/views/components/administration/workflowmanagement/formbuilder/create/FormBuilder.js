@@ -10,10 +10,9 @@ import DraggedFormItem from "../formComponents/widgets/DraggedFormItem";
 import DraggableFormItem from "../formComponents/widgets/DraggableFormItem";
 import DefaultExpendable from "../formComponents/widgets/DefaultExpendable";
 import TextBox from "../formComponents/widgets/TextBox";
-import { displayError, createNotification } from '../../../../../../utilities/helpers/helper'
+import {createNotification } from '../../../../../../utilities/helpers/helper'
 import QuestionListModal from "../questionlist/QuestionListModal";
 import { questionService } from '../../../../../../services/questionservice'
-import Loaders from "../../../../loader/Loader"
 
 class FormBuilder extends React.Component {
 

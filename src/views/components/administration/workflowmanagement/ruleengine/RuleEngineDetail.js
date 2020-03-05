@@ -5,7 +5,8 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import { connect } from 'react-redux';
 import { ruleenginAction } from "../../../../../state/ducks/ruleengine";
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
 
 function RuleEngineDetail(props) {
 
@@ -29,7 +30,7 @@ function RuleEngineDetail(props) {
             headerName: "Target Question", field: "targetQuestion.name", width: 350
         },
 
-       
+
     ]);
 
     const [rowData, setRowData] = useState([]);
@@ -61,6 +62,17 @@ function RuleEngineDetail(props) {
     function nextStep() {
         props.nextStep();
     }
+
+    function onGridReady(params) {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+
     if (props.isloading) return <Loaders />;
     return (
         <div className="row container-fluid service-main-container">
@@ -76,32 +88,13 @@ function RuleEngineDetail(props) {
                     </div>
                 </div>
                 <div className="card-body rm-paadding">
-                    <div className="d-flex justify-content-center">
-                        <div
-                            className="ag-theme-balham"
-                            style={{
-                                height: '421px',
-                                width: '100%'
-                            }}
-                        >
-                            <AgGridReact
-                                columnDefs={columnDefs}
-                                rowData={rowData}
-                                modules={AllCommunityModules}
-                                onRowSelected={onRowSelected}
-                                onCellClicked={event => { onCellClicked(event) }}
-                                enableSorting
-                                enableFilter
-                                rowAnimation
-                                enableRangeSelection={true}
-                                pagination={true}
-                                paginationAutoPageSize={true}
-                                isExternalFilterPresent={true}
-                                enableColResize="true"
-                            >
-                            </AgGridReact>
-                        </div>
-                    </div>
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
                 </div>
             </div>
         </div>

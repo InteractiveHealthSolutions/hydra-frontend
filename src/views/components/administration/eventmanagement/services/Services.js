@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
@@ -10,22 +6,34 @@ import './services.css';
 import { serviceAction } from '../../../../../state/ducks/service'
 import { encounterAction } from '../../../../../state/ducks/encounter'
 import { labtesttypeAction } from '../../../../../state/ducks/labtesttype'
-import Loaders from '../../../loader/Loader';
-import Autocomplete from "react-autocomplete";
+import Loaders from '../../../common/loader/Loader';
 import { createNotification } from '../../../../../utilities/helpers/helper'
 import { systemSettingsAction } from '../../../../../state/ducks/systemsettings'
-//proper validation is required ...
+import AutoSearchComplete from '../../../../ui/inputs/AutoComplete/AutoSearchComplete';
+import { ModalFormTemplate } from '../../../../ui/modal/modalFormTemplate/ModalFormTemplate';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
+
+
 function Services(props) {
 
     const [columnDefs, setColumnDefs] = useState([
         {
-            headerName: "Name", field: "name", editable: true, width: 380,
+            headerName: "Name", field: "name", editable: true, filter: "agTextColumnFilter",
+            icons: {
+                menu: '<i class="fas fa-search"></i>',
+                filter: '<i class="fa fa-long-arrow-alt-up"/>',
+                columns: '<i class="fa fa-snowflake"/>',
+                sortAscending: '<i class="fa fa-sort-alpha-up"/>',
+                sortDescending: '<i class="fa fa-sort-alpha-down"/>'
+            },
+            filter: true
         },
         {
-            headerName: "Service Type", field: "serviceType.name", width: 370
+            headerName: "Service Type", field: "serviceType.name", filter: "agTextColumnFilter"
         },
         {
-            headerName: "Unit Cost", field: "unitCost", width: 300, valueFormatter: currencyFormatter
+            headerName: "Unit Cost", field: "unitCost", valueFormatter: currencyFormatter, filter: "agSetColumnFilter"
         },
         {
             headerName: "Edit",
@@ -33,10 +41,10 @@ function Services(props) {
                 `
                   <button className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , width: 80
+            , filter: "agSetColumnFilter"
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 80
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter"
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -49,16 +57,12 @@ function Services(props) {
     const [serviceTypeName, setServiceTypeName] = useState('');
     const [availableServicesType, setAvailableServicesType] = useState([]);
     const [availableEncounterType, setAvailableEncounterType] = useState([]);
-    const [encounterTypeArray, setencounterTypeArray] = useState([])
     const [arrServiceType, setArrServiceType] = useState([]);
     const [unitCost, setUnitCost] = useState('');
-    const [serviceCategoryName, setServiceCategoryName] = useState('')
-    const [arrServiceCategories, setArrServiceCategories] = useState([])
-    const [autocompleteValue, setAutocompleteValue] = useState("")
-    const [availableLabtestType, setAvailableLabtestType] = useState([])
     const [labtestTypeArray, setLabtestTypeArray] = useState([])
     const [autocompleteLabtestTypeValue, setAutocompleteLabtestTypeValue] = useState("")
     const [activeCurrency, setActiveCurrency] = useState({})
+    const [associatedForm, setAssociatedForm] = useState({})
 
 
     function statusFormatter(params) {
@@ -67,17 +71,16 @@ function Services(props) {
     }
 
     function currencyFormatter(params) {
-        return params.value !== null ? localStorage.getItem('currency')+" " + params.value : ""
+        return params.value !== null ? localStorage.getItem('currency') + " " + params.value : ""
     }
 
 
     useEffect(() => {
-        //console.log("serviceList ::", props.serviceList)
         if (props.serviceList !== undefined) {
             setRowData(props.serviceList.services)
         }
 
-    }, [props.serviceList])
+    }, [props.serviceList, rowData])
 
     useEffect(() => {
 
@@ -89,27 +92,10 @@ function Services(props) {
 
     }, [props.serviceTypeList, availableServicesType])
 
-    useEffect(() => {
-        if (props.encounterTypeList !== undefined) {
-            setAvailableEncounterType(props.encounterTypeList.results);
-            if (availableEncounterType !== undefined)
-                autoCompleteFormat();
-        }
 
-    }, [props.encounterTypeList, availableEncounterType])
-
-    // useEffect(() => {
-    //     if (props.labtesttypeList !== undefined) {
-    //         setAvailableLabtestType(props.labtesttypeList.results);
-    //         if (availableLabtestType !== undefined)
-    //             autoCompleteLabTestTypeFormat();
-    //     }
-
-    // }, [props.labtesttypeList, availableLabtestType])
 
     useEffect(() => {
         if (props.setting !== undefined && props.setting.value !== undefined) {
-            console.log("currencyFormatter insdie", props.setting.value)
             localStorage.setItem("currency", props.setting.value)
             setActiveCurrency(props.setting)
         }
@@ -125,22 +111,21 @@ function Services(props) {
     async function getAllService() {
         await props.getSettingsByUUID("5a74a10b-3eae-43f6-b019-d0823e28ead1");
         await props.fetchServiceType();
-        await props.getAllEncounterType();
-        //await props.getAllLabtestType();
         await props.getAllService();
 
     }
 
     function onRowSelected(event) {
-        console.log('onRowSelected: ' + event.node.data);
+
     };
-
-
 
     function onCellClicked(event) {
         if (event.colDef.headerName == 'Edit') {
+            console.log("serviceType", event.data.serviceType)
             setModalTitle("Edit Service")
             setActionType("EditService")
+            setAssociatedForm(event.data.serviceType)
+            setUnitCost(event.data.unitCost)
             setActiveService(event.data)
             setServiceRetire(event.data.retired)
             setServiceName(event.data.name)
@@ -151,25 +136,51 @@ function Services(props) {
     async function saveServiceType() {
         const assetTypeForm = {
             name: serviceTypeName,
-            encounterType: filterEncounterType(autocompleteValue).value
+            encounterType: associatedForm.uuid
         }
         await props.saveServiceType(assetTypeForm);
         await props.fetchServiceType();
-        createNotification("success", "Saved successfully")
+        await createNotification("success", "Saved successfully")
         setServiceTypeName('')
     }
 
     function resetForm() {
         setServiceName('');
         setServiceTypeName('');
-        setServiceCategoryName('');
     }
 
-    async function saveService(service) {
-        await props.saveService(service);
-        await props.getAllService();
-        createNotification("success", "Saved successfully")
+    async function saveService() {
+        let serviceForm = {};
+        if (actionType === 'EditService') {
+            serviceForm = {
+                name: serviceName,
+                serviceType: activeService.serviceType.uuid,
+                retired: serviceRetire,
+                serviceId: activeService.serviceId,
+                uuid: activeService.uuid,
+                unitCost: unitCost,
+                referenceId: activeService.referenceId
+            }
+        }
+        else if (actionType !== 'ServiceType') {
+            serviceForm = {
+                name: serviceName,
+                retired: false,
+                serviceType: serviceTypeName,
+                unitCost: unitCost,
+                referenceId: filterLabtestType(autocompleteLabtestTypeValue).value
+            }
+        }
+        console.log("serviceForm", serviceForm)
+        await props.saveService(serviceForm);
+        await getAllService();
+        await createNotification("success", "Saved successfully")
+        resetForm()
+    }
+
+    function resetForm() {
         setServiceName('')
+        setUnitCost('')
     }
 
     function openModall() {
@@ -184,12 +195,6 @@ function Services(props) {
         setActionType("ServiceType")
         setOpenModal(true);
     }
-    function openModalServiceCategory() {
-        resetForm();
-        setModalTitle("Create Service Category")
-        setActionType("ServiceCategory")
-        setOpenModal(true)
-    }
 
     function closeModal() {
         setOpenModal(false);
@@ -197,32 +202,8 @@ function Services(props) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        let serviceForm = {};
-        if (actionType === 'EditService') {
-            serviceForm = {
-                name: serviceName,
-                serviceType: activeService.serviceType.uuid,
-                retired: serviceRetire,
-                serviceId: activeService.serviceId,
-                uuid: activeService.uuid,
-                unitCost: activeService.unitCost,
-                referenceId: activeService.referenceId
-            }
-        }
-        else if (actionType !== 'ServiceType') {
-            serviceForm = {
-                name: serviceName,
-                retired: false,
-                serviceType: serviceTypeName,
-                unitCost: unitCost,
-                referenceId: filterLabtestType(autocompleteLabtestTypeValue).value
-            }
-        }
-        (actionType === 'ServiceType') ? saveServiceType() : saveService(serviceForm);
+        (actionType === 'ServiceType') ? saveServiceType() : saveService();
         closeModal();
-    }
-    function filterEncounterType(name) {
-        return encounterTypeArray.filter(data => data.label === name)[0];
     }
     function filterLabtestType(name) {
         return labtestTypeArray.filter(data => data.label === name)[0];
@@ -236,8 +217,6 @@ function Services(props) {
             setServiceTypeName(value)
         } else if (name === 'unitCost') {
             setUnitCost(value)
-        } else if (name === 'serviceCategoryName') {
-            setServiceCategoryName(value)
         } else {
             setServiceName(value);
         }
@@ -245,30 +224,6 @@ function Services(props) {
 
     function handleRetiredChecked(event) {
         setServiceRetire(event.target.checked)
-    }
-    function autoCompleteFormat() {
-        let array = [];
-        availableEncounterType.forEach(element => {
-            array.push({
-                label: element.display,
-                value: element.uuid
-            }
-            );
-        });
-        setencounterTypeArray(array)
-        setLabtestTypeArray(array)
-    }
-
-    function autoCompleteLabTestTypeFormat() {
-        let array = [];
-        availableLabtestType.forEach(element => {
-            array.push({
-                label: element.name,
-                value: element.uuid
-            }
-            );
-        });
-        setLabtestTypeArray(array)
     }
 
     function populateDropDown() {
@@ -282,81 +237,41 @@ function Services(props) {
         setArrServiceType(array)
     }
 
-    function autoInput(props) {
-        return <input
-            {...props}
-            type='text'
-            required
-            className='form-control'
-            style={{ width: '467px' }}
-        />
-    }
-    function renderItem(item, isHighlighted) {
-        return (
-            <div
-                style={{
-                    margin: "5px",
-                    padding: "5px",
-                    background: isHighlighted ? "lightgray" : "white"
-                }}
-            >
-                {item.label}
-            </div>
-        );
+    function onItemSelectedProp(value) {
+        setAssociatedForm(value)
     }
 
-
-
-    function onChange(e) {
-        setAutocompleteValue(e.target.value)
+    function onGridReady(params) {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
     }
-
 
     if (props.isloading) return <Loaders />;
     return (
         <div className="row container-fluid service-main-container">
-            <div className="card fp-header">
-                <div className="card-header">
-                    <div className="row">
-                        <div className="col-md-6 col-sm-4">
-                            <span className="text-muted">Services</span>
-                        </div>
-                        <div className="col-md-6 col-sm-2">
-                            <button className="service-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
-                            <button className="service-btn btn btn-primary s-space" onClick={() => openModalServiceType()}><i class="fas fa-plus"></i> Create Type</button>
-                            {/* <button className="service-btn btn btn-primary s-space" onClick={() => openModalServiceCategory()}><i class="fas fa-plus"></i> Create Category</button> */}
-                        </div>
-                    </div>
-                </div>
+            <CardTemplate
+                title="Services"
+                action={
+                    <>
+                        <button className="service-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
+                        <button className="service-btn btn btn-primary s-space" onClick={() => openModalServiceType()}><i class="fas fa-plus"></i> Create Type</button>
+                    </>
+                }
+            >
                 <div className="card-body rm-paadding">
-                    <div className="d-flex justify-content-center">
-                        <div
-                            className="ag-theme-balham"
-                            style={{
-                                height: '421px',
-                                width: '100%'
-                            }}
-                        >
-                            <AgGridReact
-                                columnDefs={columnDefs}
-                                rowData={rowData}
-                                modules={AllCommunityModules}
-                                onRowSelected={onRowSelected}
-                                onCellClicked={event => { onCellClicked(event) }}
-                                enableSorting
-                                enableFilter
-                                rowAnimation
-                                enableRangeSelection={true}
-                                pagination={true}
-                                paginationAutoPageSize={true}
-                                isExternalFilterPresent={true}
-                                enableColResize="true"
-                            >
-                            </AgGridReact>
-                        </div>
-                    </div>
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
                 </div>
-            </div>
+            </CardTemplate>
 
             <Modal
                 show={openModal}
@@ -385,23 +300,14 @@ function Services(props) {
                                         />
                                     </div>
                                     <div className='form-group'>
-                                        <label htmlFor='serviceTypeName' className="required">Associated Form</label>
-                                        <Autocomplete
-                                            getItemValue={(item) => item.label}
-                                            items={encounterTypeArray}
-                                            renderInput={autoInput}
-                                            renderItem={(item, isHighlighted) =>
-                                                <div style={{
-                                                    background: isHighlighted ? 'rgb(66, 88, 208)' : 'white',
-                                                    color: isHighlighted ? 'white' : 'black'
-                                                    , padding: '10px'
-                                                }}>
-                                                    {item.label}
-                                                </div>
-                                            }
-                                            value={autocompleteValue}
-                                            onChange={onChange}
-                                            onSelect={(val) => { setAutocompleteValue(val) }}
+                                        <AutoSearchComplete
+                                            controlId="associatedForm"
+                                            title="Associated Form"
+                                            onItemSelectedProp={onItemSelectedProp}
+                                            parentType="associatedForm"
+                                            name="associatedForm"
+                                            searchFor="encounterType"
+                                            showAutocomplete='true'
                                         />
                                     </div>
                                 </>
@@ -443,41 +349,59 @@ function Services(props) {
                                                 required
                                             />
                                         </div>
-                                        <div className='form-group'>
-                                            <label htmlFor='labtesttype' className="required">Associated Test</label>
-                                            <Autocomplete
-                                                getItemValue={(item) => item.label}
-                                                items={labtestTypeArray}
-                                                renderInput={autoInput}
-                                                renderItem={(item, isHighlighted) =>
-                                                    <div style={{
-                                                        background: isHighlighted ? 'rgb(66, 88, 208)' : 'white',
-                                                        color: isHighlighted ? 'white' : 'black'
-                                                        , padding: '10px'
-                                                    }}>
-                                                        {item.label}
-                                                    </div>
-                                                }
-                                                value={autocompleteLabtestTypeValue}
-                                                onChange={(e) => { }}
-                                                onSelect={(val) => { setAutocompleteLabtestTypeValue(val) }}
+                                        {/* <div className='form-group' >
+                                            <AutoSearchComplete
+                                                controlId="associatedTest"
+                                                title="Associated Test"
+                                                onItemSelectedProp={onItemSelectedProp}
+                                                parentType="associatedTest"
+                                                name="associatedTest"
+                                                searchFor="labTestType"
+                                                showAutocomplete='true'
                                             />
-                                        </div>
+                                        </div> */}
 
                                     </>
-                                    : <div className='form-group'>
-                                        <label htmlFor='serviceName' className="required">Name</label>
-                                        <input
-                                            type='text'
-                                            className='form-control'
-                                            autoComplete='off'
-                                            pattern='^[a-zA-Z\s]*$'
-                                            name='serviceName'
-                                            value={serviceName}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
+                                    : <>
+                                        <div className='form-group'>
+                                            <label htmlFor='serviceName' className="required">Name</label>
+                                            <input
+                                                type='text'
+                                                className='form-control'
+                                                autoComplete='off'
+                                                pattern='^[a-zA-Z\s]*$'
+                                                name='serviceName'
+                                                value={serviceName}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                        <div className='form-group'>
+                                            <label htmlFor='serviceType' className="required">Service Type</label>
+                                            <input
+                                                disabled
+                                                type='text'
+                                                className='form-control'
+                                                autoComplete='off'
+                                                pattern='^[0-9\s]*$'
+                                                name='serviceType'
+                                                value={associatedForm.name}
+                                            />
+                                        </div>
+                                        <div className='form-group'>
+                                            <label htmlFor='unitCost' className="required">Unit Cost</label>
+                                            <input
+                                                type='number'
+                                                className='form-control'
+                                                autoComplete='off'
+                                                pattern='^[0-9\s]*$'
+                                                name='unitCost'
+                                                value={unitCost}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </>
                         }
 
                     </Modal.Body>
@@ -504,7 +428,6 @@ const mapStateToProps = state => ({
     serviceList: state.service.services,
     serviceTypeList: state.service.serviceType,
     isloading: state.service.loading,
-    encounterTypeList: state.encounter.encounterType,
     labtesttypeList: state.labtesttype.labtestType,
     setting: state.systemSettings.systemSetting
 });
@@ -515,7 +438,6 @@ const mapDispatchToProps = {
     deleteService: serviceAction.deleteService,
     saveServiceType: serviceAction.saveServiceType,
     fetchServiceType: serviceAction.fetchServiceType,
-    getAllEncounterType: encounterAction.fetchEncounterType,
     getAllLabtestType: labtesttypeAction.fetchLabTestType,
     getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID,
 };
