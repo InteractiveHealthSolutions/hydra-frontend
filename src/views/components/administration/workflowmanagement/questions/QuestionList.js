@@ -272,8 +272,7 @@ class QuestionList extends React.Component {
 
             this.setState({ definedOptions: [] });
             if (e.uuid) {
-                alert('yes')
-                this.setState({
+               this.setState({
                     hideIsOption: true,
                     showWidgetType: true,
                     showDataType: true,
@@ -281,8 +280,7 @@ class QuestionList extends React.Component {
                     variableNameReadOnly: "true"
                 });
             } else {
-//alert('no')
-                 this.setState({
+                this.setState({
                      question: e.value.toLowerCase().replace(/ /g, "_"),
                      hideIsOption: false,
                      showWidgetType: false,
@@ -316,6 +314,8 @@ class QuestionList extends React.Component {
         } else {
             alert('hi')
             if (e.uuid) {
+                this.setState({optionError : false})
+
                 var array = this.state.definedOptions;
                 var existingObj = array.filter(data => data.controlId == e.controlId);
                 var index = array.indexOf(existingObj[0]);
@@ -442,13 +442,13 @@ class QuestionList extends React.Component {
         var questionConceptClass = this.state.conceptClass;
         var options = this.state.definedOptions;
         var questionDataType = this.state.dataType;
-        alert(JSON.stringify(this.state.dataType))
+        alert(JSON.stringify(this.state.dataType) + JSON.stringify(this.state.conceptClass) + questionWidgetType + this.state.displayText)
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;
         }
         var displayText = this.state.displayText;
-        if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConcept == 'Question' ) {
+        if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConceptClass.value == 'Question' ) {
             this.mandatoryFieldError();
             return;
         }
@@ -653,6 +653,7 @@ class QuestionList extends React.Component {
         else {
 
             if (e.uuid) {
+                this.setState({optionError:false})
                 var array = this.state.definedOptions;
                 var existingObj = array.filter(data => data.controlId == e.controlId);
                 var index = array.indexOf(existingObj[0]);
@@ -733,8 +734,10 @@ class QuestionList extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Modal show={this.state.openQuestionModal} onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
-                    <Modal.Body>
+                <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
+                    <Modal.Header closeButton>
+                    </Modal.Header>
+                    <Modal.Body >
                         <AppForm title="Create New Question">
                             <AutoSearchComplete
                                 controlId="conceptName"

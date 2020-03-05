@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import { PatientActions } from '../../../../store/actions';
 import {personAction} from '../../../../state/ducks/person'
 import { findpatientservice } from '../../../../services';
 import { locationAction } from '../../../../state/ducks/location';
@@ -78,6 +78,9 @@ class FindPatient extends React.Component {
         this.handleDateChangeRaw = this.handleDateChangeRaw.bind(this);
 
     }
+    static propTypes = {
+        patients : PropTypes.array.isRequired
+    }
     handleChange(event) {
         const { name, value } = event.target;
         const { patient } = this.state;
@@ -138,35 +141,41 @@ class FindPatient extends React.Component {
     }
     
     async componentWillReceiveProps(nexProps) {
-        if (nexProps.searchPatientList !== undefined && nexProps.searchPatientList.results) {
+        if (nexProps.patients !== undefined && nexProps.patients.results) {
             await this.setState({
-                rowData: this.filterPatient(nexProps.searchPatientList.results)
+                rowData: this.filterPatient(nexProps.patients.results)
             })  
         }
     }
 
     filterPatient(patientData) {
         let filteredPatient = [];
-        patientData.forEach(element => {
-            filteredPatient.push({
-                "identifier": element.identifiers[0].identifier,
-                "given": element.person.preferredName.givenName,
-                "middle": element.person.preferredName.middleName,
-                "familyname": element.person.preferredName.familyName,
-                "age": element.person.age,
-                "gender": element.person.gender,
-                "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
-                "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
-                "uuid": element.uuid
+        if(patientData != undefined) {
+            patientData.forEach(element => {
+                filteredPatient.push({
+                    "identifier": element.identifiers[0].identifier,
+                    "given": element.person.preferredName.givenName,
+                    "middle": element.person.preferredName.middleName,
+                    "familyname": element.person.preferredName.familyName,
+                    "age": element.person.age,
+                    "gender": element.person.gender,
+                    "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
+                    "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
+                    "uuid": element.uuid
+                });
             });
-        });
-        return filteredPatient;
+            return filteredPatient;
+        }
+      
     }
 
-    _handleKeyDown = (e) => {
+    async handleKeyDown(e){
         e.preventDefault();
         if (e.key === 'Enter') {
-            this.props.searchPatientByQuery(this.state.searchQuery);
+            await this.props.searchPatientByQuery(this.state.searchQuery);
+            await console.log('hiiii '+JSON.stringify(this.props.patients))
+
+            await this.setState({rowData:this.filterPatient(this.props.patients.results)})
         }
     }
     openAddPatientModal() {
@@ -185,9 +194,12 @@ class FindPatient extends React.Component {
     //     this.setState({ [name]: value }, () => console.log(this.state));
     // };
 
-    searchPatient = e => {
+    async searchPatient(e){
         e.preventDefault();
-        this.props.searchPatientByQuery(this.state.searchQuery);
+        await this.props.searchPatientByQuery(this.state.searchQuery);
+        await console.log('hiiii '+JSON.stringify(this.props.patients))
+
+        await this.setState({rowData:this.filterPatient(this.props.patients.results)})
     }
     populateDropDown() {
         let array = [];
@@ -380,8 +392,8 @@ class FindPatient extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    Patient : state.patientreducer,
     person : state.person.person,
+    patients : state.patient.searchPatients,
     locationLists: state.location.locations,
     setting: state.systemSettings.systemSetting
 })

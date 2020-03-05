@@ -44,7 +44,7 @@ const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload 
 
 export const searchPatient = (query) => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "/patient?v=full&q=" + query)
+  fetch(GET, "/patient?v=full&q=" + query+"&matchSimiliar")
     .then(res => dispatch(searchPatientAction(res))).catch(displayError)
 }
 const searchPatientAction = (payload) => ({ type: types.SEARCH_PATIENT, payload })
