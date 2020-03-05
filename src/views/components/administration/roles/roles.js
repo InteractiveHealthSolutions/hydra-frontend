@@ -342,13 +342,13 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
-                          {
+                          {/* {
                             this.state.forEdit ?
                             <div class="form-check">
                             <input type="checkbox" name="retire" onChange={this.handleChange}/>
                             <label>Retired</label> 
                             </div> : ''
-                        } 
+                        }  */}
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
