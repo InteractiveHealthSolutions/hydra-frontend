@@ -11,7 +11,7 @@ import Card from '@material-ui/core/Card';
 import { componentAction } from '../../../state/ducks/stages'
 import { connect } from 'react-redux';
 import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
-import Loaders from "../loader/Loader"
+import Loaders from "../common/loader/Loader"
 
 class Component extends React.Component {
     constructor(props) {

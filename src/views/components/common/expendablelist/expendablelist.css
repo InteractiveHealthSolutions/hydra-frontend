@@ -1,0 +1,13 @@
+.select_list{
+    width: 100% !important;
+}
+.ep-expansion {
+    width: 100% !important;
+  }
+  .expansion{
+      background-color: grey !important;
+  }
+  .expansion_margin {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }

@@ -7,17 +7,17 @@ import { MemoryRouter, Switch, Route, Link } from 'react-router-dom';
 import Engine from './workflowmanagement/ruleengine/Engine'
 import { history } from '../../../history'
 import LocationManagement from './location/home/LocationManagement';
-import SignUp from './user/signup/SignUp';
 import Assets from './eventmanagement/assets/Assets';
 import Services from './eventmanagement/services/Services';
 import Workforce from './eventmanagement/workforce/Workforce';
-import Questions from './workflowmanagement/questions/Question';
 import QuestionList from './workflowmanagement/questions/QuestionList';
 import './administrationhome.css'
 import Roles from './roles/roles'
 import SystemSettings from './systemsettings/systemsettings'
 import FormHome from './workflowmanagement/formbuilder/FormHome';
 import UserList from './user/userlist'
+import { RequirePrivilege } from '../../../utilities/helpers/PrivilegeValidator'
+
 
 import Home from './Home';
 const Main = styled.main`
@@ -127,77 +127,87 @@ export default class AdministrationHome extends Component {
                                 </NavText>
                             </NavItem>
 
-                         
+
                             {/* workflowmanagement */}
-                            <NavItem eventKey="/workflow" onClick={this.toggleSidebar}>
-                                <NavIcon>
-                                    <i class="fas fa-sitemap" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
-                                </NavIcon>
-                                <NavText>
-                                    Workflow Management
-                                </NavText>
-                                <NavItem eventKey="/questions" onClick={this.toggleSidebar}>
-                                    <NavText >
-                                        <Link className={expanded ? "formLink" : ""} to="/questions" >
-                                            <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Question Bank
-                                        </Link>
-                                    </NavText>
-                                </NavItem>
-                                {/* formbuilder */}
-                                <NavItem eventKey="/formbuilder" onClick={this.toggleSidebar}>
-                                    <NavText>
-                                        <Link className={expanded ? "formLink" : ""} to="/formbuilder" >
-                                            <i class="fas fa-cubes" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Form Builder
-                                        </Link>
-                                    </NavText>
-                                </NavItem>
-                                {/* //ruleEngine */}
-                                <NavItem eventKey="/ruleEngine" onClick={this.toggleSidebar}>
-                                    <NavText>
-                                        <Link className={expanded ? "formLink" : ""} to="/ruleEngine" >
-                                            <i class="fas fa-ruler-combined" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Rule Engine
-                                        </Link>
-                                    </NavText>
-                                </NavItem>
-                            </NavItem>
+                            {
+                                (RequirePrivilege("/workflow/metadata")) ?
+                                    <NavItem eventKey="/workflow" onClick={this.toggleSidebar}>
+                                        <NavIcon>
+                                            <i class="fas fa-sitemap" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
+                                        </NavIcon>
+                                        <NavText>
+                                            Workflow Management
+                                       </NavText>
+                                        <NavItem eventKey="/questions" onClick={this.toggleSidebar}>
+                                            <NavText >
+                                                <Link className={expanded ? "formLink" : ""} to="/questions" >
+                                                    <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Question Bank
+                                      </Link>
+                                            </NavText>
+                                        </NavItem>
+                                        {/* formbuilder */}
+                                        <NavItem eventKey="/formbuilder" onClick={this.toggleSidebar}>
+                                            <NavText>
+                                                <Link className={expanded ? "formLink" : ""} to="/formbuilder" >
+                                                    <i class="fas fa-cubes" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Form Builder
+                                      </Link>
+                                            </NavText>
+                                        </NavItem>
+                                        {/* //ruleEngine */}
+                                        <NavItem eventKey="/ruleEngine" onClick={this.toggleSidebar}>
+                                            <NavText>
+                                                <Link className={expanded ? "formLink" : ""} to="/ruleEngine" >
+                                                    <i class="fas fa-ruler-combined" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Rule Engine
+                                      </Link>
+                                            </NavText>
+                                        </NavItem>
+                                    </NavItem>
+                                    : ""
+                            }
                             {/* end  */}
-                            <NavItem eventKey="/event" onClick={this.toggleSidebar}>
-                                <NavIcon>
-                                    <i class="fas fa-calendar-alt" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
-                                </NavIcon>
-                                <NavText>
-                                    Event Management
-                                </NavText>
-                                <NavItem eventKey="/services" onClick={this.toggleSidebar}>
 
-                                    <NavText>
-                                        <Link className={expanded ? "formLink" : ""} to="/services">
-                                            <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Services
-                                        </Link>
-                                    </NavText>
-                                </NavItem>
-                                <NavItem eventKey="/assets" onClick={this.toggleSidebar}>
+                            {
+                                (RequirePrivilege("/event/metadata")) ?
+                                    <NavItem eventKey="/event" onClick={this.toggleSidebar}>
+                                        <NavIcon>
+                                            <i class="fas fa-calendar-alt" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
+                                        </NavIcon>
+                                        <NavText>
+                                            Event Management
+                                      </NavText>
+                                        <NavItem eventKey="/services" onClick={this.toggleSidebar}>
 
-                                    <NavText>
-                                        <Link className={expanded ? "formLink" : ""} to="/assets">
-                                            <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Assets
+                                            <NavText>
+                                                <Link className={expanded ? "formLink" : ""} to="/services">
+                                                    <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Services
                                         </Link>
-                                    </NavText>
-                                </NavItem>
-                                <NavItem eventKey="/workforce" onClick={this.toggleSidebar}>
-                                    <NavText >
-                                        <Link className={expanded ? "formLink" : ""} to="/workforce" >
-                                            <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
-                                            Personnel
+                                            </NavText>
+                                        </NavItem>
+                                        <NavItem eventKey="/assets" onClick={this.toggleSidebar}>
+
+                                            <NavText>
+                                                <Link className={expanded ? "formLink" : ""} to="/assets">
+                                                    <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Assets
                                         </Link>
-                                    </NavText>
-                                </NavItem>
-                            </NavItem>
+                                            </NavText>
+                                        </NavItem>
+                                        <NavItem eventKey="/workforce" onClick={this.toggleSidebar}>
+                                            <NavText >
+                                                <Link className={expanded ? "formLink" : ""} to="/workforce" >
+                                                    <i className="fas fa-calendar-alt" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                    Personnel
+                                        </Link>
+                                            </NavText>
+                                        </NavItem>
+                                    </NavItem>
+                                    : ""
+
+                            }
 
                             <NavItem eventKey="back">
                                 <NavIcon>

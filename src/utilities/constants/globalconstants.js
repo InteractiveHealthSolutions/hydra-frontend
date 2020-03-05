@@ -80,3 +80,19 @@ export const FUNCTION = "Function";
 export const NULLABLE = "Nullable";
 export const OPERATOR = "Operator";
 export const OPENVALUE = "OpenValue";
+
+//privilege 
+
+export const ACCESS_ADMINISTRATION = "Access Administration";
+export const MANAGE_EVENTS = "Manage Events";
+export const MANAGE_EVENTS_METADATA = "Manage Events Metadata";
+export const MANAGE_WORKFLOWS = "Manage Workflows";
+export const MANAGE_WORKFLOWS_METADATA = "Manage Workflows Metadata";
+export const VIEW_DASHBOARD = "View Dashboard";
+export const VIEW_REPORTS = "View Reports";
+
+// varaible
+export const SERVICE_TITLE = "Services";
+export const ASSETS_TITLE = "Assets";
+
+

@@ -1,0 +1,18 @@
+.ag-theme-blue .ag-root {
+    border: 0px !important;
+}
+.ag-theme-material .ag-header {
+    color: rgb(0, 0, 0);
+    font-size: small;
+    font-weight: bold;
+}
+
+.ag-theme-blue .ag-header {
+    color: rgb(0, 0, 0);
+    font-size: small;
+    font-weight: bold;
+    background-color: white;
+}
+.ag-center-cols-viewport {
+    overflow-x: hidden;
+}
