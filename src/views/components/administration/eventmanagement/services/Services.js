@@ -159,7 +159,7 @@ function Services(props) {
                 serviceId: activeService.serviceId,
                 uuid: activeService.uuid,
                 unitCost: unitCost,
-                referenceId: activeService.referenceId
+                // referenceId: activeService.referenceId
             }
         }
         else if (actionType !== 'ServiceType') {
@@ -168,7 +168,7 @@ function Services(props) {
                 retired: false,
                 serviceType: serviceTypeName,
                 unitCost: unitCost,
-                referenceId: filterLabtestType(autocompleteLabtestTypeValue).value
+                // referenceId: filterLabtestType(autocompleteLabtestTypeValue).value
             }
         }
         console.log("serviceForm", serviceForm)
