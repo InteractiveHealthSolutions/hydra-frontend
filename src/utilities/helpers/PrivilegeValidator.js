@@ -38,22 +38,24 @@ const filterPrivilege = (privilegeName) => {
 }
 
 export const RequirePrivilege = (props) => {
-    if (props.privilegeName === '/event/metadata') {
+    console.log("RequirePrivilege", props)
+
+    if (props === '/event/metadata') {
         return filterPrivilege(MANAGE_EVENTS_METADATA)
     }
-    else if (props.privilegeName === '/workflow/metadata') {
+    else if (props === '/workflow/metadata') {
         return filterPrivilege(MANAGE_WORKFLOWS_METADATA)
     }
-    else if (props.privilegeName === '/administration') {
+    else if (props === '/administration') {
         return filterPrivilege(ACCESS_ADMINISTRATION)
     }
-    else if (props.privilegeName === '/events') {
+    else if (props === '/events') {
         return filterPrivilege(MANAGE_EVENTS)
     }
-    else if (props.privilegeName === '/reports') {
+    else if (props === '/reports') {
         return filterPrivilege(VIEW_REPORTS)
     }
-    else if (props.privilegeName === '/workflow') {
+    else if (props === '/workflow') {
         return filterPrivilege(MANAGE_WORKFLOWS)
     }
 }
