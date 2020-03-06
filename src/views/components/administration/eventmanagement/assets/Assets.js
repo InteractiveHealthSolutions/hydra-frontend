@@ -217,13 +217,13 @@ function Assets(props) {
     function onCellClicked(event) {
 
         if (event.colDef.headerName == 'Edit') {
-            console.log("assetType", event.data.assetType.name)
+            console.log("assetType", event.data.assetType? event.data.assetType.name : "")
             setModalTitle("Edit Asset")
             setActionType('EditAsset')
             setActiveAssets(event.data)
             setAssetRetire(event.data.retired)
             setAssetName(event.data.name)
-            setAssetTypeName(event.data.assetType.name)
+            setAssetTypeName(event.data.assetType?event.data.assetType.name:"")
             setCapitalValue(event.data.capitalValue)
             setReferenceId(event.data.referenceId)
             setFixedAsset(event.data.fixedAsset)
@@ -323,8 +323,8 @@ function Assets(props) {
                         <button className="service-btn btn btn-primary s-space" onClick={() => openModalType()}><i class="fas fa-plus"></i> Create Type</button>
                         <button className="service-btn btn btn-primary s-space" onClick={() => openModalCategory()}><i class="fas fa-plus"></i> Create Category</button>
                     </>
-                  }
-             >
+                }
+            >
                 <div className="card-body rm-paadding">
                     <AgGrid
                         onGridReady={onGridReady}
