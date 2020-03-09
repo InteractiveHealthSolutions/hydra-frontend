@@ -346,6 +346,7 @@ function Services(props) {
                                                 name='unitCost'
                                                 value={unitCost}
                                                 onChange={handleChange}
+                                                min ="0"
                                                 required
                                             />
                                         </div>
@@ -398,6 +399,7 @@ function Services(props) {
                                                 name='unitCost'
                                                 value={unitCost}
                                                 onChange={handleChange}
+                                                min="0"
                                                 required
                                             />
                                         </div>

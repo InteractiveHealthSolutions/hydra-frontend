@@ -84,12 +84,12 @@ function Workforce(props) {
 
     useEffect(() => {
         if (props.setting !== undefined && props.setting.value !== undefined) {
-            console.log("currencyFormatter insdie", props.setting.value)
+            console.log("currencyFormatter insdie", props.setting)
             localStorage.setItem("currency", props.setting.value)
             setActiveCurrency(props.setting)
         }
 
-    }, [props.setting, currencyFormatter])
+    }, [props.setting])
 
 
     useEffect(() => {
@@ -97,6 +97,7 @@ function Workforce(props) {
     }, [])
 
     async function getWorkforce() {
+        await props.getSettingsByUUID("5a74a10b-3eae-43f6-b019-d0823e28ead1");
         await props.getAllworkforce();
         await props.getSalaryType();
     }
@@ -222,7 +223,7 @@ function Workforce(props) {
                 action={
                     <button className="workforce-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
                 }
-             >
+            >
                 <div className="card-body rm-paadding">
                     <AgGrid
                         onGridReady={onGridReady}
@@ -308,6 +309,7 @@ function Workforce(props) {
                                 name='salaryValue'
                                 value={salaryValue}
                                 onChange={handleChange}
+                                min="0"
                                 required
                             />
                         </div>
