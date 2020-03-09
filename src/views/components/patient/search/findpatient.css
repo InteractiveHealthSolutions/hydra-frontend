@@ -27,6 +27,17 @@
       float: left;
      
   }
+  .workFlowButton {
+    border: none;
+  color: black;
+ text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  margin-left: -100px;
+  border-radius: 50px;
+  width: 200px;
+  }
 
  .search-btn{
   margin-left: 45px;

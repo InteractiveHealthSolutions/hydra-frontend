@@ -7,13 +7,15 @@ import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import { userAction } from '../../../../state/ducks/user'
 import { rolesAction } from '../../../../state/ducks/roles';
-import { registrationJSON , editJSON} from '../../../../utilities/helpers/JSONcreator';
-import { createNotification } from '../../../../utilities/helpers/helper'
+import { workforceAction } from '../../../../state/ducks/workforce'
+import { registrationJSON , editJSON , providerJSON} from '../../../../utilities/helpers/JSONcreator';
+import { createNotification } from '../../../../utilities/helpers/helper';
+import { providerAction } from '../../../../state/ducks/provider';
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
 import Loaders from '../../loader/Loader';
-import moment from 'moment'
+import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
@@ -32,19 +34,22 @@ class UserList extends React.Component {
                     headerName: 'System Id', field: 'systemId', width: '150'
                 },
                 {
-                    headerName: 'Username', field: 'display', width: '200'
+                    headerName: 'Username', field: 'display', width: '250'
                 },
                 {
-                    headerName: 'Name', field: 'person.display', width: '400'
+                    headerName: 'Name', field: 'person.display', width: '350'
                 },
                 {
-                    headerName: 'Gender', field: 'person.gender', width: '220'
+                    headerName: 'Gender', field: 'person.gender', width: '150'
                 },
                 {
                     headerName: 'Birthdate', field: 'person.birthdate', width: '450', hide: true
                 },
                 {
-                    headerName: "Edit", field: "edit", width: 200,
+                     headerName: 'Retire Status', field: 'retired', width: '150'
+                },
+                {
+                    headerName: "Edit", field: "edit", width: '150',
                     cellRenderer: 'buttonRenderer'
                 }
             ],
@@ -64,7 +69,8 @@ class UserList extends React.Component {
                 forcepwdchange: '',
                 dateofbirth: '',
                 role: [],
-                cnic: ''
+                cnic: '',
+                retire:false
             },
             submitted: false,
             invalidPassword: false,
@@ -82,6 +88,7 @@ class UserList extends React.Component {
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.handleRoleChange = this.handleRoleChange.bind(this);
         this.openAddUserModal = this.openAddUserModal.bind(this);
+        this.onCellClicked = this.onCellClicked.bind(this)
 
     }
 
@@ -99,13 +106,14 @@ class UserList extends React.Component {
         await console.log('rolesss' + JSON.stringify(this.state.allRoles))
 
     }
-    componentWillReceiveProps(newProps) {
+   async componentWillReceiveProps(newProps) {
         if (newProps.users != undefined) {
-            this.setState({ rowData: newProps.users.results })
+          await  this.setState({ rowData: newProps.users.results })
         }
         if(newProps.rolesList != undefined) {
-            this.roleHelper();
-           
+           await this.roleHelper();
+            await console.log('rolesss' + JSON.stringify(this.state.allRoles))
+
         }
    
     }
@@ -141,10 +149,14 @@ class UserList extends React.Component {
             roles: role
         });
     }
-    onCellClicked = (event) => {
-        if (event.column.colId == 'edit') {
+    async onCellClicked (event) {
+        if (event.column.colId == 'edit' && !event.data.retired) {
+           // console.log('data date'+JSON.stringify(event.data.person.birthdate));
             const { user } = this.state.user;
-            this.setState({
+            await this.setExistingRoles(event.data.roles);
+            await console.log('hii'+JSON.stringify(this.state.roles))
+            await this.props.getProviderByUser(event.data.uuid);
+            await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
                 activeuserUUID: event.data.uuid,
@@ -153,17 +165,34 @@ class UserList extends React.Component {
                     givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
                     username: event.data.display,
                     gender: event.data.person.gender,
-                    provider: '',
+                    provider: this.props.provider.results.length != 0?'yes':'no',
                     password: '',
                     confirmpassword: '',
                     forcepwdchange: '',
                     dateofbirth: event.data.person.birthdate != null? moment(event.data.person.birthdate).toDate():'',
                     role: [],
                     defaultRole:this.getDefaultRoles(event.data.roles),
-                    cnic: ''
+                    cnic: '',
+                    isProvider:this.props.provider.results.length != 0?true:false,
+                    currentProvider:this.props.provider.results.length != 0?this.props.provider.results[0]:'',
+                    retire:false
                 }
             })
         }
+        if(event.column.colId == "edit" && event.data.retired) {
+            createNotification('error','Can not edit a retired user');
+        }
+    }
+    setExistingRoles(roles) {
+      //  var existingRoles = [];
+        if (roles) {
+            roles.map(data => {
+                
+                this.state.roles.push({
+                    "value":data.uuid})
+            });
+        }
+        //return existingRoles;
     }
     onKeyDown(e) {
 
@@ -209,6 +238,25 @@ class UserList extends React.Component {
             });
 
         }
+        else if(event.target.name === 'retire') {
+            const { user } = this.state;
+            this.setState({
+                user: {
+                    ...user,
+                    retire : event.target.checked
+                }
+            });
+        }
+        else if(event.target.name=='provider' && this.state.forEdit) {
+            const { name, value } = event.target;
+            const { user } = this.state;
+            this.setState({
+                user: {
+                    ...user,
+                    [name]: value
+                }
+            });
+        }
         else {
             const { name, value } = event.target;
             const { user } = this.state;
@@ -225,49 +273,87 @@ class UserList extends React.Component {
         this.setState({ quickFilterText: event.target.value });
     };
     closeModal() {
-        this.setState({ openAddUserModal: false })
+        this.setState({ openAddUserModal: false , noRoleSelected:false })
     }
     async handleSubmit(e) {
         e.preventDefault();
         const { user } = this.state;
-        if (user.password !== user.confirmpassword) {
-            this.setState({
-                invalidPassword: true
-            });
-        }
-        else if (this.state.roles.length === 0) {
-            this.setState({
-                noRoleSelected: true
-            });
-        }
-        else {
+        if(user.retire == true) {
+            await this.props.deleteUser(this.state.activeuserUUID);
+            
+            await this.props.fetchParticipantByUser(this.state.activeuserUUID);
 
-            this.state.roles.forEach(element => {
-                this.state.user.role.push(element.value);
-            });
-            this.setState({
-                submitted: true
-            });
-            if (!this.state.forEdit) {
-                await this.props.saveUser(registrationJSON(user));
-
-            }
-            else {
-                if(user.password=='') {
-                    await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
+            if(this.props.workforce != undefined) {
+                if(this.props.workforce.results != null) {
+                    var data = {
+                        user : this.state.activeuserUUID,
+                        retired : true,
+                        participantId : this.props.workforce.results[0].uuid
+                    }
+                await this.props.saveworkforce(data);
+                await console.log('participant '+JSON.stringify(this.props.workforce));
+                await console.log('participant '+JSON.stringify(data))
                 }
-                else {
-                    await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
-                }
-                await this.setState({ forEdit: false });
+                
             }
-            this.props.userError ? createNotification('error', 'User Not Created') :
-                createNotification('success', 'User Registered Successfully');
+            if(user.provider == 'yes') {
+               this.props.deleteProvider(user.currentProvider.uuid);
+            }
             await this.closeModal();
             await this.props.getAllUsers();
         }
-
-
+        else {
+            if (user.password !== user.confirmpassword) {
+                this.setState({
+                    invalidPassword: true
+                });
+            }
+            else if (this.state.roles.length === 0) {
+                this.setState({
+                    noRoleSelected: true
+                });
+            }
+            else {
+                
+                await this.state.roles.forEach(element => {
+                    this.state.user.role.push(element.value);
+                });
+                await this.setState({
+                    submitted: true
+                });
+                if (!this.state.forEdit) {
+                    await this.props.saveUser(registrationJSON(this.state.user));
+                    if(user.provider == 'yes' && this.props.createdUser != undefined) {
+                        await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                    }
+                }
+                else {
+                    if(user.password=='') {
+                        await console.log('submitt '+JSON.stringify(user))
+                        await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
+                        
+                    }
+                    else {
+                        await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
+                    }
+                    if(user.isProvider && user.provider == 'no') {
+                        this.props.deleteProvider(user.currentProvider.uuid);
+                     }
+                     if(!user.isProvider && user.provider == 'yes') {
+                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                     }
+                   
+                    await this.setState({ forEdit: false ,retire:false});
+                }
+                this.props.userError ? createNotification('error', 'User Not Created') :
+                    createNotification('success', 'User Registered Successfully');
+                await this.closeModal();
+                await this.props.getAllUsers();
+            }
+    
+    
+        }
+        
     }
     openAddUserModal() {
         this.setState({
@@ -343,15 +429,15 @@ class UserList extends React.Component {
                                     paginationPageSize="12"
                                     isExternalFilterPresent={true}
                                     enableColResize="true"
-                                    onCellClicked={event => { this.onCellClicked(event) }}
+                                    onCellClicked={this.onCellClicked}
                                 >
                                 </AgGridReact>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Modal show={this.state.openAddUserModal} onHide={() => this.setState({ openAddUserModal: false })} style={{ marginTop: '40px' }}>
-                    <Modal.Header>
+                <Modal show={this.state.openAddUserModal} backdrop="static" onHide={() => this.setState({ openAddUserModal: false })} style={{ marginTop: '40px' }}>
+                    <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} User</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -398,7 +484,7 @@ class UserList extends React.Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios1" value="yes" onChange={this.handleChange} required />
+                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios1" checked={user.provider=='yes'}value="yes" onChange={this.handleChange} required  />
                                                 <label className="form-check-label" htmlFor="gridRadios3" >
                                                     Yes
                                     </label>
@@ -406,7 +492,7 @@ class UserList extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios2" onChange={this.handleChange} value="no" />
+                                                <input className="form-check-input" type="radio" name="provider" id="gridRadios2" checked={user.provider=='no'} onChange={this.handleChange} value="no" />
                                                 <label className="form-check-label" htmlFor="gridRadios4">
                                                     No
                                     </label>
@@ -497,7 +583,14 @@ class UserList extends React.Component {
 
                             </div>
                             <Modal.Footer>
-                                <button type="submit" className="btn btn-primary" style={{ right: '0', position: 'absolute', marginRight: '32px' }}>Save</button>
+                             {
+                            this.state.forEdit ?
+                            <div class="form-check">
+                            <input type="checkbox" name="retire" onChange={this.handleChange}/>
+                            <label > Retired</label> 
+                            </div> : ''
+                        }
+                                <button type="submit" className="btn btn-primary" >Save</button>
                             </Modal.Footer>
 
                         </form>
@@ -511,7 +604,10 @@ const mapStateToProps = state => ({
     users: state.user.users,
     rolesList: state.roles.allRoles,
     isLoading: state.user.loading,
-    userError: state.user.userError
+    userError: state.user.userError,
+    createdUser: state.user.user,
+    provider: state.provider.provider,
+    workforce:state.workforce.workforce
 
 });
 const mapDispatchToProps = {
@@ -519,5 +615,11 @@ const mapDispatchToProps = {
     saveUser: userAction.saveUser,
     updateUser: userAction.editUsers,
     getRoles: rolesAction.getRoles,
+    deleteUser:userAction.deleteUser,
+    saveworkforce: workforceAction.saveParticipant,
+    saveProvider:providerAction.saveProvider,
+    getProviderByUser:providerAction.getProviderByUser,
+    deleteProvider:providerAction.deleteProvider,
+    fetchParticipantByUser:workforceAction.fetchParticipantByUser
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

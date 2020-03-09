@@ -1,0 +1,13 @@
+.add-btn {
+    border: none;
+    color: white;
+    padding: 2px 12px;
+    font-size: 12px;
+    float: right;
+    height: 32px;
+    margin-right: 10px;
+}
+
+.btn_space{
+    margin: 4px;
+}

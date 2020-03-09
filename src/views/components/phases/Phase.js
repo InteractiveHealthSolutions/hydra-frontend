@@ -10,7 +10,7 @@ import Card from '@material-ui/core/Card';
 import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
 import { phaseAction } from '../../../state/ducks/phase'
 import PropTypes from 'prop-types';
-import Loaders from "../loader/Loader"
+import Loaders from "../common/loader/Loader"
 
 class Phase extends React.Component {
     constructor(props) {

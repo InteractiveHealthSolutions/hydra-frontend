@@ -60,15 +60,14 @@ class Roles extends React.Component {
                 name: '',
                 description: '',
                 selectedIRoles: [],
-                selectedPriviliges: []
+                selectedPriviliges: [],
+                
             },
+            retire:false,
             rowData: [],
             forEdit: false,
-            selectedUUID: ''
-
-
-
-
+            selectedUUID: '',
+            //retire:false
         }
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.inheritedRolesOption = [];
@@ -112,39 +111,64 @@ class Roles extends React.Component {
     };
     async componentWillMount() {
         await this.props.getRoles();
-        await this.setState({ rowData: this.dataBuilder() });
-        await this.props.getPriviliges();
-        await this.createInheritedRoleOptions();
-        await this.createPriviligesOption();
-    }
+        if(this.props.rolesList != undefined) {
+            await this.setState({ rowData: this.dataBuilder() });
+            await this.props.getPriviliges();
+            await this.createInheritedRoleOptions();
+            await this.createPriviligesOption();
+           await console.log('helllo '+JSON.stringify(this.props.rolesList))
+        
+        }
+     }
     async componentWillReceiveProps(newProps) {
-        if (newProps.rolesList != undefined)
-            this.setState({ rowData: this.dataBuilder() })
+        if (newProps.rolesList != undefined) {
+            await this.setState({ rowData: this.dataBuilder() })
+           await this.createInheritedRoleOptions();
+         await console.log('helllo props'+JSON.stringify(this.state.rowData))
+        }
+        
     }
     async handleSubmit(event) {
-        await event.preventDefault();
-        if (this.state.forEdit == true) {
-            console.log('uuid ' + this.state.selectedUUID);
-            await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
-            await this.props.getRoles();
-        }
-        else
-            await this.props.postRole(this.state.roleFormData);
-            await this.props.getRoles();
+    await event.preventDefault();
+           if (this.state.forEdit == true) {
+               if(this.state.retire == true) {
+                  await this.props.deleteRole(this.state.selectedUUID)
+               }
+               else {
+                await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
+               }
+               await this.setState({retire:false})
+               await this.props.getRoles();
+            }
+            else
+                await this.props.postRole(this.state.roleFormData);
+                await this.props.getRoles();
+            
+        
         //console.log('submitted '+JSON.stringify(this.state.roleFormData))
         this.closeAddRoleModal();
     }
-    handleChange(event) {
-
-        const { name, value } = event.target;
-        const { roleFormData } = this.state;
-        this.setState({
-            roleFormData: {
-                ...roleFormData,
-                [name]: value
+     handleChange(event) {
+        
+            const { name, value } = event.target;
+            const { roleFormData } = this.state;
+            if(name == 'retire') {
+                this.setState({
+                  retire : event.target.checked
+                });
             }
-        });
-        console.log("on change " + name + " " + value);
+            else {
+                this.setState({
+                    roleFormData: {
+                        ...roleFormData,
+                        [name]: value
+                    }
+                });
+            }
+            
+        
+        
+        console.log("on change " + event.target.name + " " + this.state.retire);
     }
     dataBuilder() {
         if(this.props.rolesList != undefined) {
@@ -174,12 +198,15 @@ class Roles extends React.Component {
         this.setState({ openAddRoleModal: false })
     }
     createInheritedRoleOptions() {
-        this.props.rolesList.results.forEach(element => {
-            this.inheritedRolesOption.push({
-                "label": element.name,
-                "value": element.uuid
+        if(this.props.rolesList != undefined) {
+            this.props.rolesList.results.forEach(element => {
+                this.inheritedRolesOption.push({
+                    "label": element.name,
+                    "value": element.uuid
+                })
             })
-        })
+        }
+      
     }
     createPriviligesOption() {
         this.props.priviligesList.results.forEach(element => {
@@ -262,7 +289,7 @@ class Roles extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Modal show={this.state.openAddRoleModal} onHide={() => this.closeAddRoleModal()} style={{ marginTop: '40px' }}>
+                <Modal show={this.state.openAddRoleModal} onHide={() => this.closeAddRoleModal()} backdrop="static" style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} Role</Modal.Title>
                     </Modal.Header>
@@ -310,10 +337,16 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
+                           {
+                            this.state.forEdit ?
+                            <div class="form-check">
+                            <input type="checkbox" name="retire" onChange={this.handleChange}/>
+                            <label>Delete</label> 
+                            </div> : ''
+                        }  
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
-
                         </Modal.Footer>
                     </form>
                 </Modal>
@@ -331,6 +364,7 @@ const mapsDispatchToProps = {
     getRoles: rolesAction.getRoles,
     getPriviliges: priviligesAction.getAllPriviliges,
     postRole: rolesAction.postRole,
-    editRole: rolesAction.putRole
+    editRole: rolesAction.putRole,
+    deleteRole: rolesAction.deleteRole
 }
 export default connect(mapStateToProps, mapsDispatchToProps)(Roles);

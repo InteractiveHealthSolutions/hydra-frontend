@@ -6,19 +6,33 @@
 .pd-lb{
     border: none;
     color: blue;
-    padding: 2px 12px;
     font-size: 14px;
-    float: right;
-    height: 32px;
+    float: left;
+    margin-left: 105px
   }
   .right-space{
-      padding-right: 20px;
       color: var(--label-color);
   }
   .name-font{
     font-size: large;
     font-weight: bold;
-    margin-left: 64px;
+    margin-left: 4px;
+  }
+  .vl {
+    border-left: 1px solid grey;
+    height: 55px;
+    margin-left: 100px;
+    margin-top: -40px
+  }
+  .general-act-btn{
+    margin-top: 10px;
+    margin-left: 190px
+  }
+  .workflowDisplay {
+    margin-top: 10px;
+    margin-left: 130px;
+    margin-right: -50px;
+    border-radius: 25px
   }
   .icon-padding{
     padding-right: 25px;
@@ -26,6 +40,7 @@
 
   .s-font{
       font-size: 12px;
+      margin-left: 90px;
   }
   
   .m-font{

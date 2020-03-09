@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
@@ -11,18 +7,28 @@ import { workforceAction } from '../../../../../state/ducks/workforce'
 import AutoSearchComplete from '../../workflowmanagement/formbuilder/formComponents/widgets/AutoSearchComplete';
 import { createNotification } from '../../../../../utilities/helpers/helper'
 import { systemSettingsAction } from '../../../../../state/ducks/systemsettings'
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
+
 function Workforce(props) {
 
     const [columnDefs, setColumnDefs] = useState([
         {
-            headerName: "Name", field: "display", width: 465
+            headerName: "Name", field: "display", width: 420,
+            icons: {
+                menu: '<i class="fas fa-search"></i>',
+                filter: '<i class="fa fa-long-arrow-alt-up"/>',
+                columns: '<i class="fa fa-snowflake"/>',
+                sortAscending: '<i class="fa fa-sort-alpha-up"/>',
+                sortDescending: '<i class="fa fa-sort-alpha-down"/>'
+            }
         },
         {
-            headerName: "Salary", field: "salaryValue", width: 300, valueFormatter: currencyFormatter
+            headerName: "Salary", field: "salaryValue", valueFormatter: currencyFormatter
         },
         {
-            headerName: "Salary Type", field: "salaryType.name", width: 300
+            headerName: "Salary Type", field: "salaryType.name"
         },
         {
             headerName: "Edit",
@@ -30,10 +36,10 @@ function Workforce(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , width: 80
+
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 80
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -78,12 +84,12 @@ function Workforce(props) {
 
     useEffect(() => {
         if (props.setting !== undefined && props.setting.value !== undefined) {
-            console.log("currencyFormatter insdie", props.setting.value)
+            console.log("currencyFormatter insdie", props.setting)
             localStorage.setItem("currency", props.setting.value)
             setActiveCurrency(props.setting)
         }
 
-    }, [props.setting, currencyFormatter])
+    }, [props.setting])
 
 
     useEffect(() => {
@@ -91,6 +97,7 @@ function Workforce(props) {
     }, [])
 
     async function getWorkforce() {
+        await props.getSettingsByUUID("5a74a10b-3eae-43f6-b019-d0823e28ead1");
         await props.getAllworkforce();
         await props.getSalaryType();
     }
@@ -198,51 +205,36 @@ function Workforce(props) {
         setSalaryType("")
         setSalaryValue("")
     }
+
+    function onGridReady(params) {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
     if (props.isloading) return <Loaders />;
     return (
         <div className="row container-fluid l-main-container">
-
-            <div className="card fp-header">
-                <div className="card-header">
-                    <div className="row">
-                        <div className="col-md-8 col-sm-4">
-                            <span className="text-muted">Personnel</span>
-                        </div>
-                        <div className="col-md-4 col-sm-2">
-                            <button className="workforce-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
-                        </div>
-                    </div>
-                </div>
+            <CardTemplate
+                title="Personnel"
+                action={
+                    <button className="workforce-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
+                }
+            >
                 <div className="card-body rm-paadding">
-                    <div className="d-flex justify-content-center">
-                        <div
-                            className="ag-theme-balham"
-                            style={{
-                                height: '421px',
-                                width: '100%'
-                            }}
-                        >
-                            <AgGridReact
-                                columnDefs={columnDefs}
-                                rowData={rowData}
-                                modules={AllCommunityModules}
-                                onRowSelected={onRowSelected}
-                                onCellClicked={event => { onCellClicked(event) }}
-                                enableSorting
-                                enableFilter
-                                rowAnimation
-                                enableRangeSelection={true}
-                                pagination={true}
-                                paginationAutoPageSize={true}
-                                isExternalFilterPresent={true}
-                                enableColResize="true"
-                            >
-                            </AgGridReact>
-                        </div>
-                    </div>
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
                 </div>
-            </div>
 
+            </CardTemplate>
 
             <Modal
                 show={openModal}
@@ -317,6 +309,7 @@ function Workforce(props) {
                                 name='salaryValue'
                                 value={salaryValue}
                                 onChange={handleChange}
+                                min="0"
                                 required
                             />
                         </div>

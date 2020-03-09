@@ -47,6 +47,11 @@ const workforceReducer = createReducer(initialState)({
         loading: false,
         salaryType: payload
     }),
+    [types.GET_PARTICIPANT_BY_USER]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        workforce: payload
+    })
 })
 
 export default workforceReducer
