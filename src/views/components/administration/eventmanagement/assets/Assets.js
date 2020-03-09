@@ -217,13 +217,13 @@ function Assets(props) {
     function onCellClicked(event) {
 
         if (event.colDef.headerName == 'Edit') {
-            console.log("assetType", event.data.assetType? event.data.assetType.name : "")
+            console.log("assetType", event.data.assetType ? event.data.assetType.name : "")
             setModalTitle("Edit Asset")
             setActionType('EditAsset')
             setActiveAssets(event.data)
             setAssetRetire(event.data.retired)
             setAssetName(event.data.name)
-            setAssetTypeName(event.data.assetType?event.data.assetType.name:"")
+            setAssetTypeName(event.data.assetType ? event.data.assetType.name : "")
             setCapitalValue(event.data.capitalValue)
             setReferenceId(event.data.referenceId)
             setFixedAsset(event.data.fixedAsset)
@@ -400,8 +400,7 @@ function Assets(props) {
                                         <div className="form-group" id="add">
                                             <label htmlFor="assetTypeName" className="required">Asset Type</label>
                                             <select {...optDisabled} className="form-control" name="assetTypeName" value={assetTypeName} onChange={handleChange} required>
-                                                {(actionType === 'EditAsset') ? <option>{assetTypeName} </option> : <option></option>}
-                                                {arrAssetType}
+                                                {(actionType === 'EditAsset') ? <option>{assetTypeName} </option> : <><option></option> { arrAssetType }</>}
                                             </select>
 
                                         </div>
@@ -415,6 +414,7 @@ function Assets(props) {
                                                 name="capitalValue"
                                                 value={capitalValue}
                                                 onChange={handleChange}
+                                                min="0"
                                                 required
                                             />
                                         </div>
