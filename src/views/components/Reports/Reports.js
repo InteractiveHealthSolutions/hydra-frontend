@@ -206,11 +206,9 @@ class Reports extends React.Component {
         await    this.state[this.state.currentReport].push({
                 'name':event.value ,'value':event.label
             })
-            alert(JSON.stringify(this.state[this.state.currentReport]))
         }
         else {
           await this.setState({test:[{'name':event.value ,'value':event.label}]});
-          alert(JSON.stringify(this.state.test))
         }
         
      }

@@ -119,9 +119,6 @@ class Roles extends React.Component {
            await console.log('helllo '+JSON.stringify(this.props.rolesList))
         
         }
-        else {
-            window.reload(false)
-        }
      }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
@@ -129,7 +126,7 @@ class Roles extends React.Component {
            await this.createInheritedRoleOptions();
          await console.log('helllo props'+JSON.stringify(this.state.rowData))
         }
-         
+        
     }
     async handleSubmit(event) {
     await event.preventDefault();
@@ -140,8 +137,6 @@ class Roles extends React.Component {
                else {
                 await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
                }
-                console.log('uuid ' + this.state.selectedUUID);
-                //alert(JSON.stringify(this.state.roleFormData))
                await this.setState({retire:false})
                await this.props.getRoles();
             }
@@ -342,13 +337,13 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
-                          {/* {
+                           {
                             this.state.forEdit ?
                             <div class="form-check">
                             <input type="checkbox" name="retire" onChange={this.handleChange}/>
-                            <label>Retired</label> 
+                            <label>Delete</label> 
                             </div> : ''
-                        }  */}
+                        }  
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>

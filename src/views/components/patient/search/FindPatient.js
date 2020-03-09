@@ -14,6 +14,9 @@ import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
 import {personJSON} from '../../../../utilities/helpers/JSONcreator'
 import {PatiendSideBackButton} from '../../common/sidebutton/SideBackButton'
 import {createNotification} from '../../../../utilities/helpers/helper'
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
@@ -71,19 +74,30 @@ class FindPatient extends React.Component {
             },
             location : [],
             identifierFormat : '',
-            workflowModal : false,
-            workflowData : []
+            openWorkflowModal : false,
+            workflowData : [],
+            selectedWorkflow : ''
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDateChangeRaw = this.handleDateChangeRaw.bind(this);
+        this.closeWorkflowModal = this.closeWorkflowModal.bind(this)
+        this.setWorkflow = this.setWorkflow.bind(this);
+        this.openWorkflowModal = this.openWorkflowModal.bind(this)
 
     }
     static propTypes = {
         patients : PropTypes.array.isRequired,
-        workflows : PropTypes.array.isRequired
+    }
+    async setWorkflow(event) {
+      await this.setState({selectedWorkflow:event.target.value})
+      await localStorage.setItem('selectedWorkflow',this.state.selectedWorkflow)
+      if(this.state.selectedWorkflow != '') {
+           
+          await this.closeWorkflowModal();
+      }
     }
     handleChange(event) {
         const { name, value } = event.target;
@@ -96,27 +110,43 @@ class FindPatient extends React.Component {
         });
 
     }
-    openWorkflowModal() {
-        this.setState({workflowModal:true});
+    async openWorkflowModal() {
+        await this.props.getAllWorkflows();
+
+        await this.setState({workflowData:this.createWorkflowCheckBox()})
+     
+     await this.setState({openWorkflowModal:true});
     }
     closeWorkflowModal() {
-        this.setState({workflowModal:false})
+        this.setState({openWorkflowModal:false})
+    }
+    async componentWillMount() {
+        await this.props.getAllWorkflows();
+
+        await this.setState({workflowData:this.createWorkflowCheckBox()})
+        if(this.state.workflowData.length != 0) {
+            await this.setState({openWorkflowModal:true})
+        }
     }
     async componentDidMount() {
+        // await this.props.getAllWorkflows();
+
+        // await this.setState({workflowData:this.createWorkflowCheckBox()})
+        // if(this.state.workflowData.length != 0) {
+        //     await this.setState({openWorkflowModal:true})
+        // }
         await this.props.getAllLocation();
         await this.populateDropDown();
         await this.props.getSettingsByUUID('9b68a10b-3ede-43f6-b019-d0823e28ebd1');
         await this.setState({
             identifierFormat: this.props.setting.value
         });
-        await this.props.getAllWorkflows();
-        await this.setState({workflowData:this.createWorkflowCheckBox()})
-        await this.setState({openWorkflowModal:true})
+        
     }
     createWorkflowCheckBox() {
         let workflowsData = [];
-
         if(this.props.workflows.workflows != undefined) {
+            
             this.props.workflows.workflows.forEach(element => {
                 workflowsData.push({
                     "label" : element.name,
@@ -173,6 +203,7 @@ class FindPatient extends React.Component {
             })  
         }
         if(nextProps.workflows != undefined && nextProps.workflows.workflows) {
+            
             await this.setState({workflowData:this.createWorkflowCheckBox()})
         }
     }
@@ -261,7 +292,7 @@ class FindPatient extends React.Component {
                 <div className="card fp-header">
                     <div className="card-header">
                         <div className="row">
-                            <div className="col-md-8 col-sm-4">
+                            <div className="col-md-4 col-sm-4">
                                 <span>
                                     <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                                         <div className="input-group search-btn">
@@ -281,6 +312,11 @@ class FindPatient extends React.Component {
                                         </div>
                                     </form>
                                 </span>
+                            </div>
+                            <div className="col-md-4 col-sm-4">
+                             <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>
+                                {localStorage.getItem("selectedWorkflow")} 
+                             </button>
                             </div>
                             <div className="col-md-4 col-sm-2">
                                     <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
@@ -415,13 +451,30 @@ class FindPatient extends React.Component {
                         </form>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.openWorkflowModal} onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '40px' }}>
+                <Modal show={this.state.openWorkflowModal} backdrop="static" onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '40px' }}>
                 <Modal.Header>
                     Select A Workflow
                 </Modal.Header>
                 <Modal.Body>
-                  {JSON.stringify(this.state.workflowData)}
+                <RadioGroup aria-label="report" name="workflow" onChange={this.setWorkflow} >
+
+                {
+                        this.state.workflowData.map((value, i) => {
+                           return (
+                            <tr>
+                            <td><FormControlLabel value={value.label} control={<Radio color="primary"/>} /></td>
+                            <td>{value.label}</td>
+                        </tr>
+                           )
+                        })
+                    }
+                </RadioGroup>
                 </Modal.Body>
+                {/* <Modal.Footer>
+                            <button class="btn btn-primary" onClick={this.closeWorkflowModal}>
+                                Save
+                        </button>
+                        </Modal.Footer> */}
                 </Modal>
             </div>
         );

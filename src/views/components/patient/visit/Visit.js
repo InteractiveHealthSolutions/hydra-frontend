@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import moment from 'moment'
 import Modal from 'react-bootstrap/Modal';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
@@ -52,7 +53,8 @@ class Visits extends React.Component {
                 
             ],
             rowData: [],
-            openViewModal:false
+            openViewModal:false,
+            activePatient : localStorage.getItem('active-patient')
           }
           this.onCellClicked = this.onCellClicked.bind(this);
 
@@ -61,7 +63,7 @@ class Visits extends React.Component {
         encountersList: PropTypes.array.isRequired
     }
     async componentDidMount() {
-        await this.props.getEncountersForAPatient('e850afff-b9fb-4e0e-a7d0-24d6e3d314fa');
+        await this.props.getEncountersForAPatient(this.state.activePatient.uuid);
         await console.log('encounters '+JSON.stringify(this.props.encountersList))
         await this.setState({rowData : this.dataBuilder()});
     }
@@ -87,7 +89,7 @@ class Visits extends React.Component {
                data.push({
                 "visit" : element.visit == null?'None':element.visit,
                 "view" : "view",
-                "encounterDate" : element.encounterDatetime,
+                "encounterDate" : element.encounterDatetime!=null?moment(element.encounterDatetime).format("YYYY_MM_DD"):"",
                 "encounterType" :  element.encounterType.display,
                 "providers" : providers.slice(0,-1),
                 "location" : element.location.display,

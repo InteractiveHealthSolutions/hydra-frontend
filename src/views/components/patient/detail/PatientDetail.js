@@ -1,5 +1,5 @@
 import React from 'react';
-import './patientdetail.css';
+import {Link} from 'react-router-dom'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import { history } from '../../../../history'
 import {PatiendSideBackButton} from '../../common/sidebutton/SideBackButton'  
 import '../../common/sidebutton/sidebutton.css'
+import './patientdetail.css';
 
 
 class PatientDetail extends React.Component {
@@ -16,14 +17,23 @@ class PatientDetail extends React.Component {
         super(props);
         this.state = {
             openModal: false,
+            openGeneralActionsModal:false
         }
         this.currentPatient = JSON.parse(localStorage.getItem("active-patient"));
+        this.openGeneralActionsModal = this.openGeneralActionsModal.bind(this);
+        this.closeGeneralActionsModal = this.closeGeneralActionsModal.bind(this);
     }
     componentDidMount() {
         console.log("patient detail :", this.currentPatient.identifier)
     }
     openModal() {
         this.setState({ openModal: true });
+    }
+    openGeneralActionsModal() {
+        this.setState({openGeneralActionsModal:true})
+    }
+    closeGeneralActionsModal() {
+        this.setState({openGeneralActionsModal:false})
     }
 
     closeModal() {
@@ -36,24 +46,40 @@ class PatientDetail extends React.Component {
                 <div className="card fp-header">
                     <div className="card-header">
                         <div className="row">
-                            <div className="col-md-8 col-sm-4">
-                                <span>
-                                    <label htmlFor="patientName" className="right-space name-font" >{this.currentPatient.given + " " + this.currentPatient.familyname}</label>
-                                </span>
-                                <span>
-                                    <label htmlFor="gender" className="right-space s-font" >{this.currentPatient.gender != "M" ?"Female":"Male"}</label>
-                                </span>
-                                <span>
-                                    <label htmlFor="birthday" className="right-space s-font" >{this.currentPatient.age + " year(s) (" + this.currentPatient.birthday + ")"}</label>
-                                </span>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <span>
-                                    <div className="pd-lb">
+                            <div className="col-md-6 col-sm-5">
+                            <div className="col-sm-">
+                            <label htmlFor="patientName" className="right-space name-font" >{this.currentPatient.given + " " + this.currentPatient.familyname}</label></div>
+                            <div class="col-sm-1 vl"></div>
+                            <div className="col-sm-5">
+                             <div className="row" style={{marginTop:"-55px"}}>
+                             <div className="col-sm-2">
+                             <label htmlFor="gender" className="right-space s-font" >{this.currentPatient.gender != "M" ?"Female":"Male"}</label>
+                             </div>
+                             <div className="col-sm-10">
+                             <label htmlFor="birthday" className="right-space s-font" >{this.currentPatient.age + " year(s) (" + this.currentPatient.birthday + ")"}</label>
+                             </div>
+                             </div>
+                             <div className="row">
+                              
+</div>
+                             <div className="row">
+                             <div className="pd-lb">
                                         <label htmlFor="patientName">Identifier ({this.currentPatient.identifier})</label>
                                     </div>
-                                </span>
+                                
+                             </div>
                             </div>
+                            </div>
+                            <div className="col-md-6 col-sm-6">
+                            
+                             <button className="btn btn-primary workflowDisplay" >
+                                {localStorage.getItem("selectedWorkflow")} 
+                             </button>
+                            <button className="btn btn-primary general-act-btn" onClick={this.openGeneralActionsModal}>
+                            General Actions
+                            </button>
+                            </div>
+                        
                         </div>
                     </div>
                     {/* end header */}
@@ -206,61 +232,65 @@ class PatientDetail extends React.Component {
                     <a id="action" className="pd-actions-btn  btn-primary" onClick={() => this.openModal()} >General Actions</a>
                 </div> */}
                 {/* general acions  */}
-                <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
+                <Modal show={this.state.openGeneralActionsModal} onHide={() => this.closeGeneralActionsModal()} style={{ marginTop: '100px' }}>
                     <Modal.Header closeButton className="modal-header">
                         <Modal.Title>General Actions</Modal.Title>
                     </Modal.Header>
                     <form onSubmit={this.handleSubmit}>
                         <Modal.Body style ={{height:'400px',overflowY:'auto'}}>
                             <div className="form-group">
-                                <div class="card pd-actions-list">
+                                {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa map-marker-alt gradient"></i></span>
                                         <Typography >Start Visits</Typography>
                                     </ExpansionPanelSummary>
-                                </div>
+                                </div> */}
                                 <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa fa-plus gradient"></i></span>
-                                        <Typography >Add Past Visit</Typography>
+                                        <Typography >Enter Data</Typography>
                                     </ExpansionPanelSummary>
                                 </div>
-                                <div class="card pd-actions-list">
+                                {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa  fa-link gradient"></i></span>
                                         <Typography >Merge Visits</Typography>
                                     </ExpansionPanelSummary>
-                                </div>
-                                <div class="card pd-actions-list">
+                                </div> */}
+                                {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa fa-chart-pie gradient"></i></span>
                                         <Typography >Chart Search</Typography>
                                     </ExpansionPanelSummary>
-                                </div>
+                                </div> */}
                                 <div class="card pd-actions-list">
+                                <Link to="/visit">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
+                                        
                                         <span className="icon-padding" ><i class="fa fa-calendar-alt gradient"></i></span>
-                                        <Typography >Schedule Appointment</Typography>
+                                        <Typography >Service History</Typography>
                                     </ExpansionPanelSummary>
+                                    </Link>
+
                                 </div>
-                                <div class="card pd-actions-list">
+                                {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa fa-calendar-alt gradient"></i></span>
                                         <Typography >Request Appointment</Typography>
                                     </ExpansionPanelSummary>
-                                </div>
+                                </div> */}
                                 <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
@@ -274,22 +304,35 @@ class PatientDetail extends React.Component {
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa fa-user-times gradient"></i></span>
-                                        <Typography >Delete Patient</Typography>
+                                        <Typography >Void Patient</Typography>
                                     </ExpansionPanelSummary>
                                 </div>
-                                <div class="card pd-actions-list">
+                                {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary
                                         aria-controls="panel1a-content"
                                         id="panel1a-header">
                                         <span className="icon-padding" ><i class="fa fa-paperclip gradient"></i></span>
                                         <Typography >Attachments</Typography>
                                     </ExpansionPanelSummary>
-                                </div>
+                                </div> */}
                             </div>
                         </Modal.Body>
                     </form>
 
                 </Modal>
+                {/* <Modal show={this.state.openGeneralActionsModal}>
+                 <Modal.Header closeButton>
+                   General Actions
+                 </Modal.Header>
+                 <Modal.Body>
+                     <ul>
+                         <li> Service History </li>
+                         <li> Enter Data </li>
+                         <li> Mark Patient Deceased </li>
+                         <li> Void Patient </li>
+                     </ul>
+                 </Modal.Body>
+                </Modal> */}
             </div>
 
         )
