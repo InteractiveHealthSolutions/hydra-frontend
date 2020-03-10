@@ -30,7 +30,7 @@ export const putRole = (data, uuid) => async dispatch =>
     then(res => { dispatch(postRoleOption(res)); dispatch(getRoles()) }).catch(displayError)
 
 export const deleteRole = (uuid) => async dispatch => 
-  fetch(DELETE,"/role/"+uuid+"?purge").
+  fetch(DELETE,"/role/"+uuid+"?purge=true").
     then(res => {dispatch(deleteRoleOption(res))}).catch(displayError)
 
 const deleteRoleOption = payload => ({type : types.DELETE_ROLE, payload})

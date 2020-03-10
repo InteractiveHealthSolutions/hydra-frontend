@@ -403,8 +403,8 @@ class QuestionList extends React.Component {
             return;
         
         }
-        if(this.state.optionError) {
-            createNotification('warning','Provided Options should be concept');
+        if(this.state.optionError && this.state.dataTypeEdit == "Coded") {
+            createNotification('warning','Option does not exist.');
             return;
         }
         if (this.state.widgetsToShowEdit.length != 0) {
@@ -450,8 +450,8 @@ class QuestionList extends React.Component {
             this.mandatoryFieldError();
             return;
         }
-        if(this.state.optionError) {
-            createNotification('warning', 'Provided options should be concept')
+        if(this.state.optionError && questionDataType.value == "Coded") {
+            createNotification('warning', 'Option does not exist.')
             return;
 
         }

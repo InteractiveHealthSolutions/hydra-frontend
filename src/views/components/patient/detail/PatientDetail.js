@@ -49,9 +49,9 @@ class PatientDetail extends React.Component {
                             <div className="col-md-6 col-sm-5">
                             <div className="col-sm-">
                             <label htmlFor="patientName" className="right-space name-font" >{this.currentPatient.given + " " + this.currentPatient.familyname}</label></div>
-                            <div class="col-sm-1 vl"></div>
+                            <div class="col-sm-1 vl" style={{display:"inline"}}></div>
                             <div className="col-sm-5">
-                             <div className="row" style={{marginTop:"-55px"}}>
+                             <div className="row" style={{marginTop:"-55px" }}>
                              <div className="col-sm-2">
                              <label htmlFor="gender" className="right-space s-font" >{this.currentPatient.gender != "M" ?"Female":"Male"}</label>
                              </div>
