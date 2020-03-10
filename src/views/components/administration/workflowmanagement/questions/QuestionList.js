@@ -415,6 +415,7 @@ class QuestionList extends React.Component {
                 description: this.state.descriptionEdit,
                 fieldType: this.state.widgetType.key,
                 concept: this.state.conceptuuid,
+                attributeName: this.state.dataTypeEdit,
                 selectMultiple:
                     this.state.widgetType.value === "Multiple Choice" ? true : false,
                 tableName: this.state.isAttribute ? "Attribute" : ""
@@ -558,6 +559,7 @@ class QuestionList extends React.Component {
                 };
                 if (questionWidgetType != undefined) {
                     questionService.saveConcept(conceptData).then(data => {
+                        this.props.getAllQuestion();
                         console.log("Responsed received", data);
                         var fieldData = {
                             
