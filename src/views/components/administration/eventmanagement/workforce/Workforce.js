@@ -15,7 +15,7 @@ function Workforce(props) {
 
     const [columnDefs, setColumnDefs] = useState([
         {
-            headerName: "Name", field: "display", width: 420,
+            headerName: "Name", field: "display",
             icons: {
                 menu: '<i class="fas fa-search"></i>',
                 filter: '<i class="fa fa-long-arrow-alt-up"/>',
@@ -39,7 +39,8 @@ function Workforce(props) {
                 , width: 60
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 60
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter,
+             width: 70
         },
     ]);
     const [rowData, setRowData] = useState([]);
