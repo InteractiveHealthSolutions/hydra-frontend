@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { formAction } from '../../../../../state/ducks/form'
 import { connect } from 'react-redux'
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
+
 
 class BasicActionDetail extends Component {
 
@@ -89,12 +91,75 @@ class BasicActionDetail extends Component {
         const { actionDescription, actionName } = this.state
         return (
             <div className="row container-fluid ">
-                <div className="card" style={{
-                    width: '60%', display: 'block', marginLeft: 'auto',
+                <form onSubmit={this.moveNextStep.bind(this)} style={{ width: '100%' }}>
+                    <CardTemplate
+                        title="Create Rule"
+                        height="500px"
+                        action={
+                            <>
+                                <button onClick={this.props.prevStep.bind(this)} className='service-btn btn btn-primary btn-re'>Go Back</button>
+                                <button type="submit" className='service-btn btn btn-primary btn-re'>Next</button>
+                            </>}
+                    >
+                        <div className="row" >
+                            <div className="col-md-6">
+                                <label className="ec-label">Select Form <span style={{ color: 'red' }}>*</span></label>
+                                <select className="form-control"
+                                    name="fromName"
+                                    value={this.state.formToAdd}
+                                    onChange={this.handleFormChange}
+                                    required
+                                >
+                                    <option></option>
+                                    {this.forms}
+                                </select>
+                            </div>
+                            <div className="col-md-6">
+                                <label htmlFor="actionName" className="ec-label">Rule Name <span style={{ color: 'red' }}>*</span></label>
+                                <input
+                                    placeholder=""
+                                    type="text"
+                                    name="actionName"
+                                    required
+                                    className='form-control'
+                                    value={actionName}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+
+                        </div>
+                        <div className="row">
+                            <div className="col-md-10">
+                                <label htmlFor="actionDescription" className="ec-label">Description </label>
+                                <textarea
+                                    placeholder=""
+                                    type="text"
+                                    name="actionDescription"
+                                    rows='2'
+                                    onChange={this.handleChange}
+                                    className='form-control'
+                                    value={actionDescription}
+                                />
+
+                            </div>
+
+                        </div>
+                    </CardTemplate>
+                </form>
+
+                {/* <div className="card" style={{
+                    width: '60%',
+                    display: 'block',
+                    marginLeft: 'auto',
                     marginRight: 'auto',
-                    padding: '20px'
+                    padding: '20px',
+                    height: '500px'
                 }}>
+                    <div className = "card-header">
+                        <p>Source Form</p>
+                    </div>
                     <div className="card-body">
+          
                         <form onSubmit={this.moveNextStep.bind(this)}>
                             <div className="row" >
                                 <label className="ec-label">Select Form <span style={{ color: 'red' }}>*</span></label>
@@ -108,7 +173,6 @@ class BasicActionDetail extends Component {
                                     {this.forms}
                                 </select>
                             </div>
-                            {/* action  */}
                             <div className="row" >
                                 <label htmlFor="actionName" className="ec-label">Rule Name <span style={{ color: 'red' }}>*</span></label>
                                 <input
@@ -144,8 +208,7 @@ class BasicActionDetail extends Component {
                             </div>
                         </form>
                     </div>
-                </div>
-
+                </div> */}
             </div>
         )
     }
