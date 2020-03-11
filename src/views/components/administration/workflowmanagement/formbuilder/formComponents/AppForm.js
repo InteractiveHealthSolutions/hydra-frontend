@@ -10,6 +10,9 @@ export class AppForm extends Component {
   handleSubmited = (e) => {
     this.props.handleSubmited()
   }
+  handleRetiredChecked = (param) => {
+    this.props.handleRetiredChecked(param)
+  }
 
   render() {
     return (
@@ -24,7 +27,14 @@ export class AppForm extends Component {
         <div className="card-body">
           <form>{this.props.children}</form>
         </div>
-        <div className="card-footer  text-center">
+        <div className="card-footer">
+          {
+            (this.props.edit) ?
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" onChange={this.handleRetiredChecked} />
+                <label class="form-check-label">Retired</label>
+              </div> : ""
+          }
           <button onClick={this.handleSubmited}
             className="btn btn-primary af_btn">SAVE</button>
         </div>

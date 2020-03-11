@@ -47,7 +47,9 @@ class App extends React.Component {
         this.onActive = this.onActive.bind(this);
         this.onIdle = this.onIdle.bind(this);
     }
+    
     onbeforeunload = (e) => {
+
         window.onunload = function () {
             localStorage.clear();
         }
@@ -118,8 +120,9 @@ class App extends React.Component {
 
     onIdle(e) {
         // if (store.getState().authentication.authorized) {
-            userActions.logout();
-       // }
+        localStorage.clear()
+        userActions.logout();
+        // }
 
     }
 };

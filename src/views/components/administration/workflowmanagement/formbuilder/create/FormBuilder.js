@@ -10,7 +10,7 @@ import DraggedFormItem from "../formComponents/widgets/DraggedFormItem";
 import DraggableFormItem from "../formComponents/widgets/DraggableFormItem";
 import DefaultExpendable from "../formComponents/widgets/DefaultExpendable";
 import TextBox from "../formComponents/widgets/TextBox";
-import {createNotification } from '../../../../../../utilities/helpers/helper'
+import { createNotification } from '../../../../../../utilities/helpers/helper'
 import QuestionListModal from "../questionlist/QuestionListModal";
 import { questionService } from '../../../../../../services/questionservice'
 
@@ -19,39 +19,6 @@ class FormBuilder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataToSubmit: {},
-      allWidgets: [
-        { title: "", key: "0" },
-        { title: "Textbox", key: "1" }, // a unique key is required for the map to iterate
-        { title: "Single Select Dropdown", key: "2" },
-        { title: "Single Select Radiobuttons", key: "3" },
-        { title: "Multiple Choice", key: "4" },
-        { title: "Date/ Time Picker", key: "5" },
-        { title: "Age", key: "6" },
-        { title: "Address", key: "7" },
-        { title: "Title Only", key: "8" }
-      ],
-      codedWidgets: [
-        { title: "", key: "0" },
-        { title: "Single Select Dropdown", key: "2" },
-        { title: "Single Select Radiobuttons", key: "3" },
-        { title: "Multiple Choice", key: "4" }
-      ],
-      textWidgets: [
-        { title: "", key: "0" },
-        { title: "Textbox", key: "1" },
-        { title: "Title Only", key: "8" }
-      ],
-      dateWidgets: [
-        { title: "", key: "0" },
-        { title: "Date/ Time Picker", key: "5" }
-      ],
-      otherWidgets: [
-        { title: "", key: "0" },
-        { title: "Age", key: "6" },
-        { title: "Address", key: "7" }
-      ],
-      widgetsToShow: [],
       definedOptions: [],
       openModal: false,
       textBoxSelected: false,
@@ -90,7 +57,9 @@ class FormBuilder extends React.Component {
       formDescription: "",
       openModal: false,
       isFormExist: false,
-      hydramoduleFormId: null
+      hydramoduleFormId: null,
+      isEdit: false,
+      formRetiredVal: false
     };
 
     this.activeForm = JSON.parse(localStorage.getItem('active_form'))
@@ -150,7 +119,8 @@ class FormBuilder extends React.Component {
         hydramoduleFormId: form.hydramoduleFormId,
         formName: form.name,
         formDescription: form.description,
-        addFormList: await this.editFormListFormat(form.formFields)
+        addFormList: await this.editFormListFormat(form.formFields),
+        isEdit: true
       })
     }
 
@@ -161,9 +131,9 @@ class FormBuilder extends React.Component {
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
-      description: element.field.description ? element.field.description : "",
-      dataType: element.field.attributeName ? element.field.attributeName : "",
-      uuid: element.field.uuid,
+      description: element.field ? element.field.description : "",
+      dataType: element.field ? element.field.attributeName : "",
+      uuid: element.field ? element.field.uuid : "",
       controlId: this.props.controlId,
       answers: element.answers ? element.answers : [],
       formFieldId: element.formFieldId,
@@ -247,14 +217,15 @@ class FormBuilder extends React.Component {
   };
 
   async saveForm() {
-    const { formName, formDescription, hydramoduleFormId } = this.state
+    const { formName, formRetiredVal, formDescription, hydramoduleFormId } = this.state
     let formFieldList = await this.getAllField()
     let newform = {
       hydramoduleFormId: hydramoduleFormId,
       name: formName,
       component: "",
       description: formDescription,
-      formFields: formFieldList
+      formFields: formFieldList,
+      retired: formRetiredVal
     }
     console.log("newform", newform)
     await this.props.saveFormFields(newform)
@@ -409,6 +380,12 @@ class FormBuilder extends React.Component {
     await this.removeLocalStorage()
     this.props.prevStep()
   }
+  handleRetiredChecked = (param) => {
+    console.log("retired", param.target.checked)
+    this.setState({
+      formRetiredVal: param.target.checked
+    })
+  }
 
   render() {
     const { addFormList, currentObject, hydramoduleFormId, encounterTypes, defaultQuestion } = this.state;
@@ -464,6 +441,8 @@ class FormBuilder extends React.Component {
         <div className="col-md-8">
           <AppForm title="Form Builder"
             handleSubmited={this.submit}
+            handleRetiredChecked={this.handleRetiredChecked}
+            edit={this.state.isEdit}
           >
             <div className="row">
               <div className="col-md-4">

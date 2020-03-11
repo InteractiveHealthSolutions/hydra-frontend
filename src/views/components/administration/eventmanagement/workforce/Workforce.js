@@ -15,7 +15,7 @@ function Workforce(props) {
 
     const [columnDefs, setColumnDefs] = useState([
         {
-            headerName: "Name", field: "display", width: 420,
+            headerName: "Name", field: "display",
             icons: {
                 menu: '<i class="fas fa-search"></i>',
                 filter: '<i class="fa fa-long-arrow-alt-up"/>',
@@ -36,10 +36,11 @@ function Workforce(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-
+                , width: 60
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter,
+             width: 70
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -309,7 +310,7 @@ function Workforce(props) {
                                 name='salaryValue'
                                 value={salaryValue}
                                 onChange={handleChange}
-                                min="0"
+                                min="1"
                                 required
                             />
                         </div>

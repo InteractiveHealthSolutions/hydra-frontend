@@ -19,7 +19,7 @@ import { EventSideBackButton } from '../../common/sidebutton/SideBackButton'
 import { eventAction } from '../../../../state/ducks/event';
 import moment from 'moment'
 import { locationAction } from '../../../../state/ducks/location';
-import Loaders from "../../loader/Loader"
+import Loaders from "../../common/loader/Loader"
 import Button from 'react-bootstrap/Button';
 
 class EventList extends React.Component {
@@ -428,8 +428,7 @@ class EventList extends React.Component {
 
     render() {
         const { eventName, memberList, serviceList, personnelCost, assetCost, assetList, eventType, location, startDate, endDate, selectedLocation, locationData, selectedLocationType, fromDate, toDate, listItems } = this.state;
-        console.log("isLoading", this.props.isloading)
-        if (this.props.isloading) return <Loaders />;
+        if (this.props.isLoading) return <Loaders />;
         return (
             <div className="main-event">
                 <div className="row event-maincard-header">

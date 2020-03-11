@@ -14,12 +14,15 @@ import { providerAction } from '../../../../state/ducks/provider';
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
-import Loaders from '../../loader/Loader';
+// import Loaders from '../../loader/Loader';
 import moment from 'moment';
+import Loaders from '../../common/loader/Loader';
 import "react-datepicker/dist/react-datepicker.css";
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './userlist.css'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
 
 const animatedComponents = makeAnimated();
 
@@ -31,25 +34,26 @@ class UserList extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: 'System Id', field: 'systemId', width: '150'
+                    headerName: 'System Id', field: 'systemId'
                 },
                 {
-                    headerName: 'Username', field: 'display', width: '250'
+                    headerName: 'Username', field: 'display'
                 },
                 {
-                    headerName: 'Name', field: 'person.display', width: '350'
+                    headerName: 'Name', field: 'person.display'
                 },
                 {
-                    headerName: 'Gender', field: 'person.gender', width: '150'
+                    headerName: 'Gender', field: 'person.gender', width: 80
                 },
                 {
-                    headerName: 'Birthdate', field: 'person.birthdate', width: '450', hide: true
+                    headerName: 'Birthdate', field: 'person.birthdate', width: 80, hide: true
                 },
                 {
-                     headerName: 'Retire Status', field: 'retired', width: '150'
-                },
-                {
-                    headerName: "Edit", field: "edit", width: '150',
+                    headerName: "Edit", field: "edit", width: 80,
+                    template:
+                    `
+                       <button className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
+                    `,
                     cellRenderer: 'buttonRenderer'
                 }
             ],
@@ -392,13 +396,43 @@ class UserList extends React.Component {
         return defaultRoles;
 
     }
+
+
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    onRowSelected = (event) => {
+        console.log('onRowSelected: ' + event.node.data);
+    };
     render() {
-        const { user, submitted, invalidPassword } = this.state;
+        const { user, submitted,rowData,columnDefs ,invalidPassword } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
             <div className="row container-fluid l-main-container">
+                <CardTemplate
+                    title="User Management"
+                    action={<button type="button" onClick={this.openAddUserModal} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add New User</button>}
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+                        />
 
-                <div className="card fp-header">
+                    </div>
+                </CardTemplate>
+
+
+                {/* <div className="card fp-header">
                     <div className="card-header">
                         <div className="row">
                             <div className="col-md-8 col-sm-4">
@@ -435,7 +469,7 @@ class UserList extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*/}
                 <Modal show={this.state.openAddUserModal} backdrop="static" onHide={() => this.setState({ openAddUserModal: false })} style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} User</Modal.Title>
@@ -445,7 +479,7 @@ class UserList extends React.Component {
                             <div className="form-group row" >
                                 <label htmlFor="familyname" class="col-sm-4 col-form-label required">Family Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.familyname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.familyname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div className="form-group row">
@@ -544,7 +578,7 @@ class UserList extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div> */}
+                            </div> 
                             {/* <div class="form-group row" style={{ marginTop: '-18px', marginLeft: '25px' }}>
                                 {/* {submitted && store.getState().registration.message !== '' &&
                                     <div className="help-block" style={{ color: '#ff0000', marginLeft: '30px' }}>{store.getState().registration.message}</div>
