@@ -35,6 +35,7 @@
         "node-sass": "^4.12.0",
         "normalizr": "^3.2.4",
         "popper.js": "^1.16.0",
+        "randexp": "^0.5.3",
         "randomcolor": "^0.5.4",
         "react": "^16.12.0",
         "react-advanced-form": "^1.7.2",
@@ -79,7 +80,7 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "proxy": "http://ihs.ihsinformatics.com:6811/openmrs/ws/rest/v1",
+    "proxy": "http://ihs.ihsinformatics.com:6815/openmrs/ws/rest/v1",
     "eslintConfig": {
         "extends": "react-app"
     },

@@ -10,7 +10,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import Card from '@material-ui/core/Card';
 import PropTypes from 'prop-types';
 import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
-import Loaders from "../loader/Loader"
+import Loaders from "../common/loader/Loader"
 
 class Workflow extends React.Component {
 

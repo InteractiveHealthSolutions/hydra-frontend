@@ -12,6 +12,7 @@ const initialState = {
 };
 
 const workflowReducer = createReducer(initialState)({
+
     [types.SET_PROJECT]: (state, { payload }) => ({
         ...state,
         current: payload,
@@ -36,9 +37,9 @@ const workflowReducer = createReducer(initialState)({
         workflow: payload
     }),
     [types.GET_ALL_WORKFLOW]: (state, { payload }) => ({
-        ...state,
-        loading: false,
-        workflows: payload
+         ...state,
+         loading: false,
+         workflows: payload
     }),
 })
 

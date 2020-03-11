@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
@@ -11,25 +6,34 @@ import './asset.css';
 import { assetAction } from '../../../../../state/ducks/assets'
 import { createNotification } from '../../../../../utilities/helpers/helper'
 import { systemSettingsAction } from '../../../../../state/ducks/systemsettings'
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 function Assets(props) {
 
     const [columnDefs, setColumnDefs] = useState([
         {
-            headerName: "Name", field: "display", width: 255
+            headerName: "Name", field: "display",
+            icons: {
+                menu: '<i class="fas fa-search"></i>',
+                filter: '<i class="fa fa-long-arrow-alt-up"/>',
+                columns: '<i class="fa fa-snowflake"/>',
+                sortAscending: '<i class="fa fa-sort-alpha-up"/>',
+                sortDescending: '<i class="fa fa-sort-alpha-down"/>'
+            }
         },
         {
-            headerName: "Asset Type", field: "assetType.name", width: 210
+            headerName: "Asset Type", field: "assetType.name"
         },
         {
-            headerName: "Capital Cost", field: "capitalValue", width: 200, valueFormatter: currencyFormatter
+            headerName: "Capital Cost", field: "capitalValue", valueFormatter: currencyFormatter
         },
         {
-            headerName: "Reference Id", field: "referenceId", width: 200
+            headerName: "Reference Id", field: "referenceId"
         },
         {
-            headerName: "Fixed Asset", field: "fixedAsset", width: 200
+            headerName: "Fixed Asset", field: "fixedAsset"
         },
         {
             headerName: "Edit",
@@ -37,10 +41,10 @@ function Assets(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , width: 80
+                , width: 60
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 80
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 70
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -213,11 +217,16 @@ function Assets(props) {
     function onCellClicked(event) {
 
         if (event.colDef.headerName == 'Edit') {
+            console.log("assetType", event.data.assetType ? event.data.assetType.name : "")
             setModalTitle("Edit Asset")
             setActionType('EditAsset')
             setActiveAssets(event.data)
             setAssetRetire(event.data.retired)
             setAssetName(event.data.name)
+            setAssetTypeName(event.data.assetType ? event.data.assetType.name : "")
+            setCapitalValue(event.data.capitalValue)
+            setReferenceId(event.data.referenceId)
+            setFixedAsset(event.data.fixedAsset)
             setIsAssetType(false)
             setOpenModal(true)
         }
@@ -289,50 +298,44 @@ function Assets(props) {
         setArrAssetCategory(array)
     }
 
+    function onGridReady(params) {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    function onRowSelected() { }
+
+
     if (props.isloading) return <Loaders />;
+    var optDisabled = {}; if (actionType === "EditAsset") { optDisabled['disabled'] = 'disabled'; }
+    var optChecked = {}; if (fixedAsset === true) { optChecked['checked'] = 'checked' }
     return (
         <div className="row assets-main-container container-fluid ">
-            <div className="card fp-header">
-                <div className="card-header">
-                    <div className="row">
-                        <div className="col-md-6 col-sm-4">
-                            <span className="text-muted">Assets</span>
-                        </div>
-                        <div className="col-md-6 col-sm-8">
-                            <button className="service-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
-                            <button className="service-btn btn btn-primary s-space" onClick={() => openModalType()}><i class="fas fa-plus"></i> Create Type</button>
-                            <button className="service-btn btn btn-primary s-space" onClick={() => openModalCategory()}><i class="fas fa-plus"></i> Create Category</button>
-                        </div>
-                    </div>
-                </div>
+            <CardTemplate
+                title="Assets"
+                action={
+                    <>
+                        <button className="service-btn btn btn-primary " onClick={() => openModall()}><i class="fas fa-plus"></i>  Create New</button>
+                        <button className="service-btn btn btn-primary s-space" onClick={() => openModalType()}><i class="fas fa-plus"></i> Create Type</button>
+                        <button className="service-btn btn btn-primary s-space" onClick={() => openModalCategory()}><i class="fas fa-plus"></i> Create Category</button>
+                    </>
+                }
+            >
                 <div className="card-body rm-paadding">
-                    <div className="d-flex justify-content-center">
-                        <div
-                            className="ag-theme-balham"
-                            style={{
-                                height: '421px',
-                                width: '100%'
-                            }}
-                        >
-                            <AgGridReact
-                                columnDefs={columnDefs}
-                                rowData={rowData}
-                                modules={AllCommunityModules}
-                                onCellClicked={event => { onCellClicked(event) }}
-                                enableSorting
-                                enableFilter
-                                rowAnimation
-                                enableRangeSelection={true}
-                                pagination={true}
-                                paginationAutoPageSize={true}
-                                isExternalFilterPresent={true}
-                                enableColResize="true"
-                            >
-                            </AgGridReact>
-                        </div>
-                    </div>
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
                 </div>
-            </div>
+            </CardTemplate>
+
             <Modal
                 show={openModal}
                 onHide={() => closeModal()}
@@ -361,12 +364,26 @@ function Assets(props) {
                                     <div className="form-group" id="add">
                                         <label htmlFor="assetCategoryName" className="required">Asset Category</label>
                                         <select className="form-control" name="assetCategoryName" value={assetCategoryName} onChange={handleChange} required>
-                                            <option></option>
+                                            <option> </option>
                                             {arrAssetCategory}
                                         </select>
                                     </div>
                                 </>
-                                : (actionType === 'EditAsset') ?
+
+                                : (actionType === 'AssetsCategory') ?
+                                    <div className='form-group'>
+                                        <label htmlFor='assetCategoryName' className="required">Name</label>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            autoComplete='off'
+                                            name='assetCategoryName'
+                                            value={assetCategoryName}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    :
                                     <>
                                         <div className='form-group'>
                                             <label htmlFor='assetName' className="required">Name</label>
@@ -380,81 +397,53 @@ function Assets(props) {
                                                 required
                                             />
                                         </div>
-                                    </>
-                                    : (actionType === 'AssetsCategory') ?
+                                        <div className="form-group" id="add">
+                                            <label htmlFor="assetTypeName" className="required">Asset Type</label>
+                                            <select {...optDisabled} className="form-control" name="assetTypeName" value={assetTypeName} onChange={handleChange} required>
+                                                {(actionType === 'EditAsset') ? <option>{assetTypeName} </option> : <><option></option> { arrAssetType }</>}
+                                            </select>
+
+                                        </div>
                                         <div className='form-group'>
-                                            <label htmlFor='assetCategoryName' className="required">Name</label>
+                                            <label htmlFor='capitalValue' className="required">Capital Cost</label>
+                                            <input
+                                                type='number'
+                                                className='form-control'
+                                                autoComplete='off'
+                                                pattern='^[0-9\s]*$'
+                                                name="capitalValue"
+                                                value={capitalValue}
+                                                onChange={handleChange}
+                                                min="1"
+                                                required
+                                            />
+                                        </div>
+                                        <div className='form-group'>
+                                            <label htmlFor='referenceId' className="">Reference Id</label>
                                             <input
                                                 type='text'
                                                 className='form-control'
                                                 autoComplete='off'
-                                                name='assetCategoryName'
-                                                value={assetCategoryName}
+                                                name="referenceId"
+                                                value={referenceId}
                                                 onChange={handleChange}
-                                                required
                                             />
                                         </div>
-                                        :
-                                        <>
-                                            <div className='form-group'>
-                                                <label htmlFor='assetName' className="required">Name</label>
-                                                <input
-                                                    type='text'
-                                                    className='form-control'
-                                                    autoComplete='off'
-                                                    name="assetName"
-                                                    value={assetName}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group" id="add">
-                                                <label htmlFor="assetTypeName" className="required">Asset Type</label>
-                                                <select className="form-control" name="assetTypeName" value={assetTypeName} onChange={handleChange} required>
-                                                    <option></option>
-                                                    {arrAssetType}
-                                                </select>
-                                            </div>
-                                            <div className='form-group'>
-                                                <label htmlFor='capitalValue' className="required">Capital Cost</label>
-                                                <input
-                                                    type='number'
-                                                    className='form-control'
-                                                    autoComplete='off'
-                                                    pattern='^[0-9\s]*$'
-                                                    name="capitalValue"
-                                                    value={capitalValue}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className='form-group'>
-                                                <label htmlFor='referenceId' className="">Reference Id</label>
-                                                <input
-                                                    type='text'
-                                                    className='form-control'
-                                                    autoComplete='off'
-                                                    name="referenceId"
-                                                    value={referenceId}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className='form-group'>
-                                                <label htmlFor='fixedAsset' className="">Fixed Asset</label>
-                                                <input
-                                                    style={{ marginLeft: '30px' }}
-                                                    type='checkbox'
-                                                    className='form-check-input'
-                                                    name="fixedAsset"
-                                                    value={fixedAsset}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
+                                        <div className='form-group'>
+                                            <label htmlFor='fixedAsset' className="">Fixed Asset</label>
+                                            <input
+                                                {...optChecked}
+                                                style={{ marginLeft: '30px' }}
+                                                type='checkbox'
+                                                className='form-check-input'
+                                                name="fixedAsset"
+                                                value={fixedAsset}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                        </>
+                                    </>
                         }
-
-
 
                     </Modal.Body>
                     <Modal.Footer>
@@ -471,7 +460,6 @@ function Assets(props) {
                     </Modal.Footer>
                 </form>
             </Modal>
-
         </div>
     )
 }

@@ -19,7 +19,9 @@ import ButtonRenderer from '../../../../../utilities/helpers/ButtonRenderer';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './questionlist.css';
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 class QuestionList extends React.Component {
     constructor(props) {
@@ -29,16 +31,16 @@ class QuestionList extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: "Name", field: "name", width: 380
+                    headerName: "Name", field: "name"
                 },
                 {
-                    headerName: "Description", field: "description", width: 400
+                    headerName: "Description", field: "description"
                 },
                 {
-                    headerName: "Data Type", field: "concept.datatype.display", width: 150
+                    headerName: "Data Type", field: "concept.datatype.display"
                 },
                 {
-                    headerName: "Field Type", field: "fieldType.display", width: 200
+                    headerName: "Field Type", field: "fieldType.display"
                 },
                 {
                     headerName: "Edit",
@@ -181,6 +183,7 @@ class QuestionList extends React.Component {
             descriptionEdit: '',
             widgetsToShowEdit: [],
             fieldId: '',
+            optionError:false
         }
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.onChangeEdit = this.onChangeEdit.bind(this);
@@ -209,13 +212,13 @@ class QuestionList extends React.Component {
     };
 
     openQuestionModal() {
-        this.setState({ openQuestionModal: true });
+        this.setState({ optionError:false,openQuestionModal: true });
     }
     closeQuestionModal() {
         this.setState({ openQuestionModal: false })
     }
     openEditQuestionModal() {
-        this.setState({ openEditQuestionModal: true });
+        this.setState({ optionError:false,openEditQuestionModal: true });
     }
     closeEditQuestionModal() {
         this.setState({ openEditQuestionModal: false })
@@ -267,9 +270,11 @@ class QuestionList extends React.Component {
         } else if (e.controlId == "description") {
             this.setState({ description: e.value });
         } else if (e.controlId == "conceptName") {
+            //alert('hi')
+
             this.setState({ definedOptions: [] });
             if (e.uuid) {
-                this.setState({
+               this.setState({
                     hideIsOption: true,
                     showWidgetType: true,
                     showDataType: true,
@@ -277,13 +282,12 @@ class QuestionList extends React.Component {
                     variableNameReadOnly: "true"
                 });
             } else {
-
                 this.setState({
-                    question: e.value.toLowerCase().replace(/ /g, "_"),
-                    hideIsOption: false,
-                    showWidgetType: false,
-                    variableNameReadOnly: "true"
-                });
+                     question: e.value.toLowerCase().replace(/ /g, "_"),
+                     hideIsOption: false,
+                     showWidgetType: false,
+                     variableNameReadOnly: "true"
+                 });
             }
             e.answers.map(option => this.formatForOptionAndAddInState(option));
             this.setState({ conceptName: e });
@@ -311,6 +315,8 @@ class QuestionList extends React.Component {
             }
         } else {
             if (e.uuid) {
+                this.setState({optionError : false})
+
                 var array = this.state.definedOptions;
                 var existingObj = array.filter(data => data.controlId == e.controlId);
                 var index = array.indexOf(existingObj[0]);
@@ -320,6 +326,10 @@ class QuestionList extends React.Component {
                 } else {
                     this.setState({ definedOptions: [e] });
                 }
+            }
+            else {
+                //alert('should be a concept')
+                this.setState({optionError : true})
             }
         }
     };
@@ -381,6 +391,7 @@ class QuestionList extends React.Component {
                 option.key = e.uuid;
                 option.value = e.name.display;
             }
+         
         }
 
         // setting the new option in state
@@ -389,6 +400,15 @@ class QuestionList extends React.Component {
         });
     };
     async handleSubmitEditForm(e) {
+        if(this.state.dataTypeEdit == 'Coded' && this.state.definedOptions.length == 0) {
+            createNotification('warning','Coded question should have atleast one option');
+            return;
+        
+        }
+        if(this.state.optionError && this.state.dataTypeEdit == "Coded") {
+            createNotification('warning','Option does not exist.');
+            return;
+        }
         if (this.state.widgetsToShowEdit.length != 0) {
 
             var data = {
@@ -397,6 +417,7 @@ class QuestionList extends React.Component {
                 description: this.state.descriptionEdit,
                 fieldType: this.state.widgetType.key,
                 concept: this.state.conceptuuid,
+                attributeName: this.state.dataTypeEdit,
                 selectMultiple:
                     this.state.widgetType.value === "Multiple Choice" ? true : false,
                 tableName: this.state.isAttribute ? "Attribute" : ""
@@ -407,10 +428,11 @@ class QuestionList extends React.Component {
 
         }
         await questionService.saveEditedField(data).then(d => {
-            createNotification("success","Question Updated!"
+            createNotification("success", "Question Updated!"
             );
             this.closeEditQuestionModal();
-            this.props.getAllQuestion()
+            this.props.getAllQuestion();
+            this.setState({optionError:false})
             //    this.resetForm();
         });
     }
@@ -422,10 +444,19 @@ class QuestionList extends React.Component {
         var questionConceptClass = this.state.conceptClass;
         var options = this.state.definedOptions;
         var questionDataType = this.state.dataType;
+        if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
+            createNotification('warning', 'Coded questions should have atleast one option');
+            return;
+        }
         var displayText = this.state.displayText;
-        if (displayText == '' || questionDataType == {}) {
+        if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConceptClass.value == 'Question' ) {
             this.mandatoryFieldError();
             return;
+        }
+        if(this.state.optionError && questionDataType.value == "Coded") {
+            createNotification('warning', 'Option does not exist.')
+            return;
+
         }
         if (!/[a-zA-Z]+\s?[a-zA-Z]/.test(questionConcept)) {
             createNotification('warning', 'Name can not contain special characters')
@@ -442,7 +473,6 @@ class QuestionList extends React.Component {
             if (questionConceptClass.value == "Option") {
                 // Create conceptOnly
                 if (questionConcept !== undefined) {
-                    if (questionWidgetType != undefined) {
                         var data = {
                             names: [
                                 {
@@ -462,7 +492,7 @@ class QuestionList extends React.Component {
                             descriptions: [questionDescription]
                         };
                         questionService.saveConcept(data).then(d => {
-                          
+
                             createNotification(
                                 "success",
                                 "Option Saved!"
@@ -471,9 +501,8 @@ class QuestionList extends React.Component {
                             this.closeQuestionModal();
                             //this.resetForm();
                         });
-                    }
-
-                    //  return;
+                   
+                     return;
                 }
 
             }
@@ -501,8 +530,9 @@ class QuestionList extends React.Component {
                             "Question Saved!"
                         );
                         this.props.getAllQuestion();
+                        this.setState({optionError:false})
                         this.closeQuestionModal();
-                       // this.resetForm();
+                        // this.resetForm();
                     });
                     return;
                 }
@@ -531,30 +561,42 @@ class QuestionList extends React.Component {
                 };
                 if (questionWidgetType != undefined) {
                     questionService.saveConcept(conceptData).then(data => {
-                        console.log("Responsed received", data);
-                        var fieldData = {
-                            field: {
-                                name: displayText,
-                                description: questionDescription,
-                                fieldType: questionWidgetType.key,
-                                concept: data.uuid,
-                                selectMultiple:
-                                    questionWidgetType.value === "Multiple Choice" ? true : false,
-                                attributeName: questionDataType.value,
-                                tableName: this.state.isAttribute ? "Attribute" : ""
-                            },
-                            answers: this.fieldAnswerFormat()
-                        };
-                        questionService.saveField(fieldData).then(d => {
-                            createNotification(
-                                "success",
-                                "Question Saved!"
-                            );
-                            this.closeQuestionModal();
-                            this.props.getAllQuestion();
-                            this.resetForm();
-                            
-                        });
+                        // Forced delay to let Hibernate update cache before this call - only needed for slow servers 
+                        setTimeout(
+                            function() {
+                                // this.props.getAllQuestion();
+                                console.log("Responsed received", data);
+                                var fieldData = {
+                                    
+                                        name: displayText,
+                                        description: questionDescription,
+                                        fieldType: questionWidgetType.key,
+                                        concept: data.uuid,
+                                        selectMultiple:
+                                            questionWidgetType.value === "Multiple Choice" ? true : false,
+                                        attributeName: questionDataType.value,
+                                        tableName: this.state.isAttribute ? "Attribute" : ""
+                                    ,
+                                    answers: this.fieldAnswerFormat()
+                                };
+                                console.log('dtaa'+JSON.stringify(fieldData));
+                                questionService.saveField(fieldData).then(d => {
+                                    createNotification(
+                                        "success",
+                                        "Question Saved!"
+                                    );
+                                    this.closeQuestionModal();
+                                    this.props.getAllQuestion();
+                                    this.setState({optionError:false})
+
+                                    this.resetForm();
+
+                                });
+                            }
+                            .bind(this),
+                            3000
+                        );
+                        
                     });
                 }
 
@@ -593,11 +635,11 @@ class QuestionList extends React.Component {
             await event.data.answers.map(option => this.formatForOptionAndAddInStateForEdit(option));
             await this.setState({
                 fieldId: event.data.fieldId, conceptuuid: event.data.concept.uuid,
-                conceptnameforedit: event.data.name, openEditQuestionModal: true,
+                conceptnameforedit: event.data.concept.display, openEditQuestionModal: true,
                 widgetType: {
                     title: event.data.fieldType.display,
                     key: event.data.fieldType.uuid
-                }, isAttribute: event.data.tableName, variableName: event.data.name.toLowerCase().replace(/ /g, "_"),
+                }, isAttribute: event.data.tableName, variableName: event.data.concept.display.toLowerCase().replace(/ /g, "_"),
                 displayTextEdit: event.data.display, dataTypeEdit: event.data.concept.datatype.display, descriptionEdit: event.data.description
             })
             await console.log(JSON.stringify(this.state.widgetType))
@@ -621,6 +663,7 @@ class QuestionList extends React.Component {
         else {
 
             if (e.uuid) {
+                this.setState({optionError:false})
                 var array = this.state.definedOptions;
                 var existingObj = array.filter(data => data.controlId == e.controlId);
                 var index = array.indexOf(existingObj[0]);
@@ -630,18 +673,56 @@ class QuestionList extends React.Component {
                     this.setState({ definedOptions: [e] });
                 }
             }
+            else {
+                this.setState({optionError:true})
+            }
         }
     }
+
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    onRowSelected = (event) => {
+        console.log('onRowSelected: ' + event.node.data);
+    };
+
+
     render() {
         const {
             allWidgets,
             widgetsToShow,
             allDatatypes,
-            dataTypesToShow
+            dataTypesToShow,
+            columnDefs,
+            rowData
         } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
             <div className="row questionlist-main-header">
+                <CardTemplate
+                    title=" Question List"
+                    action={
+                        <button className="fp-btn btn btn-primary " onClick={() => this.openQuestionModal()}><i class="fas fa-plus"></i> Add New Question</button>
+                    }
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={event => this.onCellClicked(event)}
+                        />
+                    </div>
+
+                </CardTemplate>
+
                 {/* <div className="questionlist-heading col-sm-8 col-md-8 col-lg-8">
                     <h2 className="header_title">Question List</h2>
                 </div>
@@ -650,7 +731,7 @@ class QuestionList extends React.Component {
                     <button type="button" onClick={() => this.openQuestionModal()} className="btn btn-sm btn-primary btn-questionlist">     
                  </button>
                 </div> */}
-                <div className="questionlist-main-card card">
+        {/*  <div className="questionlist-main-card card">
                     <div className="card-header">
                         <div className="row">
                             <div className="col-md-8 col-sm-4">
@@ -661,7 +742,7 @@ class QuestionList extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {/* 
+                  
 
                     <div className="row card-header">
                         <div className="input-group search-btn">
@@ -672,8 +753,18 @@ class QuestionList extends React.Component {
                                 </button>
                             </div>
                         </div>
-                    </div> */}
-                    <div className="card-body rm-paadding">
+                    </div> 
+                <div className="card-body rm-paadding">
+                    <AgGrid
+                        onGridReady={this.onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={this.onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={this.onCellClicked}
+                    />
+
+                    />
+
                         <div className="d-flex justify-content-center">
                             <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
                                 <AgGridReact
@@ -697,9 +788,11 @@ class QuestionList extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <Modal show={this.state.openQuestionModal} onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
-                    <Modal.Body>
+            </div> */}
+               <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
+                    <Modal.Header closeButton>
+                    </Modal.Header>
+                    <Modal.Body >
                         <AppForm title="Create New Question">
                             <AutoSearchComplete
                                 controlId="conceptName"
@@ -977,7 +1070,7 @@ class QuestionList extends React.Component {
                         </AppForm>
                     </Modal.Body>
                 </Modal>
-            </div>
+            </div >
         )
     }
 }

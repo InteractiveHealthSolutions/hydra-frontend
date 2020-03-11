@@ -86,7 +86,7 @@ class Reports extends React.Component {
         this._isMounted=false;
     }
     createTBFilter() {
-        if(this.props.workflowList != undefined) {
+        if(this.props.workflowList !== undefined && this.props.workflowList.workflows != undefined) {
             let dropdown ='';
             this.options=[]
             if(this._isMounted) {
@@ -99,7 +99,7 @@ class Reports extends React.Component {
                 dropdown = <Select options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>;
                 this.otherFilter.push({'name':'Work Flow' , 'value':dropdown});
             }
-         if(this.props.concept != undefined) {
+         if(this.props.concept != undefined  && this.props.concept.answers !== undefined) {
              let dropdown='';
              let options=[];
              this.props.concept.answers.forEach(element => {
@@ -118,7 +118,7 @@ class Reports extends React.Component {
      console.log('filters 2'+JSON.stringify(this.otherFilter))
     }
     createWorkflowFilter() {
-        if(this.props.workflowList != undefined) {
+        if(this.props.workflowList !== undefined && this.props.workflowList.workflows !== undefined) {
             let dropdown ='';
             let options=[]
             if(this._isMounted) {
@@ -206,11 +206,9 @@ class Reports extends React.Component {
         await    this.state[this.state.currentReport].push({
                 'name':event.value ,'value':event.label
             })
-            alert(JSON.stringify(this.state[this.state.currentReport]))
         }
         else {
           await this.setState({test:[{'name':event.value ,'value':event.label}]});
-          alert(JSON.stringify(this.state.test))
         }
         
      }

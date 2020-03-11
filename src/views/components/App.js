@@ -21,13 +21,14 @@ import FormRender from './form/formdesigner/FormRender';
 import Form from './form/Form';
 import FindPatient from './patient/search/FindPatient'
 import PatientDetail from './patient/detail/PatientDetail';
+import Visits from './patient/visit/Visit';
 import PatientRegistration from './patient/create/PatientRegistration';
 import AdministrationHome from './administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ManageLabTest from './managelabtest/ManageLabTest'
+import ManageLabTest from './manageLabTest/ManageLabTest'
 import AddLabTestAttribute from './addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './managelabtestattribute/ManageLabTestAttribute'
+import ManageLabTestAttribute from './manageLabTestAttribute/ManageLabTestAttribute'
 import TestOrderList from './labtestorder/TestOrderList'
 import AddTestOrder from './labtestorder/AddTestOrder';
 import SampleList from './labtestsample/samplelist';
@@ -46,7 +47,9 @@ class App extends React.Component {
         this.onActive = this.onActive.bind(this);
         this.onIdle = this.onIdle.bind(this);
     }
+    
     onbeforeunload = (e) => {
+
         window.onunload = function () {
             localStorage.clear();
         }
@@ -64,7 +67,7 @@ class App extends React.Component {
                     onIdle={this.onIdle}
                     onAction={this.onAction}
                     debounce={250}
-                    timeout={18000000}
+                    timeout={1800000}
                 />
                 <Router history={history}>
                     <Route path="/" component={Header} />
@@ -99,6 +102,7 @@ class App extends React.Component {
                     <PrivateRoute path="/systemsettings" component={SystemSetting} />
                     <PrivateRoute path="/questionlist" component={QuestionList} />
                     <PrivateRoute path="/users" component={UserList} />
+                    <PrivateRoute path="/visit" component={Visits}/>
                 </Router>
                 <NotificationContainer />
             </div>
@@ -116,8 +120,9 @@ class App extends React.Component {
 
     onIdle(e) {
         // if (store.getState().authentication.authorized) {
-            userActions.logout();
-       // }
+        localStorage.clear()
+        userActions.logout();
+        // }
 
     }
 };
