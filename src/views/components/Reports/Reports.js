@@ -86,7 +86,7 @@ class Reports extends React.Component {
         this._isMounted=false;
     }
     createTBFilter() {
-        if(this.props.workflowList != undefined) {
+        if(this.props.workflowList !== undefined && this.props.workflowList.workflows != undefined) {
             let dropdown ='';
             this.options=[]
             if(this._isMounted) {
