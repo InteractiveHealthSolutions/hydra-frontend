@@ -19,7 +19,9 @@ import ButtonRenderer from '../../../../../utilities/helpers/ButtonRenderer';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './questionlist.css';
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 class QuestionList extends React.Component {
     constructor(props) {
@@ -29,16 +31,16 @@ class QuestionList extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: "Name", field: "name", width: 380
+                    headerName: "Name", field: "name"
                 },
                 {
-                    headerName: "Description", field: "description", width: 400
+                    headerName: "Description", field: "description"
                 },
                 {
-                    headerName: "Data Type", field: "concept.datatype.display", width: 150
+                    headerName: "Data Type", field: "concept.datatype.display"
                 },
                 {
-                    headerName: "Field Type", field: "fieldType.display", width: 200
+                    headerName: "Field Type", field: "fieldType.display"
                 },
                 {
                     headerName: "Edit",
@@ -407,7 +409,7 @@ class QuestionList extends React.Component {
 
         }
         await questionService.saveEditedField(data).then(d => {
-            createNotification("success","Question Updated!"
+            createNotification("success", "Question Updated!"
             );
             this.closeEditQuestionModal();
             this.props.getAllQuestion()
@@ -462,7 +464,7 @@ class QuestionList extends React.Component {
                             descriptions: [questionDescription]
                         };
                         questionService.saveConcept(data).then(d => {
-                          
+
                             createNotification(
                                 "success",
                                 "Option Saved!"
@@ -502,7 +504,7 @@ class QuestionList extends React.Component {
                         );
                         this.props.getAllQuestion();
                         this.closeQuestionModal();
-                       // this.resetForm();
+                        // this.resetForm();
                     });
                     return;
                 }
@@ -553,7 +555,7 @@ class QuestionList extends React.Component {
                             this.closeQuestionModal();
                             this.props.getAllQuestion();
                             this.resetForm();
-                            
+
                         });
                     });
                 }
@@ -632,16 +634,51 @@ class QuestionList extends React.Component {
             }
         }
     }
+
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    onRowSelected = (event) => {
+        console.log('onRowSelected: ' + event.node.data);
+    };
+
+
     render() {
         const {
             allWidgets,
             widgetsToShow,
             allDatatypes,
-            dataTypesToShow
+            dataTypesToShow,
+            columnDefs,
+            rowData
         } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
             <div className="row questionlist-main-header">
+                <CardTemplate
+                    title=" Question List"
+                    action={
+                        <button className="fp-btn btn btn-primary " onClick={() => this.openQuestionModal()}><i class="fas fa-plus"></i> Add New Question</button>
+                    }
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+                        />
+                    </div>
+
+                </CardTemplate>
+
                 {/* <div className="questionlist-heading col-sm-8 col-md-8 col-lg-8">
                     <h2 className="header_title">Question List</h2>
                 </div>
@@ -650,7 +687,7 @@ class QuestionList extends React.Component {
                     <button type="button" onClick={() => this.openQuestionModal()} className="btn btn-sm btn-primary btn-questionlist">     
                  </button>
                 </div> */}
-                <div className="questionlist-main-card card">
+        {/*  <div className="questionlist-main-card card">
                     <div className="card-header">
                         <div className="row">
                             <div className="col-md-8 col-sm-4">
@@ -661,7 +698,7 @@ class QuestionList extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {/* 
+                  
 
                     <div className="row card-header">
                         <div className="input-group search-btn">
@@ -672,8 +709,18 @@ class QuestionList extends React.Component {
                                 </button>
                             </div>
                         </div>
-                    </div> */}
-                    <div className="card-body rm-paadding">
+                    </div> 
+                <div className="card-body rm-paadding">
+                    <AgGrid
+                        onGridReady={this.onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={this.onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={this.onCellClicked}
+                    />
+
+                    />
+
                         <div className="d-flex justify-content-center">
                             <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
                                 <AgGridReact
@@ -696,288 +743,288 @@ class QuestionList extends React.Component {
                                 </AgGridReact>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <Modal show={this.state.openQuestionModal} onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
-                    <Modal.Body>
-                        <AppForm title="Create New Question">
-                            <AutoSearchComplete
-                                controlId="conceptName"
-                                title="Name"
+                    </div> */}
+
+           <Modal show={this.state.openQuestionModal} onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
+            <Modal.Body>
+                <AppForm title="Create New Question">
+                    <AutoSearchComplete
+                        controlId="conceptName"
+                        title="Name"
+                        onItemSelectedProp={this.onItemSelectedFunc}
+                        isRequired={true}
+                        pattern="[a-zA-Z]+\s?[a-zA-Z]"
+                    ></AutoSearchComplete>
+                    {this.state.hideIsOption ? (
+                        ""
+                    ) : (
+                            <RadioGroup
+                                title="Class"
+                                options={this.state.conceptClasses}
                                 onItemSelectedProp={this.onItemSelectedFunc}
-                                isRequired={true}
-                                pattern="[a-zA-Z]+\s?[a-zA-Z]"
-                            ></AutoSearchComplete>
-                            {this.state.hideIsOption ? (
-                                ""
-                            ) : (
-                                    <RadioGroup
-                                        title="Class"
-                                        options={this.state.conceptClasses}
-                                        onItemSelectedProp={this.onItemSelectedFunc}
-                                        isRequired="true"
-                                        controlId="class"
-                                    ></RadioGroup>
-                                )}
-                            {this.state.showWidgetType ? (
-                                <>
-                                    <SingleSelect
-                                        title="Widget Type"
-                                        onItemSelectedProp={this.onItemSelectedFunc}
-                                        isRequired="true"
-                                        controlId="widgetType"
-                                        options={widgetsToShow.length == 0 ? allWidgets : widgetsToShow}
-                                    ></SingleSelect>
-                                    <CheckBox
-                                        controlId="isAttribute"
-                                        title="Attribute"
-                                        onItemSelectedProp={this.onItemSelectedFunc}
-                                    >
-                                        Is Attribute
-              </CheckBox>
-                                </>
-                            ) : (
-                                    ""
-                                )}
-
-                            {this.state.showDataType ? (
-                                <TextBox
-                                    controlId="displayText"
-                                    title="Display Text"
-                                    readOnly="false"
-                                    onItemSelectedProp={this.onItemSelectedFunc}
-                                    isRequired="true"
-                                ></TextBox>
-                            ) : (
-                                    ""
-                                )}
-
-                            <TextBox
-                                value={this.state.question}
-                                controlId="variableName"
-                                title="Variable Name"
-                                readOnly={this.state.variableNameReadOnly}
-                                onItemSelectedProp={this.onItemSelectedFunc}
-                                isRequired={true}
-                            ></TextBox>
-                            {this.state.showDataType ? (
-                                <SingleSelect
-                                    title="Data Type"
-                                    options={
-                                        dataTypesToShow.length == 0 ? allDatatypes : dataTypesToShow
-                                    }
-                                    onItemSelectedProp={this.onItemSelectedFunc}
-                                    isRequired="true"
-                                    controlId="dataType"
-                                ></SingleSelect>
-                            ) : (
-                                    ""
-                                )}
-                            <TextArea
-                                controlId="description"
-                                value={this.state.description}
-                                title="Description"
-                                title="Description"
-                                onItemSelectedProp={this.onItemSelectedFunc}
-                            ></TextArea>
-                            {this.state.textBoxSelected ? (
-                                <>
-                                    <TextBox
-                                        controlId="characters"
-                                        title="Description"
-                                        title="Allowed Characters"
-                                        onItemSelectedProp={this.onItemSelectedFunc}
-                                    ></TextBox>
-                                </>
-                            ) : (
-                                    ""
-                                )}
-
-                            {this.state.selectableSelected ? (
-                                <div
-                                    style={{
-                                        overflow: "hidden",
-                                        padding: "20px",
-                                        backgroundColor: "#f2f2f2"
-                                    }}
-                                >
-                                    <div id="options-pane">
-                                        {this.state.definedOptions.map(definedOption => (
-                                            <div className="row" key={definedOption.key}>
-                                                <div className="col-md-11">
-                                                    <AutoSearchComplete
-                                                        key={definedOption.key}
-                                                        uniqueKey={definedOption.key}
-                                                        value={definedOption.value}
-                                                        fullData={definedOption}
-                                                        controlId={definedOption.controlId}
-                                                        title={definedOption.title}
-                                                        onItemSelectedProp={this.onItemSelectedFunc}
-                                                    ></AutoSearchComplete>
-                                                </div>
-                                                <div className="col-md-1" style={{ textAlign: "center" }}>
-                                                    <span
-                                                        onClick={e => this.deleteOption(e, definedOption.key)}
-                                                    >
-                                                        <label className="fas fa-times"></label>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button
-                                        name="addOption"
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        style={{
-                                            textAlign: "center",
-                                            float: "right",
-                                            marginTop: "10px"
-                                        }}
-                                        onClick={this.openModall}
-                                    >
-                                        Add Option
-              </button>
-                                </div>
-                            ) : (
-                                    ""
-                                )}
-
-                            <div className="form-group">
-                                <button
-                                    name="submit"
-                                    type="button"
-                                    onClick={this.submit}
-                                    style={{ marginTop: "20px", float: "left" }}
-                                    className="btn btn-primary"
-                                >
-                                    Submit
-            </button>
-                            </div>
-                        </AppForm>
-                    </Modal.Body>
-                </Modal>
-                <Modal show={this.state.openEditQuestionModal} onHide={() => this.closeEditQuestionModal()} style={{ marginTop: '40px' }} >
-                    <Modal.Body>
-                        <AppForm title="Edit Question">
-                            <TextBox
-                                controlId="conceptnameforedit"
-                                value={this.state.conceptnameforedit}
-                                title="Name"
-                                onItemSelectedProp={this.onChangeEdit}
-                                readOnly="true"
-                            ></TextBox>
+                                isRequired="true"
+                                controlId="class"
+                            ></RadioGroup>
+                        )}
+                    {this.state.showWidgetType ? (
+                        <>
                             <SingleSelect
                                 title="Widget Type"
-                                options={this.state.widgetsToShowEdit}
-                                onItemSelectedProp={this.onChangeEdit}
+                                onItemSelectedProp={this.onItemSelectedFunc}
                                 isRequired="true"
-                                controlId="widgettype"
-                                disabled={this.state.widgetsToShowEdit.length == 1 ? true : false}
+                                controlId="widgetType"
+                                options={widgetsToShow.length == 0 ? allWidgets : widgetsToShow}
                             ></SingleSelect>
                             <CheckBox
                                 controlId="isAttribute"
                                 title="Attribute"
-                                onItemSelectedProp={this.onChangeEdit}
-                                checked={this.state.isAttribute == null ? 'false' : 'true'}
+                                onItemSelectedProp={this.onItemSelectedFunc}
                             >
                                 Is Attribute
               </CheckBox>
+                        </>
+                    ) : (
+                            ""
+                        )}
 
+                    {this.state.showDataType ? (
+                        <TextBox
+                            controlId="displayText"
+                            title="Display Text"
+                            readOnly="false"
+                            onItemSelectedProp={this.onItemSelectedFunc}
+                            isRequired="true"
+                        ></TextBox>
+                    ) : (
+                            ""
+                        )}
+
+                    <TextBox
+                        value={this.state.question}
+                        controlId="variableName"
+                        title="Variable Name"
+                        readOnly={this.state.variableNameReadOnly}
+                        onItemSelectedProp={this.onItemSelectedFunc}
+                        isRequired={true}
+                    ></TextBox>
+                    {this.state.showDataType ? (
+                        <SingleSelect
+                            title="Data Type"
+                            options={
+                                dataTypesToShow.length == 0 ? allDatatypes : dataTypesToShow
+                            }
+                            onItemSelectedProp={this.onItemSelectedFunc}
+                            isRequired="true"
+                            controlId="dataType"
+                        ></SingleSelect>
+                    ) : (
+                            ""
+                        )}
+                    <TextArea
+                        controlId="description"
+                        value={this.state.description}
+                        title="Description"
+                        title="Description"
+                        onItemSelectedProp={this.onItemSelectedFunc}
+                    ></TextArea>
+                    {this.state.textBoxSelected ? (
+                        <>
                             <TextBox
-                                controlId="variablename"
-                                value={this.state.variableName}
-                                title="Variable Name"
-                                onItemSelectedProp={this.onChangeEdit}
-                                readOnly="true"
-                            ></TextBox>
-                            <TextBox
-                                controlId="displaytext"
-                                value={this.state.displayTextEdit}
-                                title="Display Text"
-                                onItemSelectedProp={this.onChangeEdit}
-                                readOnly="false"
-                                isRequired="true"
-                            ></TextBox>
-                            <TextBox
-                                controlId="datatype"
-                                value={this.state.dataTypeEdit}
-                                title="Data Type"
-                                onItemSelectedProp={this.onChangeEdit}
-                                readOnly="true"
-                            ></TextBox>
-                            <TextArea
-                                controlId="description"
-                                value={this.state.descriptionEdit}
+                                controlId="characters"
                                 title="Description"
-                                title="Description"
-                                onItemSelectedProp={this.onChangeEdit}
-                                isRequired="true"
-                            ></TextArea>
-                            {this.state.dataTypeEdit == 'Coded' ? (
-                                <div
-                                    style={{
-                                        overflow: "hidden",
-                                        padding: "20px",
-                                        backgroundColor: "#f2f2f2"
-                                    }}
-                                >
-                                    <div id="options-pane">
-                                        {this.state.definedOptions.map(definedOption => (
-                                            <div className="row" key={definedOption.key}>
-                                                <div className="col-md-11">
-                                                    <AutoSearchComplete
-                                                        key={definedOption.key}
-                                                        uniqueKey={definedOption.key}
-                                                        value={definedOption.value}
-                                                        fullData={definedOption}
-                                                        controlId={definedOption.controlId}
-                                                        title={definedOption.title}
-                                                        onItemSelectedProp={this.onChangeEdit}
-                                                    ></AutoSearchComplete>
-                                                </div>
-                                                <div className="col-md-1" style={{ textAlign: "center" }}>
-                                                    <span
-                                                        onClick={e => this.deleteOption(e, definedOption.key)}
-                                                    >
-                                                        <label className="fas fa-times"></label>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
+                                title="Allowed Characters"
+                                onItemSelectedProp={this.onItemSelectedFunc}
+                            ></TextBox>
+                        </>
+                    ) : (
+                            ""
+                        )}
+
+                    {this.state.selectableSelected ? (
+                        <div
+                            style={{
+                                overflow: "hidden",
+                                padding: "20px",
+                                backgroundColor: "#f2f2f2"
+                            }}
+                        >
+                            <div id="options-pane">
+                                {this.state.definedOptions.map(definedOption => (
+                                    <div className="row" key={definedOption.key}>
+                                        <div className="col-md-11">
+                                            <AutoSearchComplete
+                                                key={definedOption.key}
+                                                uniqueKey={definedOption.key}
+                                                value={definedOption.value}
+                                                fullData={definedOption}
+                                                controlId={definedOption.controlId}
+                                                title={definedOption.title}
+                                                onItemSelectedProp={this.onItemSelectedFunc}
+                                            ></AutoSearchComplete>
+                                        </div>
+                                        <div className="col-md-1" style={{ textAlign: "center" }}>
+                                            <span
+                                                onClick={e => this.deleteOption(e, definedOption.key)}
+                                            >
+                                                <label className="fas fa-times"></label>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <button
-                                        name="addOption"
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        style={{
-                                            textAlign: "center",
-                                            float: "right",
-                                            marginTop: "10px"
-                                        }}
-                                        onClick={this.openModall}
-                                    >
-                                        Add Option
-                          </button>
-                                </div>
-                            ) : ''}
-
-                            <div className="form-group">
-                                <button
-                                    name="submit"
-                                    type="button"
-                                    onClick={this.handleSubmitEditForm}
-                                    style={{ marginTop: "20px", float: "left" }}
-                                    className="btn btn-primary"
-                                >
-                                    Submit
-            </button>
+                                ))}
                             </div>
+                            <button
+                                name="addOption"
+                                type="button"
+                                className="btn btn-secondary"
+                                style={{
+                                    textAlign: "center",
+                                    float: "right",
+                                    marginTop: "10px"
+                                }}
+                                onClick={this.openModall}
+                            >
+                                Add Option
+              </button>
+                        </div>
+                    ) : (
+                            ""
+                        )}
 
-                        </AppForm>
-                    </Modal.Body>
-                </Modal>
-            </div>
+                    <div className="form-group">
+                        <button
+                            name="submit"
+                            type="button"
+                            onClick={this.submit}
+                            style={{ marginTop: "20px", float: "left" }}
+                            className="btn btn-primary"
+                        >
+                            Submit
+            </button>
+                    </div>
+                </AppForm>
+            </Modal.Body>
+        </Modal>
+            <Modal show={this.state.openEditQuestionModal} onHide={() => this.closeEditQuestionModal()} style={{ marginTop: '40px' }} >
+                <Modal.Body>
+                    <AppForm title="Edit Question">
+                        <TextBox
+                            controlId="conceptnameforedit"
+                            value={this.state.conceptnameforedit}
+                            title="Name"
+                            onItemSelectedProp={this.onChangeEdit}
+                            readOnly="true"
+                        ></TextBox>
+                        <SingleSelect
+                            title="Widget Type"
+                            options={this.state.widgetsToShowEdit}
+                            onItemSelectedProp={this.onChangeEdit}
+                            isRequired="true"
+                            controlId="widgettype"
+                            disabled={this.state.widgetsToShowEdit.length == 1 ? true : false}
+                        ></SingleSelect>
+                        <CheckBox
+                            controlId="isAttribute"
+                            title="Attribute"
+                            onItemSelectedProp={this.onChangeEdit}
+                            checked={this.state.isAttribute == null ? 'false' : 'true'}
+                        >
+                            Is Attribute
+              </CheckBox>
+
+                        <TextBox
+                            controlId="variablename"
+                            value={this.state.variableName}
+                            title="Variable Name"
+                            onItemSelectedProp={this.onChangeEdit}
+                            readOnly="true"
+                        ></TextBox>
+                        <TextBox
+                            controlId="displaytext"
+                            value={this.state.displayTextEdit}
+                            title="Display Text"
+                            onItemSelectedProp={this.onChangeEdit}
+                            readOnly="false"
+                            isRequired="true"
+                        ></TextBox>
+                        <TextBox
+                            controlId="datatype"
+                            value={this.state.dataTypeEdit}
+                            title="Data Type"
+                            onItemSelectedProp={this.onChangeEdit}
+                            readOnly="true"
+                        ></TextBox>
+                        <TextArea
+                            controlId="description"
+                            value={this.state.descriptionEdit}
+                            title="Description"
+                            title="Description"
+                            onItemSelectedProp={this.onChangeEdit}
+                            isRequired="true"
+                        ></TextArea>
+                        {this.state.dataTypeEdit == 'Coded' ? (
+                            <div
+                                style={{
+                                    overflow: "hidden",
+                                    padding: "20px",
+                                    backgroundColor: "#f2f2f2"
+                                }}
+                            >
+                                <div id="options-pane">
+                                    {this.state.definedOptions.map(definedOption => (
+                                        <div className="row" key={definedOption.key}>
+                                            <div className="col-md-11">
+                                                <AutoSearchComplete
+                                                    key={definedOption.key}
+                                                    uniqueKey={definedOption.key}
+                                                    value={definedOption.value}
+                                                    fullData={definedOption}
+                                                    controlId={definedOption.controlId}
+                                                    title={definedOption.title}
+                                                    onItemSelectedProp={this.onChangeEdit}
+                                                ></AutoSearchComplete>
+                                            </div>
+                                            <div className="col-md-1" style={{ textAlign: "center" }}>
+                                                <span
+                                                    onClick={e => this.deleteOption(e, definedOption.key)}
+                                                >
+                                                    <label className="fas fa-times"></label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <button
+                                    name="addOption"
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    style={{
+                                        textAlign: "center",
+                                        float: "right",
+                                        marginTop: "10px"
+                                    }}
+                                    onClick={this.openModall}
+                                >
+                                    Add Option
+                          </button>
+                            </div>
+                        ) : ''}
+
+                        <div className="form-group">
+                            <button
+                                name="submit"
+                                type="button"
+                                onClick={this.handleSubmitEditForm}
+                                style={{ marginTop: "20px", float: "left" }}
+                                className="btn btn-primary"
+                            >
+                                Submit
+            </button>
+                        </div>
+
+                    </AppForm>
+                </Modal.Body>
+            </Modal>
+            </div >
         )
     }
 }

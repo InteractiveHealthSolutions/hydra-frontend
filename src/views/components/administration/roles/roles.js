@@ -12,7 +12,9 @@ import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './roles.css';
-import Loaders from '../../loader/Loader';
+import Loaders from '../../common/loader/Loader';
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
 
 const animatedComponents = makeAnimated();
 
@@ -24,7 +26,8 @@ class Roles extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: 'Role', field: 'role', width: '200'},
+                    headerName: 'Role', field: 'role', width: '200'
+                },
                 {
                     headerName: 'Description', field: 'description', width: '320'
                 },
@@ -130,7 +133,7 @@ class Roles extends React.Component {
         }
         else
             await this.props.postRole(this.state.roleFormData);
-            await this.props.getRoles();
+        await this.props.getRoles();
         //console.log('submitted '+JSON.stringify(this.state.roleFormData))
         this.closeAddRoleModal();
     }
@@ -147,7 +150,7 @@ class Roles extends React.Component {
         console.log("on change " + name + " " + value);
     }
     dataBuilder() {
-        if(this.props.rolesList != undefined) {
+        if (this.props.rolesList != undefined) {
             let data = [];
             this.props.rolesList.results.forEach(element => {
                 let inheritedRoles = '';
@@ -168,7 +171,7 @@ class Roles extends React.Component {
             });
             return data;
         }
-       
+
     }
     closeAddRoleModal() {
         this.setState({ openAddRoleModal: false })
@@ -211,12 +214,41 @@ class Roles extends React.Component {
         await console.log(this.state.roleFormData.selectedPriviliges)
         console.log('left ' + JSON.stringify(this.selectedPriviliges))
     }
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    onRowSelected = (event) => {
+        console.log('onRowSelected: ' + event.node.data);
+    };
+
+
     render() {
-        const { roleFormData} = this.state;
+        const { roleFormData ,rowData,columnDefs} = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
             <div className="row container-fluid l-main-container">
-              
+                <CardTemplate
+                    title="User Role Management"
+                    action={<button type="button" onClick={() => this.openAddRoleModal()} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add User Role</button>}
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+                        />
+                    </div>
+                </CardTemplate>
+
+
                 <div className="card fp-header">
                     <div className="card-header">
                         {/* <div className="input-group search-btn">
@@ -232,8 +264,8 @@ class Roles extends React.Component {
                                 <span className="text-muted">User Role Management</span>
                             </div>
                             <div className="col-md-4 col-sm-2">
-                            <button type="button" onClick={() => this.openAddRoleModal()} className="fp-btn btn btn-primary ">
-                        + Add User Role
+                                <button type="button" onClick={() => this.openAddRoleModal()} className="fp-btn btn btn-primary ">
+                                    + Add User Role
             </button>                            </div>
                         </div>
                     </div>

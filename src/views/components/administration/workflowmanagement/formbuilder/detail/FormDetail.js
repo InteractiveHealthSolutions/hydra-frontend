@@ -11,6 +11,7 @@ import { formAction } from "../../../../../../state/ducks/form";
 import { createNotification } from '../../../../../../utilities/helpers/helper'
 import Loaders from '../../../../common/loader/Loader';
 import { AgGrid } from '../../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
 
 function FormDetail(props) {
 
@@ -27,12 +28,19 @@ function FormDetail(props) {
                 `
                   <button className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , width: 80
+            , width: 60
+        },
+         {
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter", width: 60
         }
     ]);
 
     const [rowData, setRowData] = useState([]);
 
+    function statusFormatter(params) {
+        console.log("Formater ", params.value);
+        return params.value === false ? 'Active' : 'Retired';
+    }
 
     useEffect(() => {
         if (props.formList !== undefined) {
@@ -79,7 +87,24 @@ function FormDetail(props) {
     if (props.isLoading) return <Loaders />;
     return (
         <div className="row container-fluid service-main-container">
-            <div className="card fp-header">
+            <CardTemplate
+                title="Form"
+                action={
+                    <button className="service-btn btn btn-primary " onClick={nextStep}><i class="fas fa-plus"></i>  Create New</button>
+                }
+            >
+                <div className="card-body rm-paadding">
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
+                </div>
+            </CardTemplate>
+
+            {/* <div className="card fp-header">
                 <div className="card-header">
                     <div className="row">
                         <div className="col-md-6 col-sm-4">
@@ -99,7 +124,7 @@ function FormDetail(props) {
                         onCellClicked={onCellClicked}
                     />
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
