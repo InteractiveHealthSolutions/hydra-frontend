@@ -25,7 +25,7 @@ import { patientAction } from '../../../../state/ducks/patient';
 import './findpatient.css';
 import Loaders from '../../loader/Loader';
 import moment from 'moment';
-import {AgGrid} from '../../../ui/AgGridTable/AgGrid'
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid'
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
 class FindPatient extends React.Component {
 
@@ -292,43 +292,39 @@ class FindPatient extends React.Component {
     }
 
     render() {
-        const { patient, identifierFormat,rowData,columnDefs } = this.state;
+        const { patient, identifierFormat, rowData, columnDefs } = this.state;
         if (this.props.isloading) return <Loaders />;
         return (
             <div className="row container-fluid fp-main-container">
                 <CardTemplate
                     title={
                         <div className="row">
-                            <div className="col-md-4 col-sm-4">
-                                <span>
-                                    <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                                        <div className="input-group search-btn">
-                                            <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
-                                                onKeyPress={event => {
-                                                    if (event.key === 'Enter') {
-                                                        this.searchPatient(event)
-                                                    }
-                                                }}
-                                                required
-                                                className="form-control bg-light border-0 small fp-input-search" placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
-                                            <div className="input-group-append">
-                                                <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
-                                                    <i className="fas fa-search fa-sm"></i>
-                                                </button>
-                                            </div>
+                            <div className="col-md-4">
+                                <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                                    <div className="input-group search-btn">
+                                        <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
+                                            onKeyPress={event => {
+                                                if (event.key === 'Enter') {
+                                                    this.searchPatient(event)
+                                                }
+                                            }}
+                                            required
+                                            className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
+                                        <div className="input-group-append">
+                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
+                                                <i className="fas fa-search fa-sm"></i>
+                                            </button>
                                         </div>
-                                    </form>
-                                </span>
-                            </div>
-                            <div className="col-md-4 col-sm-4">
-                                <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>
-                                    {localStorage.getItem("selectedWorkflow")}
-                                </button>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                    }
+                    action={
+                        <>
+                            <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>{localStorage.getItem("selectedWorkflow")}</button>
+                            <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
+                        </>
                     }
                 >
                     <AgGrid
