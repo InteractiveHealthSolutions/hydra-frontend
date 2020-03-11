@@ -561,34 +561,42 @@ class QuestionList extends React.Component {
                 };
                 if (questionWidgetType != undefined) {
                     questionService.saveConcept(conceptData).then(data => {
-                        this.props.getAllQuestion();
-                        console.log("Responsed received", data);
-                        var fieldData = {
-                            
-                                name: displayText,
-                                description: questionDescription,
-                                fieldType: questionWidgetType.key,
-                                concept: data.uuid,
-                                selectMultiple:
-                                    questionWidgetType.value === "Multiple Choice" ? true : false,
-                                attributeName: questionDataType.value,
-                                tableName: this.state.isAttribute ? "Attribute" : ""
-                            ,
-                            answers: this.fieldAnswerFormat()
-                        };
-                        console.log('dtaa'+JSON.stringify(fieldData));
-                        questionService.saveField(fieldData).then(d => {
-                            createNotification(
-                                "success",
-                                "Question Saved!"
-                            );
-                            this.closeQuestionModal();
-                            this.props.getAllQuestion();
-                            this.setState({optionError:false})
+                        // Forced delay to let Hibernate update cache before this call - only needed for slow servers 
+                        setTimeout(
+                            function() {
+                                // this.props.getAllQuestion();
+                                console.log("Responsed received", data);
+                                var fieldData = {
+                                    
+                                        name: displayText,
+                                        description: questionDescription,
+                                        fieldType: questionWidgetType.key,
+                                        concept: data.uuid,
+                                        selectMultiple:
+                                            questionWidgetType.value === "Multiple Choice" ? true : false,
+                                        attributeName: questionDataType.value,
+                                        tableName: this.state.isAttribute ? "Attribute" : ""
+                                    ,
+                                    answers: this.fieldAnswerFormat()
+                                };
+                                console.log('dtaa'+JSON.stringify(fieldData));
+                                questionService.saveField(fieldData).then(d => {
+                                    createNotification(
+                                        "success",
+                                        "Question Saved!"
+                                    );
+                                    this.closeQuestionModal();
+                                    this.props.getAllQuestion();
+                                    this.setState({optionError:false})
 
-                            this.resetForm();
+                                    this.resetForm();
 
-                        });
+                                });
+                            }
+                            .bind(this),
+                            3000
+                        );
+                        
                     });
                 }
 
