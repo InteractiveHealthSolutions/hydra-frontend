@@ -16,6 +16,9 @@
   font-weight: bold;
   margin-left: 13px;
 }
+.ep_service{
+  margin-bottom: 12px;
+}
 
 .ep-back-btn {
   width: 85px;
@@ -262,6 +265,9 @@
 }
 
 .asset-list {
+  width: 100% !important;
+}
+.mui_list{
   width: 100% !important;
 }
 
