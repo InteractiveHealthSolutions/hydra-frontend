@@ -10,9 +10,11 @@ import Select from 'react-select'
 import { connect } from 'react-redux';
 import { locationAction } from '../../../../../state/ducks/location'
 import { createNotification } from '../../../../../utilities/helpers/helper'
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 class LocationManagement extends React.Component {
 
@@ -22,16 +24,16 @@ class LocationManagement extends React.Component {
         this.state = {
             columnDefs: [
                 {
-                    headerName: "Name", field: "display", width: 300
+                    headerName: "Name", field: "display"
                 },
                 {
-                    headerName: "Description", field: "description", width: 380
+                    headerName: "Description", field: "description"
                 },
                 {
-                    headerName: "City/village", field: "cityVillage", width: 130
+                    headerName: "City/village", field: "cityVillage"
                 },
                 {
-                    headerName: "Address", field: "address1", width: 300
+                    headerName: "Address", field: "address1"
                 },
                 {
                     headerName: "Edit",
@@ -46,14 +48,6 @@ class LocationManagement extends React.Component {
                     field: "uuid",
                     hide: true
                 }
-                // {
-                //     headerName: "delete",
-                //     template:
-                //         `
-                //     <button className="btn-edite"><i class="fas fa-trash-alt"></i></button>
-                //     `
-                //     , width: 80
-                // },
             ],
             rowData: [],
             openModal: false,
@@ -287,9 +281,9 @@ class LocationManagement extends React.Component {
                 createNotification('success', 'Location Created')
                 await this.props.getAllLocation()
                 await this.closeModal();
-               
+
             }
-          
+
         }
 
     }
@@ -391,13 +385,38 @@ class LocationManagement extends React.Component {
 
         //console.log('left ' + JSON.stringify(this.selectedPriviliges))
     }
+    onGridReady(params) {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
 
     render() {
-        const { colorCountryError, colorCityError, colorProvinceError } = this.state;
+        const { colorCountryError, rowData, columnDefs, colorCityError, colorProvinceError } = this.state;
 
         if (this.props.isloading) return <Loaders />;
         return (
             <div className="row container-fluid l-main-container">
+                <CardTemplate
+                    title="Location Management"
+                    action={<button className="fp-btn btn btn-primary " onClick={() => this.openModal()}><i class="fas fa-plus"></i> Create New</button>}
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+
+                        />
+                    </div>
+
+                </CardTemplate>
+{/* 
                 <div className="card fp-header">
                     <div className="card-header">
                         <div className="row">
@@ -410,34 +429,16 @@ class LocationManagement extends React.Component {
                         </div>
                     </div>
                     <div className="card-body rm-paadding">
-                        <div className="d-flex justify-content-center">
-                            <div
-                                className="ag-theme-balham"
-                                style={{
-                                    height: '421px',
-                                    width: '100%'
-                                }}
-                            >
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    onRowSelected={this.onRowSelected}
-                                    onCellClicked={event => { this.onCellClicked(event) }}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationAutoPageSize={true}
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                >
-                                </AgGridReact>
-                            </div>
-                        </div>
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+
+                        />
                     </div>
-                </div>
+                </div> */}
 
                 <Modal
                     show={this.state.openModal}

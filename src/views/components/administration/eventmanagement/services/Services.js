@@ -41,10 +41,10 @@ function Services(props) {
                 `
                   <button className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , filter: "agSetColumnFilter"
+            , filter: "agSetColumnFilter", width: 60
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter"
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter", width: 70
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -85,12 +85,13 @@ function Services(props) {
     useEffect(() => {
 
         if (props.serviceTypeList !== undefined) {
+            console.log("serviceTypeLis",props.serviceTypeList)
             setAvailableServicesType(props.serviceTypeList.serviceTypes);
             if (availableServicesType !== undefined)
                 populateDropDown();
         }
 
-    }, [props.serviceTypeList, availableServicesType])
+    }, [props.serviceTypeList,availableServicesType])
 
 
 
@@ -138,15 +139,12 @@ function Services(props) {
             name: serviceTypeName,
             encounterType: associatedForm.uuid
         }
+        console.log("assetTypeForm", assetTypeForm)
         await props.saveServiceType(assetTypeForm);
         await props.fetchServiceType();
+        resetForm()
         await createNotification("success", "Saved successfully")
-        setServiceTypeName('')
-    }
-
-    function resetForm() {
-        setServiceName('');
-        setServiceTypeName('');
+      
     }
 
     async function saveService() {
@@ -162,7 +160,7 @@ function Services(props) {
                 // referenceId: activeService.referenceId
             }
         }
-        else if (actionType !== 'ServiceType') {
+        else {
             serviceForm = {
                 name: serviceName,
                 retired: false,
@@ -174,13 +172,15 @@ function Services(props) {
         console.log("serviceForm", serviceForm)
         await props.saveService(serviceForm);
         await getAllService();
-        await createNotification("success", "Saved successfully")
         resetForm()
+        await createNotification("success", "Saved successfully")
+
     }
 
     function resetForm() {
         setServiceName('')
         setUnitCost('')
+        setServiceTypeName('');
     }
 
     function openModall() {
@@ -346,7 +346,7 @@ function Services(props) {
                                                 name='unitCost'
                                                 value={unitCost}
                                                 onChange={handleChange}
-                                                min ="0"
+                                                min="1"
                                                 required
                                             />
                                         </div>
@@ -399,7 +399,7 @@ function Services(props) {
                                                 name='unitCost'
                                                 value={unitCost}
                                                 onChange={handleChange}
-                                                min="0"
+                                                min="1"
                                                 required
                                             />
                                         </div>

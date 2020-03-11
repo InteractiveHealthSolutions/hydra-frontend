@@ -41,10 +41,10 @@ function Assets(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-
+                , width: 60
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 70
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -414,7 +414,7 @@ function Assets(props) {
                                                 name="capitalValue"
                                                 value={capitalValue}
                                                 onChange={handleChange}
-                                                min="0"
+                                                min="1"
                                                 required
                                             />
                                         </div>

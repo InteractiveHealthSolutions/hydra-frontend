@@ -19,7 +19,9 @@ import ButtonRenderer from '../../../../../utilities/helpers/ButtonRenderer';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './questionlist.css';
-import Loaders from '../../../loader/Loader';
+import Loaders from '../../../common/loader/Loader';
+import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 class QuestionList extends React.Component {
     constructor(props) {
@@ -29,16 +31,16 @@ class QuestionList extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: "Name", field: "name", width: 380
+                    headerName: "Name", field: "name"
                 },
                 {
-                    headerName: "Description", field: "description", width: 400
+                    headerName: "Description", field: "description"
                 },
                 {
-                    headerName: "Data Type", field: "concept.datatype.display", width: 150
+                    headerName: "Data Type", field: "concept.datatype.display"
                 },
                 {
-                    headerName: "Field Type", field: "fieldType.display", width: 200
+                    headerName: "Field Type", field: "fieldType.display"
                 },
                 {
                     headerName: "Edit",
@@ -426,7 +428,7 @@ class QuestionList extends React.Component {
 
         }
         await questionService.saveEditedField(data).then(d => {
-            createNotification("success","Question Updated!"
+            createNotification("success", "Question Updated!"
             );
             this.closeEditQuestionModal();
             this.props.getAllQuestion();
@@ -490,7 +492,7 @@ class QuestionList extends React.Component {
                             descriptions: [questionDescription]
                         };
                         questionService.saveConcept(data).then(d => {
-                          
+
                             createNotification(
                                 "success",
                                 "Option Saved!"
@@ -530,7 +532,7 @@ class QuestionList extends React.Component {
                         this.props.getAllQuestion();
                         this.setState({optionError:false})
                         this.closeQuestionModal();
-                       // this.resetForm();
+                        // this.resetForm();
                     });
                     return;
                 }
@@ -585,7 +587,7 @@ class QuestionList extends React.Component {
                             this.setState({optionError:false})
 
                             this.resetForm();
-                            
+
                         });
                     });
                 }
@@ -668,16 +670,51 @@ class QuestionList extends React.Component {
             }
         }
     }
+
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
+
+    onRowSelected = (event) => {
+        console.log('onRowSelected: ' + event.node.data);
+    };
+
+
     render() {
         const {
             allWidgets,
             widgetsToShow,
             allDatatypes,
-            dataTypesToShow
+            dataTypesToShow,
+            columnDefs,
+            rowData
         } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
             <div className="row questionlist-main-header">
+                <CardTemplate
+                    title=" Question List"
+                    action={
+                        <button className="fp-btn btn btn-primary " onClick={() => this.openQuestionModal()}><i class="fas fa-plus"></i> Add New Question</button>
+                    }
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={event => this.onCellClicked(event)}
+                        />
+                    </div>
+
+                </CardTemplate>
+
                 {/* <div className="questionlist-heading col-sm-8 col-md-8 col-lg-8">
                     <h2 className="header_title">Question List</h2>
                 </div>
@@ -686,7 +723,7 @@ class QuestionList extends React.Component {
                     <button type="button" onClick={() => this.openQuestionModal()} className="btn btn-sm btn-primary btn-questionlist">     
                  </button>
                 </div> */}
-                <div className="questionlist-main-card card">
+        {/*  <div className="questionlist-main-card card">
                     <div className="card-header">
                         <div className="row">
                             <div className="col-md-8 col-sm-4">
@@ -697,7 +734,7 @@ class QuestionList extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {/* 
+                  
 
                     <div className="row card-header">
                         <div className="input-group search-btn">
@@ -708,8 +745,18 @@ class QuestionList extends React.Component {
                                 </button>
                             </div>
                         </div>
-                    </div> */}
-                    <div className="card-body rm-paadding">
+                    </div> 
+                <div className="card-body rm-paadding">
+                    <AgGrid
+                        onGridReady={this.onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={this.onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={this.onCellClicked}
+                    />
+
+                    />
+
                         <div className="d-flex justify-content-center">
                             <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
                                 <AgGridReact
@@ -733,8 +780,8 @@ class QuestionList extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
+            </div> */}
+               <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body >
@@ -1015,7 +1062,7 @@ class QuestionList extends React.Component {
                         </AppForm>
                     </Modal.Body>
                 </Modal>
-            </div>
+            </div >
         )
     }
 }
