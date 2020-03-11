@@ -99,7 +99,7 @@ class Reports extends React.Component {
                 dropdown = <Select options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>;
                 this.otherFilter.push({'name':'Work Flow' , 'value':dropdown});
             }
-         if(this.props.concept !== undefined && this.props.concept.answers !== undefined) {
+         if(this.props.concept != undefined) {
              let dropdown='';
              let options=[];
              this.props.concept.answers.forEach(element => {

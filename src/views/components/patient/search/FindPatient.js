@@ -6,14 +6,14 @@ import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import {personAction} from '../../../../state/ducks/person';
-import {workflowAction} from '../../../../state/ducks/workflow';
+import { personAction } from '../../../../state/ducks/person';
+import { workflowAction } from '../../../../state/ducks/workflow';
 import { findpatientservice } from '../../../../services';
 import { locationAction } from '../../../../state/ducks/location';
 import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
-import {personJSON} from '../../../../utilities/helpers/JSONcreator'
-import {PatiendSideBackButton} from '../../common/sidebutton/SideBackButton'
-import {createNotification} from '../../../../utilities/helpers/helper'
+import { personJSON } from '../../../../utilities/helpers/JSONcreator'
+import { PatiendSideBackButton } from '../../common/sidebutton/SideBackButton'
+import { createNotification } from '../../../../utilities/helpers/helper'
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -24,8 +24,9 @@ import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
 import './findpatient.css';
 import Loaders from '../../loader/Loader';
-import moment from 'moment'
-
+import moment from 'moment';
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
 class FindPatient extends React.Component {
 
     constructor(props) {
@@ -63,20 +64,20 @@ class FindPatient extends React.Component {
                 }
             ],
             rowData: [],
-            openAddPatientModal : false,
-            patient : {
-                personname : '',
-                familyname : '',
-                dateofbirth : '',
-                age : null,
-                gender : '',
-                location:''
+            openAddPatientModal: false,
+            patient: {
+                personname: '',
+                familyname: '',
+                dateofbirth: '',
+                age: null,
+                gender: '',
+                location: ''
             },
-            location : [],
-            identifierFormat : '',
-            openWorkflowModal : false,
-            workflowData : [],
-            selectedWorkflow : ''
+            location: [],
+            identifierFormat: '',
+            openWorkflowModal: false,
+            workflowData: [],
+            selectedWorkflow: ''
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
@@ -89,15 +90,15 @@ class FindPatient extends React.Component {
 
     }
     static propTypes = {
-        patients : PropTypes.array.isRequired,
+        patients: PropTypes.array.isRequired,
     }
     async setWorkflow(event) {
-      await this.setState({selectedWorkflow:event.target.value})
-      await localStorage.setItem('selectedWorkflow',this.state.selectedWorkflow)
-      if(this.state.selectedWorkflow != '') {
-           
-          await this.closeWorkflowModal();
-      }
+        await this.setState({ selectedWorkflow: event.target.value })
+        await localStorage.setItem('selectedWorkflow', this.state.selectedWorkflow)
+        if (this.state.selectedWorkflow != '') {
+
+            await this.closeWorkflowModal();
+        }
     }
     handleChange(event) {
         const { name, value } = event.target;
@@ -113,19 +114,19 @@ class FindPatient extends React.Component {
     async openWorkflowModal() {
         await this.props.getAllWorkflows();
 
-        await this.setState({workflowData:this.createWorkflowCheckBox()})
-     
-     await this.setState({openWorkflowModal:true});
+        await this.setState({ workflowData: this.createWorkflowCheckBox() })
+
+        await this.setState({ openWorkflowModal: true });
     }
     closeWorkflowModal() {
-        this.setState({openWorkflowModal:false})
+        this.setState({ openWorkflowModal: false })
     }
     async componentWillMount() {
         await this.props.getAllWorkflows();
 
-        await this.setState({workflowData:this.createWorkflowCheckBox()})
-        if(this.state.workflowData.length != 0) {
-            await this.setState({openWorkflowModal:true})
+        await this.setState({ workflowData: this.createWorkflowCheckBox() })
+        if (this.state.workflowData.length != 0) {
+            await this.setState({ openWorkflowModal: true })
         }
     }
     async componentDidMount() {
@@ -141,44 +142,43 @@ class FindPatient extends React.Component {
         await this.setState({
             identifierFormat: this.props.setting.value
         });
-        
+
     }
     createWorkflowCheckBox() {
         let workflowsData = [];
-        if(this.props.workflows.workflows != undefined) {
-            
+        if (this.props.workflows.workflows != undefined) {
+
             this.props.workflows.workflows.forEach(element => {
                 workflowsData.push({
-                    "label" : element.name,
-                    "value" : element.uuid
+                    "label": element.name,
+                    "value": element.uuid
                 })
             })
         }
         return workflowsData;
     }
     async handleSubmit(event) {
-      event.preventDefault();
-      if(this.state.patient.age == null && this.state.patient.dateofbirth == '')
-      {
-          createNotification('error','Atleast fill any one, date fof birth or estimated age');
-          return;
-      }
-      await this.props.savePerson(personJSON(this.state.patient.gender, this.state.patient.personname , this.state.patient.familyname,this.state.patient.dateofbirth, this.state.patient.age));
-      var data = {
-          person : this.props.person.uuid,
-          identifiers: [
-            {
-              identifier:this.state.patient.identifier, 
-              identifierType:"8d79403a-c2cc-11de-8d13-0010c6dffd0f", 
-              location:this.state.patient.location,
-              preferred:true
-            } ]
-      }
-      await this.props.savePatient(data);
-      await createNotification('success','Patient Created');
-      await this.closeAddPatientModal()
+        event.preventDefault();
+        if (this.state.patient.age == null && this.state.patient.dateofbirth == '') {
+            createNotification('error', 'Atleast fill any one, date fof birth or estimated age');
+            return;
+        }
+        await this.props.savePerson(personJSON(this.state.patient.gender, this.state.patient.personname, this.state.patient.familyname, this.state.patient.dateofbirth, this.state.patient.age));
+        var data = {
+            person: this.props.person.uuid,
+            identifiers: [
+                {
+                    identifier: this.state.patient.identifier,
+                    identifierType: "8d79403a-c2cc-11de-8d13-0010c6dffd0f",
+                    location: this.state.patient.location,
+                    preferred: true
+                }]
+        }
+        await this.props.savePatient(data);
+        await createNotification('success', 'Patient Created');
+        await this.closeAddPatientModal()
 
-      await console.log(JSON.stringify(data));
+        await console.log(JSON.stringify(data));
 
 
     }
@@ -195,22 +195,22 @@ class FindPatient extends React.Component {
             }
         });
     }
-    
+
     async componentWillReceiveProps(nextProps) {
         if (nextProps.patients !== undefined && nextProps.patients.results) {
             await this.setState({
                 rowData: this.filterPatient(nextProps.patients.results)
-            })  
+            })
         }
-        if(nextProps.workflows != undefined && nextProps.workflows.workflows) {
-            
-            await this.setState({workflowData:this.createWorkflowCheckBox()})
+        if (nextProps.workflows != undefined && nextProps.workflows.workflows) {
+
+            await this.setState({ workflowData: this.createWorkflowCheckBox() })
         }
     }
 
     filterPatient(patientData) {
         let filteredPatient = [];
-        if(patientData != undefined) {
+        if (patientData != undefined) {
             patientData.forEach(element => {
                 filteredPatient.push({
                     "identifier": element.identifiers[0].identifier,
@@ -226,16 +226,15 @@ class FindPatient extends React.Component {
             });
             return filteredPatient;
         }
-      
     }
 
-    async handleKeyDown(e){
+    async handleKeyDown(e) {
         e.preventDefault();
         if (e.key === 'Enter') {
             await this.props.searchPatientByQuery(this.state.searchQuery);
-            await console.log('hiiii '+JSON.stringify(this.props.patients))
+            await console.log('hiiii ' + JSON.stringify(this.props.patients))
 
-            await this.setState({rowData:this.filterPatient(this.props.patients.results)})
+            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
         }
     }
     openAddPatientModal() {
@@ -254,12 +253,12 @@ class FindPatient extends React.Component {
     //     this.setState({ [name]: value }, () => console.log(this.state));
     // };
 
-    async searchPatient(e){
+    async searchPatient(e) {
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
-        await console.log('hiiii '+JSON.stringify(this.props.patients))
+        await console.log('hiiii ' + JSON.stringify(this.props.patients))
 
-        await this.setState({rowData:this.filterPatient(this.props.patients.results)})
+        await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
     }
     populateDropDown() {
         let array = [];
@@ -283,13 +282,62 @@ class FindPatient extends React.Component {
     onRowSelected = (event) => {
         console.log('onRowSelected: ' + event.node.data);
     };
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
 
     render() {
-        const {patient , identifierFormat} = this.state;
+        const { patient, identifierFormat, rowData, columnDefs } = this.state;
         if (this.props.isloading) return <Loaders />;
         return (
             <div className="row container-fluid fp-main-container">
-                <div className="card fp-header">
+                <CardTemplate
+                    title={
+                        <div className="row">
+                            <div className="col-md-4">
+                                <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                                    <div className="input-group search-btn">
+                                        <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
+                                            onKeyPress={event => {
+                                                if (event.key === 'Enter') {
+                                                    this.searchPatient(event)
+                                                }
+                                            }}
+                                            required
+                                            className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
+                                        <div className="input-group-append">
+                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
+                                                <i className="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    action={
+                        <>
+                            <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>{localStorage.getItem("selectedWorkflow")}</button>
+                            <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
+                        </>
+                    }
+                >
+                    <AgGrid
+                        onGridReady={this.onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={this.onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={event => { this.onCellClicked(event) }}
+                    />
+
+                </CardTemplate>
+
+                {/* <div className="card fp-header">
                     <div className="card-header">
                         <div className="row">
                             <div className="col-md-4 col-sm-4">
@@ -314,27 +362,17 @@ class FindPatient extends React.Component {
                                 </span>
                             </div>
                             <div className="col-md-4 col-sm-4">
-                             <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>
-                                {localStorage.getItem("selectedWorkflow")} 
-                             </button>
+                                <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>
+                                    {localStorage.getItem("selectedWorkflow")}
+                                </button>
                             </div>
                             <div className="col-md-4 col-sm-2">
-                                    <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
-                                {/* <Link to="/PatientRegistration">
-                                    <button class="fp-btn btn btn-primary"><i class="fas fa-plus"></i> Create New</button>
-                                </Link> */}
+                                <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
                             </div>
                         </div>
                     </div>
                     <div className="card-body rm-paadding">
                         <div className="d-flex justify-content-center">
-                            {/* <Loader
-                                type="BallTriangle"
-                                color="#4158d0"
-                                height={100}
-                                width={100}
-                                timeout={3000} //3 secs
-                            /> */}
                             <div
                                 className="ag-theme-balham"
                                 style={{
@@ -360,24 +398,24 @@ class FindPatient extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <PatiendSideBackButton
                     navigateTo=""
                 ></PatiendSideBackButton>
-                <Modal show={this.state.openAddPatientModal} backdrop="static" onHide={() => this.setState({ openAddPatientModal: false })} style={{ marginTop: '40px' }}>
+                <Modal show={this.state.openAddPatientModal} backdrop="static" onHide={() => this.setState({ openAddPatientModal: false })} style={{ marginTop: '80px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add New Patient</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <form onSubmit={this.handleSubmit}>
-                        <div className="form-group row" >
+                            <div className="form-group row" >
                                 <label htmlFor="identifier" class="col-sm-4 col-form-label required">Identifier</label>
                                 <div class="col-sm-8">
                                     <input type="text" className="form-control" name="identifier" autoComplete="off" pattern={identifierFormat} placeholder={identifierFormat} maxlength="15" value={patient.identifierFormat} onChange={this.handleChange} required />
                                 </div>
                             </div>
-                           
+
                             <div className="form-group row" >
                                 <label htmlFor="personname" class="col-sm-4 col-form-label required">Person Name</label>
                                 <div class="col-sm-8">
@@ -396,7 +434,7 @@ class FindPatient extends React.Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="gender" value="M" checked={patient.gender==='M'} onChange={this.handleChange} required />
+                                                <input className="form-check-input" type="radio" name="gender" value="M" checked={patient.gender === 'M'} onChange={this.handleChange} required />
                                                 <label className="form-check-label" htmlFor="gender" >
                                                     Male
                                     </label>
@@ -404,7 +442,7 @@ class FindPatient extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-check">
-                                            <input className="form-check-input" type="radio" name="gender" value="F" checked={patient.gender==='F'} onChange={this.handleChange}  />
+                                                <input className="form-check-input" type="radio" name="gender" value="F" checked={patient.gender === 'F'} onChange={this.handleChange} />
 
                                                 <label className="form-check-label" htmlFor="gender">
                                                     Female
@@ -418,59 +456,59 @@ class FindPatient extends React.Component {
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={patient.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date"  />
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" />
                                 </div>
                             </div>
                             <div className="form-group row ">
-                            <div className="col-sm-4"></div><div className="col-sm-4">OR</div><div className="col-sm-4"></div>
+                                <div className="col-sm-4"></div><div className="col-sm-4">OR</div><div className="col-sm-4"></div>
                             </div>
                             <div className="form-group row" >
                                 <label htmlFor="age" class="col-sm-4 col-form-label required">Age</label>
                                 <div class="col-sm-8">
-                                    <input type="number" className="form-control" name="age" value={patient.age} onChange={this.handleChange}  />
+                                    <input type="number" className="form-control" name="age" value={patient.age} onChange={this.handleChange} />
                                 </div>
                             </div>
                             <div className='form-group row '>
                                 <label htmlFor='location' class="col-sm-4 col-form-label required">Location</label>
                                 <div class="col-sm-8">
-                                <select className="form-control" name="location"
-                                    value={patient.location}
-                                    onChange={this.handleChange}>
-                                    <option></option>
-                                    {this.state.location}
-                                </select>
+                                    <select className="form-control" name="location"
+                                        value={patient.location}
+                                        onChange={this.handleChange}>
+                                        <option></option>
+                                        {this.state.location}
+                                    </select>
                                 </div>
                             </div>
-                            
-                           
+
+
                             <Modal.Footer>
-                           
+
                                 <button type="submit" className="btn btn-primary" >Save</button>
                             </Modal.Footer>
 
                         </form>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.openWorkflowModal} backdrop="static" onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '40px' }}>
-                <Modal.Header>
-                    Select A Workflow
+                <Modal show={this.state.openWorkflowModal} backdrop="static" onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '80px' }}>
+                    <Modal.Header>
+                        Select A Workflow
                 </Modal.Header>
-                <Modal.Body>
-                <RadioGroup aria-label="report" name="workflow" onChange={this.setWorkflow} >
+                    <Modal.Body>
+                        <RadioGroup aria-label="report" name="workflow" onChange={this.setWorkflow} >
 
-                {
-                        this.state.workflowData.map((value, i) => {
-                           return (
-                            <tr>
-                            <td><FormControlLabel value={value.label} control={<Radio color="primary"/>} /></td>
-                            <td>{value.label}</td>
-                        </tr>
-                           )
-                        })
-                    }
-                </RadioGroup>
-                </Modal.Body>
-                {/* <Modal.Footer>
+                            {
+                                this.state.workflowData.map((value, i) => {
+                                    return (
+                                        <tr>
+                                            <td><FormControlLabel value={value.label} control={<Radio color="primary" />} /></td>
+                                            <td>{value.label}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </RadioGroup>
+                    </Modal.Body>
+                    {/* <Modal.Footer>
                             <button class="btn btn-primary" onClick={this.closeWorkflowModal}>
                                 Save
                         </button>
@@ -482,19 +520,19 @@ class FindPatient extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    person : state.person.person,
-    patients : state.patient.searchPatients,
+    person: state.person.person,
+    patients: state.patient.searchPatients,
     locationLists: state.location.locations,
     setting: state.systemSettings.systemSetting,
     workflows: state.workflow.workflows
 })
 const mapDispatchToProps = {
-    savePerson : personAction.savePerson,
-    savePatient : patientAction.savePatient,
+    savePerson: personAction.savePerson,
+    savePatient: patientAction.savePatient,
     searchPatientByQuery: patientAction.searchPatient,
     setActivePatient: patientAction.setActivePatient,
     getAllLocation: locationAction.fetchLocations,
     getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID,
-    getAllWorkflows : workflowAction.getAllWorkflow
+    getAllWorkflows: workflowAction.getAllWorkflow
 }
-export default connect(mapStateToProps,mapDispatchToProps)(FindPatient);
+export default connect(mapStateToProps, mapDispatchToProps)(FindPatient);
