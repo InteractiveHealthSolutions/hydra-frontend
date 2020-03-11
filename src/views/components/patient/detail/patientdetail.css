@@ -1,5 +1,5 @@
 .pd-main-container{
-  margin-top: 100px;
+  margin-top: 153px;
   margin-left: 8px;
 }
 
@@ -29,9 +29,7 @@
     margin-left: 190px
   }
   .workflowDisplay {
-    margin-top: 10px;
-    margin-left: 130px;
-    margin-right: -50px;
+    margin-right: 10px;
     border-radius: 25px
   }
   .icon-padding{
