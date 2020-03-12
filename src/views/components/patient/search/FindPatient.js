@@ -197,7 +197,7 @@ class FindPatient extends React.Component {
     }
 
     async componentWillReceiveProps(nextProps) {
-        if (nextProps.patients !== undefined && nextProps.patients.results) {
+        if (nextProps.patients !== undefined && nextProps.patients.results != undefined) {
             await this.setState({
                 rowData: this.filterPatient(nextProps.patients.results)
             })
@@ -245,6 +245,14 @@ class FindPatient extends React.Component {
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
+            patient: {
+                personname: '',
+                familyname: '',
+                dateofbirth: '',
+                age: null,
+                gender: '',
+                location: ''
+            }
         })
     }
     // handleChange = e => {
@@ -311,7 +319,7 @@ class FindPatient extends React.Component {
                                             required
                                             className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
                                         <div className="input-group-append">
-                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
+                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchPatient(e))}>
                                                 <i className="fas fa-search fa-sm"></i>
                                             </button>
                                         </div>

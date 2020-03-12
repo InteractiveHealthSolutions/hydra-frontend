@@ -44,14 +44,35 @@ export function registrationJSON(user) {
     };
 }
 export function personJSON(gender , givenName , familyName , dateofbirth,age) {
-    return {
-        "gender": gender, 
-        "names": [
-            {"givenName":givenName, "familyName":familyName}
-        ],
-        "birthdate" : dateofbirth,
-        "age" : age
+    if(dateofbirth != "" & age=="") {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "birthdate" : dateofbirth,
+        }
     }
+    else if(age != "" & dateofbirth == "") {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "age" : age
+        }
+    }
+    else {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "birthdate" : dateofbirth,
+            "age" : age
+        }
+    }
+ 
 }
 export function providerJSON(person,systemId)
 {
