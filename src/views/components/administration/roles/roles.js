@@ -110,19 +110,18 @@ class Roles extends React.Component {
         priviligesList: PropTypes.array.isRequired
     };
     async componentWillMount() {
-        this.props.getRoles();
-        if(this.props.rolesList != undefined) {
+           this.props.getRoles();
             await this.setState({ rowData: this.dataBuilder() });
             await this.props.getPriviliges();
             await this.createInheritedRoleOptions();
             await this.createPriviligesOption();
            await console.log('helllo '+JSON.stringify(this.props.rolesList))
         
-        }
+        
      }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
-            await this.setState({ rowData: this.dataBuilder() })
+            this.setState({ rowData: this.dataBuilder() })
            await this.createInheritedRoleOptions();
          await console.log('helllo props'+JSON.stringify(this.state.rowData))
         }
@@ -298,7 +297,7 @@ class Roles extends React.Component {
                             <div className="form-group row">
                                 <label className="col-form-label col-sm-4 required" htmlFor="roleName">Role</label>
                                 <div className="col-sm-8">
-                                    <input type="text" className="form-control" name="name" value={roleFormData.name} pattern="[a-zA-Z]+\s[a-zA-Z]+" onChange={this.handleChange} required disabled={this.state.forEdit} />
+                                    <input type="text" className="form-control" name="name" value={roleFormData.name} pattern="^[a-zA-Z ]+$" onChange={this.handleChange} required disabled={this.state.forEdit} />
                                 </div>
                             </div>
                             <div className="form-group row">

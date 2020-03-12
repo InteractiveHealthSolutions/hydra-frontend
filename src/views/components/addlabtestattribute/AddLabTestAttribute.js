@@ -69,7 +69,6 @@ class AddLabTestAttribute extends React.Component {
      }
     
     handleSubmit() {
-        alert('Closing modal');
         this.closeAddAttrModal();
     }
     openAddTestAttrModal() {
