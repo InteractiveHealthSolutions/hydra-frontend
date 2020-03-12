@@ -122,6 +122,7 @@ class FindPatient extends React.Component {
         this.setState({ openWorkflowModal: false })
     }
     async componentWillMount() {
+        await this.setState({rowData : []})
         await this.props.getAllWorkflows();
 
         await this.setState({ workflowData: this.createWorkflowCheckBox() })
@@ -233,8 +234,10 @@ class FindPatient extends React.Component {
         if (e.key === 'Enter') {
             await this.props.searchPatientByQuery(this.state.searchQuery);
             await console.log('hiiii ' + JSON.stringify(this.props.patients))
+            if(this.props.patients != undefined) {
+                await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+            }
         }
     }
     openAddPatientModal() {
@@ -265,8 +268,10 @@ class FindPatient extends React.Component {
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
         await console.log('hiiii ' + JSON.stringify(this.props.patients))
+        if(this.props.patients != undefined) {
+            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-        await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+        }
     }
     populateDropDown() {
         let array = [];
