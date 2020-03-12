@@ -54,7 +54,7 @@ class Visits extends React.Component {
             ],
             rowData: [],
             openViewModal:false,
-            activePatient : localStorage.getItem('active-patient')
+            activePatient : JSON.parse(localStorage.getItem('active-patient'))
           }
           this.onCellClicked = this.onCellClicked.bind(this);
 
@@ -153,7 +153,7 @@ class Visits extends React.Component {
                             <div className="form-group row">
                             <label className="col-form-label col-sm-4 " >{value.concept.display}</label>
                             <div className="col-sm-8">
-                                <input type="text" className="form-control" name="name" value={value.value.display}disabled />
+                                <input type="text" className="form-control" name="name" value={value.value.display != undefined ? value.value.display : value.value}disabled />
                             </div>
                         </div>
                            )
