@@ -22,6 +22,8 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
+import { authenticationGenerator } from '../../../../utilities/helpers';
+
 import './findpatient.css';
 import Loaders from '../../loader/Loader';
 import moment from 'moment';
@@ -86,6 +88,7 @@ class FindPatient extends React.Component {
         this.handleDateChangeRaw = this.handleDateChangeRaw.bind(this);
         this.closeWorkflowModal = this.closeWorkflowModal.bind(this)
         this.setWorkflow = this.setWorkflow.bind(this);
+        this.savePatient = this.savePatient.bind(this)
         this.openWorkflowModal = this.openWorkflowModal.bind(this)
 
     }
@@ -245,6 +248,40 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
+  async  savePatient(e) {
+e.preventDefault()
+       var data = [
+           {
+               "param_name":"Patient Identifier",
+               "value":this.state.patient.identifier,
+               "payload_type":"IDENTIFIER"
+            },
+            {
+                "payload_type":"NAME",
+                "givenName":this.state.patient.personname,
+               "familyName":this.state.patient.familyname},
+            {
+                "param_name":"sex",
+                "value":this.state.patient.gender,
+                "payload_type":"GENDER"
+            },
+            {
+                "param_name":"age",
+                "value":moment(this.state.patient.dateofbirth).format("YYYY-MM-DD HH:mm:ss"),
+                "payload_type":"DOB"
+            },
+            {
+                "param_name":"location",
+                "value":this.state.patient.location,
+                "payload_type":"LOCATION"
+       }];
+        var patient = {
+            data:JSON.stringify(data),
+            metadata:"{\"authentication\":{\"USERNAME\":\"taha\",\"PASSWORD\":\"h+5iUmkAfBZPW2XIFlnegA==\n\",\"provider\":\"358e0d86-6c1f-441a-b350-50972c2febac\"},\"ENCONTER_TYPE\":\"Create Patient\"},\"workflow\":\"afsd98-5a3s4d-827e6aa12\"}"}
+            console.log(JSON.stringify(patient))
+            await this.props.savePatient(patient);
+    
+}
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
@@ -421,7 +458,7 @@ class FindPatient extends React.Component {
                         <Modal.Title>Add New Patient</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.savePatient}>
                             <div className="form-group row" >
                                 <label htmlFor="identifier" class="col-sm-4 col-form-label required">Identifier</label>
                                 <div class="col-sm-8">
