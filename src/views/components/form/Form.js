@@ -53,7 +53,6 @@ class Form extends React.Component {
           componentFormMapList: newProps.getAllComponentFormRelation
         },
         () => {
-          console.log("getAllComponentFormRelation :: ", newProps.getAllComponentFormRelation)
           if (this.state.componentFormMapList) {
             this.displayForms();
           }
@@ -100,8 +99,9 @@ class Form extends React.Component {
     window.location.reload();
   }
 
-  displayForms() {
+  async displayForms() {
     const { componentFormMapList } = this.state
+    //let nonVoidedList = await componentFormMapList.filter(x => x.retired !== true)
     this.setState({
       items: componentFormMapList,
       listItems: componentFormMapList.map(val => (
@@ -137,6 +137,7 @@ class Form extends React.Component {
       ))
     });
   }
+
 
   async filterFormWithComponent() {
     return await this.state.componentFormMapList.filter(
@@ -214,9 +215,10 @@ class Form extends React.Component {
     this.setState({ listItems: tempArray });
   }
 
-  populateDropDown() {
+  async populateDropDown() {
     this.forms = [];
-    this.state.availableForms.forEach(element => {
+    let nonVoidedList = await this.state.availableForms.filter(x => x.retired !== true)
+    nonVoidedList.forEach(element => {
       if (this.itemIncludes(element)) {
         this.forms.push(
           <option key={element.hydramoduleFormId} disabled>
