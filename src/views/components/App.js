@@ -21,6 +21,7 @@ import FormRender from './form/formdesigner/FormRender';
 import Form from './form/Form';
 import FindPatient from './patient/search/FindPatient'
 import PatientDetail from './patient/detail/PatientDetail';
+import Visits from './patient/visit/Visit';
 import PatientRegistration from './patient/create/PatientRegistration';
 import AdministrationHome from './administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
@@ -101,6 +102,7 @@ class App extends React.Component {
                     <PrivateRoute path="/systemsettings" component={SystemSetting} />
                     <PrivateRoute path="/questionlist" component={QuestionList} />
                     <PrivateRoute path="/users" component={UserList} />
+                    <PrivateRoute path="/visit" component={Visits}/>
                 </Router>
                 <NotificationContainer />
             </div>

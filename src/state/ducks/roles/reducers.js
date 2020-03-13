@@ -20,6 +20,11 @@ const rolesReducer = (state = initialstate, action) => {
         role: action.payload,
         loading: false
       }
+    case types.DELETE_ROLE: 
+      return {
+        role : action.payload,
+        loading : false
+      }
     default: return state
 
   }

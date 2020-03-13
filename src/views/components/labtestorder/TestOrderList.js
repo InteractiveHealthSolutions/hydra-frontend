@@ -175,7 +175,6 @@ class TestOrderList extends React.Component {
             console.log('hi ' + event.column.colId);
             this.props.setActiveLabTest(event.data.uuid);
             localStorage.setItem('active-test', this.props.activeLabTest);
-            alert(this.props.activeLabTest);
             history.push("/samplelist")
             //console.log('hi '+event.data.testType);
         }

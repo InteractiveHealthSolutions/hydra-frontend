@@ -278,7 +278,7 @@ class LocationManagement extends React.Component {
             }
             else {
                 await this.props.saveLocation(locationForm)
-                await this.props.error ? createNotification('error', 'Location Not Created') : createNotification('success', 'Location Created')
+                createNotification('success', 'Location Created')
                 await this.props.getAllLocation()
                 await this.closeModal();
 

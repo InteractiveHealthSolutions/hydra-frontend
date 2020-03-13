@@ -1,5 +1,25 @@
 
-
+export function editJSON(user) {
+    return {
+        "person" : {
+            "names" : [{
+                "givenName" : user.givenname,
+                "familyName" : user.familyname
+            }],
+            "gender" : user.gender,
+            "birthdate" : user.dateofbirth,
+            "attributes": [
+                 {
+                   "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",
+                   "value": user.cnic
+                 }
+             ]
+        },
+        "name": user.givenName,
+        "username" : user.username,
+        "roles" : user.role
+    };
+}
 export function registrationJSON(user) {
  
     return {
@@ -9,7 +29,7 @@ export function registrationJSON(user) {
                 "familyName" : user.familyname
             }],
             "gender" : user.gender,
-            "birthdate" : user.birthdate,
+            "birthdate" : user.dateofbirth,
             "attributes": [
                  {
                    "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",
@@ -18,13 +38,42 @@ export function registrationJSON(user) {
              ]
         },
         "name": user.givenName,
-        "birthdate": user.birthdate,
         "username" : user.username,
         "password" : user.password,
         "roles" : user.role
     };
 }
-
+export function personJSON(gender , givenName , familyName , dateofbirth,age) {
+    if(dateofbirth != "" & age=="") {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "birthdate" : dateofbirth,
+        }
+    }
+    else if(age != "" & dateofbirth == "") {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "age" : age
+        }
+    }
+    else {
+        return {
+            "gender": gender, 
+            "names": [
+                {"givenName":givenName, "familyName":familyName}
+            ],
+            "birthdate" : dateofbirth,
+            "age" : age
+        }
+    }
+ 
+}
 export function providerJSON(person,systemId)
 {
     return {
@@ -60,6 +109,7 @@ export function roleJSON(role) {
         "name" : role.name,
         "description" : role.description,
         "privileges" : priv,
-         "inheritedRoles" : iRole
+         "inheritedRoles" : iRole,
+         "retired" : role.retire
     }
 }

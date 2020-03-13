@@ -22,6 +22,9 @@ export {default as priviliges} from './privileges';
 export {default as labtestsample} from './labtestsample';
 export {default as encounters} from './encounters';
 export {default as concepts} from './concepts';
-export {default as systemSettings} from './systemsettings'
-export {default as formField} from './form'
-export {default as user} from './user'
+export {default as systemSettings} from './systemsettings';
+export {default as formField} from './form';
+export {default as user} from './user';
+export {default as provider} from './provider';
+export {default as person} from './person';
+export {default as visit} from './visit'
