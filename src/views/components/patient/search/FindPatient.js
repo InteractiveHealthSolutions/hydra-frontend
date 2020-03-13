@@ -506,10 +506,10 @@ e.preventDefault()
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={patient.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" />
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required/>
                                 </div>
                             </div>
-                            <div className="form-group row ">
+                            {/* <div className="form-group row ">
                                 <div className="col-sm-4"></div><div className="col-sm-4">OR</div><div className="col-sm-4"></div>
                             </div>
                             <div className="form-group row" >
@@ -517,7 +517,7 @@ e.preventDefault()
                                 <div class="col-sm-8">
                                     <input type="number" className="form-control" name="age" value={patient.age} onChange={this.handleChange} />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className='form-group row '>
                                 <label htmlFor='location' class="col-sm-4 col-form-label required">Location</label>
                                 <div class="col-sm-8">
