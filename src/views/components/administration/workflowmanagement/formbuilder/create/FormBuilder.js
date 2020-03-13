@@ -120,7 +120,7 @@ class FormBuilder extends React.Component {
         formName: form.name,
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
-        isEdit: true
+        formRetiredVal: form.retired
       })
     }
 
@@ -381,9 +381,8 @@ class FormBuilder extends React.Component {
     this.props.prevStep()
   }
   handleRetiredChecked = (param) => {
-    console.log("retired", param.target.checked)
     this.setState({
-      formRetiredVal: param.target.checked
+      formRetiredVal: param.target.checked,
     })
   }
 
@@ -442,7 +441,7 @@ class FormBuilder extends React.Component {
           <AppForm title="Form Builder"
             handleSubmited={this.submit}
             handleRetiredChecked={this.handleRetiredChecked}
-            edit={this.state.isEdit}
+            edit={this.state.formRetiredVal}
           >
             <div className="row">
               <div className="col-md-4">
