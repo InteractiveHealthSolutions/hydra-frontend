@@ -97,7 +97,8 @@
     white-space: nowrap;
     overflow: hidden;
     height: 38px; 
-    margin-left: 12px;
+    float: right;
+    margin-right: 14px;
 }
 
 .btn-custom {

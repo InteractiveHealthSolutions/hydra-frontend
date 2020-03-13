@@ -98,9 +98,9 @@ function EventHeaderSearch(props) {
                 />
             </div>
             <div className="col-sm-2 col-md-3">
-                <Link to="/eventcalendar">
+                {/* <Link to="/eventcalendar">
                     <button className="btn btn-primary btn_custom_e">Calendar View</button>
-                </Link>
+                </Link> */}
                 <button className="btn btn-primary btn_custom_e_add" onClick={handleAddEvent}>Add Event</button>
             </div>
         </div>
