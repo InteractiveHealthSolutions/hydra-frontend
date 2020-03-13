@@ -36,6 +36,9 @@ class LocationManagement extends React.Component {
                     headerName: "Address", field: "address1"
                 },
                 {
+                    headerName: "Tags", field: "tags"
+                },
+                {
                     headerName: "Edit",
                     template:
                         `
@@ -46,6 +49,21 @@ class LocationManagement extends React.Component {
                 {
                     headerName: "uuid",
                     field: "uuid",
+                    hide: true
+                },
+                {
+                    headerName: "address2",
+                    field: "address2",
+                    hide: true
+                },
+                {
+                    headerName: "country",
+                    field: "country",
+                    hide: true
+                },
+                {
+                    headerName: "stateProvince",
+                    field: "stateProvince",
                     hide: true
                 }
             ],
@@ -100,9 +118,9 @@ class LocationManagement extends React.Component {
     async componentDidMount() {
         await this.props.getAllLocation();
         await this.props.getAllLocationTag();
-        if (this.props.locationLists) {
+        if (this.props.locationLists != undefined) {
             await this.setState({
-                rowData: this.props.locationLists.results,
+                rowData: this.dataBuilder(),
                 availableParentLocation: this.props.locationLists.results
             })
 
@@ -111,6 +129,28 @@ class LocationManagement extends React.Component {
         await this.createCountryDropDown();
 
 
+    }
+    dataBuilder() {
+         let data = [];
+         if(this.props.locationLists != undefined && this.props.locationLists.results != undefined) {
+             this.props.locationLists.results.forEach(element => {
+                 let tagList= '';
+                 element.tags.forEach(value => {
+                     tagList = tagList + value.display + ","
+                 })
+                 data.push({
+                     "display" : element.display,
+                     "country" : element.country,
+                     "address1" : element.address1,
+                     "address2" : element.address2,
+                     "cityVillage" : element.cityVillage,
+                     "stateProvince" : element.stateProvince,
+                     "uuid" : element.uuid,
+                     "tags" : tagList.slice(0,-1)
+                 })
+             })
+         }
+         return data
     }
     async createCountryDropDown() {
         let countryDropDown = [];
@@ -130,7 +170,7 @@ class LocationManagement extends React.Component {
 
         if (nextProps.locationLists !== undefined) {
             await this.setState({
-                rowData: nextProps.locationLists.results,
+                rowData: this.dataBuilder(),
                 availableParentLocation: nextProps.locationLists.results
             })
             if (this.state.availableParentLocation !== undefined) {
