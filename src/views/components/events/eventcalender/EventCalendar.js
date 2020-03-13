@@ -283,13 +283,13 @@ class EventCalendar extends React.Component {
           <div className="col-sm-8 col-md-6">
             <h4 className="header_title">Events Calendar</h4>
           </div>
-          <div className="col-sm-2 col-md-3" style={{ position: 'absolute', right: '0' }}>
+          <div className="col-sm-2 col-md-3" style={{ position: 'absolute', right: '0' ,marginRight: '68px'}}>
             <Link to="/events">
-              <button id="left-calendar" className="btn btn-primary  btn-calendar-custom">List View</button>
+              <button  id="right-calendar"   className="btn btn-primary  btn-calendar-custom">List View</button>
             </Link>
           </div>
-          <div className="col-sm-2 col-md-3" style={{ position: 'absolute', right: '0', marginRight: '68px' }}>
-            <button id="right-calendar" className="btn btn-primary btn-calendar-custom" onClick={this.handleAddEvent} >Add Event</button>
+          <div className="col-sm-2 col-md-3" style={{ position: 'absolute', right: '0' }}>
+            <button id="left-calendar"className="btn btn-primary btn-calendar-custom" onClick={this.handleAddEvent} >Add Event</button>
           </div>
         </div>
         <div className="row">

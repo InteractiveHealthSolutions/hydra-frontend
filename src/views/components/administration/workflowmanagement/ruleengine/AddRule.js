@@ -199,11 +199,16 @@ class AddRule extends Component {
         return (
             <div className="row container-fluid  ">
                 <div className="card" style={{
-                    width: '75%', display: 'block', marginLeft: 'auto',
+                    width: '75%',
+                    display: 'block',
+                    marginLeft: 'auto',
                     marginRight: 'auto',
-                    padding: '20px'
+                    padding: '20px',
+                    height: '550px'
                 }}>
-                    {/* <div className="card-header"></div> */}
+                    <div className="card-header">
+                        <p>Add Rule</p>
+                    </div>
                     <div className="card-body ar-card-body">
                         <div className="row">
                             <div className="col-6 col-sm-6">

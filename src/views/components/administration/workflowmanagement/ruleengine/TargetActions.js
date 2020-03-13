@@ -112,8 +112,12 @@ function TargetActions(props) {
             <div className="card" style={{
                 width: '60%', display: 'block', marginLeft: 'auto',
                 marginRight: 'auto',
-                padding: '20px'
+                padding: '20px',
+                height: '500px'
             }}>
+                <div className="card-header">
+                    <p>Target Form</p>
+                </div>
                 <div className="card-body">
                     <div className="row">
                         <form onSubmit={saverule} style={{ width: '100%' }}>
@@ -151,9 +155,11 @@ function TargetActions(props) {
                                         </div>
                                         <div className="col-sm-9 col-md-9 col-lg-9">
                                             <Select
+
                                                 value={formQuestion}
                                                 onChange={handleFormQuestionChange}
                                                 options={targetFormQuestionList}
+
                                             />
                                         </div>
                                     </div>
@@ -170,7 +176,6 @@ function TargetActions(props) {
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
