@@ -48,7 +48,6 @@ class TestResults extends React.Component {
     createDropDowns() {
         this.attributes.forEach(element => {
             if (element.datatypeClassname == 'org.openmrs.customdatatype.datatype.ConceptDatatype') {
-                alert(element.display)
                 let dropDown = [];
                 this.props.getConceptByUUID(element.datatypeConfig).then(() => {
                     this.props.concept.answers.forEach(element => {
@@ -138,7 +137,6 @@ class TestResults extends React.Component {
     }
     async handleChangeDate(date, name) {
         ///const { sampleFormData } = this.state;
-        alert(name)
         await this.setState({ [name]: date });
         //await alert(this.state[name])
         this.state.formData.push({

@@ -20,6 +20,27 @@ import './Reports.css'
 
 const animatedComponents = makeAnimated();
 
+const targetHeight = 30;
+
+const customStyles = {
+  control: base => ({
+    ...base,
+    minHeight: 'initial',
+  }),
+  valueContainer: base => ({
+    ...base,
+    height: `${targetHeight - 1 - 1}px`,
+    padding: '0 8px',
+  }),
+  clearIndicator: base => ({
+    ...base,
+    padding: `${(targetHeight - 20 - 1 - 1) / 2}px`,
+  }),
+  dropdownIndicator: base => ({
+    ...base,
+    padding: `${(targetHeight - 20 - 1 - 1) / 2}px`,
+  }),
+};
 
 class Reports extends React.Component {
     constructor(props) {
@@ -81,6 +102,17 @@ class Reports extends React.Component {
 
        
 
+    }
+    async componentWillReceiveProps(newProps) {
+        if(newProps.locationLists != undefined) {
+            await this.createProvinceDropDown();
+        }
+        if(newProps.workflowList != undefined) {
+            await this.createWorkflowFilter();
+        }
+        if(newProps.workflowList != undefined && newProps.concept != undefined) {
+            await this.createTBFilter()
+        }
     }
     componentWillUnmount() {
         this._isMounted=false;
@@ -188,6 +220,7 @@ class Reports extends React.Component {
         this.setState({currentFilters:this.otherFilter,currentReport:event.target.value,noAdditionalFiltersFlag:false})
        
        }
+       await alert(JSON.stringify(this.state.currentFilters))
 
 
     }
@@ -258,224 +291,240 @@ class Reports extends React.Component {
     });
     
    }
-    render() {
-        return (
-            <div className="row reports-main-header">
-                <div className="reports-heading col-sm-8 col-md-8 col-lg-8">
-                    <h2 className="header_title">Reports</h2>
-                </div>
-                <div className="col-sm-4 col-md-4 col-lg-4">
+   render() {
+    return (
+        <div className="row reports-main-header">
+            <div className="reports-heading col-sm-8 col-md-8 col-lg-8">
+                <h2 className="header_title">Reports</h2>
+            </div>
+            <div className="col-sm-4 col-md-4 col-lg-4">
 
-                    {/* <button type="button" className="btn btn-sm btn-primary btn-add-report">
-                        + Add Report
+                {/* <button type="button" className="btn btn-sm btn-primary btn-add-report">
+                    + Add Report
 </button> */}
+            </div>
+            <div className="reports-main-card card">
+
+                <div className="row card-header">
+
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Province
                 </div>
-                <div className="reports-main-card card">
-
-                    <div className="row card-header">
-
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Province
-                    </div>
-                            <div className="row">
-                                <Select
-
-                                    options={this.state.provinceDropDown}
-                                    className="reports-select-dropdown"
-                                    name="statetype"
-                                    onChange={this.handleProvinceChange}
-
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                City
-                        </div>
-                            <div className="row">
-                                <Select
-
-                                    options={this.state.cityDropDown}
-                                    className="reports-select-dropdown"
-                                    name="statetype"
-                                    onChange={this.handleCityChange}
-
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Location
-                    </div>
-                            <div className="row">
-                                <Select
-
-                                    options={this.state.locationDropDown}
-                                    className="reports-select-dropdown"
-                                    name="statetype"
-                                    onChange={this.handleLocationChange}
-                                    components={animatedComponents}
-                                    isMulti
-
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Start Date
-                    </div>
-                            <div className="row">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDate} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDate}dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                End Date
-                    </div>
-                            <div className="row">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDate} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-body">
                         <div className="row">
-                            <div className="col-sm-8">
-                                <div className="card inner-card">
-                                    <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
+                            <Select
 
-                                        <table className="table table-bordered">
-                                            <thead className="thead-light">
-                                                <th style={{ width: "10px" }}>
+                                options={this.state.provinceDropDown}
+                                className="reports-select-dropdown"
+                                name="statetype"
+                                onChange={this.handleProvinceChange}
 
-                                                </th>
-                                                <th style={{ width: "300px" }}>
-                                                    Report Name
-                        </th>
-                                                <th>
-                                                    Description
-                        </th>
-                                                <th style={{ width: "180px" }}>
-                                                    Export
-                        </th>
-                                            </thead>
-                                            <tbody>
-                                                <tr style={{ height: '2px' }}>
-                                                    <td>
-                                                        <FormControlLabel value="facilityPatients" control={<Radio color="primary"/>} />
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            City
+                    </div>
+                        <div className="row">
+                            <Select
 
-                                                    </td>
-                                                    <td>
-                                                        Facility Patients
-                                </td>
-                                                    <td>
-                                                        This is a report
-                                                    </td>
-                                                    <td>
-                                                        <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                       </button><button onClick={e=>this.downloadReport('pdf')}><img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
-                                                      </button>
-                                                        {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
-                                                </tr>
-                                                <tr style={{ height: '20px' }}>
-                                                    <td>
-                                                        <FormControlLabel value="disaggregationPatients" control={<Radio color="primary"/>} />
+                                options={this.state.cityDropDown}
+                                className="reports-select-dropdown"
+                                name="statetype"
+                                onChange={this.handleCityChange}
 
-                                                    </td>
-                                                    <td>
-                                                    Age-Gender Disaggregation of Patients                                </td>
-                                                    <td>
-                                                        This is a report
-                                                    </td>
-                                                    <td>
-                                                    <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                       </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
-                                                      </button>
-                                                        {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
-                                                </tr>
-                                                <tr style={{ height: '20px' }}>
-                                                    <td>
-                                                        <FormControlLabel value="diagnosedTbPatients" control={<Radio color="primary"/>} />
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Location
+                </div>
+                        <div className="row">
+                            <Select
 
-                                                    </td>
-                                                    <td>
-                                                    Diagnosed TB Patients
-                                                    </td>
-                                                    <td>
-                                                        This is a report
-                                                    </td>
-                                                    <td>
-                                                    <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                       </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
-                                                      </button>
-                                                        {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
-                                                </tr>
-                                                <tr style={{ height: '20px' }}>
-                                                    <td>
-                                                        <FormControlLabel value="presumptivePatients" control={<Radio color="primary"/>} />
+                                options={this.state.locationDropDown}
+                                className="reports-location-dropdown"
+                                name="statetype"
+                                components={animatedComponents}
+                            onChange={this.handleLocationChange}
+                                
+                                isMulti
 
-                                                    </td>
-                                                    <td>
-                                                    Presumptive Patients                                </td>
-                                                    <td>
-                                                        This is a report
-                                                    </td>
-                                                    <td>
-                                                    <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                       </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
-                                                      </button>
-                                                        {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </RadioGroup>
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Start Date
+                </div>
+                        <div className="row">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDate} showMonthDropdown
+                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDate}dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            End Date
+                </div>
+                        <div className="row">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDate} showMonthDropdown
+                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                        </div>
+                    </div>
+                </div>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div className="card inner-card">
+                                <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
 
-                                </div>
-                            </div>
-                            <div className="col-sm-4">
-                                <div className="card inner-card">
-                                    <table className="table">
+                                    <table className="table table-bordered">
                                         <thead className="thead-light">
-                                            <th>
-                                                Additional Filters
-                        </th>
+                                            <th style={{ width: "10px" }}>
 
+                                            </th>
+                                            <th style={{ width: "300px" }}>
+                                                Report Name
+                    </th>
+                                            <th>
+                                                Description
+                    </th>
+                                            <th style={{ width: "180px" }}>
+                                                Export
+                    </th>
                                         </thead>
                                         <tbody>
-                                          <br />
-                                          <br />  
-                                            {
-                                                this.state.currentFilters.map((value,key) => {
-                                                    return (
+                                            <tr style={{ height: '2px' }}>
+                                                <td>
+                                                    <FormControlLabel value="facilityPatients" control={<Radio color="primary"/>} />
 
-                                                       <tr>
-                                                                                                                   <div className="form-group row ">
+                                                </td>
+                                                <td>
+                                                    Facility Patients
+                            </td>
+                                                <td>
+                                                    This is a report
+                                                </td>
+                                                <td>
+                                                    <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}><img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                  </button>
+                                                    {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                            </tr>
+                                            
+                                            {this.state.currentReport == 'facilityPatients' && 
+                                           <tr>{this.state.currentFilters.map((value,key) => {
+                                            return (
+                                                
+                                                   <div className="row" style={{width:"1050px"}}>
+                                                   <div className="col" style={{marginLeft:"200px"}} >
+                                                   <label>{value.name}</label>
+                                                   </div>
+                                                   <div className="col">
+                                                   {value.value}
+                                                   </div>
+                                         </div>
+                                            );
+                                        })}</tr>}
+                                            <tr style={{ height: '20px' }}>
+                                                <td>
+                                                    <FormControlLabel value="disaggregationPatients" control={<Radio color="primary"/>} />
 
-                                                           <label className="col-form-label col-sm-6" style={{marginLeft:'15px'}}>{value.name}</label>
-                                                           <div className="col-sm-6" style={{marginLeft:'-80px'}}>
+                                                </td>
+                                                <td>
+                                                Age-Gender Disaggregation of Patients                                </td>
+                                                <td>
+                                                    This is a report
+                                                </td>
+                                                <td>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                  </button>
+                                                    {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                            </tr>
+                                            <tr style={{ height: '20px' }}>
+                                                <td>
+                                                    <FormControlLabel value="diagnosedTbPatients" control={<Radio color="primary"/>} />
 
-                                                           {value.value}
-                                                           </div>
-                                                           </div>
+                                                </td>
+                                                <td>
+                                                Diagnosed TB Patients
+                                                </td>
+                                                <td>
+                                                    This is a report
+                                                </td>
+                                                <td>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                  </button>
+                                                    {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                            </tr>
+                                            <tr style={{ height: '20px' }}>
+                                                <td>
+                                                    <FormControlLabel value="presumptivePatients" control={<Radio color="primary"/>} />
 
-                                                        </tr>
-
-                                                    );
-                                                })
-                                            }
-                                            </tbody>
+                                                </td>
+                                                <td>
+                                                Presumptive Patients                                </td>
+                                                <td>
+                                                    This is a report
+                                                </td>
+                                                <td>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                  </button>
+                                                    {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                            </tr>
+                                        </tbody>
                                     </table>
-                                </div>
+                                </RadioGroup>
+
                             </div>
                         </div>
+                        {/* <div className="col-sm-4">
+                            <div className="card inner-card">
+                                <table className="table">
+                                    <thead className="thead-light">
+                                        <th>
+                                            Additional Filters
+                    </th>
+
+                                    </thead>
+                                    <tbody>
+                                      <br />
+                                      <br />  
+                                        {
+                                            this.state.currentFilters.map((value,key) => {
+                                                return (
+
+                                                   <tr>
+                                                                                                               <div className="form-group row ">
+
+                                                       <label className="col-form-label col-sm-6" style={{marginLeft:'15px'}}>{value.name}</label>
+                                                       <div className="col-sm-6" style={{marginLeft:'-80px'}}>
+
+                                                       {value.value}
+                                                       </div>
+                                                       </div>
+
+                                                    </tr>
+
+                                                );
+                                            })
+                                        }
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div> */}
                     </div>
                 </div>
-
             </div>
-        )
-    }
+
+        </div>
+    )
+}
 }
 const mapStateToProps = state => ({
     locationListByTag: state.location.locationsForATag,

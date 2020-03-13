@@ -253,6 +253,7 @@ class LocationManagement extends React.Component {
                     address1: address,
                     address2: landmark,
                     cityVillage: city,
+                    country : country,
                     stateProvince: stateProvince,
                     parentLocation: parentLocation,
                     tags: tags
@@ -265,6 +266,7 @@ class LocationManagement extends React.Component {
                     address1: address,
                     address2: landmark,
                     cityVillage: city,
+                    country : country,
                     stateProvince: stateProvince,
                     parentLocation: parentLocation
                 }
@@ -303,7 +305,7 @@ class LocationManagement extends React.Component {
                 "value": element.uuid
             })
         })
-        await this.setState({ country: country.value })
+        await this.setState({ country: country.label })
         await this.setState({ provinceDropDown: provinceDropDown })
 
     }
