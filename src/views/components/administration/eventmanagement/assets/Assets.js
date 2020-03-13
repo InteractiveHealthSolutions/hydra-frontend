@@ -153,7 +153,7 @@ function Assets(props) {
         console.log("assetCategoryForm", assetCategoryForm);
         await props.saveAssetCategory(assetCategoryForm);
         await props.getAllAssetCategory();
-        createNotification("success", "Saved successfully")
+        createNotification("success", "Category Saved successfully")
         setAssetCategoryName('')
     }
 
@@ -161,34 +161,38 @@ function Assets(props) {
     async function handleSubmit(e) {
         e.preventDefault();
         let assetForm = {}
-        if (actionType === 'EditAsset') {
-            assetForm = {
-                name: assetName,
-                retired: assetRetire,
-                uuid: activeAsset.uuid,
-                assetId: activeAsset.assetId,
-                assetType: assetTypeName,
-                capitalValue: capitalValue,
-                dateProcured: dateProcured,
-                fixedAsset: fixedAsset,
-                referenceId: referenceId
-            }
-        } else if (actionType === 'AssetsCategory') {
+        if (actionType === 'AssetsCategory') {
             saveAssetCategory()
-        }
-        else {
-            assetForm = {
-                name: assetName,
-                retired: assetRetire,
-                assetType: assetTypeName,
-                capitalValue: capitalValue,
-                dateProcured: dateProcured,
-                fixedAsset: fixedAsset,
-                referenceId: referenceId
+
+        } else {
+            if (actionType === 'EditAsset') {
+                assetForm = {
+                    name: assetName,
+                    retired: assetRetire,
+                    uuid: activeAsset.uuid,
+                    assetId: activeAsset.assetId,
+                    assetType: assetTypeName,
+                    capitalValue: capitalValue,
+                    dateProcured: dateProcured,
+                    fixedAsset: fixedAsset,
+                    referenceId: referenceId
+                }
             }
+            else {
+                assetForm = {
+                    name: assetName,
+                    retired: assetRetire,
+                    assetType: assetTypeName,
+                    capitalValue: capitalValue,
+                    dateProcured: dateProcured,
+                    fixedAsset: fixedAsset,
+                    referenceId: referenceId
+                }
+            }
+            console.log("assetForm", assetForm)
+            isAssetType ? saveAssetType() : saveAssets(assetForm);
+
         }
-        console.log("assetForm", assetForm)
-        isAssetType ? saveAssetType() : saveAssets(assetForm);
         closeModal();
     }
 
