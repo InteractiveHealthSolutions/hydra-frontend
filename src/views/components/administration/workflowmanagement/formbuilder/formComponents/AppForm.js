@@ -15,6 +15,8 @@ export class AppForm extends Component {
   }
 
   render() {
+    var disabled = {}; if (this.props.edit === true) { disabled['disabled'] = 'disabled'; }
+
     return (
       <div className="card" style={{ width: "100%", height: '100%' }}>
         <div className="card-header">
@@ -28,16 +30,13 @@ export class AppForm extends Component {
           <form>{this.props.children}</form>
         </div>
         <div className="card-footer">
-          {
-            (this.props.edit) ?
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" onChange={this.handleRetiredChecked} />
-                <label class="form-check-label">Retired</label>
-              </div> : ""
-          }
-          <button onClick={this.handleSubmited}
-            className="btn btn-primary af_btn">SAVE</button>
-        </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" checked={this.props.edit} onChange={this.handleRetiredChecked} />
+              <label class="form-check-label">Retired</label>
+            </div>
+            <button onClick={this.handleSubmited} {...disabled}
+              className="btn btn-primary af_btn">SAVE</button>
+          </div>
       </div>
 
     );

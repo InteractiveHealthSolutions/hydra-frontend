@@ -22,6 +22,8 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
+import { authenticationGenerator } from '../../../../utilities/helpers';
+
 import './findpatient.css';
 import Loaders from '../../loader/Loader';
 import moment from 'moment';
@@ -86,6 +88,7 @@ class FindPatient extends React.Component {
         this.handleDateChangeRaw = this.handleDateChangeRaw.bind(this);
         this.closeWorkflowModal = this.closeWorkflowModal.bind(this)
         this.setWorkflow = this.setWorkflow.bind(this);
+        this.savePatient = this.savePatient.bind(this)
         this.openWorkflowModal = this.openWorkflowModal.bind(this)
 
     }
@@ -122,6 +125,7 @@ class FindPatient extends React.Component {
         this.setState({ openWorkflowModal: false })
     }
     async componentWillMount() {
+        await this.setState({rowData : []})
         await this.props.getAllWorkflows();
 
         await this.setState({ workflowData: this.createWorkflowCheckBox() })
@@ -197,7 +201,7 @@ class FindPatient extends React.Component {
     }
 
     async componentWillReceiveProps(nextProps) {
-        if (nextProps.patients !== undefined && nextProps.patients.results) {
+        if (nextProps.patients !== undefined && nextProps.patients.results != undefined) {
             await this.setState({
                 rowData: this.filterPatient(nextProps.patients.results)
             })
@@ -233,8 +237,10 @@ class FindPatient extends React.Component {
         if (e.key === 'Enter') {
             await this.props.searchPatientByQuery(this.state.searchQuery);
             await console.log('hiiii ' + JSON.stringify(this.props.patients))
+            if(this.props.patients != undefined) {
+                await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+            }
         }
     }
     openAddPatientModal() {
@@ -242,9 +248,51 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
+  async  savePatient(e) {
+e.preventDefault()
+       var data = [
+           {
+               "param_name":"Patient Identifier",
+               "value":this.state.patient.identifier,
+               "payload_type":"IDENTIFIER"
+            },
+            {
+                "payload_type":"NAME",
+                "givenName":this.state.patient.personname,
+               "familyName":this.state.patient.familyname},
+            {
+                "param_name":"sex",
+                "value":this.state.patient.gender,
+                "payload_type":"GENDER"
+            },
+            {
+                "param_name":"age",
+                "value":moment(this.state.patient.dateofbirth).format("YYYY-MM-DD HH:mm:ss"),
+                "payload_type":"DOB"
+            },
+            {
+                "param_name":"location",
+                "value":this.state.patient.location,
+                "payload_type":"LOCATION"
+       }];
+        var patient = {
+            data:JSON.stringify(data),
+            metadata:"{\"authentication\":{\"USERNAME\":\"taha\",\"PASSWORD\":\"h+5iUmkAfBZPW2XIFlnegA==\n\",\"provider\":\"358e0d86-6c1f-441a-b350-50972c2febac\"},\"ENCONTER_TYPE\":\"Create Patient\"},\"workflow\":\"afsd98-5a3s4d-827e6aa12\"}"}
+            console.log(JSON.stringify(patient))
+            await this.props.savePatient(patient);
+    
+}
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
+            patient: {
+                personname: '',
+                familyname: '',
+                dateofbirth: '',
+                age: null,
+                gender: '',
+                location: ''
+            }
         })
     }
     // handleChange = e => {
@@ -257,8 +305,10 @@ class FindPatient extends React.Component {
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
         await console.log('hiiii ' + JSON.stringify(this.props.patients))
+        if(this.props.patients != undefined) {
+            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-        await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+        }
     }
     populateDropDown() {
         let array = [];
@@ -311,7 +361,7 @@ class FindPatient extends React.Component {
                                             required
                                             className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
                                         <div className="input-group-append">
-                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
+                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchPatient(e))}>
                                                 <i className="fas fa-search fa-sm"></i>
                                             </button>
                                         </div>
@@ -408,7 +458,7 @@ class FindPatient extends React.Component {
                         <Modal.Title>Add New Patient</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.savePatient}>
                             <div className="form-group row" >
                                 <label htmlFor="identifier" class="col-sm-4 col-form-label required">Identifier</label>
                                 <div class="col-sm-8">
@@ -456,10 +506,10 @@ class FindPatient extends React.Component {
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={patient.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" />
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required/>
                                 </div>
                             </div>
-                            <div className="form-group row ">
+                            {/* <div className="form-group row ">
                                 <div className="col-sm-4"></div><div className="col-sm-4">OR</div><div className="col-sm-4"></div>
                             </div>
                             <div className="form-group row" >
@@ -467,7 +517,7 @@ class FindPatient extends React.Component {
                                 <div class="col-sm-8">
                                     <input type="number" className="form-control" name="age" value={patient.age} onChange={this.handleChange} />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className='form-group row '>
                                 <label htmlFor='location' class="col-sm-4 col-form-label required">Location</label>
                                 <div class="col-sm-8">
