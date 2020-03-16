@@ -12,7 +12,11 @@ const useStyles = makeStyles({
         margin: "auto",
         transition: "0.3s",
         width: "100%",
-        height: props => props.height
+        height: props => props.height,
+    },
+    content :{
+        padding:props =>props.contentPadding,
+        width: "100%"
     },
     divider: {
         margin: '4px'
@@ -38,7 +42,7 @@ export default function CardTemplate(props) {
                 action={action ? action : ""}
             />
             <Divider className={classes.divider} light />
-            <CardContent >
+            <CardContent className={classes.content}  >
                 {children}
             </CardContent>
         </Card >

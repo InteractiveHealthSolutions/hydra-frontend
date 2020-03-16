@@ -11,11 +11,8 @@ import DraggableFormItem from "../formComponents/widgets/DraggableFormItem";
 import DefaultExpendable from "../formComponents/widgets/DefaultExpendable";
 import TextBox from "../formComponents/widgets/TextBox";
 import { createNotification } from '../../../../../../utilities/helpers/helper'
+import QuestionListModal from "../questionlist/QuestionListModal";
 import { questionService } from '../../../../../../services/questionservice'
-import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
-import TabPanel from '../../../../../ui/tabs/TabPanel'
-import { LoaderDots } from "../../../../common/loader/LoaderDots";
-
 
 class FormBuilder extends React.Component {
 
@@ -52,13 +49,6 @@ class FormBuilder extends React.Component {
           value: "Address",
           label: "Address",
           dataType: "Address"
-        },
-        {
-          uuid: "97c5dc2b-a352-4847-b7f6-c0716669b3dc7",
-          description: "to show the Contact Tracing",
-          value: "contacttracing",
-          label: "Contact Tracing",
-          dataType: "contacttracing"
         }
       ],
       formFieldList: [],
@@ -118,6 +108,7 @@ class FormBuilder extends React.Component {
 
   async componentWillMount() {
     this.setActiveForm()
+    await this.props.getAllQuestion();
     await this.props.getAllEncounterType();
   }
 
@@ -129,8 +120,7 @@ class FormBuilder extends React.Component {
         formName: form.name,
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
-        formRetiredVal: form.retired,
-        isEdit: true
+        formRetiredVal: form.retired
       })
     }
 
@@ -178,10 +168,25 @@ class FormBuilder extends React.Component {
   }
 
   async componentWillReceiveProps(nextProps) {
+    console.log("formObject", nextProps.formObject)
+    if (nextProps.questionList !== undefined) {
+      await this.setState({
+        questionListItem: nextProps.questionList
+      });
+    }
     if (nextProps.encounterTypeList !== undefined && nextProps.encounterTypeList.results !== undefined) {
       await this.setState({
         encounterTypes: nextProps.encounterTypeList.results
       });
+    }
+    if (nextProps.formObject !== undefined && nextProps.formObject.uuid !== undefined) {
+      // createNotification("success", "Saved Successfully")
+      // await this.removeLocalStorage()
+      // this.setState({
+      //   addFormList: [],
+      //   formName: "",
+      //   formDescription: ""
+      // })
     }
   }
 
@@ -382,87 +387,62 @@ class FormBuilder extends React.Component {
   }
 
   render() {
-    const { addFormList, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
-    var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
+    const { addFormList, currentObject, hydramoduleFormId, encounterTypes, defaultQuestion } = this.state;
+    // if (this.props.isLoading) return <Loaders />;
     return (
       <div className="row">
-        <div className="form_adjustment col-sm-6 col-md-4">
-          <CardTemplate
-            title="Search Question"
-            height="500"
-            contentPadding="0"
-          >
-            <TabPanel
-              height="700"
-              defaultTab={
-                <DefaultExpendable
-                  controlId="default"
-                  title="Default Questions"
-                  data={defaultQuestion}
-                />
-              }
-              searchTab={
-                <>
-                  <AutoSearchComplete
-                    controlId="conceptName"
-                    title="Search Question"
-                    placeholderText="Search Question"
-                    returnConceptList={this.returnConceptList}
-                    parentType="formbuilder"
-                    name="conceptName"
-                    searchFor="Field"
-                    showLable="false"
-                  />
-                  <hr className="divider_left" />
-                  {
-                    (this.props.isSubLoading) ?
-                      <LoaderDots withMargin="true" height={40} width={40} />
-                      :
-                      <ul className="ul_form">
-                        {currentObject.map((item, index) => {
-                          return (
-                            <DraggableFormItem
-                              controlId="field"
-                              key={index}
-                              data={item}
-                            />
-                          )
-                        })}
-                      </ul>
-                  }
-                </>
-              }
-              padding='0'
-            />
-
-          </CardTemplate>
-        </div>
-        <div className="form_adjustment col-sm-6 col-md-8">
-          <CardTemplate
-            height="500"
-            contentPadding="16"
-            title="Form Builder"
-            action={
+        <div className="col-md-4">
+          <div className="card" style={{ width: "100%", height: '100%' }}>
+            <div className="card-header">
               <div className="row">
-                <div className="col-md-4">
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" checked={formRetiredVal} onChange={this.handleRetiredChecked} />
-                    <label class="form-check-label">Retired</label>
-                  </div>
+                <div className="col-sm-4 col-md-8 ">
+                  <h4 style={{ marginLeft: '50px' }}>Search Question</h4>
                 </div>
-                <div className="col-md-8">
-                  <button
-                    className="service-btn btn btn-primary "
-                    {...disabled}
-                    onClick={this.submit}
-                  >
-                    <i class="fas fa-save"></i>
-                    <span className="icon_space"></span>
-                    Save
-                  </button>
+                <div className="col-sm-2 col-md-4" >
+                  <button className="service-btn btn btn-primary " onClick={this.openModall}><i class="fas fa-eye"></i> Question</button>
                 </div>
               </div>
-            }
+            </div>
+            <div className="card-body">
+              {/* <DefaultExpendable
+                controlId="default"
+                title="Default Questions"
+                data={defaultQuestion}
+              /> */}
+              <AutoSearchComplete
+                showLable="true"
+                controlId="conceptName"
+                title="Search Question"
+                returnConceptList={this.returnConceptList}
+                parentType="formbuilder"
+                name="conceptName"
+                searchFor="Field"
+              />
+              <hr style={{ height: '2px', backgroundColor: 'var(--bg)' }} />
+              <ul style={{ height: '500px', width: '100%', overflowY: 'scroll' }} >
+                {currentObject.map((item, index) => {
+                  return (
+                    <DraggableFormItem
+                      controlId="field"
+                      key={index}
+                      data={item}
+                    />
+                  )
+                })}
+              </ul>
+            </div>
+            <div className="card-footer  text-center">
+            </div>
+          </div>
+        </div >
+
+        {/* form List */}
+
+        <div className="col-md-8">
+          <AppForm title="Form Builder"
+            handleSubmited={this.submit}
+            handleRetiredChecked={this.handleRetiredChecked}
+            edit={this.state.formRetiredVal}
           >
             <div className="row">
               <div className="col-md-4">
@@ -487,9 +467,10 @@ class FormBuilder extends React.Component {
                 />
               </div>
             </div>
-            <hr className="divider_right" />
+
+            <hr style={{ height: '2px', backgroundColor: 'var(--bg)' }} />
             <ul
-              className="ul_form"
+              style={{ height: '562px', width: '100%', overflowY: 'scroll' }}
               onDragOver={(e) => this.onDragOver(e)}
               onDrop={(e) => this.onDrop(e)}
             >
@@ -503,23 +484,34 @@ class FormBuilder extends React.Component {
                 )
               })}
             </ul>
-          </CardTemplate>
+          </AppForm>
         </div>
-      </div >
+        <QuestionListModal
+          openModal={this.state.openModal}
+          closeModal={this.closeModal}
+        />
+        <div id="formbuilderSidenav" className="sidenav">
+          <a id="formback" className="pd-actions-btn" onClick={this.prevStep}>
+            <span className='back-arrow'><i class="fa fa-arrow-left"></i></span>
+            Go Back
+            </a>
+        </div>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  questionList: state.questions.questions,
   encounterTypeList: state.encounter.encounterType,
   formObject: state.formField.form,
   searchEncounterTypeList: state.encounter.searchEncounterType,
-  isLoading: state.formField.loading,
-  isSubLoading: state.questions.loading
+  isLoading: state.formField.loading
 });
 
 const mapDispatchToProps = {
   saveQuestion: questionAction.saveQuestion,
+  getAllQuestion: questionAction.getAllQuestion,
   getAllEncounterType: encounterAction.fetchEncounterType,
   saveFormFields: formAction.saveForm,
   searchEncounterType: encounterAction.searchEncounterType
