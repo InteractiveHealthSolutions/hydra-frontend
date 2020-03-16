@@ -22,6 +22,7 @@
         "bootstrap": "^4.3.1",
         "bulma": "^0.7.5",
         "ensure-array": "^1.0.0",
+        "env-cmd": "^10.1.0",
         "font-awesome": "^4.7.0",
         "hashmap": "^2.4.0",
         "http-proxy-middleware": "^0.20.0",
@@ -60,7 +61,7 @@
         "react-notifications": "^1.4.3",
         "react-redux": "^7.1.0",
         "react-router-dom": "^5.0.1",
-        "react-scripts": "3.0.1",
+        "react-scripts": "^3.4.0",
         "react-select": "^3.0.4",
         "react-select-country-list": "^2.1.2",
         "react-sortablejs": "^1.5.1",
@@ -75,12 +76,13 @@
         "styled-components": "^4.4.1"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "env-cmd -f .env.local react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
     "proxy": "http://ihs.ihsinformatics.com:6815/openmrs/ws/rest/v1",
+    "homepage": ".",
     "eslintConfig": {
         "extends": "react-app"
     },

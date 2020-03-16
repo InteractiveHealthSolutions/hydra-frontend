@@ -7,11 +7,12 @@ import Divider from "@material-ui/core/Divider";
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
     card: {
         margin: "auto",
         transition: "0.3s",
-        width:"100%"
+        width: "100%",
+        height: props => props.height
     },
     divider: {
         margin: '4px'
@@ -23,13 +24,12 @@ const useStyles = makeStyles(theme => ({
         lineHeight: 1.8
     }
 
-}));
+});
 
 export default function CardTemplate(props) {
-    const classes = useStyles();
+    const classes = useStyles(props);
 
     const { title, action, subTitle, children } = props
-    console.log("CardTemplate", action)
     return (
         <Card className={classes.card}>
             <CardHeader
