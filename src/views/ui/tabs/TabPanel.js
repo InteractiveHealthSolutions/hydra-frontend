@@ -43,7 +43,7 @@ function a11yProps(index) {
 const useStyles = makeStyles(theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        height: 700
+        height: props => props.height
     },
 }));
 

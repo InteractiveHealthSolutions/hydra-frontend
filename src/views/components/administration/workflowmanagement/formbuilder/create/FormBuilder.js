@@ -56,9 +56,9 @@ class FormBuilder extends React.Component {
         {
           uuid: "97c5dc2b-a352-4847-b7f6-c0716669b3dc7",
           description: "to show the Contact Tracing",
-          value: "contacttracing",
+          value: "Contact Tracing",
           label: "Contact Tracing",
-          dataType: "contacttracing"
+          dataType: "ContactTracing"
         }
       ],
       formFieldList: [],
@@ -116,7 +116,8 @@ class FormBuilder extends React.Component {
     });
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
+    this.removeLocalStorage()
     this.setActiveForm()
     await this.props.getAllEncounterType();
   }
@@ -186,7 +187,6 @@ class FormBuilder extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("componentWillUnmount", "called")
     this.removeLocalStorage();
   }
 
@@ -261,8 +261,18 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-questionText`)
       localStorage.removeItem(`${element.uuid}-scorable`)
       localStorage.removeItem(`${element.uuid}-allowDecimal`)
+      localStorage.removeItem(`${element.uuid}-patientContacts`)
+      localStorage.removeItem(`${element.uuid}-patientId`)
+      localStorage.removeItem(`${element.uuid}-patientIdMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientName`)
+      localStorage.removeItem(`${element.uuid}-patientNameMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientGender`)
+      localStorage.removeItem(`${element.uuid}-patientGenderMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientAge`)
+      localStorage.removeItem(`${element.uuid}-patientAgeMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientRelationship`)
+      localStorage.removeItem(`${element.uuid}-patientRelationshipMandatory`)
     });
-
   }
 
   getAllField() {
@@ -288,7 +298,18 @@ class FormBuilder extends React.Component {
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
         regix: localStorage.getItem(`${element.uuid}-rxp`),
-        characters: ""
+        characters: "",
+        patientContacts: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
+        patientId: localStorage.getItem(`${element.uuid}-patientId`),
+        patientIdMandatory: localStorage.getItem(`${element.uuid}-patientIdMandatory`) === "Yes" ? true : false,
+        patientName: localStorage.getItem(`${element.uuid}-patientName`),
+        patientNameMandatory: localStorage.getItem(`${element.uuid}-patientNameMandatory`) === "Yes" ? true : false,
+        patientGender: localStorage.getItem(`${element.uuid}-patientGender`),
+        patientGenderMandatory: localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === "Yes" ? true : false,
+        patientAge: localStorage.getItem(`${element.uuid}-patientAge`),
+        patientAgeMandatory: localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === "Yes" ? true : false,
+        patientRelationship: localStorage.getItem(`${element.uuid}-patientRelationship`),
+        patientRelationshipMandatory: localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === "Yes" ? true : false
       }
       array.push(field)
     });
@@ -391,9 +412,10 @@ class FormBuilder extends React.Component {
             title="Search Question"
             height="500"
             contentPadding="0"
+            header="true"
           >
             <TabPanel
-              height="700"
+              height={760}
               defaultTab={
                 <DefaultExpendable
                   controlId="default"
@@ -472,7 +494,7 @@ class FormBuilder extends React.Component {
                   hydramoduleFormId={hydramoduleFormId}
                   value={this.state.formName}
                   isRequired="true"
-                  title="Form Display Name"
+                  title="Form Name"
                   onItemSelectedProp={this.onItemSelectedProp}
                 />
               </div>

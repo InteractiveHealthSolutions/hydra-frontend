@@ -14,8 +14,8 @@ const useStyles = makeStyles({
         width: "100%",
         height: props => props.height,
     },
-    content :{
-        padding:props =>props.contentPadding,
+    content: {
+        padding: props => props.contentPadding,
         width: "100%"
     },
     divider: {
@@ -33,15 +33,21 @@ const useStyles = makeStyles({
 export default function CardTemplate(props) {
     const classes = useStyles(props);
 
-    const { title, action, subTitle, children } = props
+    const { title, action, subTitle, children, header } = props
     return (
         <Card className={classes.card}>
-            <CardHeader
-                title={title}
-                subheader={subTitle ? subTitle : ""}
-                action={action ? action : ""}
-            />
-            <Divider className={classes.divider} light />
+            {
+                (header !== 'true') ?
+                    <>
+                        <CardHeader
+                            title={title}
+                            subheader={subTitle ? subTitle : ""}
+                            action={action ? action : ""}
+                        />
+                        <Divider className={classes.divider} light />
+                    </>
+                    :""
+            }
             <CardContent className={classes.content}  >
                 {children}
             </CardContent>
