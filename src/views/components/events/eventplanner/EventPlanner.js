@@ -639,7 +639,7 @@ class EventPlanner extends Component {
                                             alt="" />
                                     </div>
                                     <div className="col-sm-11 col-md-11 col-lg-11" style={{ marginTop: '5px' }}>
-                                        <p>Services and Assets | Planned</p>
+                                        <p>Services and Assets </p>
                                     </div>
                                 </div>
                             </div>

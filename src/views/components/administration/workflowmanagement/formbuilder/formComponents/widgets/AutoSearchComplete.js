@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Autocomplete from "react-autocomplete";
 import { questionAction } from "../../../../../../../state/ducks/questions";
 import { userAction } from "../../../../../../../state/ducks/user";
+import { LoaderDots } from '../../../../../common/loader/LoaderDots'
 
 
 class AutoSearchComplete extends Component {
@@ -32,7 +33,8 @@ class AutoSearchComplete extends Component {
         borderRadius: ".25rem",
         margin: "0px 0px 10px 0px",
         transition: "border-color .15s ease-in-out,box-shadow .15s ease-in-out"
-      }
+      },
+      loading: false
     };
 
     // Bind `this` context to functions of the class
@@ -45,7 +47,9 @@ class AutoSearchComplete extends Component {
     );
   }
 
+
   async componentWillReceiveProps(nextProps) {
+
     if (nextProps.userList !== undefined && nextProps.userList.results !== undefined) {
       await this.setState({
         autocompleteData: this.formatList(nextProps.userList.results)
@@ -220,16 +224,20 @@ class AutoSearchComplete extends Component {
   }
 
   render() {
-    const { title, isRequired, showAutocomplete } = this.props;
+    const { title, isRequired, showAutocomplete, showLable,placeholderText } = this.props;
+    // if (this.state.loading) return <LoaderDots withMargin="true" height={40} width={40} />
     return (
-      <div>
-        <label id="test" style={{ display: "block" }} htmlFor={title} className={isRequired === "true" ? "required" : ""}>
-          {title}
-        </label>
+      <> {
+        (showLable === "true") ?
+          <label id="test" style={{ display: "block" }} htmlFor={title} className={isRequired === "true" ? "required" : ""}>
+            {title}
+          </label>
+          : ""
+      }
         {
           (showAutocomplete) ?
             <Autocomplete
-              inputProps={{ style: { width: "100%" } }}
+              inputProps={{ placeholder: `${placeholderText}`, style: { width: "100%" } }}
               wrapperStyle={this.state.autocompleteStyle}
               getItemValue={this.getItemValue}
               items={this.state.autocompleteData}
@@ -240,7 +248,7 @@ class AutoSearchComplete extends Component {
             />
             :
             <Autocomplete
-              inputProps={{ style: { width: "100%" } }}
+              inputProps={{ placeholder: `${placeholderText}`, style: { width: "100%" } }}
               wrapperStyle={this.state.autocompleteStyle}
               getItemValue={this.getItemValue}
               items={this.state.autocompleteData}
@@ -262,7 +270,7 @@ class AutoSearchComplete extends Component {
               onSelect={this.onSelect}
             />
         }
-      </div >
+      </>
     );
   }
 }
@@ -271,7 +279,8 @@ class AutoSearchComplete extends Component {
 const mapStateToProps = state => ({
   conceptList: state.questions.concepts,
   fieldList: state.questions.fields,
-  userList: state.user.users
+  userList: state.user.users,
+  isLoading: state.questions.loading
 });
 
 const mapDispatchToProps = {
