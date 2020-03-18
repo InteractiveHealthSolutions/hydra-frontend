@@ -33,6 +33,7 @@ import QuestionListExpendableView from './utils/QuestionListExpendableView';
 import TextBox from '../formbuilder/formComponents/widgets/TextBox';
 import { createNotification } from '../../../../../utilities/helpers/helper'
 import ChipView from './utils/ChipView'
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 
 class AddRule extends Component {
 
@@ -197,153 +198,141 @@ class AddRule extends Component {
     render() {
         const { availableFormsQuestion, ruleActionList } = this.state
         return (
-            <div className="row container-fluid  ">
-                <div className="card" style={{
-                    width: '75%',
-                    display: 'block',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    padding: '20px',
-                    height: '550px'
-                }}>
-                    <div className="card-header">
-                        <p>Add Rule</p>
-                    </div>
-                    <div className="card-body ar-card-body">
-                        <div className="row">
-                            <div className="col-6 col-sm-6">
-                                <div className="row">
-                                    <div className="col-md-10">
-                                        <TextBox
-                                            title="Enter Value"
-                                            name="rulevalue"
-                                            value={this.state.userInput}
-                                            onItemSelectedProp={this.onItemSelectedProp}
-                                        />
-                                    </div>
-                                    <div className="col-md-2">
-                                        <button
-                                            onClick={this.addUserInput}
-                                            style={{ marginTop: '32px' }}
-                                            type="button"
-                                            className="btn btn-primary">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div
-                                    style={{ height: '200px', padding: '8px', width: '100%', overflowY: 'scroll', border: '1px solid var(--bg)' }}
-                                    onDragOver={(e) => this.onDragOver(e)}
-                                    onDrop={(e) => this.onDrop(e)}
-                                >
-                                    <ChipView
-                                        ruleActionList={ruleActionList}
-                                        handleDelete={this.handleDelete}
+            <div className="row container-fluid">
+                <CardTemplate
+                    title="Add Rule"
+                    height="500px"
+                    action={
+                        <>
+                            <button onClick={this.prevStep.bind(this)} className='btn btn-primary btn-re'>Previous</button>
+                            <button onClick={this.nextStep.bind(this)} className='btn btn-primary btn-re'>Next</button>
+                        </>
+                    }
+                >
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="row no-gutters">
+                                <div className="col-md-11">
+                                    <TextBox
+                                        title="Enter Value"
+                                        name="rulevalue"
+                                        value={this.state.userInput}
+                                        onItemSelectedProp={this.onItemSelectedProp}
                                     />
                                 </div>
-                                <div className="row  control-rule-contaier" >
+                                <div className="col-md-1">
                                     <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(NOT_EQUAL)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, NOT_EQUAL)}
-                                    >{NOT_EQUAL}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(EQUAL)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, EQUAL)}
-                                    >{EQUAL}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(GREATER_THEN)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, GREATER_THEN)}
-                                    >{GREATER_THEN}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(LESS_THEN)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, LESS_THEN)}
-                                    >{LESS_THEN}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(GREATER_THEN_EQUAL)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, GREATER_THEN_EQUAL)}
-                                    >{GREATER_THEN_EQUAL}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(LESS_THEN_EQUAL)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, LESS_THEN_EQUAL)}
-                                    >{LESS_THEN_EQUAL}</button>
-                                </div>
-                                {/* NEXT LIST  */}
-                                <div className="row  control-rule-contaier" >
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(OR)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, OR)}
-                                    >{OR}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(AND)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, AND)}
-                                    >{AND}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(OPEN_PARANTHESES)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, OPEN_PARANTHESES)}
-                                    >{OPEN_PARANTHESES}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(CLOSE_PARANTHESES)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, CLOSE_PARANTHESES)}
-                                    >{CLOSE_PARANTHESES}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(NOW)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, NOW)}
-                                    >{NOW}</button>
-                                    <button
-                                        className='btn btn-primary control-btn'
-                                        onClick={this.handleOperator(NULL)}
-                                        draggable
-                                        onDragStart={(e) => this.onDragStart(e, NULL)}
-                                    >{NULL}</button>
+                                        onClick={this.addUserInput}
+                                        style={{ marginTop: '32px',float:'right' }}
+                                        type="button"
+                                        className="btn btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
-                            {/* question section  */}
-                            <div className="col-6 col-sm-6">
-                                {
-                                    (this.state.availableFormsQuestion) ?
-                                        <QuestionListExpendableView
-                                            form={availableFormsQuestion}
-                                            handleAddQuestion={this.handleAddQuestion}
-                                            handleAddQuestionAnswer={this.handleAddQuestionAnswer}
-                                        />
-                                        : ""
-                                }
+
+                            <div
+                                style={{ height: '200px', padding: '8px', width: '100%', overflowY: 'scroll', border: '1px solid var(--bg)' }}
+                                onDragOver={(e) => this.onDragOver(e)}
+                                onDrop={(e) => this.onDrop(e)}
+                               >
+                                <ChipView
+                                    ruleActionList={ruleActionList}
+                                    handleDelete={this.handleDelete}
+                                />
+                            </div>
+                            <div className="row  control-rule-contaier" >
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(NOT_EQUAL)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, NOT_EQUAL)}
+                                >{NOT_EQUAL}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(EQUAL)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, EQUAL)}
+                                >{EQUAL}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(GREATER_THEN)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, GREATER_THEN)}
+                                >{GREATER_THEN}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(LESS_THEN)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, LESS_THEN)}
+                                >{LESS_THEN}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(GREATER_THEN_EQUAL)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, GREATER_THEN_EQUAL)}
+                                >{GREATER_THEN_EQUAL}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(LESS_THEN_EQUAL)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, LESS_THEN_EQUAL)}
+                                >{LESS_THEN_EQUAL}</button>
+                            </div>
+                            {/* NEXT LIST  */}
+                            <div className="row  control-rule-contaier" >
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(OR)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, OR)}
+                                >{OR}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(AND)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, AND)}
+                                >{AND}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(OPEN_PARANTHESES)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, OPEN_PARANTHESES)}
+                                >{OPEN_PARANTHESES}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(CLOSE_PARANTHESES)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, CLOSE_PARANTHESES)}
+                                >{CLOSE_PARANTHESES}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(NOW)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, NOW)}
+                                >{NOW}</button>
+                                <button
+                                    className='btn btn-primary control-btn'
+                                    onClick={this.handleOperator(NULL)}
+                                    draggable
+                                    onDragStart={(e) => this.onDragStart(e, NULL)}
+                                >{NULL}</button>
                             </div>
                         </div>
-                        <div className="row " style={{ marginTop: '20px', marginBottom: '20px' }}>
-                            <div className="col-sm-4" ></div>
-                            <div className="col-sm-4" >
-                                <button onClick={this.prevStep.bind(this)} className='btn btn-primary save-btn ec-save-btn-row'>Previous</button>
-                            </div>
-                            <div className='col-sm-4 '>
-                                <button onClick={this.nextStep.bind(this)} className='btn btn-primary save-btn ec-save-btn-row'>Next</button>
-                            </div>
+                        {/* question section  */}
+                        <div className="col-md-6">
+                            {
+                                (this.state.availableFormsQuestion) ?
+                                    <QuestionListExpendableView
+                                        form={availableFormsQuestion}
+                                        handleAddQuestion={this.handleAddQuestion}
+                                        handleAddQuestionAnswer={this.handleAddQuestionAnswer}
+                                    />
+                                    : ""
+                            }
                         </div>
                     </div>
-                </div>
+                </CardTemplate>
             </div>
         )
     }
