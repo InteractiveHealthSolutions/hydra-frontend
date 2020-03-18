@@ -73,7 +73,7 @@ function RuleEngineDetail(props) {
     }
 
 
-    // if (props.isloading) return <Loaders />;
+    if (props.isloading) return <Loaders />;
     return (
 
         <div className="row container-fluid service-main-container">
