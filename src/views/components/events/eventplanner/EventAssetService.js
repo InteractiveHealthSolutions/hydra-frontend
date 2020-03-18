@@ -31,6 +31,7 @@ function EventAssetService({ title, assetResult, serviceResult, ...props }) {
 
     useEffect(() => {
         if (props.assetCategoryList !== undefined && props.assetCategoryList.services !== undefined) {
+            console.log("assetCategoryList" , props.assetCategoryList.services)
             setassetCategory(props.assetCategoryList.services)
         }
     }, [props.assetCategoryList, assetCategory])
@@ -114,7 +115,7 @@ function EventAssetService({ title, assetResult, serviceResult, ...props }) {
                             </ExpendableList>
                         ))
                         :
-                        assetCategory.map(data => (
+                        assetCategory.map(data => (data.name && data.name !==" ") ? (
                             <ExpendableList margin="true" title={data.name}>
                                 <Select
                                     key={data.name.trim()}
@@ -124,7 +125,7 @@ function EventAssetService({ title, assetResult, serviceResult, ...props }) {
                                     onChange={(e) => assetResult(e,data.name.trim()) }
                                     isMulti />
                             </ExpendableList>
-                        ))
+                        ):"")
                 }
             </MUIList>
         </ExpendableList>
