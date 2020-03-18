@@ -155,7 +155,7 @@ class EventPlanner extends Component {
         }, async () => {
             let mergeArray = [];
             await Object.values(this.state.serviceItem).map((x, i) => {
-                console.log('x1',x)
+                console.log('x1', x)
                 if (x) {
                     for (const elelemt of x)
                         mergeArray.push(elelemt)
@@ -202,14 +202,14 @@ class EventPlanner extends Component {
     }
 
     assetResult = (params, name) => {
-        console.log('params',name,params)
+        console.log('params', name, params)
         this.setState({
             assetItem: { ...this.state.assetItem, [name]: params }
         }, async () => {
             let mergeArray = [];
             await Object.values(this.state.assetItem).forEach((x, i) => {
-      
-            
+
+
                 if (x) {
                     for (const elelemt of x)
                         mergeArray.push(elelemt)
@@ -258,6 +258,7 @@ class EventPlanner extends Component {
         e.preventDefault();
     }
     handleChangeDateTo = date => {
+
         let formErrors = { ...this.state.formErrors };
         formErrors.endDate = ""
         this.setState({
@@ -566,12 +567,14 @@ class EventPlanner extends Component {
                                         </div>
                                         <div className="col-sm-9 col-md-10">
                                             <DatePicker
+                                                readOnly={startDate ? false : true}
                                                 selected={endDate}
                                                 onChangeRaw={this.handleDateChangeRawTo}
                                                 onChange={this.handleChangeDateTo}
                                                 className="form-control"
                                                 dateFormat="MM/dd/yyyy hh:mm aa"
                                                 showTimeSelect
+                                                minDate={startDate}
                                                 placeholderText="" />
 
                                             <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
