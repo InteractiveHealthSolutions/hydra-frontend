@@ -721,12 +721,14 @@ class EventClosureForm extends Component {
                                         </div>
                                         <div className="col-sm-9 col-md-10">
                                             <DatePicker
+                                                readOnly={startDate ? false : true}
                                                 selected={endDate}
                                                 onChangeRaw={this.handleDateChangeRawTo}
                                                 onChange={this.handleChangeDateTo}
                                                 className="form-control"
                                                 dateFormat="MM/dd/yyyy hh:mm"
                                                 showTimeSelect
+                                                minDate={startDate}
                                                 placeholderText="" />
                                             {/* {formErrors.endDate.length > 0 && ( marginTop: '30px' 
                                                                 <span className="errorMessage">{formErrors.endDate}</span>

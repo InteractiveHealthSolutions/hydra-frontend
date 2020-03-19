@@ -26,19 +26,19 @@ class Roles extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: 'Role', field: 'role', width: '200'
+                    headerName: 'Role', field: 'role'
                 },
                 {
-                    headerName: 'Description', field: 'description', width: '320'
+                    headerName: 'Description', field: 'description'
                 },
                 {
-                    headerName: 'Inherited Roles', field: 'inheritedRoles', width: '180'
+                    headerName: 'Inherited Roles', field: 'inheritedRoles'
                 },
                 {
-                    headerName: 'Priviliges', field: 'priviliges', width: '450'
+                    headerName: 'Priviliges', field: 'priviliges'
                 },
                 {
-                    headerName: 'UUID', field: 'uuid', width: '450', hide: true
+                    headerName: 'UUID', field: 'uuid', hide: true
                 },
                 {
                     headerName: "Edit",
@@ -49,10 +49,6 @@ class Roles extends React.Component {
                     `
                     , width: 70
                 }
-                // {
-                //     headerName: "Edit", field: "edit", width: '70',
-                //     cellRenderer: 'buttonRenderer'
-                // }
             ],
             rowData: [],
             context: { componentParent: this },
