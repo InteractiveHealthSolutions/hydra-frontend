@@ -8,6 +8,7 @@ import Link from '@material-ui/core/Link';
 import { Link as RouterLink, Route, BrowserRouter as Router } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
+import './breadcrumb.css'
 
 const LinkRouter = props => <Link {...props} component={RouterLink} />;
 
@@ -33,29 +34,31 @@ export default function CustomBreadcrumbs() {
     return <Route>
         {({ location }) => {
             const pathnames = location.pathname.split('/').filter(x => x);
+            console.log("pathnames", pathnames[0])
+            if (pathnames.length <= 0 || pathnames[0] === 'login') return <></>
             return (
-                <CardTemplate
-                    
-                >
-                    <Breadcrumbs aria-label="Breadcrumb" style={{ marginLeft: '54px' }}>
-                        <StyledBreadcrumb component="a" href="/" label="Home" />
-                        {pathnames.map((value, index) => {
-                            const last = index === pathnames.length - 1;
-                            const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-
-                            return last ? (
-                                <Typography color="textPrimary" key={to}>
-                                    {value}
-                                </Typography>
-                            ) : (
-                                    <RouterLink color="inherit" to={to} key={to}>
-                                        {value}
-                                    </RouterLink>
-                                );
-                        })}
-                    </Breadcrumbs>
-                </CardTemplate>
-
+                <div className="main-breadcrumb">
+                    <CardTemplate
+                        header="true"
+                    >
+                        <Breadcrumbs aria-label="Breadcrumb" >
+                            <StyledBreadcrumb component="a" href="/" label="Home" />
+                            {pathnames.map((value, index) => {
+                                const last = index === pathnames.length - 1;
+                                const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                                return last ? (
+                                    <Chip
+                                        label={value}
+                                        color="primary"
+                                        variant="outlined"
+                                    />
+                                ) : (
+                                        <StyledBreadcrumb component="a" href={to} label={value} />
+                                    );
+                            })}
+                        </Breadcrumbs>
+                    </CardTemplate>
+                </div>
             );
         }}
     </Route>

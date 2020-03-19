@@ -68,6 +68,7 @@
         "react-swipeable-views": "^0.13.9",
         "react-toastify": "^5.5.0",
         "react-widgets": "^4.4.11",
+        "reactstrap": "^8.4.1",
         "redux": "^4.0.1",
         "redux-form": "^8.2.6",
         "redux-form-input-masks": "^1.1.4",

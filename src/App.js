@@ -41,7 +41,6 @@ import CustomBreadcrumbs from './views/components/breadcrumbs/CustomBreadcrumbs'
 import { Container } from 'reactstrap';
 import './defaultLayout.css'
 
-const Login = React.lazy(() => import('./views/components/login/Login'));
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 const DefaultLayout = React.lazy(() => import('./DefaultLayout'));
 
@@ -81,19 +80,19 @@ class App extends React.Component {
                         <Header ></Header>
                         <div className="app-body">
                             <main className="main">
-                                <CustomBreadcrumbs />
                                 <Container fluid>
+                                    <CustomBreadcrumbs />
                                     <Switch>
-                                        <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
+                                        <Route exact path="/login" component ={LogIn} />
                                         <PrivateRoute exact path="/" component={Homepage} />
                                         <PrivateRoute exact path="/workflow" component={Workflow} />
                                         <PrivateRoute exact path="/workflow/phase" component={Phase} />
-                                        <PrivateRoute path="/workflow/component" component={Component} />
-                                        <PrivateRoute path="/workflow/Form" component={Form} />
+                                        <PrivateRoute exact path="/workflow/component" component={Component} />
+                                        <PrivateRoute exact path="/workflow/Form" component={Form} />
                                         <PrivateRoute exact path="/event" component={EventList} />
-                                        <PrivateRoute path="/event/eventcalendar" component={EventCalendar} />
-                                        <PrivateRoute path="/event/eventplanner" component={EventPlanner} />
-                                        <PrivateRoute path="/event/eventclosure" component={EventClosureForm} />
+                                        <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
+                                        <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
+                                        <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
                                     </Switch>
                                 </Container>
                             </main>

@@ -11,6 +11,7 @@ import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
 import { phaseAction } from '../../../state/ducks/phase'
 import PropTypes from 'prop-types';
 import Loaders from "../common/loader/Loader"
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
 
 class Phase extends React.Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class Phase extends React.Component {
                 loading: false
             }, () => {
                 if (this.state.newItemList) {
-                     this.displayPhases();
+                    this.displayPhases();
                 }
             })
         }
@@ -59,7 +60,7 @@ class Phase extends React.Component {
             }, () => {
 
                 if (this.state.availablePhase) {
-                     this.populateDropDown();
+                    this.populateDropDown();
                 }
             })
         }
@@ -239,39 +240,67 @@ class Phase extends React.Component {
         this.setState({ listItems: tempArray });
     }
     render() {
-        if (this.state.loading) return <Loaders />;
+        // if (this.state.loading) return <Loaders />;
         return (
-            <div className="main-ph">
-                <div className="row">
-                    <div className="col-sm-6 col-md-6 col-lg-6">
-                        <h4 className="header_title">{localStorage.getItem('active-workflow-name')} - Phases</h4>
-                    </div>
-                    <div className="col-sm-6 col-md-6 col-lg-6 ">
+            <>
+                <CardTemplate
+                    title={localStorage.getItem('active-workflow-name') + "- Phases"}
+                    action={
                         <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Add Phase</button>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="card" id="phase-maincard">
-                        <Sortable
-                            options={{
-                                animation: 100,
-                                easing: "cubic-bezier(1, 0, 0, 1)"
-                            }}
-                            ref={(c) => {
-                                if (c) {
-                                    this.sortable = c.sortable;
-                                }
-                            }}
-                            onChange={(order) => {
-                                this.reorder(order);
+                    }
+                >
+                    <Sortable
+                        options={{
+                            animation: 100,
+                            easing: "cubic-bezier(1, 0, 0, 1)"
+                        }}
+                        ref={(c) => {
+                            if (c) {
+                                this.sortable = c.sortable;
+                            }
+                        }}
+                        onChange={(order) => {
+                            this.reorder(order);
 
-                            }}
-                            tag="ul">
-                            {this.state.listItems}
-                        </Sortable>
+                        }}
+                        tag="ul">
+                        {this.state.listItems}
+                    </Sortable>
 
-                    </div>
-                </div>
+                </CardTemplate>
+
+
+                {/* <div className="main-ph">
+                        <div className="row">
+                            <div className="col-sm-6 col-md-6 col-lg-6">
+                                <h4 className="header_title">{localStorage.getItem('active-workflow-name')} - Phases</h4>
+                            </div>
+                            <div className="col-sm-6 col-md-6 col-lg-6 ">
+                                <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Add Phase</button>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="card" id="phase-maincard">
+                                <Sortable
+                                    options={{
+                                        animation: 100,
+                                        easing: "cubic-bezier(1, 0, 0, 1)"
+                                    }}
+                                    ref={(c) => {
+                                        if (c) {
+                                            this.sortable = c.sortable;
+                                        }
+                                    }}
+                                    onChange={(order) => {
+                                        this.reorder(order);
+
+                                    }}
+                                    tag="ul">
+                                    {this.state.listItems}
+                                </Sortable>
+
+                            </div>
+                        </div> */}
 
                 <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
                     <Modal.Header closeButton>
@@ -301,7 +330,7 @@ class Phase extends React.Component {
                     navigateTo="workflow"
                 ></WorkflowSideBackButton>
 
-            </div>
+            </>
         );
     }
 
