@@ -79,7 +79,8 @@ class FindPatient extends React.Component {
             identifierFormat: '',
             openWorkflowModal: false,
             workflowData: [],
-            selectedWorkflow: ''
+            selectedWorkflow: "",
+            selectedWorkflowId : ""
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
@@ -98,11 +99,16 @@ class FindPatient extends React.Component {
     async setWorkflow(event) {
         await this.setState({ selectedWorkflow: event.target.value })
         await localStorage.setItem('selectedWorkflow', this.state.selectedWorkflow)
+        var existingObj = this.state.workflowData.filter(data => data.label == this.state.selectedWorkflow);
+        await this.setState({selectedWorkflowId : existingObj[0].value});
+        await localStorage.setItem("selectedWorkflowId",this.state.selectedWorkflowId)
         if (this.state.selectedWorkflow != '') {
 
             await this.closeWorkflowModal();
         }
     }
+
+
     handleChange(event) {
         const { name, value } = event.target;
         const { patient } = this.state;
@@ -275,12 +281,28 @@ e.preventDefault()
                 "value":this.state.patient.location,
                 "payload_type":"LOCATION"
        }];
+    //    var metadata = {
+    //        "authentication" : {
+    //            "USERNAME" : localStorage.getItem("username"),
+    //            "PASSWORD" : aes256.encrypt("'T''h''e''B''e''s''t''S''e''c''r''e''t''K''e''y'",localStorage.getItem("password"))
+    //        },
+    //        "ENCONTER_TYPE" : "Create Patient"
+    //    }
+    var metadata = {
+        "authentication" : {
+            "USERNAME" : "taha",
+            "PASSWORD" : "h+5iUmkAfBZPW2XIFlnegA=="
+        },
+        "ENCONTER_TYPE" : "Create Patient"
+    }
         var patient = {
             data:JSON.stringify(data),
-            metadata:"{\"authentication\":{\"USERNAME\":\"taha\",\"PASSWORD\":\"h+5iUmkAfBZPW2XIFlnegA==\n\",\"provider\":\"358e0d86-6c1f-441a-b350-50972c2febac\"},\"ENCONTER_TYPE\":\"Create Patient\"},\"workflow\":\"afsd98-5a3s4d-827e6aa12\"}"}
+            metadata: JSON.stringify(metadata)
+        }
             console.log(JSON.stringify(patient))
             await this.props.savePatient(patient);
-    
+            await createNotification('success','Patient Created');
+            await this.closeAddPatientModal()
 }
     closeAddPatientModal() {
         this.setState({
