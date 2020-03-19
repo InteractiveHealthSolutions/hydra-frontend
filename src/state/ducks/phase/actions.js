@@ -49,6 +49,7 @@ const getWorkflowPhaseAction = payload => ({ type: types.GET_WORKFLOW_PHASE, pay
 function filterPhases(workflowphaseData) {
   let filteredPhases = [];
   let activeWorkflow = localStorage.getItem('active-workflow-uuid');
+  console.log("workflowphaseData" , workflowphaseData , activeWorkflow)
   workflowphaseData.workflowPhasesMap.forEach(element => {
     if (activeWorkflow === element.workflowUUID) {
       filteredPhases.push(element);

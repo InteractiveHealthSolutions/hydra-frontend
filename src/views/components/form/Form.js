@@ -9,6 +9,7 @@ import Card from "@material-ui/core/Card";
 import { WorkflowSideBackButton } from "../common/sidebutton/SideBackButton";
 import { formAction } from "../../../state/ducks/form";
 import { connect } from "react-redux";
+import CardTemplate from "../../ui/cards/SimpleCard/CardTemplate";
 
 class Form extends React.Component {
 
@@ -238,43 +239,36 @@ class Form extends React.Component {
 
   render() {
     return (
-      <div className="main-cp">
-        <div className="row">
-          <div className="col-sm-6 col-md-6 col-lg-6">
-            <h4 className="header_title">
-              {localStorage.getItem("active-component-name")} - Form
-            </h4>
-          </div>
-          <div className="col-sm-6 col-md-6 col-lg-6">
+      <>
+        <CardTemplate
+          title={localStorage.getItem("active-component-name") + "- Form"}
+          action={
             <button
               className="btn btn-primary btn-gobal heading"
               onClick={() => this.openModal()}
             >
               Add Form
             </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="card" id="form-maincard">
-            <Sortable
-              options={{
-                animation: 100,
-                easing: "cubic-bezier(1, 0, 0, 1)"
-              }}
-              ref={c => {
-                if (c) {
-                  this.sortable = c.sortable;
-                }
-              }}
-              onChange={order => {
-                this.reorder(order);
-              }}
-              tag="ul"
-            >
-              {this.state.listItems}
-            </Sortable>
-          </div>
-        </div>
+          }
+        >
+          <Sortable
+            options={{
+              animation: 100,
+              easing: "cubic-bezier(1, 0, 0, 1)"
+            }}
+            ref={c => {
+              if (c) {
+                this.sortable = c.sortable;
+              }
+            }}
+            onChange={order => {
+              this.reorder(order);
+            }}
+            tag="ul"
+          >
+            {this.state.listItems}
+          </Sortable>
+        </CardTemplate>
 
         <Modal
           show={this.state.openModal}
@@ -307,8 +301,7 @@ class Form extends React.Component {
             </Modal.Footer>
           </form>
         </Modal>
-        <WorkflowSideBackButton navigateTo="component"></WorkflowSideBackButton>
-      </div>
+      </>
     );
   }
 }

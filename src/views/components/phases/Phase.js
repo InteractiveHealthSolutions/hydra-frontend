@@ -31,10 +31,10 @@ class Phase extends React.Component {
         this.phases = [];
 
     }
-    static propTypes = {
-        phaseList: PropTypes.array.isRequired,
-        workflowPhaseList: PropTypes.array.isRequired
-    };
+    // static propTypes = {
+    //     phaseList: PropTypes.array.isRequired,
+    //     workflowPhaseList: PropTypes.array.isRequired
+    // };
 
     async componentWillMount() {
         await this.props.getAllPhases()
@@ -240,7 +240,7 @@ class Phase extends React.Component {
         this.setState({ listItems: tempArray });
     }
     render() {
-        // if (this.state.loading) return <Loaders />;
+        if (this.state.loading) return <Loaders />;
         return (
             <>
                 <CardTemplate
@@ -326,9 +326,9 @@ class Phase extends React.Component {
 
                 </Modal>
 
-                <WorkflowSideBackButton
+                {/* <WorkflowSideBackButton
                     navigateTo="workflow"
-                ></WorkflowSideBackButton>
+                ></WorkflowSideBackButton> */}
 
             </>
         );

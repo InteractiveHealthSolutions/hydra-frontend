@@ -15,9 +15,9 @@ export const setActiveEvent = (event) => dispatch => {
   localStorage.setItem('active-event', JSON.stringify(event));
 
   if (event.closed === null)
-    history.push('/eventclosure');
+    history.push('/event/eventclosure');
   else
-    history.push('/eventplanner');
+    history.push('/event/eventplanner');
 
 }
 

@@ -256,10 +256,9 @@ class Workflow extends React.Component {
     );
   }
 
-
-  static propTypes = {
-    workflowLists: PropTypes.array.isRequired,
-  };
+  // static propTypes = {
+  //   workflowLists: PropTypes.array.isRequired,
+  // };
 
 }
 

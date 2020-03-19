@@ -76,28 +76,34 @@ class App extends React.Component {
                     timeout={1800000}
                 />
                 <Router history={history}>
-                    <div className="app">
-                        <Header ></Header>
-                        <div className="app-body">
-                            <main className="main">
-                                <Container fluid>
-                                    <CustomBreadcrumbs />
-                                    <Switch>
-                                        <Route exact path="/login" component ={LogIn} />
-                                        <PrivateRoute exact path="/" component={Homepage} />
-                                        <PrivateRoute exact path="/workflow" component={Workflow} />
-                                        <PrivateRoute exact path="/workflow/phase" component={Phase} />
-                                        <PrivateRoute exact path="/workflow/component" component={Component} />
-                                        <PrivateRoute exact path="/workflow/Form" component={Form} />
-                                        <PrivateRoute exact path="/event" component={EventList} />
-                                        <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
-                                        <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
-                                        <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
-                                    </Switch>
-                                </Container>
-                            </main>
-                        </div>
-                    </div>
+                    <Switch>
+                        <Route exact path="/login" component={LogIn} />
+                        <Route path="/" render={() => (
+                            <div className="app">
+                                <Header ></Header>
+                                <div className="app-body">
+                                    <main className="main">
+                                        <Container fluid>
+                                            <CustomBreadcrumbs />
+                                            <Switch>
+                                                <PrivateRoute exact path="/" component={Homepage} />
+                                                <PrivateRoute exact path="/workflow" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow/phase" component={Phase} />
+                                                <PrivateRoute exact path="/workflow/phase/component" component={Component} />
+                                                <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
+                                                <PrivateRoute exact path="/event" component={EventList} />
+                                                <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
+                                                <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
+                                                <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
+                                                <PrivateRoute exact path="/administration" component={AdministrationHome} />
+                                            </Switch>
+                                        </Container>
+                                    </main>
+                                </div>
+                            </div>
+
+                        )} />
+                    </Switch>
                 </Router>
 
                 <NotificationContainer />

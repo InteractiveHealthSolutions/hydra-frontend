@@ -6,7 +6,6 @@ import { displayError, createNotification } from '../../utilities/helpers/helper
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
     localStorage.getItem('password'));
-
     console.log("token" ,token)
   const requestOptions = {
     method: method,
