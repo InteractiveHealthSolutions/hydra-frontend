@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PropTypes from 'prop-types';
 import makeAnimated from 'react-select/animated';
 import moment from 'moment'
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 
 import { connect } from 'react-redux';
 import { locationAction } from '../../../state/ducks/location';
@@ -57,7 +58,8 @@ class Reports extends React.Component {
             noAdditionalFiltersFlag : false,
             startDate:'',
             endDate:'',
-            selectedLocation:[]
+            selectedLocation:[],
+            filters : []
         }
         this.filters = {
             reportname : 'FacilityPatients',
@@ -92,7 +94,6 @@ class Reports extends React.Component {
         });
     }
         await this.props.getChildLocations(this.state.country);
-        await this.props.getAllLocation();
         console.log('child loc' + JSON.stringify(this.props.locationLists));
         await this.createProvinceDropDown();
         await this.props.getAllWorkFlows();
@@ -105,7 +106,7 @@ class Reports extends React.Component {
     }
     async componentWillReceiveProps(newProps) {
         if(newProps.locationLists != undefined) {
-            await this.createProvinceDropDown();
+            await this.populateLocationDropdown();
         }
         if(newProps.workflowList != undefined) {
             await this.createWorkflowFilter();
@@ -149,11 +150,11 @@ class Reports extends React.Component {
     
      console.log('filters 2'+JSON.stringify(this.otherFilter))
     }
-    createWorkflowFilter() {
+    async createWorkflowFilter() {
+        await this.setState({filters : []}) 
         if(this.props.workflowList !== undefined && this.props.workflowList.workflows !== undefined) {
             let dropdown ='';
             let options=[]
-            if(this._isMounted) {
                 this.props.workflowList.workflows.forEach(element => {
                     options.push({
                         "label":element.name,
@@ -161,15 +162,15 @@ class Reports extends React.Component {
                     })
                 })
                 dropdown = <Select options={options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>;
-                this.filters.filters.push({'name':'Work Flow' , 'value':dropdown});
+                this.state.filters.push(dropdown);
             
-            }
+            
           }
         console.log('filters '+JSON.stringify(this.filters))
     }
     async createProvinceDropDown() {
         let provinceDropDown = []
-        if (this.props.childLocations) {
+        if (this.props.childLocations != undefined && this.props.childLocations.childLocations != undefined) {
             await this.props.childLocations.childLocations.forEach(element => {
                 provinceDropDown.push({
                     "label": element.display,
@@ -195,33 +196,61 @@ class Reports extends React.Component {
         await this.setState({ cityDropDown: cityDropDown })
     }
     async handleCityChange(city) {
+        alert("hi")
         await this.setState({ locationDropDown: [] })
         let locationDropDown = [];
         await this.setState({ city: city.value });
-        await this.props.locationLists.results.forEach(element => {
-            console.log(element.cityVillage)
-            if (element.cityVillage == city.label) {
-                console.log('yes')
-                locationDropDown.push({
-                    "label": element.display,
-                    "value": element.uuid
-                })
+        await this.props.getAllLocation();
+        await console.log("location list "+JSON.stringify(this.props.locationLists))
+        if(this.props.locationLists != undefined) {
+            await this.props.locationLists.results.forEach(element => {
+                console.log(element.cityVillage)
+                //if (element.cityVillage == city.label) {
+                    console.log('yes')
+                    locationDropDown.push({
+                        "label": element.display,
+                        "value": element.uuid
+                    })
+                //}
+    
+            });
+            await this.setState({ locationDropDown: locationDropDown })
+        }
+       
+    }
+    async populateLocationDropdown() {
+        alert("hi")
+        console.log("populate "+JSON.stringify(this.props.locationLists));
+        alert(this.state.city)
+        if(this.state.city != "") {
+            let locationDropDown = [];
+            if(this.props.locationLists != undefined) {
+            alert("hi location")
+                await this.props.locationLists.results.forEach(element => {
+                    console.log(element.cityVillage)
+                    //if (element.cityVillage == city.label) {
+                        console.log('yes')
+                        locationDropDown.push({
+                            "label": element.display,
+                            "value": element.uuid
+                        })
+                    //}
+        
+                });
+                await this.setState({ locationDropDown: locationDropDown })
             }
-
-        });
-        await this.setState({ locationDropDown: locationDropDown })
+        }
     }
     async handleChange(event) {
        if(event.target.value === 'facilityPatients' || event.target.value === 'disaggregationPatients'){
-           this.setState({currentFilters:this.filters.filters,currentReport:event.target.value,noAdditionalFiltersFlag:false})
-       }
+           this.setState({currentFilters:this.state.filters,currentReport:event.target.value,noAdditionalFiltersFlag:false})
+        }
        else {
         
         this.setState({currentFilters:this.otherFilter,currentReport:event.target.value,noAdditionalFiltersFlag:false})
        
        }
-       await alert(JSON.stringify(this.state.currentFilters))
-
+  
 
     }
     async handleChangeDynamicFilters(event) {
@@ -342,16 +371,11 @@ class Reports extends React.Component {
                             Location
                 </div>
                         <div className="row">
-                            <Select
-
+                            <ReactMultiSelectCheckboxes 
                                 options={this.state.locationDropDown}
-                                className="reports-location-dropdown"
                                 name="statetype"
-                                components={animatedComponents}
-                            onChange={this.handleLocationChange}
-                                
-                                isMulti
-
+                                className="reports-location-dropdown"
+                                onChange={this.handleLocationChange}
                             />
                         </div>
                     </div>
@@ -408,26 +432,16 @@ class Reports extends React.Component {
                                                     This is a report
                                                 </td>
                                                 <td>
-                                                    <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                   </button><button onClick={e=>this.downloadReport('pdf')}><img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
                                             
                                             {this.state.currentReport == 'facilityPatients' && 
-                                           <tr>{this.state.currentFilters.map((value,key) => {
-                                            return (
-                                                
-                                                   <div className="row" style={{width:"1050px"}}>
-                                                   <div className="col" style={{marginLeft:"200px"}} >
-                                                   <label>{value.name}</label>
-                                                   </div>
-                                                   <div className="col">
-                                                   {value.value}
-                                                   </div>
-                                         </div>
-                                            );
-                                        })}</tr>}
+                                           <tr style={{backgroundColor:"#87CEEB"}}>
+                                             <td colSpan = {4}> <label style={{marginLeft:"100px"}}>Additional Filters</label> <label className="dynamic-filter-label">Workflow </label> : <Select className="filter"options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>
+                                           </td></tr>}
                                             <tr style={{ height: '20px' }}>
                                                 <td>
                                                     <FormControlLabel value="disaggregationPatients" control={<Radio color="primary"/>} />
@@ -439,11 +453,14 @@ class Reports extends React.Component {
                                                     This is a report
                                                 </td>
                                                 <td>
-                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
+                                            {this.state.currentReport == 'disaggregationPatients' && 
+                                           <tr style={{backgroundColor:"#87CEEB"}}><td></td><td colSpan = {3}> Additional Filters <label className="dynamic-filter-label">Workflow </label> : <Select className="filter"options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>
+                                           </td></tr>}
                                             <tr style={{ height: '20px' }}>
                                                 <td>
                                                     <FormControlLabel value="diagnosedTbPatients" control={<Radio color="primary"/>} />
@@ -456,8 +473,8 @@ class Reports extends React.Component {
                                                     This is a report
                                                 </td>
                                                 <td>
-                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
@@ -472,8 +489,8 @@ class Reports extends React.Component {
                                                     This is a report
                                                 </td>
                                                 <td>
-                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/ios/50/000000/csv.png"/>
-                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/ios/50/000000/pdf-2.png"/>
+                                                <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png"/>
+                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
