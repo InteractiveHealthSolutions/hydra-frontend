@@ -22,6 +22,8 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
+import { authenticationGenerator } from '../../../../utilities/helpers';
+
 import './findpatient.css';
 import Loaders from '../../loader/Loader';
 import moment from 'moment';
@@ -77,7 +79,8 @@ class FindPatient extends React.Component {
             identifierFormat: '',
             openWorkflowModal: false,
             workflowData: [],
-            selectedWorkflow: ''
+            selectedWorkflow: "",
+            selectedWorkflowId : ""
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
@@ -86,6 +89,7 @@ class FindPatient extends React.Component {
         this.handleDateChangeRaw = this.handleDateChangeRaw.bind(this);
         this.closeWorkflowModal = this.closeWorkflowModal.bind(this)
         this.setWorkflow = this.setWorkflow.bind(this);
+        this.savePatient = this.savePatient.bind(this)
         this.openWorkflowModal = this.openWorkflowModal.bind(this)
 
     }
@@ -95,11 +99,16 @@ class FindPatient extends React.Component {
     async setWorkflow(event) {
         await this.setState({ selectedWorkflow: event.target.value })
         await localStorage.setItem('selectedWorkflow', this.state.selectedWorkflow)
+        var existingObj = this.state.workflowData.filter(data => data.label == this.state.selectedWorkflow);
+        await this.setState({selectedWorkflowId : existingObj[0].value});
+        await localStorage.setItem("selectedWorkflowId",this.state.selectedWorkflowId)
         if (this.state.selectedWorkflow != '') {
 
             await this.closeWorkflowModal();
         }
     }
+
+
     handleChange(event) {
         const { name, value } = event.target;
         const { patient } = this.state;
@@ -122,6 +131,7 @@ class FindPatient extends React.Component {
         this.setState({ openWorkflowModal: false })
     }
     async componentWillMount() {
+        await this.setState({ rowData: [] })
         await this.props.getAllWorkflows();
 
         await this.setState({ workflowData: this.createWorkflowCheckBox() })
@@ -197,7 +207,7 @@ class FindPatient extends React.Component {
     }
 
     async componentWillReceiveProps(nextProps) {
-        if (nextProps.patients !== undefined && nextProps.patients.results) {
+        if (nextProps.patients !== undefined && nextProps.patients.results != undefined) {
             await this.setState({
                 rowData: this.filterPatient(nextProps.patients.results)
             })
@@ -233,8 +243,10 @@ class FindPatient extends React.Component {
         if (e.key === 'Enter') {
             await this.props.searchPatientByQuery(this.state.searchQuery);
             await console.log('hiiii ' + JSON.stringify(this.props.patients))
+            if (this.props.patients != undefined) {
+                await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+            }
         }
     }
     openAddPatientModal() {
@@ -242,9 +254,68 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
+    async  savePatient(e) {
+        e.preventDefault()
+        var data = [
+            {
+                "param_name": "Patient Identifier",
+                "value": this.state.patient.identifier,
+                "payload_type": "IDENTIFIER"
+            },
+            {
+                "payload_type": "NAME",
+                "givenName": this.state.patient.personname,
+                "familyName": this.state.patient.familyname
+            },
+            {
+                "param_name": "sex",
+                "value": this.state.patient.gender,
+                "payload_type": "GENDER"
+            },
+            {
+                "param_name": "age",
+                "value": moment(this.state.patient.dateofbirth).format("YYYY-MM-DD HH:mm:ss"),
+                "payload_type": "DOB"
+            },
+            {
+                "param_name":"location",
+                "value":this.state.patient.location,
+                "payload_type":"LOCATION"
+       }];
+    //    var metadata = {
+    //        "authentication" : {
+    //            "USERNAME" : localStorage.getItem("username"),
+    //            "PASSWORD" : aes256.encrypt("'T''h''e''B''e''s''t''S''e''c''r''e''t''K''e''y'",localStorage.getItem("password"))
+    //        },
+    //        "ENCONTER_TYPE" : "Create Patient"
+    //    }
+    var metadata = {
+        "authentication" : {
+            "USERNAME" : "taha",
+            "PASSWORD" : "h+5iUmkAfBZPW2XIFlnegA=="
+        },
+        "ENCONTER_TYPE" : "Create Patient"
+    }
+        var patient = {
+            data:JSON.stringify(data),
+            metadata: JSON.stringify(metadata)
+        }
+            console.log(JSON.stringify(patient))
+            await this.props.savePatient(patient);
+            await createNotification('success','Patient Created');
+            await this.closeAddPatientModal()
+}
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
+            patient: {
+                personname: '',
+                familyname: '',
+                dateofbirth: '',
+                age: null,
+                gender: '',
+                location: ''
+            }
         })
     }
     // handleChange = e => {
@@ -257,8 +328,10 @@ class FindPatient extends React.Component {
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
         await console.log('hiiii ' + JSON.stringify(this.props.patients))
+        if (this.props.patients != undefined) {
+            await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
-        await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
+        }
     }
     populateDropDown() {
         let array = [];
@@ -298,27 +371,23 @@ class FindPatient extends React.Component {
             <div className="row container-fluid fp-main-container">
                 <CardTemplate
                     title={
-                        <div className="row">
-                            <div className="col-md-4">
-                                <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                                    <div className="input-group search-btn">
-                                        <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
-                                            onKeyPress={event => {
-                                                if (event.key === 'Enter') {
-                                                    this.searchPatient(event)
-                                                }
-                                            }}
-                                            required
-                                            className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
-                                        <div className="input-group-append">
-                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
-                                                <i className="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                        <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div className="input-group search-btn">
+                                <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
+                                    onKeyPress={event => {
+                                        if (event.key === 'Enter') {
+                                            this.searchPatient(event)
+                                        }
+                                    }}
+                                    required
+                                    className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
+                                <div className="input-group-append">
+                                    <button className="btn btn-primary" type="button" onClick={((e) => this.searchPatient(e))}>
+                                        <i className="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     }
                     action={
                         <>
@@ -334,7 +403,6 @@ class FindPatient extends React.Component {
                         rowData={rowData}
                         onCellClicked={event => { this.onCellClicked(event) }}
                     />
-
                 </CardTemplate>
 
                 {/* <div className="card fp-header">
@@ -408,7 +476,7 @@ class FindPatient extends React.Component {
                         <Modal.Title>Add New Patient</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.savePatient}>
                             <div className="form-group row" >
                                 <label htmlFor="identifier" class="col-sm-4 col-form-label required">Identifier</label>
                                 <div class="col-sm-8">
@@ -456,10 +524,10 @@ class FindPatient extends React.Component {
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={patient.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" />
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required />
                                 </div>
                             </div>
-                            <div className="form-group row ">
+                            {/* <div className="form-group row ">
                                 <div className="col-sm-4"></div><div className="col-sm-4">OR</div><div className="col-sm-4"></div>
                             </div>
                             <div className="form-group row" >
@@ -467,7 +535,7 @@ class FindPatient extends React.Component {
                                 <div class="col-sm-8">
                                     <input type="number" className="form-control" name="age" value={patient.age} onChange={this.handleChange} />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className='form-group row '>
                                 <label htmlFor='location' class="col-sm-4 col-form-label required">Location</label>
                                 <div class="col-sm-8">

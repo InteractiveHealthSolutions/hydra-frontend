@@ -68,7 +68,6 @@ function LocationManagement(props) {
         for (let i = 0; i < edite.length; i++)
             edite[i].addEventListener("click",function(event) {
                 event.preventDefault();
-                alert('')
                // setOpenModal(true);
               }, false)
 

@@ -21,7 +21,7 @@ const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
 
 
 export const savePatient = (Patient) => async dispatch =>
-  fetch(POST, "patient", Patient)
+  fetch(POST, "hydra/formSubmission", Patient)
     .then(res => dispatch(patientAction(res))).catch(displayError)
 
 const patientAction = (payload) => ({

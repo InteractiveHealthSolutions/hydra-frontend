@@ -12,7 +12,7 @@ export const setActiveWorkflow = (workflow) => dispatch => {
   dispatch(setWorkflow({ workflow }));
   localStorage.setItem('active-workflow-name', workflow.name);
   localStorage.setItem('active-workflow-uuid', workflow.uuid);
-  history.push('/phase');
+  history.push('/workflow/phase');
 }
 
 const setWorkflow = (workflow) => ({ type: types.ACTIVE_WORKFLOW, workflow })

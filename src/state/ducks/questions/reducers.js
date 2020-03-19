@@ -16,7 +16,7 @@ const initialState = {
 };
 
 const questionReducer = createReducer(initialState)({
-    [types.SET_PROJECT]: (state, { payload }) => ({
+    [types.SET_PROJECT_QUESTION]: (state, { payload }) => ({
         ...state,
         current: payload,
         loading: true,

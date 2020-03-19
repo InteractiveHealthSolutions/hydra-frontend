@@ -388,16 +388,22 @@ class QuestionList extends React.Component {
         };
         if (e) {
             if (e.uuid) {
+                this.setState({optionError:false})
                 option.key = e.uuid;
                 option.value = e.name.display;
+                
+            }
+            else {
+                this.setState({optionError:true})
             }
          
         }
-
-        // setting the new option in state
         this.setState({
             definedOptions: [...definedOptions, option]
         });
+
+        // setting the new option in state
+       
     };
     async handleSubmitEditForm(e) {
         if(this.state.dataTypeEdit == 'Coded' && this.state.definedOptions.length == 0) {
@@ -446,6 +452,10 @@ class QuestionList extends React.Component {
         var questionDataType = this.state.dataType;
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
+            return;
+        }
+        if(JSON.stringify(questionConceptClass) == '{}') {
+            this.mandatoryFieldError();
             return;
         }
         var displayText = this.state.displayText;
@@ -589,7 +599,7 @@ class QuestionList extends React.Component {
                                     this.props.getAllQuestion();
                                     this.setState({optionError:false})
 
-                                    this.resetForm();
+                                    //this.resetForm();
 
                                 });
                             }
@@ -639,7 +649,7 @@ class QuestionList extends React.Component {
                 widgetType: {
                     title: event.data.fieldType.display,
                     key: event.data.fieldType.uuid
-                }, isAttribute: event.data.tableName, variableName: event.data.concept.display.toLowerCase().replace(/ /g, "_"),
+                }, isAttribute: event.data.tableName != null ? true : false, variableName: event.data.concept.display.toLowerCase().replace(/ /g, "_"),
                 displayTextEdit: event.data.display, dataTypeEdit: event.data.concept.datatype.display, descriptionEdit: event.data.description
             })
             await console.log(JSON.stringify(this.state.widgetType))
@@ -647,6 +657,7 @@ class QuestionList extends React.Component {
 
     }
     onChangeEdit(e) {
+        alert(e.value)
         if (e.controlId == "widgettype") {
             this.setState({ widgetType: e });
 
@@ -972,7 +983,7 @@ class QuestionList extends React.Component {
                                 controlId="isAttribute"
                                 title="Attribute"
                                 onItemSelectedProp={this.onChangeEdit}
-                                checked={this.state.isAttribute == null ? 'false' : 'true'}
+                                checked={this.state.isAttribute}
                             >
                                 Is Attribute
               </CheckBox>

@@ -1,26 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
 import { connect } from 'react-redux'
-import DatePicker from "react-datepicker";
-import Select from 'react-select';
 import './eventlist.css';
-import Card from '@material-ui/core/Card';
-import Modal from 'react-bootstrap/Modal';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import BarChart from '../../common/barchart';
-import { generalConstants } from '../../../../utilities/constants';
-import { history } from '../../../../history';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { EventSideBackButton } from '../../common/sidebutton/SideBackButton'
 import { eventAction } from '../../../../state/ducks/event';
 import moment from 'moment'
 import { locationAction } from '../../../../state/ducks/location';
-import Loaders from "../../common/loader/Loader"
-import Button from 'react-bootstrap/Button';
+import { ModalFormTemplate } from '../../../ui/modal/modalFormTemplate/ModalFormTemplate';
+import { LoaderDots } from "../../common/loader/LoaderDots"
+
+const EventHeaderSearch = lazy(() => import('./EventHeaderSearch'))
+const EventContainer = lazy(() => import('./EventContainer'))
+const EventSummary = lazy(() => import('./EventSummary'))
 
 class EventList extends React.Component {
 
@@ -51,9 +41,8 @@ class EventList extends React.Component {
             assetList: [],
             voidReason: "",
             deleteEvent: [],
-            assetCost: 0,
-            personnelCost: 0,
-            currentActiveEvent: ''
+            activeEvent: [],
+            fltLocation: {}
         };
 
         this.handleChangeDateFrom = this.handleChangeDateFrom.bind(this);
@@ -64,65 +53,10 @@ class EventList extends React.Component {
 
     }
 
-    async componentWillMount() {
-        this.props.getAllEvents();
-        this.props.getAllLocation();
-
+    async UNSAFE_componentWillMount() {
+        //this.props.getAllEvents();
+        //this.props.getAllLocation();
     }
-
-    async componentWillReceiveProps(nextProps) {
-        if (nextProps.eventLists !== undefined) {
-            this.setState({
-                mainEventList: nextProps.eventLists.events
-            })
-            if (this.state.mainEventList) {
-                this.renderEventList();
-            }
-        }
-
-        if (nextProps.locationList !== undefined) {
-            let filterLoc = await this.filterLocation(nextProps.locationList.results)
-            this.setState({
-                availableLocation: filterLoc
-            })
-            if (this.state.availableLocation) {
-                this.locationListFormat();
-            }
-        }
-
-    }
-
-    async filterLocation(list) {
-        let array = []
-        if (list) {
-            await list.forEach(element => {
-                if (element.tags) {
-                    if (this.filterLocationByTag(element.tags).length > 0) {
-                        array.push(element)
-                    }
-                }
-            });
-        }
-        return array
-    }
-
-    filterLocationByTag(list) {
-        let array = []
-        let valid = true;
-        if (list) {
-            for (let index = 0; index < list.length; index++) {
-                if (list[index].name === "Country" || list[index].name === "City/Village" || list[index].name === "Province/State") {
-                    valid = false
-                    break;
-                }
-            }
-            if (valid) {
-                return list
-            }
-        }
-        return array
-    }
-
 
     locationListFormat = () => {
         let array = []
@@ -150,10 +84,10 @@ class EventList extends React.Component {
         });
     }
 
-    openModal() {
+    openModal = () => {
         this.setState({ openModal: true });
     }
-    closeModal() {
+    closeModal = () => {
         this.setState({ openModal: false });
     }
 
@@ -163,7 +97,7 @@ class EventList extends React.Component {
             voidReason: ""
         });
     }
-    closeVoidModal() {
+    closeVoidModal = () => {
         this.setState({ openVoidModal: false });
     }
 
@@ -184,7 +118,6 @@ class EventList extends React.Component {
         e.preventDefault();
     }
     async handleChangeDateTo(date) {
-        console.log("date", date)
         await this.setState({
             toDate: date
         });
@@ -192,8 +125,8 @@ class EventList extends React.Component {
     }
 
     handleChangeLocation = selectedLocation => {
-        this.setState({ selectedLocation });
-        this.eventfilterByLocation(selectedLocation)
+        this.setState({ fltLocation: selectedLocation });
+        // this.eventfilterByLocation(selectedLocation)
 
     };
 
@@ -207,9 +140,6 @@ class EventList extends React.Component {
                 mainEventList: this.props.eventLists.events.filter(data => data.location.uuid === location.value)
             })
         }
-        if (this.state.mainEventList) {
-            this.renderEventList();
-        }
     }
 
     async eventfilterByDate(date) {
@@ -220,8 +150,6 @@ class EventList extends React.Component {
             let filterList = this.props.eventLists.events.filter(data =>
                 (moment(data.schedule.plannedDate).format('YYYY-MM-DD') === fromDates)
                 <= (moment(data.schedule.endDate).format('YYYY-MM-DD') === toDates))
-
-            console.log("filterList", filterList)
             await this.setState({
                 mainEventList: filterList
             })
@@ -262,7 +190,6 @@ class EventList extends React.Component {
             voided: true,
             voidReason: voidReason
         }
-        console.log("voidEvent", voidEvent);
         this.props.saveEvent(voidEvent);
         this.props.getAllEvents();
         this.closeVoidModal();
@@ -272,463 +199,68 @@ class EventList extends React.Component {
         e.preventDefault();
         const { name, value } = e.target;
         let formErrors = { ...this.state.formErrors };
-        this.setState({ formErrors, [name]: value }, () => console.log(this.state));
+        this.setState({ formErrors, [name]: value });
     };
 
 
-    handleAddEvent = () => {
-        localStorage.setItem("active-event", JSON.stringify(""))
-        history.push('/eventplanner');
-    }
-
-    switchPage = (currentStatus, currentObject) => {
-        if (currentStatus === generalConstants.Fill_CLOSURE_FORM) {
-            this.props.setActiveEvent(currentObject)
-        }
-        else if (currentStatus === generalConstants.VIEW_SUMMARY) {
-            this.showEventSummary(currentObject);
-        }
-        else if (currentStatus === generalConstants.ADD_DETAIL) {
-            this.props.setActiveEvent(currentObject)
-        }
-    }
-
-    async showEventSummary(activeEvent) {
-        await this.calculateCost(activeEvent)
-        await this.calculatePersonnel(activeEvent)
+    showEventSummary = (activeEvent) => {
+        console.log("showEventSummary", activeEvent)
         this.setState({
-            currentActiveEvent: activeEvent.uuid,
-            eventType: activeEvent.eventType.name,
-            eventName: activeEvent.name,
-            startDate: moment(activeEvent.schedule.plannedDate).format("YYYY-MM-DD"),
-            endDate: moment(activeEvent.schedule.endDate).format('YYYY-MM-DD'),
-            location: activeEvent.location.display,
-            memberList: activeEvent.eventParticipants.map(data => {
-                return <label style={{ textAlign: 'center', color: 'gray', margin: 'inherit' }}>{data.participant.display}</label>
-            }),
-            serviceList: activeEvent.eventServices.map(data => {
-                return <tr>
-                    <td>{data.service.name}</td>
-                    <td>{"$ " + data.actualCost}</td>
-                </tr>
-            }),
-            assetList: activeEvent.eventAssets.map(data => {
-                return <tr>
-                    <td>{data.asset.name}</td>
-                    <td>{data.quantity}</td>
-                    <td>{"$ " + data.actualCost}</td>
-                </tr>
-            }),
+            activeEvent: activeEvent,
             openModal: true
         })
     }
 
-    async calculateCost(activeEvent) {
-        let totalAssetCost = 0
-        console.log("eventAssets", activeEvent)
-        if (activeEvent.eventAssets !== undefined) {
-            activeEvent.eventAssets.forEach(data => {
-                totalAssetCost = totalAssetCost + data.quantity * data.actualCost
-            })
-        }
-        await this.setState({
-            assetCost: totalAssetCost
-        })
-    }
-
-    async calculatePersonnel(activeEvent) {
-        console.log("eventParticipants ", activeEvent.eventParticipants)
-        var hours = Math.abs(moment(activeEvent.schedule.endDate).toDate() - moment(activeEvent.schedule.plannedDate).toDate()) / 3600000
-        var totalCost = 0;
-        await activeEvent.eventParticipants.forEach(element => {
-            if (element.participant.salaryType.name === "Daily") {
-                totalCost = totalCost + (element.participant.salaryValue / 8) * hours
-            } else if (element.participant.salaryType.name === "Monthly") {
-                totalCost = totalCost + (element.participant.salaryValue / 173) * hours
-            }
-            else if (element.participant.salaryType.name === "Annual") {
-                totalCost = totalCost + (element.participant.salaryValue / 2080) * hours
-            }
-        });
-        await this.setState({
-            personnelCost: totalCost
-        })
-
-    }
-
-    renderEventList() {
-
-        const { mainEventList } = this.state
-        const removeVoidedList = this.filterVoidedEvents(mainEventList)
-        this.setState({
-            listItems: removeVoidedList.map(event => {
-                return <Card style={{ margin: '1px' }}>
-                    <li className="list-group-item " >
-
-                        <div className="row" >
-                            <div className="col-lg-1 col-md-1 col-sm-1"  >
-                                <img style={{ height: '45px', width: '45px' }}
-                                    src={require('../../../../assets/formo.png')}
-                                    alt="" />
-                            </div>
-                            <div className="col-lg-5 col-md-5  col-sm-5"
-                                style={{ marginTop: '16px', marginBottom: 'auto' }} >
-                                <h6>{event.name}</h6>
-                            </div>
-                            <div className="col-lg-3 col-md-3  col-sm-3"
-                                style={{ marginTop: '2px', marginBottom: 'auto' }}>
-                                <p style={{ fontSize: '1.5ex', margin: 'auto', color: 'gray', marginLeft: '144px' }}>
-                                    <span style={{ fontSize: '12px' }}>
-                                        {moment(event.schedule.plannedDate).format('YYYY-MM-DD')}
-                                    </span>
-                                    <label style={{ marginRight: '6px', marginLeft: '6px' }}> to </label>
-                                    <span style={{ fontSize: '12px' }}>
-                                        {moment(event.schedule.endDate).format('YYYY-MM-DD')}
-                                    </span>
-                                </p>
-                                <p style={{ fontSize: '1.5ex', margin: 'auto', color: 'gray', marginLeft: '144px' }}>{event.location.display}</p>
-                                {/*    <p style={{ fontSize: '1.5ex', margin: 'auto', color: 'gray', marginLeft: '144px' }}>{event.locationType}</p> */}
-                            </div>
-                            <div className="col-sm-2" style={{ marginTop: '11px', marginBottom: 'auto' }}>
-                                <button
-                                    onClick={() => this.switchPage(this.eventStatus(event), event)}
-                                    type="button"
-                                    className="btn btn-sm btn-primary btn-el-gobal"
-                                >{this.eventStatus(event)}
-                                </button>
-                            </div>
-                            <div className="col-lg-1 col-md-1 col-sm-1 align-middle hover-zoom" >
-                                {
-                                    (event.uuid === '27f83f15-4980-42a7-8f3c-7e6468487084') ? "" :
-                                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Remove" onClick={() => this.deleteEvent(event)}>
-                                            <i className="fas fa-times delete-icon-eventlist"></i>
-                                        </span>
-                                }
-
-                            </div>
-                        </div>
-                    </li>
-                </Card >
-            })
-        });
-
-    }
-
-    filterVoidedEvents(mainEventList) {
-        return mainEventList.filter(data => data.voided !== true)
-    }
-
-    eventStatus(event) {
-        if (event.closed === null) {
-            return generalConstants.Fill_CLOSURE_FORM
-        } else {
-            return (event.closed) ? generalConstants.VIEW_SUMMARY : generalConstants.ADD_DETAIL
-        }
-    }
-
     render() {
-        const { eventName, memberList, serviceList, personnelCost, assetCost, assetList, eventType, location, startDate, endDate, selectedLocation, locationData, selectedLocationType, fromDate, toDate, listItems } = this.state;
-        if (this.props.isLoading) return <Loaders />;
+        const { selectedLocation, activeEvent, fltLocation, voidReason, openModal, openVoidModal } = this.state;
+        console.log("showEventSummary", openModal)
         return (
             <div className="main-event">
-                <div className="row event-maincard-header">
-                    <div className="col-sm-3 col-md-3">
-                        <h4 className="header_title">Events List</h4>
-                    </div>
-                    <div className="col-sm-6 col-md-6 col-lg-6 el-margin">
-                        <div className="row">
-                            <div className="col-sm-3 col-md-3"></div>
-                            <div className="col-sm-3 col-md-6">
-                                <div className="tags">Location </div>
-                                <Select
-                                    value={selectedLocation}
-                                    onChange={this.handleChangeLocation}
-                                    options={locationData}
-                                    className="select-dropdown sizing"
-                                    name="statetype"
-                                />
-                            </div>
-                            {/* form date */}
-                            {/* <div className="col-sm-3 col-md-3 col-lg-3">
-                                <div className="row tags-date" >
-                                    From Date
-                                </div>
-                                <div className="row">
-                                    <DatePicker
-                                        selected={fromDate}
-                                        onChangeRaw={this.handleDateChangeRawFrom}
-                                        onChange={this.handleChangeDateFrom}
-                                        className="form-control date-picker-events"
-                                        maxDate={new Date()} dateFormat="dd/MM/yyyy"
-                                        placeholderText=""
-                                    />
-                                </div>
-                            </div>
-                            {/* to date */}
-                            {/* <div className="col-sm-3 col-md-3 col-lg-3">
-                                <div className="row tags-date">To Date</div>
-                                <div className="row">
-                                    <DatePicker selected={toDate} onChangeRaw={this.handleDateChangeRawTo} onChange={this.handleChangeDateTo} className="form-control date-picker-events" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="" required />
-                                </div>
-                            </div> */}
-                        </div>
+                <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
+                    <EventHeaderSearch
+                        selectedLocation={selectedLocation}
+                        handleChangeLocation={this.handleChangeLocation}
+                        handleAddEvent={this.handleAddEvent}
+                    />
+                    <EventContainer
+                        location={fltLocation}
+                        deleteEvent={this.deleteEvent}
+                        eventSummary={this.showEventSummary}
+                    />
 
-                    </div>
-                    <div className="col-sm-3 col-md-3 col-lg-3 el-margin">
-                        <div className="row">
-                            <div className="col-sm-6 col-md-6 col-lg-6">
-                                <Link to="/eventcalendar">
-                                    <button className="btn btn-primary btn-custom">Calendar View</button>
-                                </Link>
-                            </div>
-                            <div className="col-sm-6 col-md-6 col-lg-6">
-                                {/* <Link to="/eventplanner"> */}
-                                <button id="left" className="btn btn-primary btn-custom" onClick={this.handleAddEvent}>Add Event</button>
-                                {/* </Link> */}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="card" id="event-maincard">
-                        <ul className="list-group list-group-flush">
-                            {listItems}
-                        </ul>
-                    </div>
-                </div>
+                    {/* Summary */}
+                    <EventSummary
+                        openModal={openModal}
+                        closeModal={this.closeModal}
+                        event={activeEvent}
+                    />
+                </Suspense>
 
-                {/* Summary */}
-
-                <Modal size="lg" show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Event Summary</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="form-group">
-                            {
-                                (this.state.currentActiveEvent === '27f83f15-4980-42a7-8f3c-7e6468487084') ?
-                                    <>
-                                        <div className="row">
-                                            <ExpansionPanel style={{ width: '100%', margin: '18px' }}>
-                                                <ExpansionPanelSummary
-                                                    expandIcon={<ExpandMoreIcon />}
-                                                    aria-controls="panel1a-content"
-                                                    id="panel1a-header"
-                                                    style={{ backgroundColor: "var(--label-color)", height: '45px' }}
-                                                >
-                                                    <div className='row'>
-                                                        <div className='col-sm-6'>
-                                                            <label style={{ color: '#fff' }} >Total Cost</label>
-                                                        </div>
-                                                        <div className='col-sm-6'>
-                                                            <label style={{ marginLeft: '349px', color: '#fff' }}>$712.15</label>
-                                                        </div>
-                                                    </div>
-                                                </ExpansionPanelSummary>
-                                                <ExpansionPanelDetails>
-
-                                                    <table className="" id="assetsTable">
-                                                        <thead>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Total cost per screening</td>
-                                                                <td>$ 1.78</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Total cost per presumptive</td>
-                                                                <td>$ 11.87</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Total cost per patient</td>
-                                                                <td>$ 356.08</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Cost per hour</td>
-                                                                <td>$ 178.04</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </ExpansionPanelDetails>
-                                            </ExpansionPanel>
-                                        </div>
-                                        <div className='row' style={{ marginBottom: '50px' }} >
-                                            <div className="col-sm-2"></div>
-                                            <div className="col-sm-4">
-                                                <div class="card" >
-                                                    <div class="card-header" style={{ background: '#fff', height: '40px', height: '45px' }}>
-                                                        <label style={{ fontSize: '13px', marginLeft: '18px' }}>Number Needed to Screen</label>
-                                                    </div>
-                                                    <div class="card-body" style={{ background: 'var(--label-color)', height: '50px', color: '#fff' }}>
-                                                        <h2 style={{ marginTop: '-15px', marginLeft: '67px' }} >200</h2>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-sm-4">
-                                                <div class="card" >
-                                                    <div class="card-header" style={{ background: '#fff', height: '40px' }}>
-                                                        <label style={{ fontSize: '13px', marginLeft: '66px' }}> Yield  (%)</label>
-                                                    </div>
-                                                    <div class="card-body" style={{ background: 'var(--label-color)', height: '54px', color: '#fff' }}>
-                                                        <h2 style={{ marginTop: '-12px', marginLeft: '60px' }} >0.50</h2>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div className="col-sm-2"></div>
-                                        </div>
-                                        <BarChart></BarChart>
-                                    </>
-                                    : ""
-                            }
-                            {/* total cost */}
-                            <div className="row">
-                                <div className="card" style={{ width: '100%', margin: '20px' }}>
-                                    <div className="card-header" style={{ background: 'var(--label-color)', color: 'white', height: '45px' }}>
-                                        <label>Asset And Personnel Cost</label>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Asset Cost:</label> &nbsp;&nbsp; <label >{assetCost}</label>
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Personnel Cost:</label> &nbsp;&nbsp; <label >{personnelCost.toFixed(2)}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Event Details */}
-                            <div className="row">
-                                <div className="card" style={{ width: '100%', margin: '20px' }}>
-                                    <div className="card-header" style={{ background: 'var(--label-color)', color: 'white', height: '45px' }}>
-                                        <label>Event Details</label>
-                                    </div>
-                                    <div className="card-body">
-
-                                        <div className="row">
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Event Type:</label> &nbsp;&nbsp; <label >{eventType}</label>
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Event Name:</label> &nbsp;&nbsp; <label >{eventName}</label>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Start Date:</label> &nbsp;&nbsp; <label >{startDate}</label>
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>End Date:</label> &nbsp;&nbsp; <label >{endDate}</label>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            {/* <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Location Type:</label>&nbsp;&nbsp; <label>Hospital</label>
-                                            </div> */}
-                                            <div className='col-sm-6'>
-                                                <label style={{ fontWeight: 'bold' }}>Location :</label>&nbsp;&nbsp; <label>{location}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* member */}
-                            <div className="row">
-                                <div className="card" style={{ width: '100%', margin: '20px' }}>
-                                    <div className="card-header" style={{ background: "var(--theme-secondary-color)", color: 'white', height: '45px' }}>
-                                        <label>Members</label>
-                                    </div>
-                                    <div className="card-body" style={{ marginRight: '24px' }}>
-                                        {memberList}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* service */}
-                            <div className="row">
-                                <div className="card" style={{ width: '100%', margin: '20px' }}>
-                                    <div className="card-header" style={{ background: "var(--label-color)", color: 'white', height: '45px' }}>
-                                        <label>Services</label>
-                                    </div>
-                                    <div className="card-body">
-                                        <table className="" id="assetsTable">
-                                            <thead>
-                                                <tr className="header">
-                                                    <th style={{ width: '20%' }}>Service Name</th>
-                                                    <th style={{ width: '20%' }}>Service Cost</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {serviceList}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Assets */}
-                            <div className="row">
-                                <div className="card" style={{ width: '100%', margin: '20px' }}>
-                                    <div className="card-header" style={{ background: "var(--theme-secondary-color)", color: 'white', height: '45px' }} >
-                                        <label>Assets</label>
-                                    </div>
-                                    <div className="card-body">
-                                        <table className="" id="assetsTable">
-                                            <thead>
-                                                <tr className="header">
-                                                    <th style={{ width: '20%' }}>Asset Name</th>
-                                                    <th style={{ width: '20%' }}>Quantity</th>
-                                                    <th style={{ width: '20%' }}>Unit Price</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {assetList}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </Modal.Body>
-                </Modal>
-
-
-                {/* //voided                            */}
-                <Modal
-                    show={this.state.openVoidModal}
-                    onHide={() => this.closeVoidModal()}
-                    style={{ marginTop: '100px' }}
+                {/* //voided  */}
+                <ModalFormTemplate
+                    openVoidModal={openVoidModal}
+                    closeVoidModal={this.closeVoidModal}
+                    handleVoidSubmit={this.handleVoidSubmit}
+                    title="Confirm to Delete?"
                 >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm to Delete?</Modal.Title>
-                    </Modal.Header>
-                    <form onSubmit={this.handleVoidSubmit}>
-                        <Modal.Body>
-                            <div className="form-group">
-                                <label htmlFor="eventName" className="required" >Reason</label>
-                                <input
-                                    placeholder="void reason"
-                                    type="text"
-                                    name="voidReason"
-                                    value={this.state.voidReason}
-                                    onChange={this.handleChange}
-                                    className='form-control'
-                                />
-                            </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button type='submit' variant='primary'>Save
-                        </Button>
-                        </Modal.Footer>
-                    </form>
-                </Modal>
+                    <div className="form-group">
+                        <label htmlFor="eventName" className="required" >Reason</label>
+                        <input
+                            placeholder="void reason"
+                            type="text"
+                            name="voidReason"
+                            value={voidReason}
+                            onChange={this.handleChange}
+                            className='form-control'
+                            required
+                        />
+                    </div>
+                </ModalFormTemplate>
 
                 <EventSideBackButton
                     navigateTo=""
                 ></EventSideBackButton>
-            </div>
+            </div >
         );
     }
 }

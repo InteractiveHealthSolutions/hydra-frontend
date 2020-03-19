@@ -180,10 +180,10 @@ class Workflow extends React.Component {
     return (
       <div className="main-wf container-fluid">
         <div className="row">
-          <div className="col-sm-6 col-md-6 col-lg-6">
+          <div className="col-sm-6 col-md-6">
             <h4 className="header_title">Workflows</h4>
           </div>
-          <div className="col-sm-6 col-md-6 col-lg-6">
+          <div className="col-sm-6 col-md-6">
             <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Create Workflow</button>
           </div>
         </div>
@@ -225,9 +225,9 @@ class Workflow extends React.Component {
             </Modal.Footer>
           </form>
         </Modal>
-        <WorkflowSideBackButton
+        {/* <WorkflowSideBackButton
           navigateTo=""
-        ></WorkflowSideBackButton>
+        ></WorkflowSideBackButton> */}
       </div >
     );
   }

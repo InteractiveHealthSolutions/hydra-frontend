@@ -16,7 +16,8 @@ export class CheckBox extends Component {
   };
 
   render() {
-    const { title, isRequired, name, value } = this.props;
+    const { title, isRequired, name, disabled, value } = this.props;
+    var disabledText = {}; if (disabled === "Yes") { disabledText['disabled'] = 'disabled'; }
 
     return (
       <form>
@@ -29,6 +30,7 @@ export class CheckBox extends Component {
                 type="checkbox"
                 onChange={this.onChangeFunc}
                 checked="checked"
+                {...disabledText}
               />
               :
               <input
@@ -36,6 +38,7 @@ export class CheckBox extends Component {
                 value={title}
                 type="checkbox"
                 onChange={this.onChangeFunc}
+                {...disabledText}
               />
           }
 

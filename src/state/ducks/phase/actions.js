@@ -14,7 +14,7 @@ export function setActivePhases(phases) {
     dispatch(setPhases({ phases }));
     localStorage.setItem('active-phases-name', phases.phaseName);
     localStorage.setItem('active-phases-uuid', phases.phaseUUID);
-    history.push('/component');
+    history.push('/workflow/component');
   }
 
   function setPhases(phases) { return { type: types.ACTIVE_PHASE, phases } };

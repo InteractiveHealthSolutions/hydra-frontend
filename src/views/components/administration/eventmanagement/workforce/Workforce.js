@@ -276,6 +276,7 @@ function Workforce(props) {
                                     </>
                                     :
                                     <AutoSearchComplete
+                                    showLable ="true"
                                         controlId="workforceName"
                                         title="Name"
                                         onItemSelectedProp={onItemSelectedProp}

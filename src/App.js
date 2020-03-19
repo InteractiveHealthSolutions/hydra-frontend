@@ -1,5 +1,5 @@
-import React from 'react';
-import { Router, Route, HashRouter, Switch } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { Router, Route, HashRouter, BrowserRouter, Switch } from 'react-router-dom';
 import LogIn from './views/components/login/Login';
 import { history } from './history'
 import IdleTimer from 'react-idle-timer'
@@ -39,6 +39,7 @@ import SystemSetting from './views/components/administration/systemsettings/syst
 import UserList from './views/components/administration/user/userlist'
 import CustomBreadcrumbs from './views/components/breadcrumbs/CustomBreadcrumbs';
 import { Container } from 'reactstrap';
+import './defaultLayout.css'
 
 const Login = React.lazy(() => import('./views/components/login/Login'));
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
@@ -61,7 +62,7 @@ class App extends React.Component {
         }
         return 'undefined';
     }
-
+    loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
     render() {
         return (
 
@@ -75,48 +76,31 @@ class App extends React.Component {
                     debounce={250}
                     timeout={1800000}
                 />
-                {/* 
                 <Router history={history}>
-                    <React.Suspense fallback={loading()}>
-                        <Switch>
-                            <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
-                            <Route path="/" name="Home" render={props => <DefaultLayout {...props} />} />
-                        </Switch>
-                    </React.Suspense>
-                </Router> */}
-                            <Router history={history}>
-                                <Route path="/" component={Header} />
-                                <PrivateRoute exact path="/" component={Homepage} />
-                                <Route path="/login" component={LogIn} />
-                                <Route path="/signup" component={SignUp} />
-                                <PrivateRoute exact path="/workflow" component={Workflow} />
-                                <PrivateRoute path="/phase" component={Phase} />
-                                <PrivateRoute path="/component" component={Component} />
-                                <PrivateRoute path="/formdesigner" component={FormDesigner} />
-                                <PrivateRoute path="/events" component={EventList} />
-                                <PrivateRoute path="/eventcalendar" component={EventCalendar} />
-                                <PrivateRoute path="/eventplanner" component={EventPlanner} />
-                                <PrivateRoute path="/eventclosure" component={EventClosureForm} />
-                                <PrivateRoute path="/Form" component={Form} />
-                                <PrivateRoute path="/FormRender" component={FormRender} />
-                                <PrivateRoute path="/FindPatient" component={FindPatient} />
-                                <PrivateRoute path="/PatientDetail" component={PatientDetail} />
-                                <PrivateRoute path="/PatientRegistration" component={PatientRegistration} />
-                                <PrivateRoute path="/administration" component={AdministrationHome} />
-                                <PrivateRoute path="/labtest" component={ManageLabTest} />
-                                <PrivateRoute path="/addlabtestattr" component={AddLabTestAttribute} />
-                                <PrivateRoute path="/labtestattr" component={ManageLabTestAttribute} />
-                                <PrivateRoute path="/testorderlist" component={TestOrderList} />
-                                <PrivateRoute path="/testorder" component={AddTestOrder} />
-                                <PrivateRoute path="/samplelist" component={SampleList} />
-                                <PrivateRoute path="/roles" component={Roles} />
-                                <PrivateRoute path="/testresults" component={TestResults} />
-                                <PrivateRoute path="/reports" component={Reports} />
-                                <PrivateRoute path="/systemsettings" component={SystemSetting} />
-                                <PrivateRoute path="/questionlist" component={QuestionList} />
-                                <PrivateRoute path="/users" component={UserList} />
-                            </Router>
-                
+                    <div className="app">
+                        <Header ></Header>
+                        <div className="app-body">
+                            <main className="main">
+                                <CustomBreadcrumbs />
+                                <Container fluid>
+                                    <Switch>
+                                        <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
+                                        <PrivateRoute exact path="/" component={Homepage} />
+                                        <PrivateRoute exact path="/workflow" component={Workflow} />
+                                        <PrivateRoute exact path="/workflow/phase" component={Phase} />
+                                        <PrivateRoute path="/workflow/component" component={Component} />
+                                        <PrivateRoute path="/workflow/Form" component={Form} />
+                                        <PrivateRoute exact path="/event" component={EventList} />
+                                        <PrivateRoute path="/event/eventcalendar" component={EventCalendar} />
+                                        <PrivateRoute path="/event/eventplanner" component={EventPlanner} />
+                                        <PrivateRoute path="/event/eventclosure" component={EventClosureForm} />
+                                    </Switch>
+                                </Container>
+                            </main>
+                        </div>
+                    </div>
+                </Router>
+
                 <NotificationContainer />
             </div>
 

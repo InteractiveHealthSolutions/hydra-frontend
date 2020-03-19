@@ -5,55 +5,56 @@ import './css/util.css'
 import './css/main-login.css'
 import './css/animate.css'
 import { userAction } from '../../../state/ducks/login';
-import Loader from 'react-loader-spinner'
+
+
+
+const initialState = {
+    username: '',
+    password: '',
+    submitted: false,
+    authorizedCredential: false,
+    userNameErr: '',
+    passwordErr: ''
+};
+
+
 
 class Login extends React.Component {
 
     constructor(props) {
         super(props);
         this.props.logout();
-        this.state = {
-            username: '',
-            password: '',
-            submitted: false,
-            authorizedCredential: false,
-            userNameErr: '',
-            passwordErr: ''
-        };
+        this.state = initialState;
+
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
-    async componentWillReceiveProps(nextProps) {
+    reset() {
+        this.setState(initialState);
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.authorized !== undefined) {
-            await this.setState({
+            this.setState({
                 authorizedCredenti: nextProps.authorized
             })
         }
         if (nextProps.submitted !== undefined) {
-            await this.setState({
+            this.setState({
                 submitted: nextProps.submitted
             })
         }
     }
-    componentDidMount() {
-        this.setState({
-            username: '',
-            password: '',
-            submitted: false,
-            authorizedCredential: false
-        })
-    }
 
     componentWillUnmount() {
-        this.setState({
-            username: '',
-            password: '',
-            submitted: false,
-            authorizedCredential: false
-        })
+        this.reset()
     }
+
+    //  componentDidMount(){
+    //      this.reset()
+    //  }
 
     handleChange(e) {
         e.preventDefault();
@@ -70,6 +71,7 @@ class Login extends React.Component {
         e.preventDefault();
         const { username, password } = this.state;
         if (this.validation()) {
+            //this.props.logintest(username, password)
             this.props.login(username, password)
         }
     }
@@ -89,7 +91,6 @@ class Login extends React.Component {
             })
             isValid = false
         }
-        console.log("validation", isValid)
         return isValid
     }
 
@@ -101,6 +102,7 @@ class Login extends React.Component {
             <div className="limiter">
                 <div className="container-login100">
                     <div className="wrap-login100">
+
                         <div className={(isLoading) ? "login100-pic rotate" : "login100-pic"}>
                             <img src={require('../../../assets/logo.png')} alt="IMG" />
                         </div>
@@ -124,10 +126,8 @@ class Login extends React.Component {
                                 </span>
 
                             </div>
-                            {userNameErr &&
-                                <span className="help-block error_spn">Username is required</span>
-                            }
-                            <div className="wrap-input100 " >
+                            {userNameErr && (<span className="help-block error_spn">Username is required</span>)}
+                            <div className="wrap-input100 extra-margin" >
                                 <input
                                     className="input100"
                                     type="password"
@@ -141,20 +141,18 @@ class Login extends React.Component {
                                     <i className="fa fa-lock" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            {passwordErr &&
-                                <span className="help-block error_spn">Password is required</span>
-                            }
-                            <div class="container-login100-form-btn">
+                            {passwordErr && (<span className="help-block error_spn">Password is required</span>)}
+                            <div className="container-login100-form-btn">
                                 {(authorizedCredential === false && submitted && username && password) ?
-                                    <div className="help-block error_spn">Invalid Credentials</div>
+                                    (<div className="help-block error_spn">Invalid Credentials</div>)
                                     : ""
                                 }
                                 <button className={isLoading ? "login100-form-btn disabled_btn" : "login100-form-btn"} disabled={isLoading} >
                                     Login
                                 </button>
                             </div>
-                            <div class="text-center p-t-136">
-                                <label class="txt2">
+                            <div className="text-center p-t-136">
+                                <label className="txt2">
                                     Powered by
                                 </label>
                                 <a href="http://www.ihsinformatics.com/"><b style={{ fontSize: '12px' }}> IHS</b></a>
@@ -175,6 +173,7 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchTopProps = ({
     login: userAction.login,
+    logintest: userAction.loginTest,
     logout: userAction.logout
 })
 

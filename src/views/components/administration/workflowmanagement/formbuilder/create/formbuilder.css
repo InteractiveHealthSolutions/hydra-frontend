@@ -31,3 +31,25 @@
 .question_title {
   margin-left: 45px !important;
 }
+.form_adjustment {
+  padding: inherit;
+  padding: 4px;
+}
+.ul_form {
+  height: 500px;
+  overflow-y: scroll;
+  width: 100%;
+}
+.divider_left {
+  height: 1px;
+  background-color: var(--bg);
+}
+
+.divider_right {
+  height: 1px;
+  background-color: var(--bg);
+  margin-top: 31px;
+}
+.icon_space{
+  margin: 4px;
+}

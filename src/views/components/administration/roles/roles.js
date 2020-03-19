@@ -26,19 +26,19 @@ class Roles extends React.Component {
             quickFilterText: '',
             columnDefs: [
                 {
-                    headerName: 'Role', field: 'role', width: '200'
+                    headerName: 'Role', field: 'role'
                 },
                 {
-                    headerName: 'Description', field: 'description', width: '320'
+                    headerName: 'Description', field: 'description'
                 },
                 {
-                    headerName: 'Inherited Roles', field: 'inheritedRoles', width: '180'
+                    headerName: 'Inherited Roles', field: 'inheritedRoles'
                 },
                 {
-                    headerName: 'Priviliges', field: 'priviliges', width: '450'
+                    headerName: 'Priviliges', field: 'priviliges'
                 },
                 {
-                    headerName: 'UUID', field: 'uuid', width: '450', hide: true
+                    headerName: 'UUID', field: 'uuid', hide: true
                 },
                 {
                     headerName: "Edit",
@@ -49,10 +49,6 @@ class Roles extends React.Component {
                     `
                     , width: 70
                 }
-                // {
-                //     headerName: "Edit", field: "edit", width: '70',
-                //     cellRenderer: 'buttonRenderer'
-                // }
             ],
             rowData: [],
             context: { componentParent: this },
@@ -113,19 +109,18 @@ class Roles extends React.Component {
         priviligesList: PropTypes.array.isRequired
     };
     async componentWillMount() {
-        this.props.getRoles();
-        if(this.props.rolesList != undefined) {
+           this.props.getRoles();
             await this.setState({ rowData: this.dataBuilder() });
             await this.props.getPriviliges();
             await this.createInheritedRoleOptions();
             await this.createPriviligesOption();
            await console.log('helllo '+JSON.stringify(this.props.rolesList))
         
-        }
+        
      }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
-            await this.setState({ rowData: this.dataBuilder() })
+            this.setState({ rowData: this.dataBuilder() })
            await this.createInheritedRoleOptions();
          await console.log('helllo props'+JSON.stringify(this.state.rowData))
         }
@@ -330,7 +325,7 @@ class Roles extends React.Component {
                             <div className="form-group row">
                                 <label className="col-form-label col-sm-4 required" htmlFor="roleName">Role</label>
                                 <div className="col-sm-8">
-                                    <input type="text" className="form-control" name="name" value={roleFormData.name} pattern="[a-zA-Z]+\s[a-zA-Z]+" onChange={this.handleChange} required disabled={this.state.forEdit} />
+                                    <input type="text" className="form-control" name="name" value={roleFormData.name} pattern="^[a-zA-Z ]+$" onChange={this.handleChange} required disabled={this.state.forEdit} />
                                 </div>
                             </div>
                             <div className="form-group row">

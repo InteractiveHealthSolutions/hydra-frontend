@@ -7,18 +7,20 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink, Route, BrowserRouter as Router } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
 
 const LinkRouter = props => <Link {...props} component={RouterLink} />;
 
 
 const StyledBreadcrumb = withStyles(theme => ({
     root: {
-        backgroundColor: theme.palette.grey[100],
+        backgroundColor: "rgb(66, 88, 208)",
         height: theme.spacing(3),
-        color: theme.palette.grey[800],
+        color: "#fff",
         fontWeight: theme.typography.fontWeightRegular,
         '&:hover, &:focus': {
-            backgroundColor: theme.palette.grey[300],
+            backgroundColor: "rgb(246, 112, 29)",
+            color: "#fff"
         },
         '&:active': {
             boxShadow: theme.shadows[1],
@@ -32,25 +34,28 @@ export default function CustomBreadcrumbs() {
         {({ location }) => {
             const pathnames = location.pathname.split('/').filter(x => x);
             return (
-                <Breadcrumbs aria-label="Breadcrumb">
-                    <RouterLink color="inherit" to="/">
-                        Home
-                     </RouterLink>
-                    {pathnames.map((value, index) => {
-                        const last = index === pathnames.length - 1;
-                        const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                <CardTemplate
+                    
+                >
+                    <Breadcrumbs aria-label="Breadcrumb" style={{ marginLeft: '54px' }}>
+                        <StyledBreadcrumb component="a" href="/" label="Home" />
+                        {pathnames.map((value, index) => {
+                            const last = index === pathnames.length - 1;
+                            const to = `/${pathnames.slice(0, index + 1).join('/')}`;
 
-                        return last ? (
-                            <Typography color="textPrimary" key={to}>
-                                {value}
-                            </Typography>
-                        ) : (
-                                <RouterLink color="inherit" to={to} key={to}>
+                            return last ? (
+                                <Typography color="textPrimary" key={to}>
                                     {value}
-                                </RouterLink>
-                            );
-                    })}
-                </Breadcrumbs>
+                                </Typography>
+                            ) : (
+                                    <RouterLink color="inherit" to={to} key={to}>
+                                        {value}
+                                    </RouterLink>
+                                );
+                        })}
+                    </Breadcrumbs>
+                </CardTemplate>
+
             );
         }}
     </Route>
