@@ -223,14 +223,14 @@ class FormBuilder extends React.Component {
       retired: formRetiredVal
     }
     console.log("newform", newform)
-    await this.props.saveFormFields(newform)
-    await createNotification("success", "Saved Successfully")
-    await this.setState({
-      addFormList: [],
-      formName: "",
-      formDescription: ""
-    })
-    this.prevStep()
+    // await this.props.saveFormFields(newform)
+    // await createNotification("success", "Saved Successfully")
+    // await this.setState({
+    //   addFormList: [],
+    //   formName: "",
+    //   formDescription: ""
+    // })
+    // this.prevStep()
   }
 
   async validation() {

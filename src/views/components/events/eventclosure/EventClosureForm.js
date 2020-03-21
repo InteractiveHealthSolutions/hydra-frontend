@@ -29,6 +29,7 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
 
 const animatedComponents = makeAnimated();
 
@@ -109,20 +110,20 @@ class EventClosureForm extends Component {
                     headerName: "Name", field: "asset.name"
                 },
                 {
-                    headerName: "Asset Type", field: "asset.assetType.name",
-                    width: 100
+                    headerName: "Type", field: "asset.assetType.name"
+                  
                 },
                 {
-                    headerName: "Asset Category", field: "asset.assetType.assetCategory.name",
-                    width: 100
+                    headerName: "Category", field: "asset.assetType.assetCategory.name"
+                   
                 },
                 {
-                    headerName: "Unit Cost", field: "asset.capitalValue", editable: this.editUnitCost, valueFormatter: this.currencyFormatter,
-                    width: 100
+                    headerName: "Unit Cost", field: "asset.capitalValue", editable: this.editUnitCost, valueFormatter: this.currencyFormatter
+                    
                 },
                 {
-                    headerName: "Quantity", field: "quantity", editable: this.editUnitCost,
-                    width: 100
+                    headerName: "Quantity", field: "quantity", editable: this.editUnitCost
+
                 }
             ],
             rowData: [],
@@ -542,8 +543,8 @@ class EventClosureForm extends Component {
     };
 
     onCellClicked = (event) => {
-        //console.log("event",event)
         if (event.colDef.headerName === 'delete') {
+            console.log("headerName" ,event.colDef.headerName)
             this.deleteServices(event.data)
         }
     };
@@ -567,8 +568,6 @@ class EventClosureForm extends Component {
             console.log("eventFixedAsset", this.state.eventFixedAsset);
         }
     }
-
-    //assets
 
     filterAssetType = () => {
         const { activeEvent } = this.state;
@@ -615,14 +614,20 @@ class EventClosureForm extends Component {
         }
 
     }
-
-
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
 
     render() {
-        const { eventTypeData, description, closureNote, personaldata, defaultPersonalList, personalList, columnDefs, rowData, eventName, location, locationData, formErrors, startDate, endDate, eventTypeOption, locationTypeOption, data, columns, activeEvent } = this.state;
+        const { eventTypeData, description,columnAssetDefs, rowAssetData ,closureNote, personaldata, defaultPersonalList, personalList, columnDefs, rowData, eventName, location, locationData, formErrors, startDate, endDate, eventTypeOption, locationTypeOption, data, columns, activeEvent } = this.state;
         return (
             <div className="row no-gutters">
-                <div className="col-md-7">
+                <div className="col-md-6">
                     <form onSubmit={this.handleSubmit} >
                         <CardTemplate
                             title={
@@ -634,7 +639,7 @@ class EventClosureForm extends Component {
                                             alt="" />
                                     </div>
                                     <div className="col-md-11">
-                                        <p>Event Details</p>
+                                        <p>Field Trip</p>
                                     </div>
                                 </div>
                             }
@@ -790,7 +795,7 @@ class EventClosureForm extends Component {
                         </CardTemplate>
                     </form>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-6">
                     <CardTemplate
                         title={
                             <div className="row">
@@ -807,71 +812,43 @@ class EventClosureForm extends Component {
                         }
                     >
                         {/* service */}
-                        <div className="row" style={{ maxWidth: "100%", marginLeft: '2px' }}>
+                        <div className="row adjustment">
                             <label className="label-heading">Services</label>
-                            <div
-                                className="ag-theme-balham"
-                                style={{
-                                    width: '100%',
-                                    height: '216px',
-                                    marginTop: '10px'
-                                }}
-                            >
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    onRowSelected={this.onRowSelected}
-                                    onCellClicked={event => { this.onCellClicked(event) }}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationAutoPageSize={true}
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                >
-                                </AgGridReact>
-                            </div>
                         </div>
-                        {/* assets*/}
-                        <div className="row" style={{ maxWidth: "100%", marginLeft: '2px' }}>
-                            <label className="label-heading-assets">Assets</label>
-                            <div
-                                className="ag-theme-balham"
-                                style={{
-                                    width: '100%',
-                                    height: '216px',
-                                    marginTop: '10px'
-                                }}
-                            >
-                                <AgGridReact
-                                    columnDefs={this.state.columnAssetDefs}
-                                    rowData={this.state.rowAssetData}
-                                    modules={AllCommunityModules}
+                        <div className="row">
+                            <div className="card-body">
+                                <AgGrid
+                                    onGridReady={this.onGridReady}
+                                    columnDefs={columnDefs}
                                     onRowSelected={this.onRowSelected}
-                                    onCellClicked={event => { this.onCellClicked(event) }}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    onCellEditingStopped={event => { this.handleCellEditingStopped(event) }}
-                                    forEachNode={(rowNode, index) => { console.log('node ' + rowNode.data.athlete + ' is in the grid'); }}
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationAutoPageSize={true}
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                >
-                                </AgGridReact>
+                                    rowData={rowData}
+                                    height="216px"
+                                    onCellClicked={this.onCellClicked}
+                                />
                             </div>
                         </div>
 
+                        {/* assets*/}
+                        <div className="row adjustment">
+                            <label className="label-heading-assets">Assets</label>
+                        </div>
+                        <div className="row">
+                            <div className="card-body">
+                                <AgGrid
+                                    onGridReady={this.onGridReady}
+                                    columnDefs={columnAssetDefs}
+                                    onRowSelected={this.onRowSelected}
+                                    rowData={rowAssetData}
+                                    height="216px"
+                                    onCellClicked={event => { this.onCellClicked(event) }}
+                                    handleCellEditingStopped ={event => { this.handleCellEditingStopped(event) }}
+                                />
+                            </div>
+                        </div>
                     </CardTemplate>
                 </div>
-            </div>
+            </div >
         )
-
     }
 
 }

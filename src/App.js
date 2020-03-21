@@ -77,7 +77,7 @@ class App extends React.Component {
                 />
                 <Router history={history}>
                     <Switch>
-                        <Route exact path="/login" component={LogIn} />
+                        <Route exact path="/login" name="Login" component={LogIn} />
                         <Route path="/" render={() => (
                             <div className="app">
                                 <Header ></Header>
@@ -86,11 +86,11 @@ class App extends React.Component {
                                         <Container fluid>
                                             <CustomBreadcrumbs />
                                             <Switch>
-                                                <PrivateRoute exact path="/" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" component={Workflow} />
-                                                <PrivateRoute exact path="/workflow/phase" component={Phase} />
-                                                <PrivateRoute exact path="/workflow/phase/component" component={Component} />
-                                                <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
+                                                <PrivateRoute exact path="/" name="Home" component={Homepage} />
+                                                <PrivateRoute exact path="/workflow" name="Workflows" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow/phase" name="Phases" component={Phase} />
+                                                <PrivateRoute path="/workflow/phase/component" component={Component} />
+                                                <PrivateRoute path="/workflow/phase/component/form" component={Form} />
                                                 <PrivateRoute exact path="/event" component={EventList} />
                                                 <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
                                                 <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />

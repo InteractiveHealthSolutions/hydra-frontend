@@ -33,6 +33,7 @@ const StyledBreadcrumb = withStyles(theme => ({
 export default function CustomBreadcrumbs() {
     return <Route>
         {({ location }) => {
+            console.log("location " ,location)
             const pathnames = location.pathname.split('/').filter(x => x);
             console.log("pathnames", pathnames[0])
             if (pathnames.length <= 0 || pathnames[0] === 'login') return <></>
