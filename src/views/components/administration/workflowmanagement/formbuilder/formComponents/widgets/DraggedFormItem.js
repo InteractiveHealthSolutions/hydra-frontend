@@ -20,17 +20,17 @@ export class DraggedFormItem extends Component {
   }
   handleExpandClick = (ev, str) => {
     this.setState({ expanded: !this.state.expanded })
-    console.log("ExpandClick")
+   // console.log("ExpandClick")
   }
   handleDelete = (e) => {
-    console.log("delete", e)
+   // console.log("delete", e)
     this.props.handleDelete(e)
   }
 
   render() {
 
     const { data, key } = this.props;
-    console.log("dragged data", data)
+    //console.log("dragged data", data)
     return (
       <li
         key={data.uuid}

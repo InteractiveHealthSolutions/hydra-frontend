@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { RadioGroup } from './RadioGroup';
 import TextBox from './TextBox';
-import  './widgets.css'
+import './widgets.css'
 import {
     NUMERIC,
     CODED,
@@ -44,17 +44,21 @@ export default class QuestionConfiguration extends Component {
             patientGender: "",
             patientGenderMandatory: 'yes',
             patientRelationship: "",
-            patientRelationshipMandatory: 'yes'
+            patientRelationshipMandatory: 'yes',
+            patientGivenName: "",
+            patientGivenNameMandatory: 'yes',
+            patientFamilyName: "",
+            patientFamilyNameMandatory: 'yes'
         }
 
-        console.log("QuestionConfiguration", this.props.dataField);
+       // console.log("QuestionConfiguration", this.props.dataField);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
     async setDefaultValue() {
-        console.log("defaultValue component", localStorage.getItem(`${this.props.uuid}-errorMsg`))
+        //console.log("defaultValue component", localStorage.getItem(`${this.props.uuid}-errorMsg`))
         await this.setState({
             defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
@@ -74,8 +78,10 @@ export default class QuestionConfiguration extends Component {
             patientContacts: localStorage.getItem(`${this.props.uuid}-patientContacts`),
             patientId: localStorage.getItem(`${this.props.uuid}-patientId`),
             patientIdMandatory: localStorage.getItem(`${this.props.uuid}-patientIdMandatory`),
-            patientName: localStorage.getItem(`${this.props.uuid}-patientName`),
-            patientNameMandatory: localStorage.getItem(`${this.props.uuid}-patientNameMandatory`),
+            patientGivenName: localStorage.getItem(`${this.props.uuid}-patientGivenName`),
+            patientGivenNameMandatory: localStorage.getItem(`${this.props.uuid}-patientGivenNameMandatory`),
+            patientFamilyName: localStorage.getItem(`${this.props.uuid}-patientFamilyName`),
+            patientFamilyNameMandatory: localStorage.getItem(`${this.props.uuid}-patientFamilyNameMandatory`),
             patientGender: localStorage.getItem(`${this.props.uuid}-patientGender`),
             patientGenderMandatory: localStorage.getItem(`${this.props.uuid}-patientGenderMandatory`),
             patientAge: localStorage.getItem(`${this.props.uuid}-patientAge`),
@@ -83,7 +89,7 @@ export default class QuestionConfiguration extends Component {
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
         }, () => {
-            console.log("defaultValue", this.state.allowPastDaate)
+           // console.log("defaultValue", this.state.allowPastDaate)
         })
     }
 
@@ -180,16 +186,18 @@ export default class QuestionConfiguration extends Component {
         this.setState({
             [ev.controlId]: ev.value
         }, () => {
-            console.log("handleRadioChange", this.state.patientContacts)
+
         })
+        //console.log("handleRadioChange",`${ev.name} = ` ,ev.value)
         // this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
     onItemCheckedProp = (ev) => {
         this.setState({
-            [ev.controlId]: ev.value
+            [ev.controlId]: ev.value 
+        }, () =>{
+            //console.log("handleGivenName inside", this.state.patientGivenNameMandatory)
         })
-        /// this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
@@ -197,8 +205,8 @@ export default class QuestionConfiguration extends Component {
 
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
-            , patientId, patientIdMandatory, patientName, patientNameMandatory, patientRelationship, patientRelationshipMandatory,
-            displayOrder, headingTitle, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
+            patientFamilyName, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -450,7 +458,7 @@ export default class QuestionConfiguration extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className ={(patientContacts === 'No'?'tr_back':"")}>
+                                    <tr className={(patientContacts === 'No' ? 'tr_back' : "")}>
                                         <th>1</th>
                                         <td>Patient ID</td>
                                         <td>
@@ -475,13 +483,13 @@ export default class QuestionConfiguration extends Component {
                                     </tr>
                                     <tr>
                                         <th>2</th>
-                                        <td>Name</td>
+                                        <td>Given Name</td>
                                         <td>
                                             <TextBox
-                                                controlId="patientName"
-                                                name={uuid + "-patientName"}
+                                                controlId="patientGivenName"
+                                                name={uuid + "-patientGivenName"}
                                                 type="text"
-                                                value={patientName}
+                                                value={patientGivenName}
                                                 onItemSelectedProp={this.onItemSelectedProp}
                                             />
 
@@ -489,9 +497,32 @@ export default class QuestionConfiguration extends Component {
                                         <td>
                                             <CheckBox
                                                 disabled={patientContacts}
-                                                controlId="patientNameMandatory"
-                                                name={uuid + "-patientNameMandatory"}
-                                                value={patientContacts === 'Yes' ? "true" : patientNameMandatory}
+                                                controlId="patientGivenNameMandatory"
+                                                name={uuid + "-patientGivenNameMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientGivenNameMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>2</th>
+                                        <td>Family Name</td>
+                                        <td>
+                                            <TextBox
+                                                controlId="patientFamilyName"
+                                                name={uuid + "-patientFamilyName"}
+                                                type="text"
+                                                value={patientFamilyName}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={patientContacts}
+                                                controlId="patientFamilyNameMandatory"
+                                                name={uuid + "-patientFamilyNameMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientFamilyNameMandatory}
                                                 onItemCheckedProp={this.onItemCheckedProp}
                                             />
                                         </td>
