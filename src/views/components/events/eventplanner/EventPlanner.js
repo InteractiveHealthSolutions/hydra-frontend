@@ -1,37 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import '../../../style/main.css';
 import './eventplanner.css';
 import { connect } from 'react-redux';
 import DatePicker from "react-datepicker";
 import Select from 'react-select';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TransferList from '../../common/transferlist/TransferList'
 import moment from 'moment'
 import makeAnimated from 'react-select/animated';
 import { EventSideBackButton } from '../../common/sidebutton/SideBackButton'
 import { eventAction } from '../../../../state/ducks/event';
-import { assetAction } from '../../../../state/ducks/assets';
-import { serviceAction } from '../../../../state/ducks/service';
 import { workforceAction } from '../../../../state/ducks/workforce';
 import { locationAction } from '../../../../state/ducks/location';
-
+import { SERVICE_TITLE, ASSETS_TITLE } from '../../../../utilities/constants/globalconstants'
+import { LoaderDots } from "../../common/loader/LoaderDots"
+const EventAssetService = lazy(() => import('./EventAssetService'));
 const animatedComponents = makeAnimated();
 
-
-const formValid = (formErrors, ...rest) => {
-    let valid = true;
-    Object.values(formErrors).forEach(val => {
-        val.length > 0 && (valid = false);
-    })
-    Object.values(rest).forEach(val => {
-        val === null > 0 && (valid = false);
-    })
-    return valid;
-}
 
 
 class EventPlanner extends Component {
@@ -77,22 +60,22 @@ class EventPlanner extends Component {
             assets: [],
             personalList: [],
             assetItemlist: [],
-            assetItem: [],
+            assetItem: {},
+            selectedAssetItem: [],
+            serviceItem: {},
+            selectedServiceItem: [],
             activeEvent: JSON.parse(localStorage.getItem('active-event')),
         };
     }
 
-
-    async  componentWillMount() {
+    async  UNSAFE_componentWillMount() {
         if (this.state.activeEvent) this.setActiveEventValues(this.state.activeEvent)
-        this.props.getAllAssetCategory();
-        this.props.getAllService();
         this.props.getAllPersonnel();
         this.props.getAllLocation();
         this.props.getAllEventType();
     }
 
-    async componentWillReceiveProps(nextProps) {
+    async UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.personalList !== undefined && nextProps.personalList.participants !== undefined) {
             let filterRetiredWorkforce = await nextProps.personalList.participants.filter(data => data.retired !== true)
             await this.setState({
@@ -110,19 +93,7 @@ class EventPlanner extends Component {
                 this.locationListFormat();
             }
         }
-        if (nextProps.serviceList !== undefined && nextProps.serviceList.services !== undefined) {
-            let nonRetiredService = await nextProps.serviceList.services.filter(data => data.retired !== true)
-            await this.setState({
-                availableService: nonRetiredService
-            })
-        }
-        if (nextProps.assetTypeList !== undefined) {
-            this.setState({
-                availableAssets: nextProps.assetTypeList.services
-            })
-            if (this.state.availableAssets)
-                this.filterAssetType();
-        } if (nextProps.eventTypeList !== undefined) {
+        if (nextProps.eventTypeList !== undefined) {
             this.setState({
                 availableEventType: nextProps.eventTypeList.eventTypes
             })
@@ -178,8 +149,48 @@ class EventPlanner extends Component {
         })
     }
 
-    result = params => {
-        // console.log("multi-ep-select::" + params);
+    serviceResult = (params, name) => {
+        this.setState({
+            serviceItem: { ...this.state.serviceItem, [name]: params }
+        }, async () => {
+            let mergeArray = [];
+            await Object.values(this.state.serviceItem).map((x, i) => {
+                console.log('x1', x)
+                if (x) {
+                    for (const elelemt of x)
+                        mergeArray.push(elelemt)
+                }
+            })
+            this.setState({
+                selectedServiceItem: mergeArray
+            })
+            console.log("serviceItem  ::", this.state.selectedServiceItem);
+        })
+    }
+
+    storeUniqueParams(params, name) {
+        return { ...this.state.serviceItem, [name]: params }
+    }
+
+
+
+
+
+    eventServiceFormat(list) {
+        let array = []
+        if (list) {
+            list.forEach(data => {
+                array.push(
+                    {
+                        service: data.value,
+                        actualCost: "",
+                        plannedForEvent: true,
+                        availableInEvent: false
+                    }
+                )
+            })
+        }
+        return array
     }
 
     personalResult = params => {
@@ -190,11 +201,43 @@ class EventPlanner extends Component {
         })
     }
 
-    assetResult = params => {
+    assetResult = (params, name) => {
+        console.log('params', name, params)
         this.setState({
-            assetItem: this.eventAssetFormat(params)
+            assetItem: { ...this.state.assetItem, [name]: params }
+        }, async () => {
+            let mergeArray = [];
+            await Object.values(this.state.assetItem).forEach((x, i) => {
+
+
+                if (x) {
+                    for (const elelemt of x)
+                        mergeArray.push(elelemt)
+                }
+            })
+            console.log("mergeArray  ::", mergeArray);
+            this.setState({
+                selectedAssetItem: mergeArray
+            })
+            console.log("selectedAssetItem  ::", this.state.selectedAssetItem);
         })
-        console.log("List assets  ::", params, this.state.assetItem);
+    }
+
+    eventAssetFormat = (List) => {
+        let array = []
+        if (List) {
+            List.forEach(data => {
+                array.push(
+                    {
+                        asset: data.value,
+                        actualCost: "",
+                        plannedForEvent: true,
+                        availableInEvent: false
+                    }
+                )
+            })
+        }
+        return array
     }
 
     onCalenderDateChange = date => this.setState({ date })
@@ -215,6 +258,7 @@ class EventPlanner extends Component {
         e.preventDefault();
     }
     handleChangeDateTo = date => {
+
         let formErrors = { ...this.state.formErrors };
         formErrors.endDate = ""
         this.setState({
@@ -223,11 +267,10 @@ class EventPlanner extends Component {
         });
     }
 
-    handleSubmit = e => {
+    handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("services data", JSON.parse(localStorage.getItem("TransferList")));
         if (this.validation()) {
-            const { activeEvent, eventName, description, eventTypeOption, location, startDate, endDate, personalList, assetItem } = this.state
+            const { activeEvent, selectedServiceItem, selectedAssetItem, eventName, description, eventTypeOption, location, startDate, endDate, personalList, assetItem } = this.state
             let newEvent = {}
             if (activeEvent) {
                 newEvent = {
@@ -243,8 +286,8 @@ class EventPlanner extends Component {
                         endDate: moment(endDate).format('YYYY-MM-DD hh:mm:ss')
                     },
                     eventParticipants: personalList,
-                    eventAssets: assetItem,
-                    eventServices: JSON.parse(localStorage.getItem("TransferList"))
+                    eventAssets: await this.eventAssetFormat(selectedAssetItem),
+                    eventServices: await this.eventServiceFormat(selectedServiceItem)
                 }
             } else {
                 newEvent = {
@@ -258,26 +301,21 @@ class EventPlanner extends Component {
                         endDate: moment(endDate).format('YYYY-MM-DD hh:mm:ss')
                     },
                     eventParticipants: personalList,
-                    eventAssets: assetItem,
-                    eventServices: JSON.parse(localStorage.getItem("TransferList"))
+                    eventAssets: await this.eventAssetFormat(selectedAssetItem),
+                    eventServices: await this.eventServiceFormat(selectedServiceItem)
                 }
             }
-
-            console.log("newEvent", newEvent);
+            console.log("newEvent", newEvent)
             this.props.saveEvent(newEvent);
         }
     }
 
     validation() {
-        console.log("validation");
-        ///i know i know ... this is bad practice 
-        const { eventName, description, eventTypeOption, location, startDate, endDate, personalList, assetItem } = this.state
+        const { eventName, serviceItem, description, eventTypeOption, location, startDate, endDate, personalList, assetItem } = this.state
         let valid = true;
-        const serviceList = JSON.parse(localStorage.getItem("TransferList"))
         let formErrors = { ...this.state.formErrors };
-        formErrors.service = serviceList.length > 0 ? "" : "Service  is required"
-        this.setState({ formErrors }, () => { });
 
+        this.setState({ formErrors }, () => { });
         if (eventTypeOption === "") {
             formErrors.eventType = "Event type is required"
             this.setState({ formErrors }, () => { });
@@ -308,7 +346,7 @@ class EventPlanner extends Component {
             return false
         }
 
-        else if (serviceList === null || serviceList.length <= 0) {
+        else if (serviceItem === null || serviceItem.length <= 0) {
             formErrors.service = "Service  is required"
             this.setState({ formErrors }, () => { });
             return false
@@ -321,7 +359,6 @@ class EventPlanner extends Component {
         return valid
     }
 
-    //
     eventParticipantFormat = (List) => {
         let array = []
         if (List) {
@@ -337,22 +374,7 @@ class EventPlanner extends Component {
         }
         return array
     }
-    eventAssetFormat = (List) => {
-        let array = []
-        if (List) {
-            List.forEach(data => {
-                array.push(
-                    {
-                        asset: data.value,
-                        actualCost: "",
-                        plannedForEvent: true,
-                        availableInEvent: false
-                    }
-                )
-            })
-        }
-        return array
-    }
+
 
     handleEventTypeChange = eventTypeOption => {
         let formErrors = { ...this.state.formErrors };
@@ -387,51 +409,6 @@ class EventPlanner extends Component {
         this.setState({ formErrors, [name]: value }, () => { });
     };
 
-    filterAssetType = () => {
-        const { availableAssets } = this.state;
-
-        this.setState({
-            assetItemlist: availableAssets.map(data => (
-                <ExpansionPanel className="ep-expansion">
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography >{data.name}</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <Select
-                            className="asset-list"
-                            components={animatedComponents}
-                            options={this.assetListFormate(data)}
-                            onChange={this.assetResult}
-                            isMulti />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            ))
-        })
-    }
-
-    assetListFormate(list) {
-        let array = []
-
-        if (list.assetTypes !== undefined) {
-            list.assetTypes.forEach((data, index) => {
-                data.assets.forEach((assetData) => {
-                    array.push(
-                        {
-                            label: (<span>{assetData.name}<span className="category">({data.name})</span></span>),
-                            value: assetData.uuid
-                        }
-                    )
-                })
-            })
-        }
-        console.log("List assetType array :: ", array)
-        return array
-    }
-
     personalListFormat = () => {
         let array = []
         this.state.availableWorkforce.forEach(data => {
@@ -446,6 +423,7 @@ class EventPlanner extends Component {
             personaldata: array
         })
     }
+
     eventTypeListFormat = () => {
         let array = []
         this.state.availableEventType.forEach(data => {
@@ -589,12 +567,14 @@ class EventPlanner extends Component {
                                         </div>
                                         <div className="col-sm-9 col-md-10">
                                             <DatePicker
+                                                readOnly={startDate ? false : true}
                                                 selected={endDate}
                                                 onChangeRaw={this.handleDateChangeRawTo}
                                                 onChange={this.handleChangeDateTo}
                                                 className="form-control"
                                                 dateFormat="MM/dd/yyyy hh:mm aa"
                                                 showTimeSelect
+                                                minDate={startDate}
                                                 placeholderText="" />
 
                                             <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
@@ -652,9 +632,6 @@ class EventPlanner extends Component {
                     </div>
                     {/* next col */}
                     <div className="col-5 ep-col-n">
-                        {/* <Link to="/events">
-                            <button type='button' className='btn btn-primary btn-sm ep-back-btn'>Go Back</button>
-                        </Link> */}
                         <div className="card ep-main-card-services" >
                             <div className="card-header">
                                 <div className="row form-control-sm form-group">
@@ -665,32 +642,29 @@ class EventPlanner extends Component {
                                             alt="" />
                                     </div>
                                     <div className="col-sm-11 col-md-11 col-lg-11" style={{ marginTop: '5px' }}>
-                                        <p>Services and Assets | Planned</p>
+                                        <p>Services and Assets </p>
                                     </div>
-
                                 </div>
                             </div>
-                            {/*services and assets -- body*/}
+                            {/*services --*/}
                             <div className="card-body">
-                                <div className="row" >
-                                    <label className="ep-label-heading">Services</label>
-                                    {formErrors.service.length > 0 && (
-                                        <span className="errorMessageService">{formErrors.service}</span>
-                                    )}
+                                <div className="row ep_service" >
+                                    <Suspense fallback={<LoaderDots height={30} width={30} />}>
+                                        <EventAssetService
+                                            title={SERVICE_TITLE}
+                                            serviceResult={this.serviceResult}
+                                        />
+                                    </Suspense>
                                 </div>
-                                <div className="row ep-transferlist">
-                                    <TransferList services={this.state.availableService}> </TransferList>
-                                </div>
+                                {/* assets */}
                                 <div className="row">
-                                    <label className="ep-label-heading-assets">Assets</label>
-                                    {formErrors.asset.length > 0 && (
-                                        <span className="errorMessageAsset">{formErrors.asset}</span>
-                                    )}
+                                    <Suspense fallback={<LoaderDots height={30} width={30} />}>
+                                        <EventAssetService
+                                            title={ASSETS_TITLE}
+                                            assetResult={this.assetResult}
+                                        />
+                                    </Suspense>
                                 </div>
-                                <div className="row" style={{ height: '200px', overflowY: 'auto' }}>
-                                    {this.state.assetItemlist}
-                                </div>
-
                             </div>
                         </div>
 
@@ -707,8 +681,6 @@ class EventPlanner extends Component {
 
 const mapStateToProps = (state) => ({
     eventLists: state.event.events,
-    assetTypeList: state.asset.assetCategory,
-    serviceList: state.service.services,
     personalList: state.workforce.workforces,
     locationList: state.location.locations,
     eventTypeList: state.event.eventType
@@ -716,12 +688,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     saveEvent: eventAction.saveEvent,
-    // getAllAsset: assetAction.fetchAssetTypes,
-    getAllService: serviceAction.fetchServices,
     getAllPersonnel: workforceAction.fetchParticipant,
     getAllLocation: locationAction.fetchLocations,
     getAllEventType: eventAction.fetchEventTypes,
-    getAllAssetCategory: assetAction.fetchAssetCategory
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPlanner)  

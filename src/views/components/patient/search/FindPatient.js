@@ -131,7 +131,7 @@ class FindPatient extends React.Component {
         this.setState({ openWorkflowModal: false })
     }
     async componentWillMount() {
-        await this.setState({rowData : []})
+        await this.setState({ rowData: [] })
         await this.props.getAllWorkflows();
 
         await this.setState({ workflowData: this.createWorkflowCheckBox() })
@@ -243,7 +243,7 @@ class FindPatient extends React.Component {
         if (e.key === 'Enter') {
             await this.props.searchPatientByQuery(this.state.searchQuery);
             await console.log('hiiii ' + JSON.stringify(this.props.patients))
-            if(this.props.patients != undefined) {
+            if (this.props.patients != undefined) {
                 await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
             }
@@ -254,27 +254,28 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
-  async  savePatient(e) {
-e.preventDefault()
-       var data = [
-           {
-               "param_name":"Patient Identifier",
-               "value":this.state.patient.identifier,
-               "payload_type":"IDENTIFIER"
+    async  savePatient(e) {
+        e.preventDefault()
+        var data = [
+            {
+                "param_name": "Patient Identifier",
+                "value": this.state.patient.identifier,
+                "payload_type": "IDENTIFIER"
             },
             {
-                "payload_type":"NAME",
-                "givenName":this.state.patient.personname,
-               "familyName":this.state.patient.familyname},
-            {
-                "param_name":"sex",
-                "value":this.state.patient.gender,
-                "payload_type":"GENDER"
+                "payload_type": "NAME",
+                "givenName": this.state.patient.personname,
+                "familyName": this.state.patient.familyname
             },
             {
-                "param_name":"age",
-                "value":moment(this.state.patient.dateofbirth).format("YYYY-MM-DD HH:mm:ss"),
-                "payload_type":"DOB"
+                "param_name": "sex",
+                "value": this.state.patient.gender,
+                "payload_type": "GENDER"
+            },
+            {
+                "param_name": "age",
+                "value": moment(this.state.patient.dateofbirth).format("YYYY-MM-DD HH:mm:ss"),
+                "payload_type": "DOB"
             },
             {
                 "param_name":"location",
@@ -327,7 +328,7 @@ e.preventDefault()
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
         await console.log('hiiii ' + JSON.stringify(this.props.patients))
-        if(this.props.patients != undefined) {
+        if (this.props.patients != undefined) {
             await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
         }
@@ -370,27 +371,23 @@ e.preventDefault()
             <div className="row container-fluid fp-main-container">
                 <CardTemplate
                     title={
-                        <div className="row">
-                            <div className="col-md-4">
-                                <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                                    <div className="input-group search-btn">
-                                        <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
-                                            onKeyPress={event => {
-                                                if (event.key === 'Enter') {
-                                                    this.searchPatient(event)
-                                                }
-                                            }}
-                                            required
-                                            className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
-                                        <div className="input-group-append">
-                                            <button className="btn btn-primary" type="button" onClick={((e) => this.searchPatient(e))}>
-                                                <i className="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                        <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div className="input-group search-btn">
+                                <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
+                                    onKeyPress={event => {
+                                        if (event.key === 'Enter') {
+                                            this.searchPatient(event)
+                                        }
+                                    }}
+                                    required
+                                    className="form-control bg-light border-0 small fp-input-search " placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
+                                <div className="input-group-append">
+                                    <button className="btn btn-primary" type="button" onClick={((e) => this.searchPatient(e))}>
+                                        <i className="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     }
                     action={
                         <>
@@ -406,7 +403,6 @@ e.preventDefault()
                         rowData={rowData}
                         onCellClicked={event => { this.onCellClicked(event) }}
                     />
-
                 </CardTemplate>
 
                 {/* <div className="card fp-header">
@@ -528,7 +524,7 @@ e.preventDefault()
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={patient.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required/>
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required />
                                 </div>
                             </div>
                             {/* <div className="form-group row ">

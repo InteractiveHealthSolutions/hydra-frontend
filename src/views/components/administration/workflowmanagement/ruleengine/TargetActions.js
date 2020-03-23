@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux'
 import { formAction } from '../../../../../state/ducks/form'
 import { createNotification } from '../../../../../utilities/helpers/helper'
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
 
 function TargetActions(props) {
 
@@ -106,75 +107,64 @@ function TargetActions(props) {
         }
     }
 
-
     return (
         <div className="row container-fluid ">
-            <div className="card" style={{
-                width: '60%', display: 'block', marginLeft: 'auto',
-                marginRight: 'auto',
-                padding: '20px'
-            }}>
-                <div className="card-body">
-                    <div className="row">
-                        <form onSubmit={saverule} style={{ width: '100%' }}>
-                            <div className="row" style={{ padding: '15px' }}>
-                                <div className="col-sm-3 col-md-3 col-lg-3">
-                                    <label className="required ec-label">Select Action</label>
-                                </div>
-                                <div className="col-sm-9 col-md-9 col-lg-9">
-                                    <Select
-                                        value={actionTypeValue}
-                                        onChange={handleEventTypeChange}
-                                        options={props.values.actionTypes}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="row" style={{ padding: '15px' }}>
-                                <div className="col-sm-3 col-md-3 col-lg-3">
-                                    <label className="required ec-label">Select Form</label>
-                                </div>
-                                <div className="col-sm-9 col-md-9 col-lg-9">
-                                    <Select
-                                        value={form}
-                                        onChange={handleFormChange}
-                                        options={targetFormList}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            {
-                                (targetFormQuestionList && targetFormQuestionList.length > 0) ?
-                                    <div className="row" style={{ padding: '15px' }}>
-                                        <div className="col-sm-3 col-md-3 col-lg-3">
-                                            <label className="ec-label">Select Question</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-9 col-lg-9">
-                                            <Select
-                                                value={formQuestion}
-                                                onChange={handleFormQuestionChange}
-                                                options={targetFormQuestionList}
-                                            />
-                                        </div>
-                                    </div>
-                                    : <></>
-                            }
-
-                            <div className="row " style={{ marginTop: '20px', marginBottom: '20px' }}>
-                                <div className="col-sm-4" ></div>
-                                <div className="col-sm-4" >
-                                    <button onClick={props.prevStep.bind(this)} className='btn btn-primary  save-btn'>Previous</button>
-                                </div>
-                                <div className='col-sm-4 '>
-                                    <button type="submit" className='btn btn-primary  save-btn'>Save Rule</button>
-                                </div>
-                            </div>
-                        </form>
-
+            <form onSubmit={saverule} style={{ width: '100%' }}>
+                <CardTemplate
+                    title="Target Form"
+                    height="500px"
+                    action={
+                        <>
+                            <button onClick={props.prevStep.bind(this)} className='btn btn-primary btn-re'>Previous</button>
+                            <button type="submit" className='btn btn-primary btn-re'>Save Rule</button>
+                        </>}
+                >
+                    <div className="row" style={{ padding: '15px' }}>
+                        <div className="col-sm-3 col-md-3 col-lg-3">
+                            <label className="required ec-label">Select Action</label>
+                        </div>
+                        <div className="col-sm-9 col-md-9 col-lg-9">
+                            <Select
+                                value={actionTypeValue}
+                                onChange={handleEventTypeChange}
+                                options={props.values.actionTypes}
+                                required
+                            />
+                        </div>
                     </div>
-                </div>
-            </div>
+                    <div className="row" style={{ padding: '15px' }}>
+                        <div className="col-sm-3 col-md-3 col-lg-3">
+                            <label className="required ec-label">Select Form</label>
+                        </div>
+                        <div className="col-sm-9 col-md-9 col-lg-9">
+                            <Select
+                                value={form}
+                                onChange={handleFormChange}
+                                options={targetFormList}
+                                required
+                            />
+                        </div>
+                    </div>
+                    {
+                        (targetFormQuestionList && targetFormQuestionList.length > 0) ?
+                            <div className="row" style={{ padding: '15px' }}>
+                                <div className="col-sm-3 col-md-3 col-lg-3">
+                                    <label className="ec-label">Select Question</label>
+                                </div>
+                                <div className="col-sm-9 col-md-9 col-lg-9">
+                                    <Select
 
+                                        value={formQuestion}
+                                        onChange={handleFormQuestionChange}
+                                        options={targetFormQuestionList}
+
+                                    />
+                                </div>
+                            </div>
+                            : <></>
+                    }
+                </CardTemplate>
+            </form>
         </div>
     )
 }

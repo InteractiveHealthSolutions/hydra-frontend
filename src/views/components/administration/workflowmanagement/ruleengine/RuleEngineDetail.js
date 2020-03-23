@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { ruleenginAction } from "../../../../../state/ducks/ruleengine";
 import Loaders from '../../../common/loader/Loader';
 import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
-
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 function RuleEngineDetail(props) {
 
     const [columnDefs, setColumnDefs] = useState([
@@ -75,8 +75,26 @@ function RuleEngineDetail(props) {
 
     if (props.isloading) return <Loaders />;
     return (
+
         <div className="row container-fluid service-main-container">
-            <div className="card fp-header">
+            <CardTemplate
+                title="Rule Engine"
+                action={
+                    <button className="service-btn btn btn-primary " onClick={nextStep}><i class="fas fa-plus"></i>  Create New</button>
+                }
+             >
+                <div className="card-body rm-paadding">
+                    <AgGrid
+                        onGridReady={onGridReady}
+                        columnDefs={columnDefs}
+                        onRowSelected={onRowSelected}
+                        rowData={rowData}
+                        onCellClicked={onCellClicked}
+                    />
+                </div>
+            </CardTemplate>
+
+            {/* <div className="card fp-header">
                 <div className="card-header">
                     <div className="row">
                         <div className="col-md-6 col-sm-4">
@@ -96,7 +114,7 @@ function RuleEngineDetail(props) {
                         onCellClicked={onCellClicked}
                     />
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

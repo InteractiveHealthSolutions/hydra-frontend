@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { RadioGroup } from './RadioGroup';
 import TextBox from './TextBox';
+import  './widgets.css'
 import {
     NUMERIC,
     CODED,
     TEXT,
     DATE_TIME,
     HEADING,
-    ADDRESS
+    ADDRESS,
+    CONTACT_TRACING
 } from '../../../../../../../utilities/constants/globalconstants'
 import CheckBox from './CheckBox';
 
@@ -31,7 +33,18 @@ export default class QuestionConfiguration extends Component {
             regix: "",
             displayOrder: 1,
             mandatory: 'yes',
-            allowCharacter: ""
+            allowCharacter: "",
+            patientContacts: "",
+            patientId: "",
+            patientIdMandatory: 'yes',
+            patientName: "",
+            patientNameMandatory: 'yes',
+            patientAge: "",
+            patientAgeMandatory: 'yes',
+            patientGender: "",
+            patientGenderMandatory: 'yes',
+            patientRelationship: "",
+            patientRelationshipMandatory: 'yes'
         }
 
         console.log("QuestionConfiguration", this.props.dataField);
@@ -58,13 +71,26 @@ export default class QuestionConfiguration extends Component {
             allowFutureDate: localStorage.getItem(`${this.props.uuid}-futureDate`),
             allowPastDaate: localStorage.getItem(`${this.props.uuid}-pastDate`),
             regix: localStorage.getItem(`${this.props.uuid}-rxp`),
+            patientContacts: localStorage.getItem(`${this.props.uuid}-patientContacts`),
+            patientId: localStorage.getItem(`${this.props.uuid}-patientId`),
+            patientIdMandatory: localStorage.getItem(`${this.props.uuid}-patientIdMandatory`),
+            patientName: localStorage.getItem(`${this.props.uuid}-patientName`),
+            patientNameMandatory: localStorage.getItem(`${this.props.uuid}-patientNameMandatory`),
+            patientGender: localStorage.getItem(`${this.props.uuid}-patientGender`),
+            patientGenderMandatory: localStorage.getItem(`${this.props.uuid}-patientGenderMandatory`),
+            patientAge: localStorage.getItem(`${this.props.uuid}-patientAge`),
+            patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
+            patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
+            patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
         }, () => {
             console.log("defaultValue", this.state.allowPastDaate)
         })
     }
 
     onItemSelectedProp = (ev) => {
-        this.setStateAccordingToControlId(ev.controlId, ev.value)
+        this.setState({
+            [ev.controlId]: ev.value
+        })
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
@@ -151,20 +177,28 @@ export default class QuestionConfiguration extends Component {
     }
 
     handleRadioChange = (ev) => {
-        // localStorage.setItem(`${this.props.uuid} - ${ev.name}`, ev.value)
-        this.setStateAccordingToControlId(ev.controlId, ev.value)
+        this.setState({
+            [ev.controlId]: ev.value
+        }, () => {
+            console.log("handleRadioChange", this.state.patientContacts)
+        })
+        // this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
     onItemCheckedProp = (ev) => {
-        this.setStateAccordingToControlId(ev.controlId, ev.value)
+        this.setState({
+            [ev.controlId]: ev.value
+        })
+        /// this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
-        //  localStorage.setItem(`${this.props.uuid} - ${data.name}`, data.value)
     }
 
     render() {
 
         const { datatype, uuid } = this.props
-        const { displayOrder, headingTitle,allowFutureDate,allowPastDaate,dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+        const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
+            , patientId, patientIdMandatory, patientName, patientNameMandatory, patientRelationship, patientRelationshipMandatory,
+            displayOrder, headingTitle, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -194,22 +228,6 @@ export default class QuestionConfiguration extends Component {
 
                 {(datatype !== HEADING && datatype !== ADDRESS) ?
                     <>
-                        {/* <TextBox
-                            controlId="displayOrder"
-                            title="Display order"
-                            type="number"
-                            name={uuid + "-displayOrder"}
-                            value={displayOrder}
-                            onItemSelectedProp={this.onItemSelectedProp}
-                        /> */}
-                        <RadioGroup
-                            controlId="mandatory"
-                            title="Mandatory?"
-                            name={uuid + "-mandatory"}
-                            value={mandatory}
-                            handleRadioChange={this.handleRadioChange}
-                            options={[{ key: "1" + this.props.uuid, title: "Yes" }, { key: "2" + this.props.uuid, title: "No" }]}
-                        />
                         <TextBox
                             controlId="questionText"
                             title="Question text"
@@ -218,20 +236,25 @@ export default class QuestionConfiguration extends Component {
                             name={uuid + "-questionText"}
                             onItemSelectedProp={this.onItemSelectedProp}
                         />
-                        <TextBox
-                            controlId="errorMsg"
-                            title="Custom Error Message"
-                            type="text"
-                            value={errorMsg}
-                            name={uuid + "-errorMsg"}
-                            onItemSelectedProp={this.onItemSelectedProp}
+                        <RadioGroup
+                            controlId="mandatory"
+                            title="Mandatory?"
+                            name={uuid + "-mandatory"}
+                            value={mandatory}
+                            handleRadioChange={this.handleRadioChange}
+                            options={[{ key: "1" + this.props.uuid, title: "Yes" }, { key: "2" + this.props.uuid, title: "No" }]}
                         />
-                        {/* <CheckBox
-                            controlId="disabled"
-                            name={uuid + "-disabled"}
-                            onItemCheckedProp={this.onItemCheckedProp}
-                            title="Disabled?"
-                        /> */}
+                        {
+                            (datatype !== CONTACT_TRACING) ?
+                                <TextBox
+                                    controlId="errorMsg"
+                                    title="Custom Error Message"
+                                    type="text"
+                                    value={errorMsg}
+                                    name={uuid + "-errorMsg"}
+                                    onItemSelectedProp={this.onItemSelectedProp}
+                                /> : ""
+                        }
                     </> : ""
                 }
                 {/* numeric */}
@@ -387,18 +410,160 @@ export default class QuestionConfiguration extends Component {
                             <CheckBox
                                 controlId="futureDate"
                                 onItemCheckedProp={this.onItemCheckedProp}
-                                value ={allowFutureDate}
+                                value={allowFutureDate}
                                 name={uuid + "-futureDate"}
                                 title="Allow future date?"
                             />
                             <CheckBox
                                 controlId="pastDate"
                                 name={uuid + "-pastDate"}
-                                value ={allowPastDaate}
+                                value={allowPastDaate}
                                 onItemCheckedProp={this.onItemCheckedProp}
                                 title="Allow past date?"
                             />
 
+                        </>
+                        : ""
+
+                }
+
+                {/* Contact Tracing */}
+
+                {
+                    (datatype === CONTACT_TRACING) ?
+                        <>
+                            <RadioGroup
+                                controlId="patientContacts"
+                                title="Create Patient for Contacts?"
+                                name={uuid + "-patientContacts"}
+                                value={patientContacts}
+                                handleRadioChange={this.handleRadioChange}
+                                options={[{ key: "11" + this.props.uuid, title: "Yes" }, { key: "22" + this.props.uuid, title: "No" }]}
+                            />
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">S.No</th>
+                                        <th scope="col">Question</th>
+                                        <th scope="col">Display Name</th>
+                                        <th scope="col">Mandatory</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className ={(patientContacts === 'No'?'tr_back':"")}>
+                                        <th>1</th>
+                                        <td>Patient ID</td>
+                                        <td>
+                                            <TextBox
+                                                disabled={patientContacts === 'No' ? "Yes" : "No"}
+                                                controlId="patientId"
+                                                name={uuid + "-patientId"}
+                                                type="text"
+                                                value={patientId}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={"Yes"}
+                                                controlId="patientIdMandatory"
+                                                name={uuid + "-patientIdMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientIdMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>2</th>
+                                        <td>Name</td>
+                                        <td>
+                                            <TextBox
+                                                controlId="patientName"
+                                                name={uuid + "-patientName"}
+                                                type="text"
+                                                value={patientName}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={patientContacts}
+                                                controlId="patientNameMandatory"
+                                                name={uuid + "-patientNameMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientNameMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>3</th>
+                                        <td>Age</td>
+                                        <td>
+                                            <TextBox
+                                                controlId="patientAge"
+                                                name={uuid + "-patientAge"}
+                                                type="text"
+                                                value={patientAge}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={patientContacts}
+                                                controlId="patientAgeMandatory"
+                                                name={uuid + "-patientAgeMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientAgeMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>4</th>
+                                        <td>Gender</td>
+                                        <td>
+                                            <TextBox
+                                                controlId="patientGender"
+                                                name={uuid + "-patientGender"}
+                                                type="text"
+                                                value={patientGender}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={patientContacts}
+                                                controlId="patientGenderMandatory"
+                                                name={uuid + "-patientGenderMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientGenderMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>5</th>
+                                        <td>Relationship</td>
+                                        <td>
+                                            <TextBox
+                                                controlId="patientRelationship"
+                                                name={uuid + "-patientRelationship"}
+                                                type="text"
+                                                value={patientRelationship}
+                                                onItemSelectedProp={this.onItemSelectedProp}
+                                            />
+                                        </td>
+                                        <td>
+                                            <CheckBox
+                                                disabled={patientContacts}
+                                                controlId="patientRelationshipMandatory"
+                                                name={uuid + "-patientRelationshipMandatory"}
+                                                value={patientContacts === 'Yes' ? "true" : patientRelationshipMandatory}
+                                                onItemCheckedProp={this.onItemCheckedProp}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </>
                         : ""
 
