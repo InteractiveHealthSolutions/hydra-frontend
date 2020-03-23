@@ -59,7 +59,9 @@ class Reports extends React.Component {
             startDate:'',
             endDate:'',
             selectedLocation:[],
-            filters : []
+            filters : [],
+            selectedWorkflow : '',
+            selectedPresumptiveTB : ''
         }
         this.filters = {
             reportname : 'FacilityPatients',
@@ -68,6 +70,7 @@ class Reports extends React.Component {
         }
         this.otherFilter = [];
         this.options = [];
+        this.optionsTB = [];
         //this.isMounted = true;
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
@@ -99,7 +102,7 @@ class Reports extends React.Component {
         await this.props.getAllWorkFlows();
         await this.createWorkflowFilter();
         await this.props.getConceptByUUID('c4b494c6-39df-4797-82d5-7d62455f6958');
-        await this.createTBFilter() ;
+        await this.createFilter() ;
 
        
 
@@ -110,42 +113,45 @@ class Reports extends React.Component {
         }
         if(newProps.workflowList != undefined) {
             await this.createWorkflowFilter();
+            await this.createFilter()
         }
         if(newProps.workflowList != undefined && newProps.concept != undefined) {
-            await this.createTBFilter()
+            await this.createFilter()
         }
     }
     componentWillUnmount() {
         this._isMounted=false;
     }
-    createTBFilter() {
-        if(this.props.workflowList !== undefined && this.props.workflowList.workflows != undefined) {
+    createFilter() {
+         if(this.props.workflowList !== undefined && this.props.workflowList.workflows != undefined) {
             let dropdown ='';
-            this.options=[]
-            if(this._isMounted) {
-                this.props.workflowList.workflows.forEach(element => {
-                    this.options.push({
-                        "label":element.name,
-                        "value":'workflow'
-                    })
-                })
-                dropdown = <Select options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>;
-                this.otherFilter.push({'name':'Work Flow' , 'value':dropdown});
-            }
+             this.options=[]
+             if(this._isMounted) {
+                 this.props.workflowList.workflows.forEach(element => {
+                     this.options.push({
+                         "label":element.name,
+                         "value":'workflow'
+                     })
+                 })
+                 dropdown = <Select options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>;
+                 this.otherFilter.push({'name':'Work Flow' , 'value':dropdown});
+             }
          if(this.props.concept != undefined  && this.props.concept.answers !== undefined) {
              let dropdown='';
-             let options=[];
+             this.optionsTB=[];
              this.props.concept.answers.forEach(element => {
-                 options.push({
+                this.optionsTB.push({
                      "label":element.display,
                      "value":"presumptiveTB"
                  })
+
+
              })
-             dropdown = <Select options={options}  name="presumptiveTB" onChange={this.handleChangeDynamicFilters}/>;
-             this.otherFilter.push({'name':'Presumptive TB' , 'value':dropdown});
+           //  dropdown = <Select options={options}  name="presumptiveTB" onChange={this.handleChangeDynamicFilters}/>;
+             //this.otherFilter.push({'name':'Presumptive TB' , 'value':dropdown});
          
             }
-          }
+        }
      
     
      console.log('filters 2'+JSON.stringify(this.otherFilter))
@@ -196,7 +202,6 @@ class Reports extends React.Component {
         await this.setState({ cityDropDown: cityDropDown })
     }
     async handleCityChange(city) {
-        alert("hi")
         await this.setState({ locationDropDown: [] })
         let locationDropDown = [];
         await this.setState({ city: city.value });
@@ -205,13 +210,13 @@ class Reports extends React.Component {
         if(this.props.locationLists != undefined) {
             await this.props.locationLists.results.forEach(element => {
                 console.log(element.cityVillage)
-                //if (element.cityVillage == city.label) {
+                if (element.cityVillage == city.label) {
                     console.log('yes')
                     locationDropDown.push({
                         "label": element.display,
                         "value": element.uuid
                     })
-                //}
+                }
     
             });
             await this.setState({ locationDropDown: locationDropDown })
@@ -219,22 +224,19 @@ class Reports extends React.Component {
        
     }
     async populateLocationDropdown() {
-        alert("hi")
         console.log("populate "+JSON.stringify(this.props.locationLists));
-        alert(this.state.city)
         if(this.state.city != "") {
             let locationDropDown = [];
             if(this.props.locationLists != undefined) {
-            alert("hi location")
                 await this.props.locationLists.results.forEach(element => {
                     console.log(element.cityVillage)
-                    //if (element.cityVillage == city.label) {
+                    if (element.cityVillage == this.state.city) {
                         console.log('yes')
                         locationDropDown.push({
                             "label": element.display,
                             "value": element.uuid
                         })
-                    //}
+                    }
         
                 });
                 await this.setState({ locationDropDown: locationDropDown })
@@ -256,22 +258,27 @@ class Reports extends React.Component {
     async handleChangeDynamicFilters(event) {
         // if(this.state[this.state.currentReport] != undefined && this.state[this.state.currentReport].length > 2){
         // await    this.setState({[this.state.currentReport]:[]})
-        //     //alert('here ')
         // }
-        if(this.state[this.state.currentReport] != undefined) {
-            var result = this.state[this.state.currentReport].filter(obj => {
-                return obj.name === event.value
-              })
-              if(this.state[this.state.currentReport].indexOf(result[0]) != -1) 
-              await this.state[this.state.currentReport].splice(this.state[this.state.currentReport].indexOf(result[0]))
-    
-        await    this.state[this.state.currentReport].push({
-                'name':event.value ,'value':event.label
-            })
+        if(event.value == 'workflow') {
+           await this.setState({selectedWorkflow : event.label})
         }
         else {
-          await this.setState({test:[{'name':event.value ,'value':event.label}]});
+           this.setState({selectedPresumptiveTB : event.label})
         }
+        // if(this.state[this.state.currentReport] != undefined) {
+        //     var result = this.state[this.state.currentReport].filter(obj => {
+        //         return obj.name === event.label
+        //       })
+        //       if(this.state[this.state.currentReport].indexOf(result[0]) != -1) 
+        //       await this.state[this.state.currentReport].splice(this.state[this.state.currentReport].indexOf(result[0]))
+    
+        // await    this.state[this.state.currentReport].push({
+        //         'name':event.value ,'value':event.label
+        //     })
+        // }
+        // else {
+        //   await this.setState({test:[{'name':event.value ,'value':event.label}]});
+        // }
         
      }
      handleDateChangeRaw(e) {
@@ -306,7 +313,6 @@ class Reports extends React.Component {
         }
         var parameterString = 'name='+this.state.currentReport+'&ext='+ext+'&from='+moment(this.state.startDate).format('YYYY-MM-DD')+'&to='+moment(this.state.endDate).format('YYYY-MM-DD')+'&facility='+location.slice(0,-1)+'&'
         if(this.state[this.state.currentReport]!=undefined) {
-            //alert(JSON.stringify(this.state[this.state.currentReport]))
             this.state[this.state.currentReport].forEach(element => {
                 parameterString = parameterString + element.name +'='+element.value.replace(/\s/g, '')+'&';
             })
@@ -367,7 +373,7 @@ class Reports extends React.Component {
                         </div>
                     </div>
                     <div className="col-sm-2">
-                        <div className="row filter-label required">
+                        <div className="row filter-location-label required">
                             Location
                 </div>
                         <div className="row">
@@ -454,12 +460,19 @@ class Reports extends React.Component {
                                                 </td>
                                                 <td>
                                                 <button onClick={e=>this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png"/>
-                                                   </button><button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
                                                   </button>
+                                                  <button onClick={e=>this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png"/>
+                                                </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
                                             {this.state.currentReport == 'disaggregationPatients' && 
-                                           <tr style={{backgroundColor:"#87CEEB"}}><td></td><td colSpan = {3}> Additional Filters <label className="dynamic-filter-label">Workflow </label> : <Select className="filter"options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>
+                                           <tr style={{backgroundColor:"#87CEEB"}}>
+                                               <td></td>
+                                               <td colSpan = {3}>
+                                                  Additional Filters 
+                                                  <label className="dynamic-filter-label">
+                                                     Workflow 
+                                                  </label> : <Select className="filter"options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters}/>
                                            </td></tr>}
                                             <tr style={{ height: '20px' }}>
                                                 <td>
@@ -478,10 +491,19 @@ class Reports extends React.Component {
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
+                                            {this.state.currentReport == 'diagnosedTbPatients' && 
+                                           <tr style={{backgroundColor:"#87CEEB"}}>
+                                               <td></td>
+                                               <td colSpan = {3}>
+                                                  Additional Filters 
+                                                  <label className="dynamic-filter-label">
+                                                     Workflow 
+                                                  </label> : <Select className="filter"options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>
+                                                  <label style={{marginLeft:"15px"}}>Presumptive TB</label> : <Select className="filter"options={this.optionsTB}  name="pTb" onChange={this.handleChangeDynamicFilters}/>
+                                           </td></tr>}
                                             <tr style={{ height: '20px' }}>
                                                 <td>
                                                     <FormControlLabel value="presumptivePatients" control={<Radio color="primary"/>} />
-
                                                 </td>
                                                 <td>
                                                 Presumptive Patients                                </td>
@@ -494,6 +516,16 @@ class Reports extends React.Component {
                                                   </button>
                                                     {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                             </tr>
+                                            {this.state.currentReport == 'presumptivePatients' && 
+                                           <tr style={{backgroundColor:"#87CEEB"}}>
+                                               <td></td>
+                                               <td colSpan = {3}>
+                                                  Additional Filters 
+                                                  <label className="dynamic-filter-label">
+                                                     Workflow 
+                                                  </label> : <Select className="filter"options={this.options}  name="workflow" onChange={this.handleChangeDynamicFilters}/>
+                                                  <label style={{marginLeft:"15px"}}>Presumptive TB</label> : <Select className="filter"options={this.optionsTB}  name="pTb" onChange={this.handleChangeDynamicFilters}/>
+                                           </td></tr>}
                                         </tbody>
                                     </table>
                                 </RadioGroup>
