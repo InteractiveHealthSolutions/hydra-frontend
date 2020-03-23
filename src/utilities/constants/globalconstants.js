@@ -72,6 +72,7 @@ export const TEXT = "Text";
 export const CODED = "Coded";
 export const HEADING = "Heading";
 export const ADDRESS = "Address";
+export const CONTACT_TRACING = "Contact Tracing";
 
 //action types
 export const QUESTION = "Question";

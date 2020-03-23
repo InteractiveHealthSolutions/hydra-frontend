@@ -11,11 +11,8 @@ import DraggableFormItem from "../formComponents/widgets/DraggableFormItem";
 import DefaultExpendable from "../formComponents/widgets/DefaultExpendable";
 import TextBox from "../formComponents/widgets/TextBox";
 import { createNotification } from '../../../../../../utilities/helpers/helper'
+import QuestionListModal from "../questionlist/QuestionListModal";
 import { questionService } from '../../../../../../services/questionservice'
-import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
-import TabPanel from '../../../../../ui/tabs/TabPanel'
-import { LoaderDots } from "../../../../common/loader/LoaderDots";
-
 
 class FormBuilder extends React.Component {
 
@@ -52,13 +49,6 @@ class FormBuilder extends React.Component {
           value: "Address",
           label: "Address",
           dataType: "Address"
-        },
-        {
-          uuid: "1e4640ca-d264-4f8f-9210-66c053553933",
-          description: "to show the Contact Tracing",
-          value: "Contact Tracing",
-          label: "Contact Tracing",
-          dataType: "Contact Tracing"
         }
       ],
       formFieldList: [],
@@ -106,19 +96,19 @@ class FormBuilder extends React.Component {
   };
 
   onItemSelectedFunc = val => {
-    //console.log("quesion selected", val)
+    console.log("quesion selected", val)
   };
 
   returnConceptList = value => {
-    // console.log("returnConceptList", value)
+    console.log("returnConceptList", value)
     this.setState({
       currentObject: value
     });
   }
 
-  async UNSAFE_componentWillMount() {
-    this.removeLocalStorage()
+  async componentWillMount() {
     this.setActiveForm()
+    await this.props.getAllQuestion();
     await this.props.getAllEncounterType();
   }
 
@@ -130,15 +120,14 @@ class FormBuilder extends React.Component {
         formName: form.name,
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
-        formRetiredVal: form.retired,
-        isEdit: true
+        formRetiredVal: form.retired
       })
     }
 
   }
 
   formatFieldItem(element) {
-    // console.log("formatFieldItem", element)
+    console.log("formatFieldItem", element)
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -174,19 +163,35 @@ class FormBuilder extends React.Component {
         array.push(this.formatFieldItem(element));
       });
     }
-    //console.log("editFormListFormat", array)
+    console.log("editFormListFormat", array)
     return array
   }
 
   async componentWillReceiveProps(nextProps) {
+    console.log("formObject", nextProps.formObject)
+    if (nextProps.questionList !== undefined) {
+      await this.setState({
+        questionListItem: nextProps.questionList
+      });
+    }
     if (nextProps.encounterTypeList !== undefined && nextProps.encounterTypeList.results !== undefined) {
       await this.setState({
         encounterTypes: nextProps.encounterTypeList.results
       });
     }
+    if (nextProps.formObject !== undefined && nextProps.formObject.uuid !== undefined) {
+      // createNotification("success", "Saved Successfully")
+      // await this.removeLocalStorage()
+      // this.setState({
+      //   addFormList: [],
+      //   formName: "",
+      //   formDescription: ""
+      // })
+    }
   }
 
   componentWillUnmount() {
+    console.log("componentWillUnmount", "called")
     this.removeLocalStorage();
   }
 
@@ -224,7 +229,6 @@ class FormBuilder extends React.Component {
     }
     console.log("newform", newform)
     await this.props.saveFormFields(newform)
-    await this.removeLocalStorage()
     await createNotification("success", "Saved Successfully")
     await this.setState({
       addFormList: [],
@@ -262,70 +266,14 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-questionText`)
       localStorage.removeItem(`${element.uuid}-scorable`)
       localStorage.removeItem(`${element.uuid}-allowDecimal`)
-      localStorage.removeItem(`${element.uuid}-patientContacts`)
-      localStorage.removeItem(`${element.uuid}-patientId`)
-      localStorage.removeItem(`${element.uuid}-patientIdMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientGivenName`)
-      localStorage.removeItem(`${element.uuid}-patientGivenNameMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientFamilyName`)
-      localStorage.removeItem(`${element.uuid}-patientFamilyNameMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientGender`)
-      localStorage.removeItem(`${element.uuid}-patientGenderMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientAge`)
-      localStorage.removeItem(`${element.uuid}-patientAgeMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientRelationship`)
-      localStorage.removeItem(`${element.uuid}-patientRelationshipMandatory`)
     });
+
   }
 
   getAllField() {
     let array = []
     const { addFormList } = this.state
-
-
     addFormList.forEach(element => {
-      let children = []
-      if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
-        children = [
-          {
-            name: "Given Name",
-            field: "73e557b7-7eb0-4e96-2f1b-11c39534ec29",
-            displayText: localStorage.getItem(`${element.uuid}-patientGivenName`),
-            mandatory: localStorage.getItem(`${element.uuid}-patientGivenNameMandatory`) === null ? false : true
-          },
-          {
-            "name": "Family Name",
-            "field": "73e557b7-7eb0-4e96-b1f2-11c39534e92c",
-            "displayText": localStorage.getItem(`${element.uuid}-patientFamilyName`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientFamilyNameMandatory`) === null ? false : true
-          },
-          {
-            "name": "Age",
-            "field": "73e557b7-0be7-4e96-b1f2-11c39534ec29",
-            "displayText": localStorage.getItem(`${element.uuid}-patientAge`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === null ? false : true
-          },
-          {
-            "name": "Gender",
-            "field": "73eb7357-7eb0-4e96-b1f2-11c39534ec29",
-            "displayText": localStorage.getItem(`${element.uuid}-patientGender`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === null ? false : true
-          },
-          {
-            "name": "Relationship",
-            "field": "37e557b7-0be7-4e96-b1f2-11c395ec4329",
-            "displayText": localStorage.getItem(`${element.uuid}-patientRelationship`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === null ? false : true
-          },
-          {
-            "name": "Identifier",
-            "field": "37e557b7-7eb0-4e96-b1f2-11c395ec4329",
-            "displayText": localStorage.getItem(`${element.uuid}-patientId`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientIdMandatory`) === null ? false : true
-          },
-        ]
-      }
-
       let field = {
         name: element.label,
         field: element.uuid,
@@ -345,9 +293,7 @@ class FormBuilder extends React.Component {
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
         regix: localStorage.getItem(`${element.uuid}-rxp`),
-        characters: "",
-        createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
-        children: children ? children : []
+        characters: ""
       }
       array.push(field)
     });
@@ -359,8 +305,9 @@ class FormBuilder extends React.Component {
     await this.setState({
       formFieldList: [...this.state.formFieldList, object]
     }, () => {
-      // console.log("setFieldList", this.state.formFieldList);
+      console.log("setFieldList", this.state.formFieldList);
     })
+
   }
 
   deleteOption = (e, key) => {
@@ -376,7 +323,7 @@ class FormBuilder extends React.Component {
   }
 
   onDragStart = (ev, uuid) => {
-    // console.log("onDrag start", ev)
+    console.log("onDrag start", ev)
     ev.dataTransfer.setData('id', uuid)
   }
   handleExpandClick = (ev, category) => {
@@ -384,7 +331,7 @@ class FormBuilder extends React.Component {
   };
 
   handleDelete = (ev) => {
-    // console.log("handle delete :: ", ev)
+    console.log("handle delete :: ", ev)
     this.setState({
       addFormList: this.state.addFormList.filter(data => data.uuid !== ev)
     })
@@ -415,7 +362,7 @@ class FormBuilder extends React.Component {
         formName: e.value
       })
     }
-    // console.log("encounter type selected value :", e)
+    console.log("encounter type selected value :", e)
   }
   openModall = () => {
     this.setState({
@@ -440,88 +387,62 @@ class FormBuilder extends React.Component {
   }
 
   render() {
-    const { addFormList, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
-    var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
+    const { addFormList, currentObject, hydramoduleFormId, encounterTypes, defaultQuestion } = this.state;
+    // if (this.props.isLoading) return <Loaders />;
     return (
       <div className="row">
-        <div className="form_adjustment col-sm-6 col-md-4">
-          <CardTemplate
-            title="Search Question"
-            height="500"
-            contentPadding="0"
-            header="true"
-          >
-            <TabPanel
-              height={760}
-              defaultTab={
-                <DefaultExpendable
-                  controlId="default"
-                  title="Default Questions"
-                  data={defaultQuestion}
-                />
-              }
-              searchTab={
-                <>
-                  <AutoSearchComplete
-                    controlId="conceptName"
-                    title="Search Question"
-                    placeholderText="Search Question"
-                    returnConceptList={this.returnConceptList}
-                    parentType="formbuilder"
-                    name="conceptName"
-                    searchFor="Field"
-                    showLable="false"
-                  />
-                  <hr className="divider_left" />
-                  {
-                    (this.props.isSubLoading) ?
-                      <LoaderDots withMargin="true" height={40} width={40} />
-                      :
-                      <ul className="ul_form">
-                        {currentObject.map((item, index) => {
-                          return (
-                            <DraggableFormItem
-                              controlId="field"
-                              key={index}
-                              data={item}
-                            />
-                          )
-                        })}
-                      </ul>
-                  }
-                </>
-              }
-              padding='0'
-            />
-
-          </CardTemplate>
-        </div>
-        <div className="form_adjustment col-sm-6 col-md-8">
-          <CardTemplate
-            height="500"
-            contentPadding="16"
-            title="Form Builder"
-            action={
+        <div className="col-md-4">
+          <div className="card" style={{ width: "100%", height: '100%' }}>
+            <div className="card-header">
               <div className="row">
-                <div className="col-md-4">
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" checked={formRetiredVal} onChange={this.handleRetiredChecked} />
-                    <label class="form-check-label">Retired</label>
-                  </div>
+                <div className="col-sm-4 col-md-8 ">
+                  <h4 style={{ marginLeft: '50px' }}>Search Question</h4>
                 </div>
-                <div className="col-md-8">
-                  <button
-                    className="service-btn btn btn-primary "
-                    {...disabled}
-                    onClick={this.submit}
-                  >
-                    <i class="fas fa-save"></i>
-                    <span className="icon_space"></span>
-                    Save
-                  </button>
+                <div className="col-sm-2 col-md-4" >
+                  <button className="service-btn btn btn-primary " onClick={this.openModall}><i class="fas fa-eye"></i> Question</button>
                 </div>
               </div>
-            }
+            </div>
+            <div className="card-body">
+              {/* <DefaultExpendable
+                controlId="default"
+                title="Default Questions"
+                data={defaultQuestion}
+              /> */}
+              <AutoSearchComplete
+                showLable="true"
+                controlId="conceptName"
+                title="Search Question"
+                returnConceptList={this.returnConceptList}
+                parentType="formbuilder"
+                name="conceptName"
+                searchFor="Field"
+              />
+              <hr style={{ height: '2px', backgroundColor: 'var(--bg)' }} />
+              <ul style={{ height: '500px', width: '100%', overflowY: 'scroll' }} >
+                {currentObject.map((item, index) => {
+                  return (
+                    <DraggableFormItem
+                      controlId="field"
+                      key={index}
+                      data={item}
+                    />
+                  )
+                })}
+              </ul>
+            </div>
+            <div className="card-footer  text-center">
+            </div>
+          </div>
+        </div >
+
+        {/* form List */}
+
+        <div className="col-md-8">
+          <AppForm title="Form Builder"
+            handleSubmited={this.submit}
+            handleRetiredChecked={this.handleRetiredChecked}
+            edit={this.state.formRetiredVal}
           >
             <div className="row">
               <div className="col-md-4">
@@ -531,7 +452,7 @@ class FormBuilder extends React.Component {
                   hydramoduleFormId={hydramoduleFormId}
                   value={this.state.formName}
                   isRequired="true"
-                  title="Form Name"
+                  title="Form Display Name"
                   onItemSelectedProp={this.onItemSelectedProp}
                 />
               </div>
@@ -546,9 +467,10 @@ class FormBuilder extends React.Component {
                 />
               </div>
             </div>
-            <hr className="divider_right" />
+
+            <hr style={{ height: '2px', backgroundColor: 'var(--bg)' }} />
             <ul
-              className="ul_form"
+              style={{ height: '562px', width: '100%', overflowY: 'scroll' }}
               onDragOver={(e) => this.onDragOver(e)}
               onDrop={(e) => this.onDrop(e)}
             >
@@ -562,23 +484,34 @@ class FormBuilder extends React.Component {
                 )
               })}
             </ul>
-          </CardTemplate>
+          </AppForm>
         </div>
-      </div >
+        <QuestionListModal
+          openModal={this.state.openModal}
+          closeModal={this.closeModal}
+        />
+        <div id="formbuilderSidenav" className="sidenav">
+          <a id="formback" className="pd-actions-btn" onClick={this.prevStep}>
+            <span className='back-arrow'><i class="fa fa-arrow-left"></i></span>
+            Go Back
+            </a>
+        </div>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  questionList: state.questions.questions,
   encounterTypeList: state.encounter.encounterType,
   formObject: state.formField.form,
   searchEncounterTypeList: state.encounter.searchEncounterType,
-  isLoading: state.formField.loading,
-  isSubLoading: state.questions.loading
+  isLoading: state.formField.loading
 });
 
 const mapDispatchToProps = {
   saveQuestion: questionAction.saveQuestion,
+  getAllQuestion: questionAction.getAllQuestion,
   getAllEncounterType: encounterAction.fetchEncounterType,
   saveFormFields: formAction.saveForm,
   searchEncounterType: encounterAction.searchEncounterType

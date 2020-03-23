@@ -65,6 +65,7 @@
         "react-select": "^3.0.4",
         "react-select-country-list": "^2.1.2",
         "react-sortablejs": "^1.5.1",
+        "react-swipeable-views": "^0.13.9",
         "react-toastify": "^5.5.0",
         "react-widgets": "^4.4.11",
         "redux": "^4.0.1",
