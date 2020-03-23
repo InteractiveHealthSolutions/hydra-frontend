@@ -54,11 +54,11 @@ class FormBuilder extends React.Component {
           dataType: "Address"
         },
         {
-          uuid: "97c5dc2b-a352-4847-b7f6-c0716669b3dc7",
+          uuid: "1e4640ca-d264-4f8f-9210-66c053553933",
           description: "to show the Contact Tracing",
           value: "Contact Tracing",
           label: "Contact Tracing",
-          dataType: "ContactTracing"
+          dataType: "Contact Tracing"
         }
       ],
       formFieldList: [],
@@ -106,11 +106,11 @@ class FormBuilder extends React.Component {
   };
 
   onItemSelectedFunc = val => {
-    console.log("quesion selected", val)
+    //console.log("quesion selected", val)
   };
 
   returnConceptList = value => {
-    console.log("returnConceptList", value)
+    // console.log("returnConceptList", value)
     this.setState({
       currentObject: value
     });
@@ -138,7 +138,7 @@ class FormBuilder extends React.Component {
   }
 
   formatFieldItem(element) {
-    console.log("formatFieldItem", element)
+    // console.log("formatFieldItem", element)
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -174,7 +174,7 @@ class FormBuilder extends React.Component {
         array.push(this.formatFieldItem(element));
       });
     }
-    console.log("editFormListFormat", array)
+    //console.log("editFormListFormat", array)
     return array
   }
 
@@ -224,6 +224,7 @@ class FormBuilder extends React.Component {
     }
     console.log("newform", newform)
     await this.props.saveFormFields(newform)
+    await this.removeLocalStorage()
     await createNotification("success", "Saved Successfully")
     await this.setState({
       addFormList: [],
@@ -264,8 +265,10 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-patientContacts`)
       localStorage.removeItem(`${element.uuid}-patientId`)
       localStorage.removeItem(`${element.uuid}-patientIdMandatory`)
-      localStorage.removeItem(`${element.uuid}-patientName`)
-      localStorage.removeItem(`${element.uuid}-patientNameMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientGivenName`)
+      localStorage.removeItem(`${element.uuid}-patientGivenNameMandatory`)
+      localStorage.removeItem(`${element.uuid}-patientFamilyName`)
+      localStorage.removeItem(`${element.uuid}-patientFamilyNameMandatory`)
       localStorage.removeItem(`${element.uuid}-patientGender`)
       localStorage.removeItem(`${element.uuid}-patientGenderMandatory`)
       localStorage.removeItem(`${element.uuid}-patientAge`)
@@ -278,7 +281,51 @@ class FormBuilder extends React.Component {
   getAllField() {
     let array = []
     const { addFormList } = this.state
+
+
     addFormList.forEach(element => {
+      let children = []
+      if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
+        children = [
+          {
+            name: "Given Name",
+            field: "73e557b7-7eb0-4e96-2f1b-11c39534ec29",
+            displayText: localStorage.getItem(`${element.uuid}-patientGivenName`),
+            mandatory: localStorage.getItem(`${element.uuid}-patientGivenNameMandatory`) === null ? false : true
+          },
+          {
+            "name": "Family Name",
+            "field": "73e557b7-7eb0-4e96-b1f2-11c39534e92c",
+            "displayText": localStorage.getItem(`${element.uuid}-patientFamilyName`),
+            "mandatory": localStorage.getItem(`${element.uuid}-patientFamilyNameMandatory`) === null ? false : true
+          },
+          {
+            "name": "Age",
+            "field": "73e557b7-0be7-4e96-b1f2-11c39534ec29",
+            "displayText": localStorage.getItem(`${element.uuid}-patientAge`),
+            "mandatory": localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === null ? false : true
+          },
+          {
+            "name": "Gender",
+            "field": "73eb7357-7eb0-4e96-b1f2-11c39534ec29",
+            "displayText": localStorage.getItem(`${element.uuid}-patientGender`),
+            "mandatory": localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === null ? false : true
+          },
+          {
+            "name": "Relationship",
+            "field": "37e557b7-0be7-4e96-b1f2-11c395ec4329",
+            "displayText": localStorage.getItem(`${element.uuid}-patientRelationship`),
+            "mandatory": localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === null ? false : true
+          },
+          {
+            "name": "Identifier",
+            "field": "37e557b7-7eb0-4e96-b1f2-11c395ec4329",
+            "displayText": localStorage.getItem(`${element.uuid}-patientId`),
+            "mandatory": localStorage.getItem(`${element.uuid}-patientIdMandatory`) === null ? false : true
+          },
+        ]
+      }
+
       let field = {
         name: element.label,
         field: element.uuid,
@@ -299,17 +346,8 @@ class FormBuilder extends React.Component {
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
-        patientContacts: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
-        patientId: localStorage.getItem(`${element.uuid}-patientId`),
-        patientIdMandatory: localStorage.getItem(`${element.uuid}-patientIdMandatory`) === "Yes" ? true : false,
-        patientName: localStorage.getItem(`${element.uuid}-patientName`),
-        patientNameMandatory: localStorage.getItem(`${element.uuid}-patientNameMandatory`) === "Yes" ? true : false,
-        patientGender: localStorage.getItem(`${element.uuid}-patientGender`),
-        patientGenderMandatory: localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === "Yes" ? true : false,
-        patientAge: localStorage.getItem(`${element.uuid}-patientAge`),
-        patientAgeMandatory: localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === "Yes" ? true : false,
-        patientRelationship: localStorage.getItem(`${element.uuid}-patientRelationship`),
-        patientRelationshipMandatory: localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === "Yes" ? true : false
+        createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
+        children: children ? children : []
       }
       array.push(field)
     });
@@ -321,9 +359,8 @@ class FormBuilder extends React.Component {
     await this.setState({
       formFieldList: [...this.state.formFieldList, object]
     }, () => {
-      console.log("setFieldList", this.state.formFieldList);
+      // console.log("setFieldList", this.state.formFieldList);
     })
-
   }
 
   deleteOption = (e, key) => {
@@ -339,7 +376,7 @@ class FormBuilder extends React.Component {
   }
 
   onDragStart = (ev, uuid) => {
-    console.log("onDrag start", ev)
+    // console.log("onDrag start", ev)
     ev.dataTransfer.setData('id', uuid)
   }
   handleExpandClick = (ev, category) => {
@@ -347,7 +384,7 @@ class FormBuilder extends React.Component {
   };
 
   handleDelete = (ev) => {
-    console.log("handle delete :: ", ev)
+    // console.log("handle delete :: ", ev)
     this.setState({
       addFormList: this.state.addFormList.filter(data => data.uuid !== ev)
     })
@@ -378,7 +415,7 @@ class FormBuilder extends React.Component {
         formName: e.value
       })
     }
-    console.log("encounter type selected value :", e)
+    // console.log("encounter type selected value :", e)
   }
   openModall = () => {
     this.setState({
