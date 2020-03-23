@@ -138,7 +138,48 @@ class FormBuilder extends React.Component {
   }
 
   formatFieldItem(element) {
-    // console.log("formatFieldItem", element)
+    console.log("formatFieldItem", element)
+    let patientId = ""
+    let patientIdMandatory = 'yes'
+    let patientAge = ""
+    let patientAgeMandatory = 'yes'
+    let patientGender = ""
+    let patientGenderMandatory = 'yes'
+    let patientRelationship = ""
+    let patientRelationshipMandatory = 'yes'
+    let patientGivenName = ""
+    let patientGivenNameMandatory = 'yes'
+    let patientFamilyName = ""
+    let patientFamilyNameMandatory = 'yes'
+
+    if (element.children.length > 0) {
+      element.children.forEach(element => {
+        if (element.field.uuid === '73e557b7-7eb0-4e96-2f1b-11c39534ec29') {
+          patientGivenName = element.displayText ? element.displayText : element.field.name
+          patientGivenNameMandatory = element.mandatory
+        }
+        else if (element.field.uuid === '73e557b7-7eb0-4e96-b1f2-11c39534e92c') {
+          patientFamilyName = element.displayText ? element.displayText : element.field.name
+          patientFamilyNameMandatory = element.mandatory
+        }
+        else if (element.field.uuid === '73e557b7-0be7-4e96-b1f2-11c39534ec29') {
+          patientAge = element.displayText ? element.displayText : element.field.name
+          patientAgeMandatory = element.mandatory
+        }
+        else if (element.field.uuid === '73eb7357-7eb0-4e96-b1f2-11c39534ec29') {
+          patientGender = element.displayText ? element.displayText : element.field.name
+          patientGenderMandatory = element.mandatory
+        }
+        else if (element.field.uuid === '37e557b7-0be7-4e96-b1f2-11c395ec4329') {
+          patientRelationship = element.displayText ? element.displayText : element.field.name
+          patientRelationshipMandatory = element.mandatory
+        }
+        else if (element.field.uuid === '37e557b7-7eb0-4e96-b1f2-11c395ec4329') {
+          patientId = element.displayText ? element.displayText : element.field.name
+          patientIdMandatory = element.mandatory
+        }
+      });
+    }
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -164,7 +205,20 @@ class FormBuilder extends React.Component {
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
-      regix: element.regix
+      regix: element.regix,
+      patientContacts: element.createPatient,
+      patientId: patientId,
+      patientIdMandatory: patientIdMandatory,
+      patientAge: patientAge,
+      patientAgeMandatory: patientAgeMandatory,
+      patientGender: patientGender,
+      patientGenderMandatory: patientGenderMandatory,
+      patientRelationship: patientRelationship,
+      patientRelationshipMandatory: patientRelationshipMandatory,
+      patientGivenName: patientGivenName,
+      patientGivenNameMandatory: patientGivenNameMandatory,
+      patientFamilyName: patientFamilyName,
+      patientFamilyNameMandatory: patientFamilyNameMandatory
     };
   }
   editFormListFormat(list) {

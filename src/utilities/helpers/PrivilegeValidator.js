@@ -28,10 +28,13 @@ export const privilegeValidate = value => {
 
 const filterPrivilege = (privilegeName) => {
     let userPrivileges = JSON.parse(localStorage.getItem('active_user'))
-    let privilege = userPrivileges.filter(data => data.name === privilegeName)
-    console.log("privilegeValidate", privilege)
-    if (privilege.length > 0) {
-        return true
+    if (userPrivileges !== undefined && userPrivileges.length > 0) {
+        let privilege = userPrivileges.filter(data => data.name === privilegeName)
+        if (privilege.length > 0) {
+            return true
+        } else {
+            return false
+        }
     } else {
         return false
     }

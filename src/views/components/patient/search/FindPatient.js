@@ -314,11 +314,14 @@ class FindPatient extends React.Component {
     }
     populateDropDown() {
         let array = [];
-        this.props.locationLists.results.forEach(element => {
-            array.push(
-                <option value={element.uuid}>{element.name}</option>
-            );
-        });
+        if (this.props.locationLists !== undefined && this.props.locationLists.results !== undefined) {
+            this.props.locationLists.results.forEach(element => {
+                array.push(
+                    <option value={element.uuid}>{element.name}</option>
+                );
+            });
+        }
+
         this.setState({
             location: array
         })
