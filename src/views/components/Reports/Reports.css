@@ -29,16 +29,28 @@
 
 .reports-date-picker {
     width: 200px;
-    margin-left: 15px
+    margin-left: -35px
   }
 .reports-select-dropdown {
     width:200px;
     margin-left: 15px
 }
-.filter-label{
-    margin-left: 5px
-}
 
+.filter-label{
+    margin-left: 5px;
+    display: inline;
+}
+.filter-location-label {
+    margin-left: -10px;
+    display: inline
+}
+.dynamic-filter-label {
+    margin-left: 25px
+}
+.filter {
+    width:200px;
+    display: inline-block
+}
 .btn-add-report {
  margin-left: 300px;
  margin-top: 30px   
