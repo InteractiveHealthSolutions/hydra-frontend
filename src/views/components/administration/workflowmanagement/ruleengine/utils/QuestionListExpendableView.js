@@ -17,7 +17,6 @@ import Divider from '@material-ui/core/Divider';
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
-        maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
     },
     nested: {
@@ -126,6 +125,6 @@ export default function QuestionListExpendableView(props) {
                 }
             </div>
 
-        </List >
+        </List>
     );
 }

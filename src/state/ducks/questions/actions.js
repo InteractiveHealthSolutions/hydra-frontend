@@ -39,13 +39,16 @@ export const searchConcept = (conceptName) => async dispatch =>
 
 const SearchConceptAction = (payload) => ({ type: types.SEARCH_CONCEPT, payload })
 
-export const searchField = (field) => async dispatch =>
+export const searchField = (field) => async dispatch => {
+  dispatch(setProject())
   fetch(GET, "hydra/field?q=" + field)
     .then(res => dispatch(SearchFieldAction(res))).catch(displayError)
+}
+
 
 const SearchFieldAction = (payload) => ({ type: types.SEARCH_FIELD, payload })
 
 
 const setProject = () => ({
-  type: types.SET_PROJECT
+  type: types.SET_PROJECT_QUESTION
 });

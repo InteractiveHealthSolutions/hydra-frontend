@@ -129,7 +129,7 @@ class BasicActionDetail extends Component {
 
                         </div>
                         <div className="row">
-                            <div className="col-md-10">
+                        <div className="col-md-10">
                                 <label htmlFor="actionDescription" className="ec-label">Description </label>
                                 <textarea
                                     placeholder=""

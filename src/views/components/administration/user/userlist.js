@@ -485,7 +485,7 @@ class UserList extends React.Component {
                             <div className="form-group row">
                                 <label htmlFor="givenname" className="col-sm-4 col-form-label required">Given Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.givenname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z ]+${1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.givenname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div class="form-group row">
