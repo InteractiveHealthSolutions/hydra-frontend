@@ -106,9 +106,6 @@ class EventClosureForm extends Component {
             columnAssetDefs: [
                 {
                     headerName: "Name", field: "asset.name",
-                    headerCheckboxSelection: true,
-                    headerCheckboxSelectionFilteredOnly: true,
-                    checkboxSelection: true,
                     width: 150
                 },
                 {
@@ -137,7 +134,8 @@ class EventClosureForm extends Component {
             eventFixedAsset: [],
             removeServiceList: [],
             closureNote: '',
-            defaultPersonalList: []
+            defaultPersonalList: [],
+            alreadyRemove: []
         };
     }
 
@@ -286,10 +284,16 @@ class EventClosureForm extends Component {
                 {
                     label: 'Yes',
                     onClick: () => {
-                        console.log("delete service :", service)
-                        let removeService = this.state.activeEvent.eventServices.filter(data => data.uuid !== service.uuid)
+                        let removeService = []
+                        if(this.state.alreadyRemove.length>0){
+                            removeService =   this.state.alreadyRemove.filter(data => data.uuid !== service.uuid)
+                        }else{
+                            removeService =   this.state.activeEvent.eventServices.filter(data => data.uuid !== service.uuid)
+                        }
+                        console.log("removeService" ,removeService)
                         this.setState({
                             rowData: removeService,
+                            alreadyRemove:removeService,
                             removeServiceList: this.state.activeEvent.eventServices.filter(data => data.uuid === service.uuid)
                         })
                     }
@@ -368,8 +372,6 @@ class EventClosureForm extends Component {
 
         })
     }
-
-
 
     initPersonals(workforce) {
         var formatePersonalArr = [];
@@ -543,11 +545,12 @@ class EventClosureForm extends Component {
     };
 
     onCellClicked = (event) => {
-        //console.log("event",event)
-        if (event.colDef.headerName === 'delete') {
+        console.log("event oncellClicked", event)
+        if (event.colDef.headerName === 'Delete') {
             this.deleteServices(event.data)
         }
     };
+
     handleCellEditingStopped = (event) => {
         if (event.colDef.headerName === 'Unit Cost' || event.colDef.headerName === 'Quantity') {
             var array = this.state.eventFixedAsset
@@ -568,9 +571,7 @@ class EventClosureForm extends Component {
         }
     }
 
-
     //assets
-
     filterAssetType = () => {
         const { activeEvent } = this.state;
         console.log("activeEvent :: ", activeEvent.eventAssets)
@@ -616,7 +617,6 @@ class EventClosureForm extends Component {
         }
 
     }
-
 
 
     render() {
