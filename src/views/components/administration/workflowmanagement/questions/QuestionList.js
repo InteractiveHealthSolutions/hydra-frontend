@@ -443,6 +443,7 @@ class QuestionList extends React.Component {
         });
     }
     submit = () => {
+     //console.log("defined options "+JSON.stringify(this.state.definedOptions))
         var questionWidgetType = this.state.widgetType;
         var questionConcept = this.state.conceptName;
         var variableName = this.state.question;
