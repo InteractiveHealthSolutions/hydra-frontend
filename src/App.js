@@ -87,15 +87,19 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" name="Workflows" component={Workflow} />
-                                                <PrivateRoute exact path="/workflow/phase" name="Phases" component={Phase} />
-                                                <PrivateRoute path="/workflow/phase/component" component={Component} />
-                                                <PrivateRoute path="/workflow/phase/component/form" component={Form} />
+                                                <PrivateRoute exact path="/workflow" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow/phase" component={Phase} />
+                                                <PrivateRoute exact path="/workflow/phase/component" component={Component} />
+                                                <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
                                                 <PrivateRoute exact path="/event" component={EventList} />
                                                 <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
                                                 <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
                                                 <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
                                                 <PrivateRoute exact path="/administration" component={AdministrationHome} />
+                                                <PrivateRoute exact path="/reports" component={Reports} />
+                                                <PrivateRoute exact path="/FindPatient" component={FindPatient} />
+                                                <PrivateRoute exact path="/FindPatient/PatientDetail" component={PatientDetail} />
+                                                <PrivateRoute exact path="/PatientRegistration" component={PatientRegistration} />
                                             </Switch>
                                         </Container>
                                     </main>

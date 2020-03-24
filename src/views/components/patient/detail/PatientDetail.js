@@ -42,8 +42,7 @@ class PatientDetail extends React.Component {
     render() {
 
         return (
-            <div className="row container-fluid pd-main-container">
-              
+            <>
                 <CardTemplate
                     title={this.currentPatient.given + " " + this.currentPatient.familyname}
                     subTitle={
@@ -57,7 +56,7 @@ class PatientDetail extends React.Component {
                             <button className="btn btn-primary " onClick={this.openGeneralActionsModal}> General Actions</button>
                         </>
                     }
-                 >
+                >
                     <div className="row pd-row-space">
                         <div className="col-md-6 col-sm-6">
                             <ExpansionPanel style={{ width: '100%' }}>
@@ -195,202 +194,6 @@ class PatientDetail extends React.Component {
                         </div>
                     </div>
                 </CardTemplate>
-
-
-{/* 
-                <div className="card fp-header">
-                    <div className="card-header">
-                        <div className="row">
-                            <div className="col-md-6 col-sm-5">
-                                <div className="col-sm-">
-                                    <label htmlFor="patientName" className="right-space name-font" >{this.currentPatient.given + " " + this.currentPatient.familyname}</label></div>
-                                <div class="col-sm-1 vl" style={{ display: "inline" }}></div>
-                                <div className="col-sm-5">
-                                    <div className="row" style={{ marginTop: "-55px" }}>
-                                        <div className="col-sm-2">
-                                            <label htmlFor="gender" className="right-space s-font" >{this.currentPatient.gender != "M" ? "Female" : "Male"}</label>
-                                        </div>
-                                        <div className="col-sm-10">
-                                            <label htmlFor="birthday" className="right-space s-font" >{this.currentPatient.age + " year(s) (" + this.currentPatient.birthday + ")"}</label>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-
-                                    </div>
-                                    <div className="row">
-                                        <div className="pd-lb">
-                                            <label htmlFor="patientName">Identifier ({this.currentPatient.identifier})</label>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-sm-6">
-
-                                <button className="btn btn-primary workflowDisplay" >
-                                    {localStorage.getItem("selectedWorkflow")}
-                                </button>
-                                <button className="btn btn-primary general-act-btn" onClick={this.openGeneralActionsModal}>
-                                    General Actions
-                            </button>
-                            </div>
-
-                        </div>
-                    </div>
-                    {/* end header */}
-                    {/* <div className="card-body">
-
-                        <div className="row pd-row-space">
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding gradient" ><i class="fas fa-diagnoses"></i></span>
-                                        <Typography className="typography-space">Diagnoses</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >   <span className="icon-padding" ><i class="fas fa-procedures gradient"></i></span>
-                                        <Typography >Patient Source</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                        </div>
-                         */}
-                        {/* next row */}
-                        {/* <div className="row pd-row-space">
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding" ><i class="fas fa-heartbeat gradient"></i></span>
-                                        <Typography className="typography-space">Vitals</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >   <span className="icon-padding" ><i class="fas fa-users gradient"></i></span>
-                                        <Typography >Patient Type</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                        </div>
-                         */}
-                        {/* next row */}
-                        {/* <div className="row pd-row-space">
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding" ><i class="fa fa-procedures gradient"></i></span>
-                                        <Typography className="typography-space">Patient Risk Category</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >   <span className="icon-padding" ><i class="fas fa-diagnoses gradient"></i></span>
-                                        <Typography >Outcome</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                        </div>
-                        */}
-                        {/* next row  */}
-                        {/* <div className="row pd-row-space">
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding" ><i class="fas  fa-user-md gradient"></i></span>
-                                        <Typography className="typography-space">Relationships</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >   <span className="icon-padding" ><i class="fa fa-calendar-alt gradient"></i></span>
-                                        <Typography >Recent Visits</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                        </div> */}
-
-                        {/* next row  */}
-                        {/* <div className="row pd-row-space">
-                            <div className="col-md-6 col-sm-6">
-                                <ExpansionPanel style={{ width: '100%' }}>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <span className="icon-padding" ><i class="fas fa-calendar-alt gradient"></i></span>
-                                        <Typography className="typography-space">Next Tb Appointment</Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </div>
-                        </div>
-                    </div> */}
-                    {/* end body */}
-                {/* </div>
- */}
-
-                <PatiendSideBackButton
-                    navigateTo="FindPatient"
-                ></PatiendSideBackButton>
-                {/* <div id="SidenavModal" class="sidenav">
-                    <a id="action" className="pd-actions-btn  btn-primary" onClick={() => this.openModal()} >General Actions</a>
-                </div> */}
                 {/* general acions  */}
                 <Modal show={this.state.openGeneralActionsModal} onHide={() => this.closeGeneralActionsModal()} style={{ marginTop: '100px' }}>
                     <Modal.Header closeButton className="modal-header">
@@ -480,20 +283,7 @@ class PatientDetail extends React.Component {
                     </form>
 
                 </Modal>
-                {/* <Modal show={this.state.openGeneralActionsModal}>
-                 <Modal.Header closeButton>
-                   General Actions
-                 </Modal.Header>
-                 <Modal.Body>
-                     <ul>
-                         <li> Service History </li>
-                         <li> Enter Data </li>
-                         <li> Mark Patient Deceased </li>
-                         <li> Void Patient </li>
-                     </ul>
-                 </Modal.Body>
-                </Modal> */}
-            </div>
+            </>
 
         )
     }

@@ -240,7 +240,7 @@ class Phase extends React.Component {
         this.setState({ listItems: tempArray });
     }
     render() {
-        if (this.state.loading) return <Loaders />;
+        if (this.props.isloading) return <Loaders />;
         return (
             <>
                 <CardTemplate
@@ -337,7 +337,8 @@ class Phase extends React.Component {
 }
 const mapStateToProps = (state) => ({
     phaseList: state.phase.allphase,
-    workflowPhaseList: state.phase.allWorkPhase
+    workflowPhaseList: state.phase.allWorkPhase,
+    isloading: state.phase.loading
 
 })
 

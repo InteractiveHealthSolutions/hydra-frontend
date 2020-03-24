@@ -9,8 +9,8 @@ import { REJECTED } from "../../../utilities/constants/globalconstants";
 import { displayError } from "../../../utilities/helpers/helper";
 
 export const saveForm = Form => async dispatch => {
-  dispatch(setProject)
-  fetch(POST, "hydra/form", Form)
+  //dispatch(setProject)
+  fetch(POST, "/hydra/form", Form)
     .then(res => dispatch(formAction(res)))
     .catch(displayError);
   const formAction = payload => ({
@@ -21,8 +21,8 @@ export const saveForm = Form => async dispatch => {
 
 
 export const fetchForms = () => async dispatch => {
-  dispatch(setProject())
-  fetch(GET, "hydra/form?v=full")
+ // dispatch(setProject())
+  fetch(GET, "/hydra/form?v=full")
     .then(res => dispatch(setForm(res)))
     .catch(displayError);
 }
@@ -30,13 +30,13 @@ export const fetchForms = () => async dispatch => {
 const setForm = payload => ({ type: types.GET_ALL_FORM, payload });
 
 export const searchForm = componentUuid => async dispatch =>
-  fetch(GET, "hydra/form?q=" + componentUuid)
+  fetch(GET, "/hydra/form?q=" + componentUuid)
     .then(res => dispatch(setSearchForm(res)))
     .catch(displayError);
 const setSearchForm = payload => ({ type: types.SEARCH_FORM, payload });
 
 export const saveComponentFormRelation = componentform => async dispatch => {
-  fetch(POST, "hydra/componentform", componentform)
+  fetch(POST, "/hydra/componentform", componentform)
     .then(res => dispatch(setComponentFormRelation(res)))
     .catch(displayError);
 };
@@ -47,13 +47,14 @@ const setComponentFormRelation = payload => ({
 });
 
 export const getFormByUuid = (uuid) => async dispatch =>
-  fetch(GET, "hydra/form/" + uuid)
+  fetch(GET, "/hydra/form/" + uuid)
     .then(res => dispatch(setFormByUuidAction(res))).catch(displayError)
 const setFormByUuidAction = (payload) => ({ type: types.GET_FORM_BY_UUID, payload })
 
 
 export const getComponentFormRelation = () => async dispatch => {
-  fetch(GET, "hydra/componentform")
+  dispatch(setProject())
+  fetch(GET, "/hydra/componentform")
     .then(res => dispatch(getComponentFormRelations(filterStageForm(res))))
     .catch(displayError);
 };
@@ -77,7 +78,7 @@ function filterStageForm(StageFormData) {
 
 export const deleteComponentFormRelation = uuid => async dispatch => {
   console.log(" called");
-  fetch(DELETE, "hydra/componentform/" + uuid)
+  fetch(DELETE, "/hydra/componentform" + uuid)
     .then(res => dispatch(setDeleteComponentFormRelations(res)))
     .catch(displayError);
 };
