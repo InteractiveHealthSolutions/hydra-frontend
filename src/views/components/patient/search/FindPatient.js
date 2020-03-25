@@ -217,6 +217,9 @@ class FindPatient extends React.Component {
 
             await this.setState({ workflowData: this.createWorkflowCheckBox() })
         }
+        if(nextProps.locationLists != undefined) {
+            await this.populateDropDown();
+        }
     }
 
     filterPatient(patientData) {
@@ -330,16 +333,17 @@ class FindPatient extends React.Component {
     }
     populateDropDown() {
         let array = [];
-        if (this.props.locationLists !== undefined && this.props.locationLists.results !== undefined) {
+        if(this.props.locationLists != undefined && this.props.locationLists.results !=  undefined) {
             this.props.locationLists.results.forEach(element => {
                 array.push(
                     <option value={element.uuid}>{element.name}</option>
                 );
             });
+            this.setState({
+                location: array
+            })
         }
-        this.setState({
-            location: array
-        })
+   
     }
     searchIdhandleClick = e => {
         e.preventDefault();
