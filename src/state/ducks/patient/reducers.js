@@ -5,6 +5,7 @@ import { REJECTED } from "../../../utilities/constants/globalconstants";
 const initialState = {
     current: null,
     loading: false,
+    searchLoading: false,
     loaded: false,
     error: null,
     patient: [],
@@ -15,10 +16,10 @@ const initialState = {
 
 const patientReducer = createReducer(initialState)({
 
-    [types.SET_PROJECT]: (state, { payload }) => ({
+    [types.SET_SEARCH_PROJECT]: (state, { payload }) => ({
         ...state,
         current: payload,
-        loading: true,
+        searchLoading: true,
         error: null
     }),
 
@@ -29,27 +30,32 @@ const patientReducer = createReducer(initialState)({
     [types.GET_ALL_PATIENT + REJECTED]: (state, { payload }) => ({
         ...state,
         loading: false,
+        searchLoading: false,
         error: payload
     }),
     [types.CREATE_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
+        searchLoading: false,
         patient: payload
     }),
 
     [types.GET_ALL_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
+        searchLoading: false,
         patients: payload
     }),
     [types.DELETE_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
+        searchLoading: false,
         patient: payload
     }),
     [types.SEARCH_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
+        searchLoading: false,
         searchPatients: payload
     }),
 

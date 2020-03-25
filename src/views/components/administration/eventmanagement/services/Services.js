@@ -41,10 +41,10 @@ function Services(props) {
                 `
                   <button className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-            , filter: "agSetColumnFilter", width: 60
+            , filter: "agSetColumnFilter"
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter", width: 70
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter"
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -252,7 +252,7 @@ function Services(props) {
 
     if (props.isloading) return <Loaders />;
     return (
-        <div className="row container-fluid service-main-container">
+        <>
             <CardTemplate
                 title="Services"
                 action={
@@ -423,7 +423,7 @@ function Services(props) {
                 </form>
             </Modal>
 
-        </div >
+        </>
     )
 }
 

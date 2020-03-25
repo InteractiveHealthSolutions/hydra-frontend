@@ -30,7 +30,7 @@ function FormDetail(props) {
                 `
             , width: 60
         },
-         {
+        {
             headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter", width: 60
         }
     ]);
@@ -86,46 +86,22 @@ function FormDetail(props) {
 
     if (props.isLoading) return <Loaders />;
     return (
-        <div className="row container-fluid service-main-container">
-            <CardTemplate
-                title="Form"
-                action={
-                    <button className="service-btn btn btn-primary " onClick={nextStep}><i class="fas fa-plus"></i>  Create New</button>
-                }
-            >
-                <div className="card-body rm-paadding">
-                    <AgGrid
-                        onGridReady={onGridReady}
-                        columnDefs={columnDefs}
-                        onRowSelected={onRowSelected}
-                        rowData={rowData}
-                        onCellClicked={onCellClicked}
-                    />
-                </div>
-            </CardTemplate>
-
-            {/* <div className="card fp-header">
-                <div className="card-header">
-                    <div className="row">
-                        <div className="col-md-6 col-sm-4">
-                            <span className="text-muted">Form</span>
-                        </div>
-                        <div className="col-md-6 col-sm-2">
-                            <button className="service-btn btn btn-primary " onClick={nextStep}><i class="fas fa-plus"></i>  Create New</button>
-                        </div>
-                    </div>
-                </div>
-                <div className="card-body rm-paadding">
-                    <AgGrid
-                        onGridReady={onGridReady}
-                        columnDefs={columnDefs}
-                        onRowSelected={onRowSelected}
-                        rowData={rowData}
-                        onCellClicked={onCellClicked}
-                    />
-                </div>
-            </div> */}
-        </div>
+        <CardTemplate
+            title="Form"
+            action={
+                <button className="service-btn btn btn-primary " onClick={nextStep}><i class="fas fa-plus"></i>  Create New</button>
+            }
+        >
+            <div className="card-body rm-paadding">
+                <AgGrid
+                    onGridReady={onGridReady}
+                    columnDefs={columnDefs}
+                    onRowSelected={onRowSelected}
+                    rowData={rowData}
+                    onCellClicked={onCellClicked}
+                />
+            </div>
+        </CardTemplate>
     )
 }
 

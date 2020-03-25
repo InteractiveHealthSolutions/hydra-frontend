@@ -41,10 +41,10 @@ function Assets(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-                , width: 60
+
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter, width: 70
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -153,7 +153,7 @@ function Assets(props) {
         console.log("assetCategoryForm", assetCategoryForm);
         await props.saveAssetCategory(assetCategoryForm);
         await props.getAllAssetCategory();
-        createNotification("success", "Saved successfully")
+        createNotification("success", "Category Saved successfully")
         setAssetCategoryName('')
     }
 
@@ -161,34 +161,38 @@ function Assets(props) {
     async function handleSubmit(e) {
         e.preventDefault();
         let assetForm = {}
-        if (actionType === 'EditAsset') {
-            assetForm = {
-                name: assetName,
-                retired: assetRetire,
-                uuid: activeAsset.uuid,
-                assetId: activeAsset.assetId,
-                assetType: assetTypeName,
-                capitalValue: capitalValue,
-                dateProcured: dateProcured,
-                fixedAsset: fixedAsset,
-                referenceId: referenceId
-            }
-        } else if (actionType === 'AssetsCategory') {
+        if (actionType === 'AssetsCategory') {
             saveAssetCategory()
-        }
-        else {
-            assetForm = {
-                name: assetName,
-                retired: assetRetire,
-                assetType: assetTypeName,
-                capitalValue: capitalValue,
-                dateProcured: dateProcured,
-                fixedAsset: fixedAsset,
-                referenceId: referenceId
+
+        } else {
+            if (actionType === 'EditAsset') {
+                assetForm = {
+                    name: assetName,
+                    retired: assetRetire,
+                    uuid: activeAsset.uuid,
+                    assetId: activeAsset.assetId,
+                    assetType: assetTypeName,
+                    capitalValue: capitalValue,
+                    dateProcured: dateProcured,
+                    fixedAsset: fixedAsset,
+                    referenceId: referenceId
+                }
             }
+            else {
+                assetForm = {
+                    name: assetName,
+                    retired: assetRetire,
+                    assetType: assetTypeName,
+                    capitalValue: capitalValue,
+                    dateProcured: dateProcured,
+                    fixedAsset: fixedAsset,
+                    referenceId: referenceId
+                }
+            }
+            console.log("assetForm", assetForm)
+            isAssetType ? saveAssetType() : saveAssets(assetForm);
+
         }
-        console.log("assetForm", assetForm)
-        isAssetType ? saveAssetType() : saveAssets(assetForm);
         closeModal();
     }
 
@@ -274,10 +278,10 @@ function Assets(props) {
 
     }
 
-    function populateDropDown() {
+    async function populateDropDown() {
         let array = [];
         console.log("populateDropDown ", availableAssetType)
-        availableAssetType.forEach(element => {
+        await availableAssetType.forEach(element => {
             array.push(
                 <option value={element.uuid}>{element.name}</option>
             );
@@ -314,7 +318,7 @@ function Assets(props) {
     var optDisabled = {}; if (actionType === "EditAsset") { optDisabled['disabled'] = 'disabled'; }
     var optChecked = {}; if (fixedAsset === true) { optChecked['checked'] = 'checked' }
     return (
-        <div className="row assets-main-container container-fluid ">
+        <>
             <CardTemplate
                 title="Assets"
                 action={
@@ -400,7 +404,10 @@ function Assets(props) {
                                         <div className="form-group" id="add">
                                             <label htmlFor="assetTypeName" className="required">Asset Type</label>
                                             <select {...optDisabled} className="form-control" name="assetTypeName" value={assetTypeName} onChange={handleChange} required>
-                                                {(actionType === 'EditAsset') ? <option>{assetTypeName} </option> : <><option></option> { arrAssetType }</>}
+                                                {(actionType === 'EditAsset') ?
+                                                    <option>{assetTypeName}</option> :
+                                                    <><option></option> {arrAssetType}</>
+                                                }
                                             </select>
 
                                         </div>
@@ -460,7 +467,7 @@ function Assets(props) {
                     </Modal.Footer>
                 </form>
             </Modal>
-        </div>
+        </>
     )
 }
 

@@ -414,7 +414,7 @@ class UserList extends React.Component {
         const { user, submitted,rowData,columnDefs ,invalidPassword } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
-            <div className="row container-fluid l-main-container">
+            <>
                 <CardTemplate
                     title="User Management"
                     action={<button type="button" onClick={this.openAddUserModal} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add New User</button>}
@@ -430,46 +430,6 @@ class UserList extends React.Component {
 
                     </div>
                 </CardTemplate>
-
-
-                {/* <div className="card fp-header">
-                    <div className="card-header">
-                        <div className="row">
-                            <div className="col-md-8 col-sm-4">
-                                <span className="text-muted bold"> User Management</span>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button type="button" onClick={this.openAddUserModal} className="fp-btn btn btn-primary ">
-                                    + Add New User
-                          </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-body rm-paadding">
-                        <div className="d-flex justify-content-center">
-                            <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    context={this.state.context}
-                                    frameworkComponents={this.state.frameworkComponents}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    quickFilterText={this.state.quickFilterText}
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationPageSize="12"
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                    onCellClicked={this.onCellClicked}
-                                >
-                                </AgGridReact>
-                            </div>
-                        </div>
-                    </div>
-                </div>*/}
                 <Modal show={this.state.openAddUserModal} backdrop="static" onHide={() => this.setState({ openAddUserModal: false })} style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} User</Modal.Title>
@@ -630,7 +590,7 @@ class UserList extends React.Component {
                         </form>
                     </Modal.Body>
                 </Modal>
-            </div>
+            </>
         )
     }
 }

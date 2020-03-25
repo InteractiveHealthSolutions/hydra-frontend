@@ -14,4 +14,4 @@ export const ADD_TO_PATIENT_TYPE = "ADD_TO_PATIENT_TYPE";
 export const ACTIVE_PATIENT_TYPE = "ACTIVE_PATIENT_TYPE";
 
 export const API = "API";
-export const SET_PROJECT = "SET_PROJECT";
+export const SET_SEARCH_PROJECT = "SET_SEARCH_PROJECT";

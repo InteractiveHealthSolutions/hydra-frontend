@@ -28,6 +28,8 @@ import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
 
 const animatedComponents = makeAnimated();
 
@@ -89,36 +91,39 @@ class EventClosureForm extends Component {
             availableWorkforce: [],
             columnDefs: [
                 {
-                    headerName: "Name", field: "service.name", width: 320
+                    headerName: "Name", field: "service.name"
                 },
                 {
-                    headerName: "Unit Cost", field: "service.unitCost", valueFormatter: this.currencyFormatter, width: 200
+                    headerName: "Unit Cost", field: "service.unitCost", valueFormatter: this.currencyFormatter
                 },
                 {
                     headerName: "Delete",
                     template:
                         `
                     <button className="btn-edite"><i class="fas fa-trash-alt"></i></button>
-                    `
-                    , width: 80
+                    `,
+                    width: 90
                 },
             ],
             columnAssetDefs: [
                 {
-                    headerName: "Name", field: "asset.name",
-                    width: 150
+                    headerName: "Name", field: "asset.name"
                 },
                 {
-                    headerName: "Asset Type", field: "asset.assetType.name", width: 120
+                    headerName: "Type", field: "asset.assetType.name"
+                  
                 },
                 {
-                    headerName: "Asset Category", field: "asset.assetType.assetCategory.name", width: 150
+                    headerName: "Category", field: "asset.assetType.assetCategory.name"
+                   
                 },
                 {
-                    headerName: "Unit Cost", field: "asset.capitalValue", editable: this.editUnitCost, valueFormatter: this.currencyFormatter, width: 100
+                    headerName: "Unit Cost", field: "asset.capitalValue", editable: this.editUnitCost, valueFormatter: this.currencyFormatter
+                    
                 },
                 {
-                    headerName: "Quantity", field: "quantity", editable: this.editUnitCost, width: 100
+                    headerName: "Quantity", field: "quantity", editable: this.editUnitCost
+
                 }
             ],
             rowData: [],
@@ -571,7 +576,6 @@ class EventClosureForm extends Component {
         }
     }
 
-    //assets
     filterAssetType = () => {
         const { activeEvent } = this.state;
         console.log("activeEvent :: ", activeEvent.eventAssets)
@@ -617,274 +621,241 @@ class EventClosureForm extends Component {
         }
 
     }
-
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.columnApi = params.columnApi;
+        this.gridApi.sizeColumnsToFit();
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
+    }
 
     render() {
-        const { eventTypeData, description, closureNote, personaldata, defaultPersonalList, personalList, columnDefs, rowData, eventName, location, locationData, formErrors, startDate, endDate, eventTypeOption, locationTypeOption, data, columns, activeEvent } = this.state;
+        const { eventTypeData, description,columnAssetDefs, rowAssetData ,closureNote, personaldata, defaultPersonalList, personalList, columnDefs, rowData, eventName, location, locationData, formErrors, startDate, endDate, eventTypeOption, locationTypeOption, data, columns, activeEvent } = this.state;
         return (
-            <div className="main-event-closure">
-                <div className="row">
-                    <div className="col-6 ec-col">
-                        <h4 className="header_title">Event Closure Form</h4>
-                        <div className="card ec-main-card">
-                            <div className="card-header">
-                                <div className="row form-control-sm form-group">
-                                    <div className="col-sm-1 col-md-1 col-lg-1">
+            <div className="row">
+                <div className="col-md-6">
+                    <form onSubmit={this.handleSubmit} >
+                        <CardTemplate
+                            title={
+                                <div className="row">
+                                    <div className="col-md-1">
                                         <img
                                             style={{ height: '30px', width: '30px' }}
                                             src={require('../../../../assets/clipboard.svg')}
                                             alt="" />
                                     </div>
-                                    <div className="col-sm-11 col-md-11 col-lg-11" style={{ marginTop: '5px' }}>
+                                    <div className="col-md-11">
                                         <p>Field Trip</p>
                                     </div>
                                 </div>
+                            }
+                            action={
+                                <button type='submit' className='btn btn-primary ep-save-btn-row'>Save</button>
+                            }
+                        >
+                            {/*event type*/}
+                            <div className="row form-control-sm form-group">
+                                <div className="col-sm-3 col-md-2">
+                                    <label className="ec-label">Event Type</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <Select
+                                        value={eventTypeOption}
+                                        onChange={this.handleEventTypeChange}
+                                        options={eventTypeData}
+                                    />
+                                </div>
                             </div>
-                            <div className="card-body">
-                                <form onSubmit={this.handleSubmit} >
-                                    {/*event type*/}
-                                    <div className="row form-control-sm form-group">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label className="ec-label">Event Type</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <Select
-                                                value={eventTypeOption}
-                                                onChange={this.handleEventTypeChange}
-                                                options={eventTypeData}
-                                            />
-                                        </div>
-                                    </div>
-                                    {/*event name*/}
-                                    <div className="row form-control-sm form-group ec-rows">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="eventName" className="ec-label">Event name</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <input
-                                                placeholder=""
-                                                type="text"
-                                                name="eventName"
-                                                value={eventName}
-                                                onChange={this.handleChange}
-                                                className='form-control'
-                                            />
-                                            {/* {formErrors.eventName.length > 0 && (
+                            {/*event name*/}
+                            <div className="row form-control-sm form-group ec-rows">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="eventName" className="ec-label">Event name</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <input
+                                        placeholder=""
+                                        type="text"
+                                        name="eventName"
+                                        value={eventName}
+                                        onChange={this.handleChange}
+                                        className='form-control'
+                                    />
+                                    {/* {formErrors.eventName.length > 0 && (
                                                         <span className="errorMessage">{formErrors.eventName}</span>
                                                     )} */}
-                                        </div>
-                                    </div>
-                                    {/*description*/}
-                                    <div className="row form-control-sm form-group ec-rows">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="description" className="ec-label">Description</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <textarea
-                                                placeholder=""
-                                                type="text"
-                                                name="description"
-                                                rows='2'
-                                                value={description}
-                                                onChange={this.handleChange}
-                                                className='form-control'
-                                            />
-                                            {/* {formErrors.description.length > 0 && (
+                                </div>
+                            </div>
+                            {/*description*/}
+                            <div className="row form-control-sm form-group ec-rows">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="description" className="ec-label">Description</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <textarea
+                                        placeholder=""
+                                        type="text"
+                                        name="description"
+                                        rows='2'
+                                        value={description}
+                                        onChange={this.handleChange}
+                                        className='form-control'
+                                    />
+                                    {/* {formErrors.description.length > 0 && (
                                                          marginTop: '30px'
                                                         <span className="errorMessage">{formErrors.description}</span>
                                                     )} */}
-                                        </div>
-                                    </div>
-                                    {/*Date*/}
-                                    <div className="row form-control-sm form-group ec-date-div">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="start date" className="ec-label">Start Date</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <DatePicker
-                                                selected={startDate}
-                                                onChangeRaw={this.handleDateChangeRawFrom}
-                                                onChange={this.handleChangeDateFrom}
-                                                className="form-control"
-                                                dateFormat="MM/dd/yyyy hh:mm"
-                                                showTimeSelect
-                                                placeholderText="" />
-                                            {/* {formErrors.startDate.length > 0 && (
+                                </div>
+                            </div>
+                            {/*Date*/}
+                            <div className="row form-control-sm form-group ec-date-div">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="start date" className="ec-label">Start Date</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <DatePicker
+                                        selected={startDate}
+                                        onChangeRaw={this.handleDateChangeRawFrom}
+                                        onChange={this.handleChangeDateFrom}
+                                        className="form-control"
+                                        dateFormat="MM/dd/yyyy hh:mm"
+                                        showTimeSelect
+                                        placeholderText="" />
+                                    {/* {formErrors.startDate.length > 0 && (
                                                                 <span className="errorMessage">{formErrors.startDate}</span>
                                                             )} */}
-                                            <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
-                                        </div>
-                                    </div>
-                                    <div className="row form-control-sm form-group  ec-enddate-div">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="end date" >End Date</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <DatePicker
-                                                readOnly={startDate ? false : true}
-                                                selected={endDate}
-                                                onChangeRaw={this.handleDateChangeRawTo}
-                                                onChange={this.handleChangeDateTo}
-                                                className="form-control"
-                                                dateFormat="MM/dd/yyyy hh:mm"
-                                                showTimeSelect
-                                                minDate={startDate}
-                                                placeholderText="" />
-                                            {/* {formErrors.endDate.length > 0 && ( marginTop: '30px' 
+                                    <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
+                                </div>
+                            </div>
+                            <div className="row form-control-sm form-group  ec-enddate-div">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="end date" >End Date</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <DatePicker
+                                        readOnly={startDate ? false : true}
+                                        selected={endDate}
+                                        onChangeRaw={this.handleDateChangeRawTo}
+                                        onChange={this.handleChangeDateTo}
+                                        className="form-control"
+                                        dateFormat="MM/dd/yyyy hh:mm"
+                                        showTimeSelect
+                                        minDate={startDate}
+                                        placeholderText="" />
+                                    {/* {formErrors.endDate.length > 0 && ( marginTop: '30px' 
                                                                 <span className="errorMessage">{formErrors.endDate}</span>
                                                             )} */}
-                                            <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
-                                        </div>
-                                    </div>
-                                    {/*Location*/}
-                                    <div className="row form-control-sm form-group ec-rows">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="start date" className="ec-label">Location</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <Select
-                                                components={animatedComponents}
-                                                value={location}
-                                                onChange={this.handleLocationTypeChange}
-                                                options={locationData}
-                                            />
-                                        </div>
-                                    </div>
-                                    {/* personal */}
-                                    <div className="row form-control-sm form-group ec-rows">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="start date" className="ec-label">Personnel</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <Select
-                                                defaultValue={defaultPersonalList}
-                                                components={animatedComponents}
-                                                options={personaldata}
-                                                onChange={this.personalResult}
-                                                isMulti />
-                                        </div>
+                                    <span class="calendar_icon"><i class="fas fa-calendar-alt"></i></span>
+                                </div>
+                            </div>
+                            {/*Location*/}
+                            <div className="row form-control-sm form-group ec-rows">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="start date" className="ec-label">Location</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <Select
+                                        components={animatedComponents}
+                                        value={location}
+                                        onChange={this.handleLocationTypeChange}
+                                        options={locationData}
+                                    />
+                                </div>
+                            </div>
+                            {/* personal */}
+                            <div className="row form-control-sm form-group ec-rows">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="start date" className="ec-label">Personnel</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <Select
+                                        defaultValue={defaultPersonalList}
+                                        components={animatedComponents}
+                                        options={personaldata}
+                                        onChange={this.personalResult}
+                                        isMulti />
+                                </div>
 
-                                    </div>
-                                    {/*closure notes*/}
-                                    <div className="row form-control-sm form-group ec-rows closure-notes">
-                                        <div className="col-sm-3 col-md-2">
-                                            <label htmlFor="closureNote" className="ec-label">Closure Notes</label>
-                                        </div>
-                                        <div className="col-sm-9 col-md-10">
-                                            <textarea
-                                                placeholder=""
-                                                type="text"
-                                                name="closureNote"
-                                                rows='2'
-                                                value={closureNote}
-                                                onChange={this.handleChange}
-                                                className='form-control'
-                                            />
-                                            {/* {formErrors.description.length > 0 && (
+                            </div>
+                            {/*closure notes*/}
+                            <div className="row form-control-sm form-group ec-rows closure-notes">
+                                <div className="col-sm-3 col-md-2">
+                                    <label htmlFor="closureNote" className="ec-label">Closure Notes</label>
+                                </div>
+                                <div className="col-sm-9 col-md-10">
+                                    <textarea
+                                        placeholder=""
+                                        type="text"
+                                        name="closureNote"
+                                        rows='2'
+                                        value={closureNote}
+                                        onChange={this.handleChange}
+                                        className='form-control'
+                                    />
+                                    {/* {formErrors.description.length > 0 && (
                                                          marginTop: '30px'
                                                         <span className="errorMessage">{formErrors.description}</span>
                                                     )} */}
-                                        </div>
-                                    </div>
-                                    <div className="row form-control-sm form-group ">
-                                        <div className="col-sm-8" ></div>
-                                        <div className='col-sm-4 '>
-                                            <button type='submit' className='btn btn-primary save-btn ec-save-btn-row'>Save</button>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
 
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    {/*service and assets*/}
-                    <div className="col-6 ec-col-n">
-                        <div className="card ec-main-card-services" >
-                            <div className="card-header">
-                                <div className="row form-control-sm form-group">
-                                    <div className="col-sm-1 col-md-1 col-lg-1">
-                                        <img
-                                            style={{ height: '30px', width: '30px' }}
-                                            src={require('../../../../assets/clipboard.svg')}
-                                            alt="" />
-                                    </div>
-                                    <div className="col-sm-11 col-md-11 col-lg-11" style={{ marginTop: '5px' }}>
-                                        <p>Services and Assets | Planned</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* body*/}
-                            <div className="card-body">
-                                {/* service */}
-                                <div className="row" style={{ maxWidth: "100%", marginLeft: '2px' }}>
-                                    <label className="label-heading">Services</label>
-                                    <div
-                                        className="ag-theme-balham"
-                                        style={{
-                                            width: '100%',
-                                            height: '216px',
-                                            marginTop: '10px'
-                                        }}
-                                    >
-                                        <AgGridReact
-                                            columnDefs={this.state.columnDefs}
-                                            rowData={this.state.rowData}
-                                            modules={AllCommunityModules}
-                                            onRowSelected={this.onRowSelected}
-                                            onCellClicked={event => { this.onCellClicked(event) }}
-                                            enableSorting
-                                            enableFilter
-                                            rowAnimation
-                                            enableRangeSelection={true}
-                                            pagination={true}
-                                            paginationAutoPageSize={true}
-                                            isExternalFilterPresent={true}
-                                            enableColResize="true"
-                                        >
-                                        </AgGridReact>
-                                    </div>
-                                </div>
-                                {/* assets*/}
-                                <div className="row" style={{ maxWidth: "100%", marginLeft: '2px' }}>
-                                    <label className="label-heading-assets">Assets</label>
-                                    <div
-                                        className="ag-theme-balham"
-                                        style={{
-                                            width: '100%',
-                                            height: '216px',
-                                            marginTop: '10px'
-                                        }}
-                                    >
-                                        <AgGridReact
-                                            columnDefs={this.state.columnAssetDefs}
-                                            rowData={this.state.rowAssetData}
-                                            modules={AllCommunityModules}
-                                            onRowSelected={this.onRowSelected}
-                                            onCellClicked={event => { this.onCellClicked(event) }}
-                                            enableSorting
-                                            enableFilter
-                                            rowAnimation
-                                            onCellEditingStopped={event => { this.handleCellEditingStopped(event) }}
-                                            forEachNode={(rowNode, index) => { console.log('node ' + rowNode.data.athlete + ' is in the grid'); }}
-                                            enableRangeSelection={true}
-                                            pagination={true}
-                                            paginationAutoPageSize={true}
-                                            isExternalFilterPresent={true}
-                                            enableColResize="true"
-                                        >
-                                        </AgGridReact>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </CardTemplate>
+                    </form>
                 </div>
-                <EventSideBackButton
-                    navigateTo="events"
-                ></EventSideBackButton>
-            </div>
-        )
+                <div className="col-md-6">
+                    <CardTemplate
+                        title={
+                            <div className="row">
+                                <div className="col-md-1">
+                                    <img
+                                        style={{ height: '30px', width: '30px' }}
+                                        src={require('../../../../assets/clipboard.svg')}
+                                        alt="" />
+                                </div>
+                                <div className="col-md-11">
+                                    <p>Services and Assets</p>
+                                </div>
+                            </div>
+                        }
+                    >
+                        {/* service */}
+                        <div className="row adjustment">
+                            <label className="label-heading">Services</label>
+                        </div>
+                        <div className="row">
+                            <div className="card-body">
+                                <AgGrid
+                                    onGridReady={this.onGridReady}
+                                    columnDefs={columnDefs}
+                                    onRowSelected={this.onRowSelected}
+                                    rowData={rowData}
+                                    height="216px"
+                                    onCellClicked={this.onCellClicked}
+                                />
+                            </div>
+                        </div>
 
+                        {/* assets*/}
+                        <div className="row adjustment">
+                            <label className="label-heading-assets">Assets</label>
+                        </div>
+                        <div className="row">
+                            <div className="card-body">
+                                <AgGrid
+                                    onGridReady={this.onGridReady}
+                                    columnDefs={columnAssetDefs}
+                                    onRowSelected={this.onRowSelected}
+                                    rowData={rowAssetData}
+                                    height="216px"
+                                    onCellClicked={event => { this.onCellClicked(event) }}
+                                    handleCellEditingStopped ={event => { this.handleCellEditingStopped(event) }}
+                                />
+                            </div>
+                        </div>
+                    </CardTemplate>
+                </div>
+            </div >
+        )
     }
 
 }

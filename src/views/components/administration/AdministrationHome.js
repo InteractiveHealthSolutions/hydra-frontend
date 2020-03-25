@@ -63,7 +63,6 @@ export default class AdministrationHome extends Component {
             <div >
                 <MemoryRouter>
                     <SideNav
-
                         onSelect={this.onSelect}
                         style={{ marginTop: '70px', background: 'var(--bg)' }}
                         onToggle={this.onToggle}
