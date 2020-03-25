@@ -158,8 +158,7 @@ class FindPatient extends React.Component {
     }
     createWorkflowCheckBox() {
         let workflowsData = [];
-        if (this.props.workflows !== undefined && this.props.workflow.workflows !== undefined) {
-
+        if (this.props.workflows !== undefined && this.props.workflows.workflows !== undefined) {
             this.props.workflows.workflows.forEach(element => {
                 workflowsData.push({
                     "label": element.name,
