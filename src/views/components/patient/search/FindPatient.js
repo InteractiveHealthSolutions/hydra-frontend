@@ -148,14 +148,17 @@ class FindPatient extends React.Component {
         await this.props.getAllLocation();
         await this.populateDropDown();
         await this.props.getSettingsByUUID('9b68a10b-3ede-43f6-b019-d0823e28ebd1');
-        await this.setState({
-            identifierFormat: this.props.setting.value
-        });
+        if (this.props.setting !== undefined && this.props.setting.value !== undefined) {
+            await this.setState({
+                identifierFormat: this.props.setting.value
+            });
+        }
+
 
     }
     createWorkflowCheckBox() {
         let workflowsData = [];
-        if (this.props.workflows.workflows != undefined) {
+        if (this.props.workflows.workflows != undefined && this.props.workflow.workflows !== undefined) {
 
             this.props.workflows.workflows.forEach(element => {
                 workflowsData.push({
@@ -361,7 +364,7 @@ class FindPatient extends React.Component {
 
     render() {
         const { patient, identifierFormat, rowData, columnDefs } = this.state;
-        if (this.props.searchLoading) return <Loaders />;
+
         return (
             <>
                 <CardTemplate
@@ -391,13 +394,17 @@ class FindPatient extends React.Component {
                         </>
                     }
                 >
-                    <AgGrid
-                        onGridReady={this.onGridReady}
-                        columnDefs={columnDefs}
-                        onRowSelected={this.onRowSelected}
-                        rowData={rowData}
-                        onCellClicked={event => { this.onCellClicked(event) }}
-                    />
+                    {
+                        (this.props.searchLoading) ? <Loaders /> :
+                            <AgGrid
+                                onGridReady={this.onGridReady}
+                                columnDefs={columnDefs}
+                                onRowSelected={this.onRowSelected}
+                                rowData={rowData}
+                                onCellClicked={event => { this.onCellClicked(event) }}
+                            />
+                    }
+
                 </CardTemplate>
 
                 <Modal show={this.state.openAddPatientModal} backdrop="static" onHide={() => this.setState({ openAddPatientModal: false })} style={{ marginTop: '80px' }}>

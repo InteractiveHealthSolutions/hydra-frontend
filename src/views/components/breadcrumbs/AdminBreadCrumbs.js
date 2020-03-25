@@ -32,15 +32,14 @@ const StyledBreadcrumb = withStyles(theme => ({
 
 
 
-export default function CustomBreadcrumbs() {
+export default function AdminBreadCrumbs() {
 
     return <Route>
         {({ location }) => {
             console.log("location ", location)
             const pathnames = location.pathname.split('/').filter(x => x);
-            console.log("pathnames", pathnames)
-            if (pathnames.length <= 0 || pathnames[0] === 'login' || pathnames[0] === 'administration') return <></>
-
+            console.log("pathnames", pathnames[0])
+            if (pathnames.length <= 0 || pathnames[0] === 'login') return <></>
             return (
                 <div className="main-breadcrumb">
                     <CardTemplate

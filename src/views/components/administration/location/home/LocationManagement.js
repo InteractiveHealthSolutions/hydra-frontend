@@ -441,7 +441,7 @@ class LocationManagement extends React.Component {
 
         if (this.props.isloading) return <Loaders />;
         return (
-            <div className="row container-fluid l-main-container">
+            <>
                 <CardTemplate
                     title="Location Management"
                     action={<button className="fp-btn btn btn-primary " onClick={() => this.openModal()}><i class="fas fa-plus"></i> Create New</button>}
@@ -458,29 +458,6 @@ class LocationManagement extends React.Component {
                     </div>
 
                 </CardTemplate>
-{/* 
-                <div className="card fp-header">
-                    <div className="card-header">
-                        <div className="row">
-                            <div className="col-md-8 col-sm-4">
-                                <span className="text-muted"> Location Management</span>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button className="fp-btn btn btn-primary " onClick={() => this.openModal()}><i class="fas fa-plus"></i> Create New</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-body rm-paadding">
-                        <AgGrid
-                            onGridReady={this.onGridReady}
-                            columnDefs={columnDefs}
-                            onRowSelected={this.onRowSelected}
-                            rowData={rowData}
-                            onCellClicked={this.onCellClicked}
-
-                        />
-                    </div>
-                </div> */}
 
                 <Modal
                     show={this.state.openModal}
@@ -626,7 +603,7 @@ class LocationManagement extends React.Component {
                     </form>
                 </Modal >
 
-            </div >
+            </>
         )
     }
 

@@ -217,7 +217,7 @@ function Workforce(props) {
 
     if (props.isloading) return <Loaders />;
     return (
-        <div className="row container-fluid l-main-container">
+        <>
             <CardTemplate
                 title="Personnel"
                 action={
@@ -330,7 +330,7 @@ function Workforce(props) {
                     </Modal.Footer>
                 </form>
             </Modal>
-        </div>
+        </>
     )
 }
 

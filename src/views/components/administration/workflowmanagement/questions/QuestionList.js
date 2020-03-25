@@ -715,7 +715,7 @@ class QuestionList extends React.Component {
         } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
-            <div className="row questionlist-main-header">
+            <>
                 <CardTemplate
                     title=" Question List"
                     action={
@@ -734,73 +734,7 @@ class QuestionList extends React.Component {
 
                 </CardTemplate>
 
-                {/* <div className="questionlist-heading col-sm-8 col-md-8 col-lg-8">
-                    <h2 className="header_title">Question List</h2>
-                </div>
-                <div className="col-sm-4 col-md-4 col-lg-4">
-
-                    <button type="button" onClick={() => this.openQuestionModal()} className="btn btn-sm btn-primary btn-questionlist">     
-                 </button>
-                </div> */}
-        {/*  <div className="questionlist-main-card card">
-                    <div className="card-header">
-                        <div className="row">
-                            <div className="col-md-8 col-sm-4">
-                                <span className="text-muted"> Question List</span>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button className="fp-btn btn btn-primary " onClick={() => this.openQuestionModal()}><i class="fas fa-plus"></i> Add New Question</button>
-                            </div>
-                        </div>
-                    </div>
-                  
-
-                    <div className="row card-header">
-                        <div className="input-group search-btn">
-                            <input type="text" name="quickFilter" id="quickFilter" placeholder="Search..." onChange={this.onQuickFilterText} className="form-control bg-light border-0 small lt-input-search" aria-label="Search" aria-describedby="basic-addon2" />
-                            <div className="input-group-append">
-                                <button className="btn btn-primary" type="button">
-                                    <i className="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div> 
-                <div className="card-body rm-paadding">
-                    <AgGrid
-                        onGridReady={this.onGridReady}
-                        columnDefs={columnDefs}
-                        onRowSelected={this.onRowSelected}
-                        rowData={rowData}
-                        onCellClicked={this.onCellClicked}
-                    />
-
-                    />
-
-                        <div className="d-flex justify-content-center">
-                            <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    context={this.state.context}
-                                    frameworkComponents={this.state.frameworkComponents}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    quickFilterText={this.state.quickFilterText}
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationPageSize="12"
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                    onCellClicked={event => { this.onCellClicked(event) }}
-                                >
-                                </AgGridReact>
-                            </div>
-                        </div>
-                    </div>
-            </div> */}
-               <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
+                <Modal show={this.state.openQuestionModal} backdrop="static" onHide={() => this.closeQuestionModal()} style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body >
@@ -1081,7 +1015,7 @@ class QuestionList extends React.Component {
                         </AppForm>
                     </Modal.Body>
                 </Modal>
-            </div >
+            </>
         )
     }
 }

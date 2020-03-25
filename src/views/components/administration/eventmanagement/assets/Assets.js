@@ -318,7 +318,7 @@ function Assets(props) {
     var optDisabled = {}; if (actionType === "EditAsset") { optDisabled['disabled'] = 'disabled'; }
     var optChecked = {}; if (fixedAsset === true) { optChecked['checked'] = 'checked' }
     return (
-        <div className="row assets-main-container container-fluid ">
+        <>
             <CardTemplate
                 title="Assets"
                 action={
@@ -467,7 +467,7 @@ function Assets(props) {
                     </Modal.Footer>
                 </form>
             </Modal>
-        </div>
+        </>
     )
 }
 

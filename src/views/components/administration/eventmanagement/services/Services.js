@@ -252,7 +252,7 @@ function Services(props) {
 
     if (props.isloading) return <Loaders />;
     return (
-        <div className="row container-fluid service-main-container">
+        <>
             <CardTemplate
                 title="Services"
                 action={
@@ -423,7 +423,7 @@ function Services(props) {
                 </form>
             </Modal>
 
-        </div >
+        </>
     )
 }
 

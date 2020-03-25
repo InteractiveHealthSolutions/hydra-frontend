@@ -21,7 +21,7 @@ export const saveForm = Form => async dispatch => {
 
 
 export const fetchForms = () => async dispatch => {
- // dispatch(setProject())
+  dispatch(setProject())
   fetch(GET, "/hydra/form?v=full")
     .then(res => dispatch(setForm(res)))
     .catch(displayError);

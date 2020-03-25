@@ -8,7 +8,7 @@ import { displayError, createNotification } from '../../../utilities/helpers/hel
 
 export const fetchLabTestType = () => async dispatch => {
   dispatch(setProject)
-  fetch(GET, "commonlab/labtesttype")
+  fetch(GET, "/commonlab/labtesttype")
     .then(res => {
       dispatch(setLabTestAction(res))
     }).catch(displayError)
