@@ -134,7 +134,7 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/FindPatient" component={FindPatient} />
                                                 <PrivateRoute exact path="/FindPatient/PatientDetail" component={PatientDetail} />
                                                 <PrivateRoute exact path="/PatientRegistration" component={PatientRegistration} />
-                                                <PrivateRoute exact path="/visit" component={Visits}/>
+                                                <PrivateRoute exact path="/FindPatient/PatientDetail/visit" component={Visits}/>
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
