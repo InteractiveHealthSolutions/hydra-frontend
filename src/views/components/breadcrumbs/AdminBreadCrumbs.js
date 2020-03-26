@@ -50,14 +50,15 @@ export default function AdminBreadCrumbs() {
                             {pathnames.map((value, index) => {
                                 const last = index === pathnames.length - 1;
                                 const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                                const val = value.charAt(0).toUpperCase() + value.slice(1)
                                 return last ? (
                                     <Chip
-                                        label={value}
+                                        label={val}
                                         color="primary"
                                         variant="outlined"
                                     />
                                 ) : (
-                                        <StyledBreadcrumb component="a" href={to} label={value} />
+                                        <StyledBreadcrumb component="a" href={to} label={val} />
                                     );
                             })}
                         </Breadcrumbs>

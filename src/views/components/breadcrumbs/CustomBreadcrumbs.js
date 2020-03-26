@@ -9,7 +9,6 @@ import { Link as RouterLink, Route, BrowserRouter as Router } from 'react-router
 import Typography from '@material-ui/core/Typography';
 import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
 import './breadcrumb.css'
-
 const LinkRouter = props => <Link {...props} component={RouterLink} />;
 
 
@@ -37,8 +36,8 @@ export default function CustomBreadcrumbs() {
     return <Route>
         {({ location }) => {
             console.log("location ", location)
-            const pathnames = location.pathname.split('/').filter(x => x);
-            console.log("pathnames", pathnames)
+            let pathnames = location.pathname.split('/').filter(x => x);
+            console.log("pathnames",  pathnames)
             if (pathnames.length <= 0 || pathnames[0] === 'login' || pathnames[0] === 'administration') return <></>
 
             return (
@@ -51,14 +50,15 @@ export default function CustomBreadcrumbs() {
                             {pathnames.map((value, index) => {
                                 const last = index === pathnames.length - 1;
                                 const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                                const val = value.charAt(0).toUpperCase() + value.slice(1)
                                 return last ? (
                                     <Chip
-                                        label={value}
+                                        label={val}
                                         color="primary"
                                         variant="outlined"
                                     />
                                 ) : (
-                                        <StyledBreadcrumb component="a" href={to} label={value} />
+                                        <StyledBreadcrumb component="a" href={to} label={val} />
                                     );
                             })}
                         </Breadcrumbs>
