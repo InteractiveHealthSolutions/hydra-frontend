@@ -154,7 +154,7 @@ class LocationManagement extends React.Component {
     }
     async createCountryDropDown() {
         let countryDropDown = [];
-        if (this.props.locationListByTag !== undefined) {
+        if (this.props.locationListByTag !== undefined && this.props.locationListByTag.results !== undefined) {
             await this.props.locationListByTag.results.forEach(element => {
                 countryDropDown.push({
                     "label": element.display,
