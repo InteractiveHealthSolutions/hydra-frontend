@@ -131,7 +131,7 @@ class FormBuilder extends React.Component {
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
         formRetiredVal: form.retired,
-        isEdit: true
+        isEdit: form.retired
       })
     }
 
