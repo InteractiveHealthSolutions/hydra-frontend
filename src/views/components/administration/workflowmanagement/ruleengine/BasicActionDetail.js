@@ -90,7 +90,6 @@ class BasicActionDetail extends Component {
     render() {
         const { actionDescription, actionName } = this.state
         return (
-            <div className="row container-fluid ">
                 <form onSubmit={this.moveNextStep.bind(this)} style={{ width: '100%' }}>
                     <CardTemplate
                         title="Create Rule"
@@ -146,8 +145,6 @@ class BasicActionDetail extends Component {
                         </div>
                     </CardTemplate>
                 </form>
-
-            </div>
         )
     }
 }

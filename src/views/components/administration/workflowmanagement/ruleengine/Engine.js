@@ -12,6 +12,7 @@ import RuleEngineDetail from './RuleEngineDetail';
 const actionTypes = [
     { value: 'hide', label: 'Hide' },
     { value: 'openform', label: 'Open Form' },
+    { value: 'autoselect', label: 'Auto Select' },
 ];
 
 class Engine extends Component {
