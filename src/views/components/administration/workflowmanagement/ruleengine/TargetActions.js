@@ -9,15 +9,13 @@ function TargetActions(props) {
 
     const [targetFormList, setTargetFormList] = useState([])
     const [targetFormQuestionList, setTargetFormQuestionList] = useState([])
-    const [targetFormQuestionListOrg, setTargetFormQuestionListOrg] = useState([])
     const [formListInOriginalFormat, setFormListInOriginalFormat] = useState([])
-    const [targetFormQuestionOptionList, setTargetFormQuestionOptionList] = useState([])
     const [form, setForm] = useState('')
     const [actionTypeValue, setActionTypeValue] = useState('')
     const [formQuestion, setFormQuestion] = useState('')
-    const [targetActionList, setTargetActionList] = ([])
     const [questionOptions, setQuestionOptions] = useState([])
     const [selectOption, setSelectOption] = useState('')
+
 
     useCallback(
         (e) => {
@@ -88,6 +86,7 @@ function TargetActions(props) {
                         {
                             label: element.displayText ? element.displayText : element.field.name,
                             value: element.field.uuid,
+                            formField: element.uuid,
                             dataType: element.field.attributeName,
                             answers: element.field.answers
 
@@ -129,7 +128,9 @@ function TargetActions(props) {
             const targetForm = {
                 ruleAction: actionTypeValue.value,
                 targetForm: form.value,
-                targetQuestion: formQuestion.value
+                targetQuestion: formQuestion.value,
+                targetFieldAnswer: selectOption.value,
+                targetFormField: formQuestion.formField
             }
             console.log("targetForm :: ", targetForm)
             props.saverule({ targetForm: targetForm })

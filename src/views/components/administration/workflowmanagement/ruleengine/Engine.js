@@ -83,8 +83,10 @@ class Engine extends Component {
                 actionName: targetFormList[0].ruleAction ? targetFormList[0].ruleAction : "",
                 targetForm: targetFormList[0].targetForm,
                 targetQuestion: targetFormList[0].targetQuestion,
+                targetFieldAnswer:targetFormList[0].targetFieldAnswer,
                 tokens: tokenList
             }
+            console.log("newRule" ,newRule)
             await this.props.saveRuleAction(newRule)
             await createNotification("success", "Saved Successfully")
             this.setState({
