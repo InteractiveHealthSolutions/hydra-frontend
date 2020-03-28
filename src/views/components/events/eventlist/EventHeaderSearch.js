@@ -80,14 +80,14 @@ function EventHeaderSearch(props) {
     }
     function handleAddEvent() {
         localStorage.setItem("active-event", JSON.stringify(""))
-        history.push('/eventplanner');
+        history.push('/event/eventplanner');
     }
 
     if (props.isLoading) return <LoaderDots withMargin="true" height={40} width={40} />;
     return (
 
         <div className="row event-maincard-header">
-            <div className="col-sm-2 col-md-3"><h4 className="header_title">Events List</h4></div>
+            {/* <div className="col-sm-2 col-md-3"><h4 className="">Events List</h4></div> */}
             <div className="col-sm-8 col-md-6"><label className="tags">Location</label>
                 <Select
                     value={selectedLocation}
@@ -97,12 +97,12 @@ function EventHeaderSearch(props) {
                     name="statetype"
                 />
             </div>
-            <div className="col-sm-2 col-md-3">
-                {/* <Link to="/eventcalendar">
+            {/* <div className="col-sm-2 col-md-3">
+                 <Link to="/eventcalendar">
                     <button className="btn btn-primary btn_custom_e">Calendar View</button>
-                </Link> */}
+                </Link> 
                 <button className="btn btn-primary btn_custom_e_add" onClick={handleAddEvent}>Add Event</button>
-            </div>
+            </div> */}
         </div>
     )
 }

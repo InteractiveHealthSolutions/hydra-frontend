@@ -13,13 +13,15 @@ export const AgGrid = ({
     onRowSelected,
     rowData,
     onCellClicked,
-    onGridReady
+    onGridReady,
+    height,
+    handleCellEditingStopped
 }) => (
         <div className="d-flex justify-content-center ">
             <div
                 className="ag-theme-material"
                 style={{
-                    height: '460px',
+                    height: height ? height : '460px',
                     width: '100%',
                     margin: 'auto'
                 }}
@@ -32,6 +34,7 @@ export const AgGrid = ({
                     modules={AllCommunityModules}
                     onRowSelected={onRowSelected}
                     onCellClicked={event => { onCellClicked(event) }}
+                    onCellEditingStopped={event => {handleCellEditingStopped(event)}}
                     enableSorting
                     enableFilter
                     rowAnimation

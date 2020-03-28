@@ -91,8 +91,7 @@ class HomePage extends React.Component {
                                 </div>
 
                                 <div className="col-md-3 col-sm-6">
-                                
-                                    <Link to="/events">
+                                    <Link to="/event">
                                         <div className="box" onMouseEnter={() => this.onMouseHoverIn('Events')} onMouseLeave={() => this.onMouseHoverOut()}>
                                             <img id="icon-img" src={require('../../../assets/events.png')} alt="" />
                                             <div className="tag-name-events"> <h5 className="h5">Events</h5></div>

@@ -13,6 +13,7 @@ const useStyles = makeStyles({
         transition: "0.3s",
         width: "100%",
         height: props => props.height,
+
     },
     content: {
         padding: props => props.contentPadding,
