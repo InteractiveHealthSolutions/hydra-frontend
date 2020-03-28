@@ -23,7 +23,7 @@ import {createNotification} from '../../../utilities/helpers/helper'
 // })
 
 export const saveLocation = (Location) => async dispatch =>
-  fetch(POST, "location", Location)
+  fetch(POST, "/location", Location)
     .then(res => {dispatch(LocationAction(res))}).catch(dispatch(setError))
 
 const LocationAction = (payload) => ({
@@ -38,7 +38,7 @@ const unsetError = ( {
   type: types.UNSET_ERROR
 })
 export const editLocation = (uuid,Location) => async dispatch =>
-  fetch(POST, "location/"+uuid, Location)
+  fetch(POST, "/location/"+uuid, Location)
     .then(res => dispatch(locationUpdateAction(res))).catch(displayError)
 
 const locationUpdateAction = (payload) => ({
@@ -58,32 +58,32 @@ const locationUpdateAction = (payload) => ({
 // })
 
 export const fetchLocations = () => async dispatch =>
-  fetch(GET, "location?v=full")
+  fetch(GET, "/location?v=full")
     .then(res => dispatch(setLocation(res))).catch(displayError)
 
 const setLocation = (payload) => ({ type: types.GET_ALL_LOCATION, payload })
 
 export const deleteLocation = (uuid) => async dispatch => {
-  fetch(DELETE, "location/" + uuid)
+  fetch(DELETE, "/location/" + uuid)
     .then(res => dispatch(deleteLocationAction(res))).catch(displayError)
 }
 const deleteLocationAction = (payload) => ({ type: types.DELETE_LOCATION, payload })
 
 
 export const fetchLocationTags = () => async dispatch =>
-  fetch(GET, "locationtag")
+  fetch(GET, "/locationtag")
     .then(res => dispatch(setLocationTag(res))).catch(displayError)
 
 const setLocationTag = (payload) => ({ type: types.GET_ALL_LOCATION_TAG, payload })
 
 export const getChildLocations = (uuid) => async dispatch => 
-  fetch(GET,"location/"+uuid)
+  fetch(GET,"/location/"+uuid)
    .then(res => dispatch(childLocationGetAction(res))).catch(displayError);
 
 const childLocationGetAction = (payload) => ({type: types.GET_CHILD_LOCATIONS, payload})
 
 export const getLocationByTag = (tag) => async dispatch =>
-  fetch(GET,"location?tag="+tag)
+  fetch(GET,"/location?tag="+tag)
    .then(res=>dispatch(locationByTagGetAction(res))).catch(displayError)
 
 const locationByTagGetAction = (payload) => ({type: types.GET_LOCATION_BY_TAG,payload})

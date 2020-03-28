@@ -64,7 +64,7 @@ function EventContainer({ eventSummary, location, ...props }) {
     console.log("mainEventList :: ", mainEventList)
     if (props.isLoading) return <LoaderDots withMargin="true" height={40} width={40} />;
     return (
-        <div className="card" id="event-maincard">
+        <div id="event-maincard">
             <ul className="list-group list-group-flush">
                 {
                     mainEventList ? mainEventList.map(event => (

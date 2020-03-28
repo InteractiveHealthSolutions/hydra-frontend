@@ -198,7 +198,7 @@ class AddRule extends Component {
     render() {
         const { availableFormsQuestion, ruleActionList } = this.state
         return (
-            <div className="row container-fluid">
+           
                 <CardTemplate
                     title="Add Rule"
                     height="500px"
@@ -333,7 +333,7 @@ class AddRule extends Component {
                         </div>
                     </div>
                 </CardTemplate>
-            </div>
+        
         )
     }
 }

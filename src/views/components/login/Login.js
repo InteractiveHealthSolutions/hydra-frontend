@@ -116,7 +116,7 @@ class Login extends React.Component {
                                     className="input100"
                                     type="text"
                                     name="username"
-                                    placeholder="username"
+                                    placeholder="Username"
                                     value={username}
                                     onChange={this.handleChange}
                                 />

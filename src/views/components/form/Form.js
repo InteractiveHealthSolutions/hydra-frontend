@@ -9,6 +9,8 @@ import Card from "@material-ui/core/Card";
 import { WorkflowSideBackButton } from "../common/sidebutton/SideBackButton";
 import { formAction } from "../../../state/ducks/form";
 import { connect } from "react-redux";
+import CardTemplate from "../../ui/cards/SimpleCard/CardTemplate";
+import Loaders from "../common/loader/Loader"
 
 class Form extends React.Component {
 
@@ -45,10 +47,10 @@ class Form extends React.Component {
     await this.props.getAllForm();
   }
 
-  async componentWillReceiveProps(newProps) {
+   UNSAFE_componentWillReceiveProps(newProps) {
 
     if (newProps.getAllComponentFormRelation !== undefined) {
-      await this.setState(
+       this.setState(
         {
           componentFormMapList: newProps.getAllComponentFormRelation
         },
@@ -60,7 +62,7 @@ class Form extends React.Component {
       );
     }
     if (newProps.formList !== undefined && newProps.formList.forms !== undefined) {
-      await this.setState(
+       this.setState(
         {
           availableForms: newProps.formList.forms
         },
@@ -161,7 +163,7 @@ class Form extends React.Component {
     this.closeModal();
   }
 
-  async saveComponentForm() {
+   saveComponentForm() {
     const { activeComponentUuid, formToAdd } = this.state;
     const updateForm = {
       form: formToAdd,
@@ -169,9 +171,9 @@ class Form extends React.Component {
       phase: localStorage.getItem("active-phases-uuid"),
       workflow: localStorage.getItem("active-workflow-uuid")
     };
-    await this.props.saveComponentFormRelation(updateForm);
-    await this.props.getComponentFormRelation();
-    window.location.reload();
+     this.props.saveComponentFormRelation(updateForm);
+     this.props.getComponentFormRelation();
+   // window.location.reload();
   }
 
   handleChange(e) {
@@ -237,45 +239,38 @@ class Form extends React.Component {
   }
 
   render() {
+    if (this.props.isLoading) return <Loaders />;
     return (
-      <div className="main-cp">
-        <div className="row">
-          <div className="col-sm-6 col-md-6 col-lg-6">
-            <h4 className="header_title">
-              {localStorage.getItem("active-component-name")} - Form
-            </h4>
-          </div>
-          <div className="col-sm-6 col-md-6 col-lg-6">
+      <>
+        <CardTemplate
+          title={localStorage.getItem("active-component-name") + "- Form"}
+          action={
             <button
               className="btn btn-primary btn-gobal heading"
               onClick={() => this.openModal()}
             >
               Add Form
             </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="card" id="form-maincard">
-            <Sortable
-              options={{
-                animation: 100,
-                easing: "cubic-bezier(1, 0, 0, 1)"
-              }}
-              ref={c => {
-                if (c) {
-                  this.sortable = c.sortable;
-                }
-              }}
-              onChange={order => {
-                this.reorder(order);
-              }}
-              tag="ul"
-            >
-              {this.state.listItems}
-            </Sortable>
-          </div>
-        </div>
-
+          }
+        >
+          <Sortable
+            options={{
+              animation: 100,
+              easing: "cubic-bezier(1, 0, 0, 1)"
+            }}
+            ref={c => {
+              if (c) {
+                this.sortable = c.sortable;
+              }
+            }}
+            onChange={order => {
+              this.reorder(order);
+            }}
+            tag="ul"
+          >
+            {this.state.listItems}
+          </Sortable>
+        </CardTemplate>
         <Modal
           show={this.state.openModal}
           onHide={() => this.closeModal()}
@@ -307,8 +302,7 @@ class Form extends React.Component {
             </Modal.Footer>
           </form>
         </Modal>
-        <WorkflowSideBackButton navigateTo="component"></WorkflowSideBackButton>
-      </div>
+      </>
     );
   }
 }
@@ -317,7 +311,8 @@ const mapStateToProps = state => ({
   componentFormList: state.formField.componentForms,
   formList: state.formField.forms,
   form: state.formField.form,
-  getAllComponentFormRelation: state.formField.componentFormRelations
+  getAllComponentFormRelation: state.formField.componentFormRelations,
+  isLoading: state.formField.loading
 });
 
 const mapsDispatchToProps = {

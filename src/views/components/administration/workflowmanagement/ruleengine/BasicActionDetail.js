@@ -90,7 +90,6 @@ class BasicActionDetail extends Component {
     render() {
         const { actionDescription, actionName } = this.state
         return (
-            <div className="row container-fluid ">
                 <form onSubmit={this.moveNextStep.bind(this)} style={{ width: '100%' }}>
                     <CardTemplate
                         title="Create Rule"
@@ -146,70 +145,6 @@ class BasicActionDetail extends Component {
                         </div>
                     </CardTemplate>
                 </form>
-
-                {/* <div className="card" style={{
-                    width: '60%',
-                    display: 'block',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    padding: '20px',
-                    height: '500px'
-                }}>
-                    <div className = "card-header">
-                        <p>Source Form</p>
-                    </div>
-                    <div className="card-body">
-          
-                        <form onSubmit={this.moveNextStep.bind(this)}>
-                            <div className="row" >
-                                <label className="ec-label">Select Form <span style={{ color: 'red' }}>*</span></label>
-                                <select className="form-control"
-                                    name="fromName"
-                                    value={this.state.formToAdd}
-                                    onChange={this.handleFormChange}
-                                    required
-                                >
-                                    <option></option>
-                                    {this.forms}
-                                </select>
-                            </div>
-                            <div className="row" >
-                                <label htmlFor="actionName" className="ec-label">Rule Name <span style={{ color: 'red' }}>*</span></label>
-                                <input
-                                    placeholder=""
-                                    type="text"
-                                    name="actionName"
-                                    required
-                                    className='form-control'
-                                    value={actionName}
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <label htmlFor="actionDescription" className="ec-label">Description </label>
-                                <textarea
-                                    placeholder=""
-                                    type="text"
-                                    name="actionDescription"
-                                    rows='2'
-                                    onChange={this.handleChange}
-                                    className='form-control'
-                                    value={actionDescription}
-                                />
-                            </div>
-                            <div className="row" style={{ marginTop: '15px', marginBottom: '39px' }}>
-                                <div className="col-sm-4" ></div>
-                                <div className="col-sm-4" >
-                                    <button onClick={this.props.prevStep.bind(this)} className='btn btn-primary save-btn ec-save-btn-row'>Go Back</button>
-                                </div>
-                                <div className='col-sm-4 '>
-                                    <button type="submit" className='btn btn-primary save-btn ec-save-btn-row'>Next</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div> */}
-            </div>
         )
     }
 }
