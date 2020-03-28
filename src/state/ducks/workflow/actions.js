@@ -12,7 +12,7 @@ export const setActiveWorkflow = (workflow) => dispatch => {
   dispatch(setWorkflow({ workflow }));
   localStorage.setItem('active-workflow-name', workflow.name);
   localStorage.setItem('active-workflow-uuid', workflow.uuid);
-  history.push('/phase');
+  history.push('/workflow/phase');
 }
 
 const setWorkflow = (workflow) => ({ type: types.ACTIVE_WORKFLOW, workflow })
@@ -45,7 +45,7 @@ const setWorkflow = (workflow) => ({ type: types.ACTIVE_WORKFLOW, workflow })
 
 
 export const saveWorkflow = (workflow) => async dispatch =>
-  fetch(POST, "hydra/workflow", workflow)
+  fetch(POST, "/hydra/workflow", workflow)
     .then(res => dispatch(workflowSaveAction(res))).catch(displayError)
 
 const workflowSaveAction = (payload) => ({ type: types.CREATE_WORKFLOW, payload })
@@ -55,7 +55,7 @@ const workflowSaveAction = (payload) => ({ type: types.CREATE_WORKFLOW, payload 
 
 export const getAllWorkflow = () => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "hydra/workflow")
+  fetch(GET, "/hydra/workflow")
     .then(res => dispatch(workflowGetAction(res))).catch(displayError)
 }
 

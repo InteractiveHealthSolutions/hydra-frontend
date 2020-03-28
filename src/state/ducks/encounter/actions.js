@@ -19,7 +19,7 @@ const setEncounterAction = (payload) => ({ type: types.GET_ALL_ENCOUNTER_TYPE, p
 
 export const searchEncounterType = (encountertypeName) => async dispatch => {
   dispatch(setProject)
-  fetch(GET, "encountertype?q="+encountertypeName)
+  fetch(GET, "/encountertype?q="+encountertypeName)
     .then(res => {
       dispatch(setSearchEncounterType(res))
     }).catch(displayError)

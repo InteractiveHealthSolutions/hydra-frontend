@@ -33,12 +33,16 @@
 .ep-main-card-services {
   margin-top: 61px;
 }
+.space{
+  margin-right: 1px;
+}
 
 .ep-save-btn-row {
-  margin-top: 6px;
+  width: 100px;
+  /* margin-top: 6px; */
   /* margin-left: 33px; */
-  right: 0;
-  position: absolute;
+  /* right: 0;
+  position: absolute; */
 }
 
 .makeStyles-list-32 {

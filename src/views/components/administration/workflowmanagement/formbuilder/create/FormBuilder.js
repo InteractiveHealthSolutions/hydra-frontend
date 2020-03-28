@@ -131,7 +131,7 @@ class FormBuilder extends React.Component {
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
         formRetiredVal: form.retired,
-        isEdit: true
+        isEdit: form.retired
       })
     }
 
@@ -224,7 +224,6 @@ class FormBuilder extends React.Component {
     }
     console.log("newform", newform)
     await this.props.saveFormFields(newform)
-    await this.removeLocalStorage()
     await createNotification("success", "Saved Successfully")
     await this.setState({
       addFormList: [],
