@@ -37,7 +37,7 @@ class QuestionList extends React.Component {
                     headerName: "Description", field: "description"
                 },
                 {
-                    headerName: "Data Type", field: "concept.datatype.display"
+                    headerName: "Data Type", field: "attributeName"
                 },
                 {
                     headerName: "Field Type", field: "fieldType.display"
@@ -651,7 +651,7 @@ class QuestionList extends React.Component {
                     title: event.data.fieldType.display,
                     key: event.data.fieldType.uuid
                 }, isAttribute: event.data.tableName != null ? true : false, variableName: event.data.concept.display.toLowerCase().replace(/ /g, "_"),
-                displayTextEdit: event.data.display, dataTypeEdit: event.data.concept.datatype.display, descriptionEdit: event.data.description
+                displayTextEdit: event.data.display, dataTypeEdit: event.data.attributeName, descriptionEdit: event.data.description
             })
             await console.log(JSON.stringify(this.state.widgetType))
         }
