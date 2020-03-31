@@ -12,17 +12,14 @@ import Header from './views/components/header/Header';
 import Workflow from './views/components/workflow/Workflow';
 import Phase from './views/components/phases/Phase';
 import Component from './views/components/stages/Component';
-import FormDesigner from './views/components/form/formdesigner/FormDesigner';
 import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import FormRender from './views/components/form/formdesigner/FormRender';
 import Form from './views/components/form/Form';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
-import AdministrationHome from './views/components/administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
@@ -99,9 +96,7 @@ class App extends React.Component {
     render() {
         const { expanded } = this.state
         return (
-
-            <div>
-
+            <>
                 <IdleTimer ref={ref => { this.idleTimer = ref }}
                     element={document}
                     onActive={this.onActive}
@@ -122,7 +117,7 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
                                                 <PrivateRoute exact path="/workflow/phase/component" component={Component} />
                                                 <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
@@ -298,13 +293,10 @@ class App extends React.Component {
                             </div>
 
                         )} />
-
                     </Switch>
                 </Router>
-
                 <NotificationContainer />
-            </div>
-
+            </>
         );
     }
 
