@@ -236,6 +236,7 @@ class EventList extends React.Component {
                     action={
                         <button className="btn btn-primary btn_custom_e_add" onClick={this.handleAddEvent}>Add Event</button>
                     }
+                    contentHeight = "450px"
                 >
                     <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
                         <EventContainer
@@ -245,7 +246,7 @@ class EventList extends React.Component {
                         />
                     </Suspense>
                 </CardTemplate >
-                <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
+                <Suspense fallback={<LoaderDots withMargin="true" height={0} width={0} />}>
                     <EventSummary
                         openModal={openModal}
                         closeModal={this.closeModal}
