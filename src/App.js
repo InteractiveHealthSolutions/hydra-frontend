@@ -119,8 +119,8 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
                                                 <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
-                                                <PrivateRoute exact path="/workflow/phase/component" component={Component} />
-                                                <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
+                                                <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
+                                                <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
                                                 <PrivateRoute exact path="/event" component={EventList} />
                                                 <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
                                                 <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
