@@ -22,7 +22,7 @@ export function setActivePhases(phases) {
 }
 
 export const savePhase = (Phase) => async dispatch =>
-  fetch(POST, "hydra/phase", Phase)
+  fetch(POST, "/hydra/phase", Phase)
     .then(res => dispatch(phaseSaveAction(res))).catch(displayError)
 
 const phaseSaveAction = (payload) => ({ type: types.CREATE_PHASE, payload })
@@ -36,7 +36,7 @@ const phaseGetAction = payload => ({ type: types.GET_ALL_PHASE, payload })
 // maping
 
 export const saveWorkflowPhase = phase => async dispatch =>
-  fetch(POST, "hydra/workflowphases", phase)
+  fetch(POST, "/hydra/workflowphases", phase)
     .then(res => { dispatch(saveWorkflowPhaseAction(res)); dispatch(getAllWorkflowPhase()); dispatch(getAllPhase()) }).catch(displayError)
 
 const saveWorkflowPhaseAction = payload => ({ type: types.CREATE_WORKFLOW_PHASE, payload })
