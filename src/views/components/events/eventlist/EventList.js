@@ -215,7 +215,7 @@ class EventList extends React.Component {
 
     handleAddEvent = () => {
         localStorage.setItem("active-event", JSON.stringify(""))
-        history.push('/event/eventplanner');
+        history.push('/event/planner');
     }
 
     render() {
