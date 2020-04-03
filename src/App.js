@@ -122,14 +122,13 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
                                                 <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
                                                 <PrivateRoute exact path="/event" component={EventList} />
-                                                <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
-                                                <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
-                                                <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
+                                                <PrivateRoute exact path="/event/calendar" component={EventCalendar} />
+                                                <PrivateRoute exact path="/event/planner" component={EventPlanner} />
+                                                <PrivateRoute exact path="/event/closure" component={EventClosureForm} />
                                                 <PrivateRoute exact path="/reports" component={Reports} />
-                                                <PrivateRoute exact path="/FindPatient" component={FindPatient} />
-                                                <PrivateRoute exact path="/FindPatient/PatientDetail" component={PatientDetail} />
-                                                <PrivateRoute exact path="/PatientRegistration" component={PatientRegistration} />
-                                                <PrivateRoute exact path="/FindPatient/PatientDetail/visit" component={Visits}/>
+                                                <PrivateRoute exact path="/patient" component={FindPatient} />
+                                                <PrivateRoute exact path="/patient/detail" component={PatientDetail} />
+                                                <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
