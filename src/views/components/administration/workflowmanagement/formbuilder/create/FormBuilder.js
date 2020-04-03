@@ -134,7 +134,8 @@ class FormBuilder extends React.Component {
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
         formRetiredVal: form.retired,
-        isEdit: form.retired
+        isEdit: form.retired,
+        editeMood: true
       })
     }
 
@@ -167,7 +168,8 @@ class FormBuilder extends React.Component {
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
-      regix: element.regix
+      regix: element.regix,
+      editeMood: false
     };
   }
   editFormListFormat(list) {
@@ -189,9 +191,6 @@ class FormBuilder extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.removeLocalStorage();
-  }
 
   submit = async () => {
     const { formName, hydramoduleFormId } = this.state
@@ -463,7 +462,7 @@ class FormBuilder extends React.Component {
   }
 
   render() {
-    const { addFormList, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
+    const { addFormList, editeMood ,currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
     return (
       <div className="row">
@@ -591,6 +590,7 @@ class FormBuilder extends React.Component {
                       <DraggedFormItem
                         key={index}
                         data={item}
+                        editeMood ={editeMood}
                         handleDelete={this.handleDelete}
                       />
                     )
