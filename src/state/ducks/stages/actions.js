@@ -14,7 +14,7 @@ export const setActiveComponent = (component) => dispatch => {
   dispatch(setComponent({ component }));
   localStorage.setItem('active-component-name', component.hydramoduleComponent.name); //local storage also change...
   localStorage.setItem('active-component-uuid', component.componentUUID);
-  history.push('/workflow/phase/component/form');
+  history.push('/workflow/phase/stage/form');
 }
 const setComponent = (component) => ({ type: types.ACTIVE_COMPONENT, component })
 

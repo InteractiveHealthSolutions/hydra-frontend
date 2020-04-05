@@ -58,7 +58,6 @@ export default class QuestionConfiguration extends Component {
     }
 
     async setDefaultValue() {
-        //console.log("defaultValue component", localStorage.getItem(`${this.props.uuid}-errorMsg`))
         await this.setState({
             defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
@@ -100,96 +99,12 @@ export default class QuestionConfiguration extends Component {
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
-    setStateAccordingToControlId(controlId, value) {
-        switch (controlId) {
-            case "displayOrder":
-                this.setState({
-                    displayOrder: value
-                })
-                break;
-            case "defaultValue":
-                this.setState({
-                    defaultValue: value
-                })
-                break;
-            case "errorMsg":
-                this.setState({
-                    errorMsg: value
-                })
-                break;
-            case "allowCharacter":
-                this.setState({
-                    allowCharacter: value
-                })
-                break;
-            case "questionText":
-                this.setState({
-                    questionText: value
-                })
-                break;
-            case "mandatory":
-                this.setState({
-                    mandatory: value
-                })
-                break;
-            case "headingTitle":
-                this.setState({
-                    headingTitle: value
-                })
-                break;
-            case "minLength":
-                this.setState({
-                    minLength: value
-                })
-                break;
-            case "maxLength":
-                this.setState({
-                    maxLength: value
-                })
-                break;
-            case "minValue":
-                this.setState({
-                    minValue: value
-                })
-                break;
-            case "maxValue":
-                this.setState({
-                    maxValue: value
-                })
-                break;
-            case "rxp":
-                this.setState({
-                    regix: value
-                })
-                break;
-            case "dateformat":
-                this.setState({
-                    dateformat: value
-                })
-                break;
-            case "futureDate":
-                this.setState({
-                    allowFutureDate: value
-                })
-                break;
-            case "pastDate":
-                this.setState({
-                    allowPastDaate: value
-                })
-                break;
-            default:
-        }
-
-    }
-
     handleRadioChange = (ev) => {
         this.setState({
             [ev.controlId]: ev.value
         }, () => {
 
         })
-        //console.log("handleRadioChange",`${ev.name} = ` ,ev.value)
-        // this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
     onItemCheckedProp = (ev) => {
