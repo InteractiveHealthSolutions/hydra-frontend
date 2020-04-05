@@ -276,6 +276,7 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-patientAgeMandatory`)
       localStorage.removeItem(`${element.uuid}-patientRelationship`)
       localStorage.removeItem(`${element.uuid}-patientRelationshipMandatory`)
+      localStorage.removeItem(`${element.uuid}-disabled`)
     });
   }
 
@@ -345,6 +346,7 @@ class FormBuilder extends React.Component {
         allowPastDate: localStorage.getItem(`${element.uuid}-pastDate`) ? localStorage.getItem(`${element.uuid}-pastDate`) : false,
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
+        disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
@@ -462,7 +464,7 @@ class FormBuilder extends React.Component {
   }
 
   render() {
-    const { addFormList, editeMood ,currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
+    const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
     return (
       <div className="row">
@@ -590,7 +592,7 @@ class FormBuilder extends React.Component {
                       <DraggedFormItem
                         key={index}
                         data={item}
-                        editeMood ={editeMood}
+                        editeMood={editeMood}
                         handleDelete={this.handleDelete}
                       />
                     )
