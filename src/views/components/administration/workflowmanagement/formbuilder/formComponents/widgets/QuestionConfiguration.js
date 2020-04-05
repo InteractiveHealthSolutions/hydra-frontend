@@ -48,10 +48,12 @@ export default class QuestionConfiguration extends Component {
             patientGivenName: "",
             patientGivenNameMandatory: 'yes',
             patientFamilyName: "",
-            patientFamilyNameMandatory: 'yes'
+            patientFamilyNameMandatory: 'yes',
+            disabled: 'yes',
+
         }
 
-       // console.log("QuestionConfiguration", this.props.dataField);
+        // console.log("QuestionConfiguration", this.props.dataField);
     }
     async componentDidMount() {
         await this.setDefaultValue()
@@ -87,8 +89,8 @@ export default class QuestionConfiguration extends Component {
             patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
+            disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
         }, () => {
-           // console.log("defaultValue", this.state.allowPastDaate)
         })
     }
 
@@ -109,8 +111,8 @@ export default class QuestionConfiguration extends Component {
     }
     onItemCheckedProp = (ev) => {
         this.setState({
-            [ev.controlId]: ev.value 
-        }, () =>{
+            [ev.controlId]: ev.value
+        }, () => {
             //console.log("handleGivenName inside", this.state.patientGivenNameMandatory)
         })
         localStorage.setItem(`${ev.name}`, ev.value)
@@ -121,7 +123,7 @@ export default class QuestionConfiguration extends Component {
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -250,15 +252,26 @@ export default class QuestionConfiguration extends Component {
                                         ))}
                                     </> : ""
                             } */}
+                            <>
+                                <TextBox
+                                    controlId="defaultValue"
+                                    title="Default Value"
+                                    type="text"
+                                    name={uuid + "-defaultValue"}
+                                    value={defaultValue}
+                                    onItemSelectedProp={this.onItemSelectedProp}
+                                />
+                                <RadioGroup
+                                    controlId="disabled"
+                                    title="Disabled?"
+                                    key="Disabled"
+                                    name={uuid + "-disabled"}
+                                    value={disabled}
+                                    handleRadioChange={this.handleRadioChange}
+                                    options={[{ key: "5" + this.props.uuid, title: "Yes" }, { key: "6" + this.props.uuid, title: "No" }]}
+                                />
+                            </>
 
-                            <TextBox
-                                controlId="defaultValue"
-                                title="Default Value"
-                                type="text"
-                                name={uuid + "-defaultValue"}
-                                value={defaultValue}
-                                onItemSelectedProp={this.onItemSelectedProp}
-                            />
                         </> : ""
                 }
                 {
