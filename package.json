@@ -82,11 +82,10 @@
     },
     "scripts": {
         "start": "env-cmd -f .env.local react-scripts start",
-        "build": "react-scripts build",
+        "build": "env-cmd -f .env.local react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "proxy": "http://ihs.ihsinformatics.com:6815/openmrs/ws/rest/v1",
     "homepage": ".",
     "eslintConfig": {
         "extends": "react-app"

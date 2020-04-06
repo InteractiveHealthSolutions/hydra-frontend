@@ -2,11 +2,12 @@ import { authenticationGenerator } from '../../utilities/helpers';
 import { userService } from '../../services/userservice';
 import { history } from '../../history';
 import { displayError, createNotification } from '../../utilities/helpers/helper'
+import { BASE_URL } from '../../utilities/constants/globalconstants'
 
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
     localStorage.getItem('password'));
-    console.log("token" ,token)
+  console.log("token", token)
   const requestOptions = {
     method: method,
     headers: {
@@ -15,8 +16,8 @@ export default async (method, path, data) => {
     },
     body: JSON.stringify(data)
   };
-  console.log("path" ,path,requestOptions)
-  return  fetch(path, requestOptions)
+  console.log("path", path, requestOptions)
+  return fetch(`${BASE_URL}/ ${path}`, requestOptions)
     .then(handleResponse).then(response => {
       console.log("api Response ....", response);
       return response;
