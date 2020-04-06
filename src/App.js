@@ -12,17 +12,14 @@ import Header from './views/components/header/Header';
 import Workflow from './views/components/workflow/Workflow';
 import Phase from './views/components/phases/Phase';
 import Component from './views/components/stages/Component';
-import FormDesigner from './views/components/form/formdesigner/FormDesigner';
 import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import FormRender from './views/components/form/formdesigner/FormRender';
 import Form from './views/components/form/Form';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
-import AdministrationHome from './views/components/administration/AdministrationHome'
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
@@ -46,6 +43,7 @@ import SystemSettings from './views/components/administration/systemsettings/sys
 import styled from 'styled-components';
 import LocationManagement from './views/components/administration/location/home/LocationManagement';
 import FormHome from './views/components/administration/workflowmanagement/formbuilder/FormHome';
+import FormBuilder from './views/components/administration/workflowmanagement/formbuilder/create/FormBuilder';
 import Assets from './views/components/administration/eventmanagement/assets/Assets';
 import Services from './views/components/administration/eventmanagement/services/Services';
 import Workforce from './views/components/administration/eventmanagement/workforce/Workforce';
@@ -99,9 +97,7 @@ class App extends React.Component {
     render() {
         const { expanded } = this.state
         return (
-
-            <div>
-
+            <>
                 <IdleTimer ref={ref => { this.idleTimer = ref }}
                     element={document}
                     onActive={this.onActive}
@@ -122,19 +118,18 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
-                                                <PrivateRoute exact path="/workflow/phase/component" component={Component} />
-                                                <PrivateRoute exact path="/workflow/phase/component/form" component={Form} />
+                                                <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
+                                                <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
                                                 <PrivateRoute exact path="/event" component={EventList} />
-                                                <PrivateRoute exact path="/event/eventcalendar" component={EventCalendar} />
-                                                <PrivateRoute exact path="/event/eventplanner" component={EventPlanner} />
-                                                <PrivateRoute exact path="/event/eventclosure" component={EventClosureForm} />
+                                                <PrivateRoute exact path="/event/calendar" component={EventCalendar} />
+                                                <PrivateRoute exact path="/event/planner" component={EventPlanner} />
+                                                <PrivateRoute exact path="/event/closure" component={EventClosureForm} />
                                                 <PrivateRoute exact path="/reports" component={Reports} />
-                                                <PrivateRoute exact path="/FindPatient" component={FindPatient} />
-                                                <PrivateRoute exact path="/FindPatient/PatientDetail" component={PatientDetail} />
-                                                <PrivateRoute exact path="/PatientRegistration" component={PatientRegistration} />
-                                                <PrivateRoute exact path="/FindPatient/PatientDetail/visit" component={Visits}/>
+                                                <PrivateRoute exact path="/patient" component={FindPatient} />
+                                                <PrivateRoute exact path="/patient/detail" component={PatientDetail} />
+                                                <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
@@ -215,9 +210,9 @@ class App extends React.Component {
                                                                         </NavText>
                                                                     </NavItem>
                                                                     {/* formbuilder */}
-                                                                    <NavItem eventKey="/administration/formbuilder" onClick={this.toggleSidebar}>
+                                                                    <NavItem eventKey="/administration/form" onClick={this.toggleSidebar}>
                                                                         <NavText>
-                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/formbuilder" >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/form" >
                                                                                 <i class="fas fa-cubes" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
                                                                                 Form Builder
                                                                             </Link>
@@ -283,7 +278,8 @@ class App extends React.Component {
                                                                 <Route path="/administration/assets" component={Assets} />
                                                                 <Route path="/administration/services" component={Services} />
                                                                 <Route path="/administration/workforce" component={Workforce} />
-                                                                <Route path="/administration/formbuilder" component={FormHome} />
+                                                                <Route exact path="/administration/form" component={FormHome} />
+                                                                <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
@@ -298,13 +294,10 @@ class App extends React.Component {
                             </div>
 
                         )} />
-
                     </Switch>
                 </Router>
-
                 <NotificationContainer />
-            </div>
-
+            </>
         );
     }
 

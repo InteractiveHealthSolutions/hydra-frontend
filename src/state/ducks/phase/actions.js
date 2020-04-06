@@ -15,14 +15,18 @@ export function setActivePhases(phases) {
     dispatch(setPhases({ phases }));
     localStorage.setItem('active-phases-name', phases.phaseName);
     localStorage.setItem('active-phases-uuid', phases.phaseUUID);
+<<<<<<< HEAD
     history.push('/workflow/phase/component');
+=======
+    history.push('/workflow/phase/stage');
+>>>>>>> origin/development
   }
 
   function setPhases(phases) { return { type: types.ACTIVE_PHASE, phases } };
 }
 
 export const savePhase = (Phase) => async dispatch =>
-  fetch(POST, "hydra/phase", Phase)
+  fetch(POST, "/hydra/phase", Phase)
     .then(res => dispatch(phaseSaveAction(res))).catch(displayError)
 
 const phaseSaveAction = (payload) => ({ type: types.CREATE_PHASE, payload })
@@ -36,7 +40,7 @@ const phaseGetAction = payload => ({ type: types.GET_ALL_PHASE, payload })
 // maping
 
 export const saveWorkflowPhase = phase => async dispatch =>
-  fetch(POST, "hydra/workflowphases", phase)
+  fetch(POST, "/hydra/workflowphases", phase)
     .then(res => { dispatch(saveWorkflowPhaseAction(res)); dispatch(getAllWorkflowPhase()); dispatch(getAllPhase()) }).catch(displayError)
 
 const saveWorkflowPhaseAction = payload => ({ type: types.CREATE_WORKFLOW_PHASE, payload })

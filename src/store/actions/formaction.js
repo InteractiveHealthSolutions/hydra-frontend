@@ -10,7 +10,7 @@ function setActiveForm(form) {
     return dispatch => {
        dispatch(setForm({form}));
        localStorage.setItem('active-component-name', JSON.parse(JSON.stringify(form)).formName);
-       history.push('/formdesigner');
+    //    history.push('/formdesigner');
     }
 
     function setForm(form) {return {type : generalConstants.ACTIVE_FORM , form}};

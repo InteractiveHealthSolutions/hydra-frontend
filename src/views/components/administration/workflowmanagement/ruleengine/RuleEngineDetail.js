@@ -72,7 +72,7 @@ function RuleEngineDetail(props) {
         }
     }
 
-    if (props.isloading) return <Loaders />;
+ if (props.isloading) return <Loaders />;
     return (
             <CardTemplate
                 title="Rule Engine"
