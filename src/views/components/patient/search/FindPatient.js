@@ -22,10 +22,9 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
-import { authenticationGenerator } from '../../../../utilities/helpers';
 
 import './findpatient.css';
-import Loaders from '../../loader/Loader';
+import Loaders from '../../common/loader/Loader';
 import moment from 'moment';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid'
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
@@ -80,7 +79,7 @@ class FindPatient extends React.Component {
             openWorkflowModal: false,
             workflowData: [],
             selectedWorkflow: "",
-            selectedWorkflowId : ""
+            selectedWorkflowId: ""
 
         };
         this.handleChangeDate = this.handleChangeDate.bind(this);
@@ -100,8 +99,8 @@ class FindPatient extends React.Component {
         await this.setState({ selectedWorkflow: event.target.value })
         await localStorage.setItem('selectedWorkflow', this.state.selectedWorkflow)
         var existingObj = this.state.workflowData.filter(data => data.label == this.state.selectedWorkflow);
-        await this.setState({selectedWorkflowId : existingObj[0].value});
-        await localStorage.setItem("selectedWorkflowId",this.state.selectedWorkflowId)
+        await this.setState({ selectedWorkflowId: existingObj[0].value });
+        await localStorage.setItem("selectedWorkflowId", this.state.selectedWorkflowId)
         if (this.state.selectedWorkflow != '') {
 
             await this.closeWorkflowModal();
@@ -149,15 +148,17 @@ class FindPatient extends React.Component {
         await this.props.getAllLocation();
         await this.populateDropDown();
         await this.props.getSettingsByUUID('9b68a10b-3ede-43f6-b019-d0823e28ebd1');
-        await this.setState({
-            identifierFormat: this.props.setting.value
-        });
+        if (this.props.setting !== undefined && this.props.setting.value !== undefined) {
+            await this.setState({
+                identifierFormat: this.props.setting.value
+            });
+        }
+
 
     }
     createWorkflowCheckBox() {
         let workflowsData = [];
-        if (this.props.workflows.workflows != undefined) {
-
+        if (this.props.workflows !== undefined && this.props.workflows.workflows !== undefined) {
             this.props.workflows.workflows.forEach(element => {
                 workflowsData.push({
                     "label": element.name,
@@ -301,7 +302,7 @@ class FindPatient extends React.Component {
     //     "ENCONTER_TYPE" : "Create Patient"
     // }
         var patient = {
-            data:JSON.stringify(data),
+            data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
         }
             await console.log(JSON.stringify(patient))
@@ -322,16 +323,10 @@ class FindPatient extends React.Component {
             }
         })
     }
-    // handleChange = e => {
-    //     e.preventDefault();
-    //     const { name, value } = e.target;
-    //     this.setState({ [name]: value }, () => console.log(this.state));
-    // };
-
     async searchPatient(e) {
         e.preventDefault();
         await this.props.searchPatientByQuery(this.state.searchQuery);
-        await console.log('hiiii ' + JSON.stringify(this.props.patients))
+        // await console.log('hiiii ' + JSON.stringify(this.props.patients))
         if (this.props.patients != undefined) {
             await this.setState({ rowData: this.filterPatient(this.props.patients.results) })
 
@@ -373,9 +368,9 @@ class FindPatient extends React.Component {
 
     render() {
         const { patient, identifierFormat, rowData, columnDefs } = this.state;
-        if (this.props.isloading) return <Loaders />;
+
         return (
-            <div className="row container-fluid fp-main-container">
+            <>
                 <CardTemplate
                     title={
                         <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
@@ -403,81 +398,19 @@ class FindPatient extends React.Component {
                         </>
                     }
                 >
-                    <AgGrid
-                        onGridReady={this.onGridReady}
-                        columnDefs={columnDefs}
-                        onRowSelected={this.onRowSelected}
-                        rowData={rowData}
-                        onCellClicked={event => { this.onCellClicked(event) }}
-                    />
+                    {
+                        (this.props.searchLoading) ? <Loaders /> :
+                            <AgGrid
+                                onGridReady={this.onGridReady}
+                                columnDefs={columnDefs}
+                                onRowSelected={this.onRowSelected}
+                                rowData={rowData}
+                                onCellClicked={event => { this.onCellClicked(event) }}
+                            />
+                    }
+
                 </CardTemplate>
 
-                {/* <div className="card fp-header">
-                    <div className="card-header">
-                        <div className="row">
-                            <div className="col-md-4 col-sm-4">
-                                <span>
-                                    <form onSubmit={this.handleSubmit} className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                                        <div className="input-group search-btn">
-                                            <input type="text" name="searchQuery" value={this.state.searchQuery} onChange={event => { this.setState({ searchQuery: event.target.value }) }}
-                                                onKeyPress={event => {
-                                                    if (event.key === 'Enter') {
-                                                        this.searchPatient(event)
-                                                    }
-                                                }}
-                                                required
-                                                className="form-control bg-light border-0 small fp-input-search" placeholder="Enter name or identifier" aria-label="Search" aria-describedby="basic-addon2" />
-                                            <div className="input-group-append">
-                                                <button className="btn btn-primary" type="button" onClick={((e) => this.searchIdhandleClick(e))}>
-                                                    <i className="fas fa-search fa-sm"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </span>
-                            </div>
-                            <div className="col-md-4 col-sm-4">
-                                <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>
-                                    {localStorage.getItem("selectedWorkflow")}
-                                </button>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-body rm-paadding">
-                        <div className="d-flex justify-content-center">
-                            <div
-                                className="ag-theme-balham"
-                                style={{
-                                    height: '421px',
-                                    width: '100%'
-                                }}
-                            >
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    onRowSelected={this.onRowSelected}
-                                    onCellClicked={event => { this.onCellClicked(event) }}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                >
-                                </AgGridReact>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
-                <PatiendSideBackButton
-                    navigateTo=""
-                ></PatiendSideBackButton>
                 <Modal show={this.state.openAddPatientModal} backdrop="static" onHide={() => this.setState({ openAddPatientModal: false })} style={{ marginTop: '80px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add New Patient</Modal.Title>
@@ -589,7 +522,7 @@ class FindPatient extends React.Component {
                         </button>
                         </Modal.Footer> */}
                 </Modal>
-            </div>
+            </>
         );
     }
 }
@@ -599,7 +532,8 @@ const mapStateToProps = (state) => ({
     patients: state.patient.searchPatients,
     locationLists: state.location.locations,
     setting: state.systemSettings.systemSetting,
-    workflows: state.workflow.workflows
+    workflows: state.workflow.workflows,
+    searchLoading: state.patient.searchLoading
 })
 const mapDispatchToProps = {
     savePerson: personAction.savePerson,

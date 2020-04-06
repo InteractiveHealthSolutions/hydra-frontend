@@ -10,7 +10,7 @@ import { displayError } from '../../../utilities/helpers/helper'
 
 
 export const savePerson = (Person) => async dispatch =>
-  fetch(POST, "person", Person)
+  fetch(POST, "/person", Person)
     .then(res => dispatch(personCreateAction(res))).catch(displayError)
 
 const personCreateAction = (payload) => ({
@@ -19,7 +19,7 @@ const personCreateAction = (payload) => ({
 })
 
 export const fetchPersons = () => async dispatch =>
-  fetch(GET, "person?v=full")
+  fetch(GET, "/person?v=full")
     .then(res => dispatch(setpersonsAction(res))).catch(displayError)
 
 const setpersonsAction = (payload) => ({ type: types.GET_ALL_PERSON, payload })

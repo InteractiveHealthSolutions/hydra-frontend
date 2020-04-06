@@ -9,7 +9,7 @@ import { displayError, createNotification } from '../../../utilities/helpers/hel
 
 
 export const saveParticipant = (workforce) => async dispatch =>
-  fetch(POST, "hydra/participant", workforce)
+  fetch(POST, "/hydra/participant", workforce)
     .then(res => dispatch(workforceAction(res))).catch(displayError)
 
 const workforceAction = (payload) => ({
@@ -20,7 +20,7 @@ const workforceAction = (payload) => ({
 
 export const fetchParticipant = () => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "hydra/participant?v=full")
+  fetch(GET, "/hydra/participant?v=full")
     .then(res => { dispatch(setWorkforceAction(res)) }).catch(displayError)
 
 }
@@ -29,7 +29,7 @@ const setWorkforceAction = (payload) => ({ type: types.GET_ALL_WORKFORCE, payloa
 
 export const fetchParticipantByUser = (userUUID) => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "hydra/participant?q="+userUUID)
+  fetch(GET, "/hydra/participant?q="+userUUID)
     .then(res => { dispatch(getWorkForceByUserAction(res)) }).catch(displayError)
 
 }
@@ -37,7 +37,7 @@ export const fetchParticipantByUser = (userUUID) => async dispatch => {
 const getWorkForceByUserAction = (payload) => ({ type: types.GET_PARTICIPANT_BY_USER, payload })
 
 export const fetchParticipantSalaryType = () => dispatch =>
-  fetch(GET, "hydra/participantSalaryType?v=full")
+  fetch(GET, "/hydra/participantSalaryType?v=full")
     .then(res => { dispatch(setParticipantSalaryTypeAction(res)) }).catch(displayError)
 
 const setParticipantSalaryTypeAction = (payload) => ({ type: types.GET_WORKFORCE_SALARY_TYPE, payload })

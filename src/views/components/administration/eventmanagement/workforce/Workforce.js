@@ -36,11 +36,10 @@ function Workforce(props) {
                 `
                   <button class ="edite" className="btn-edite"><i class="fas fa-pencil-alt"></i></button>
                 `
-                , width: 60
+              
         },
         {
-            headerName: "Status", field: "retired", valueFormatter: statusFormatter,
-             width: 70
+            headerName: "Status", field: "retired", valueFormatter: statusFormatter
         },
     ]);
     const [rowData, setRowData] = useState([]);
@@ -218,7 +217,7 @@ function Workforce(props) {
 
     if (props.isloading) return <Loaders />;
     return (
-        <div className="row container-fluid l-main-container">
+        <>
             <CardTemplate
                 title="Personnel"
                 action={
@@ -331,7 +330,7 @@ function Workforce(props) {
                     </Modal.Footer>
                 </form>
             </Modal>
-        </div>
+        </>
     )
 }
 

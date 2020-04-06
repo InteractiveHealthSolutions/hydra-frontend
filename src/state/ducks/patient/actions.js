@@ -13,7 +13,7 @@ export const setActivePatient = (patient) => async dispatch => {
 
   localStorage.setItem('active-patient', JSON.stringify(patient));
   dispatch(setPatient({ patient }));
-  history.push('/PatientDetail');
+  history.push('/patient/detail');
 }
 
 const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
@@ -21,7 +21,7 @@ const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
 
 
 export const savePatient = (Patient) => async dispatch =>
-  fetch(POST, "hydra/formSubmission", Patient)
+  fetch(POST, "/hydra/formSubmission", Patient)
     .then(res => dispatch(patientAction(res))).catch(displayError)
 
 const patientAction = (payload) => ({
@@ -30,28 +30,28 @@ const patientAction = (payload) => ({
 })
 
 export const fetchPatients = (query) => async dispatch =>
-  fetch(GET, "patient?v=full&q="+query)
+  fetch(GET, "/patient?v=full&q=" + query)
     .then(res => dispatch(setpatientAction(res))).catch(displayError)
 
 const setpatientAction = (payload) => ({ type: types.GET_ALL_PATIENT, payload })
 
 export const deletePatient = (uuid) => async dispatch => {
-  fetch(DELETE, "patient/" + uuid)
+  fetch(DELETE, "/patient/" + uuid)
     .then(res => dispatch(deletepatientAction(res))).catch(displayError)
 }
 const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload })
 
 
 export const searchPatient = (query) => async dispatch => {
-  dispatch(setProject())
-  fetch(GET, "/patient?v=full&q=" + query+"&matchSimiliar")
+  dispatch(setProjectSearch())
+  fetch(GET, "/patient?v=full&q=" + query + "&matchSimiliar")
     .then(res => dispatch(searchPatientAction(res))).catch(displayError)
 }
 const searchPatientAction = (payload) => ({ type: types.SEARCH_PATIENT, payload })
 
 
-const setProject = () => ({
-  type: types.SET_PROJECT
+const setProjectSearch = () => ({
+  type: types.SET_SEARCH_PROJECT
 });
 
 const setError = payload => ({

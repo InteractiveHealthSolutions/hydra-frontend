@@ -10,7 +10,7 @@ export class RadioGroup extends Component {
   }
 
   handleChange = (e) => {
-    console.log("currentTarget", e.target.value)
+    //console.log("currentTarget", e.target.value)
     const returnData = {
       controlId: this.props.controlId,
       value: e.target.value,
@@ -21,7 +21,7 @@ export class RadioGroup extends Component {
 
   render() {
     const { title, isRequired, options, key, name } = this.props;
-    console.log("radio", this.props.value)
+   // console.log("radio", this.props.value)
     return (
       <div className="form-group">
         <label>{title}</label>

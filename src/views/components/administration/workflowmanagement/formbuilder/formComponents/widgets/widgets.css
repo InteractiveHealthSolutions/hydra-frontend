@@ -1,8 +1,30 @@
 .ul_form {
-    height: 546px;
-    overflow-y: scroll;
-    width: 100%;
-  }
-  .tr_back{
-    color: rgb(216, 216, 216);
-  }
+  height: 546px;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.tr_back {
+  color: rgb(216, 216, 216);
+}
+
+.boxss {
+  margin-right: 12px;
+  /* transition: background 1s, transform 0.5s; */
+  /* transition: border-width 0.9s linear; */
+  
+}
+
+.boxss:hover {
+  /* color: white !important;
+  background: var(--bg); */
+  /* border: var(--bg) 1px solid;
+  border-color: var(--bg) ; */
+  /* border-width: 2px; */
+}
+/* .contentsss:hover {
+  color: white !important;
+}
+.avatar_color{
+  background: red
+} */

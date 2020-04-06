@@ -11,6 +11,7 @@ import Card from '@material-ui/core/Card';
 import PropTypes from 'prop-types';
 import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
 import Loaders from "../common/loader/Loader"
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
 
 class Workflow extends React.Component {
 
@@ -33,7 +34,7 @@ class Workflow extends React.Component {
     this.createNewWorkFlow = this.createNewWorkFlow.bind(this);
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     await this.props.getAllWorkflow()
     if (this.props.workflowLists) {
       await this.setState({
@@ -178,12 +179,35 @@ class Workflow extends React.Component {
   render() {
     if (this.props.isloading) return <Loaders />;
     return (
-      <div className="main-wf container-fluid">
-        <div className="row">
-          <div className="col-sm-6 col-md-6 col-lg-6">
+      <>
+        <CardTemplate
+          title="Workflows"
+          action={
+            <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Create Workflow</button>
+          }
+         >
+            <Sortable
+              options={{
+                animation: 100,
+                easing: "cubic-bezier(1, 0, 0, 1)"
+              }}
+              ref={(c) => {
+                if (c) {
+                  this.sortable = c.sortable;
+                }
+              }}
+              onChange={(order) => {
+                this.reorder(order);
+              }}
+              tag="ul">
+              {this.state.listItems}
+            </Sortable>
+        </CardTemplate>
+        {/* <div className="row">
+          <div className="col-sm-6 col-md-6">
             <h4 className="header_title">Workflows</h4>
           </div>
-          <div className="col-sm-6 col-md-6 col-lg-6">
+          <div className="col-sm-6 col-md-6">
             <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Create Workflow</button>
           </div>
         </div>
@@ -206,7 +230,7 @@ class Workflow extends React.Component {
               {this.state.listItems}
             </Sortable>
           </div>
-        </div>
+        </div> */}
         <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
           <Modal.Header closeButton>
             <Modal.Title>Add Workflow</Modal.Title>
@@ -225,17 +249,16 @@ class Workflow extends React.Component {
             </Modal.Footer>
           </form>
         </Modal>
-        <WorkflowSideBackButton
+        {/* <WorkflowSideBackButton
           navigateTo=""
-        ></WorkflowSideBackButton>
-      </div >
+        ></WorkflowSideBackButton> */}
+      </>
     );
   }
 
-
-  static propTypes = {
-    workflowLists: PropTypes.array.isRequired,
-  };
+  // static propTypes = {
+  //   workflowLists: PropTypes.array.isRequired,
+  // };
 
 }
 

@@ -11,7 +11,7 @@ import { displayError } from '../../../utilities/helpers/helper'
 
 export const saveService = (Service) => async dispatch => {
   dispatch(setProject())
-  fetch(POST, "hydra/service", Service)
+  fetch(POST, "/hydra/service", Service)
     .then(res => dispatch(ServiceAction(res))).catch(displayError)
 }
 
@@ -23,7 +23,7 @@ const ServiceAction = (payload) => ({
 
 export const fetchServices = () => dispatch => {
   dispatch(setProject())
-  fetch(GET, "hydra/service?v=full")
+  fetch(GET, "/hydra/service?v=full")
     .then(res => dispatch(setServiceAction(res))).catch(displayError)
 }
 
@@ -31,7 +31,7 @@ export const fetchServices = () => dispatch => {
 const setServiceAction = (payload) => ({ type: types.GET_ALL_SERVICE, payload })
 
 export const deleteService = (uuid) => async dispatch => {
-  fetch(DELETE, "hydra/service/" + uuid)
+  fetch(DELETE, "/hydra/service/" + uuid)
     .then(res => dispatch(deleteServiceAction(res))).catch(displayError)
 }
 const deleteServiceAction = (payload) => ({ type: types.DELETE_SERVICE, payload })
@@ -39,7 +39,7 @@ const deleteServiceAction = (payload) => ({ type: types.DELETE_SERVICE, payload 
 //service type
 export const saveServiceType = (serviceType) => async dispatch => {
   dispatch(setProject())
-  fetch(POST, "hydra/serviceType", serviceType)
+  fetch(POST, "/hydra/serviceType", serviceType)
     .then(res => dispatch(ServiceTypeAction(res))).catch(displayError)
 }
 const ServiceTypeAction = (payload) => ({
@@ -50,7 +50,7 @@ const ServiceTypeAction = (payload) => ({
 
 export const fetchServiceType = () => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "hydra/serviceType?v=full")
+  fetch(GET, "/hydra/serviceType?v=full")
     .then(res => dispatch(setServiceTypeAction(res))).catch(displayError)
 }
 
