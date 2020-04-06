@@ -282,24 +282,24 @@ class FindPatient extends React.Component {
                 "payload_type": "DOB"
             },
             {
-                "param_name": "location",
-                "value": this.state.patient.location,
-                "payload_type": "LOCATION"
-            }];
-        //    var metadata = {
-        //        "authentication" : {
-        //            "USERNAME" : localStorage.getItem("username"),
-        //            "PASSWORD" : aes256.encrypt("'T''h''e''B''e''s''t''S''e''c''r''e''t''K''e''y'",localStorage.getItem("password"))
-        //        },
-        //        "ENCONTER_TYPE" : "Create Patient"
-        //    }
-        var metadata = {
-            "authentication": {
-                "USERNAME": "taha",
-                "PASSWORD": "h+5iUmkAfBZPW2XIFlnegA=="
+                "param_name":"location",
+                "value":this.state.patient.location,
+                "payload_type":"LOCATION"
+       }];
+      var metadata = {
+            "authentication" : {
+                "USERNAME" : localStorage.getItem("username"),
+                "PASSWORD" : localStorage.getItem("password")
             },
-            "ENCONTER_TYPE": "Create Patient"
+            "ENCONTER_TYPE" : "Create Patient"
         }
+    // var metadata = {
+    //     "authentication" : {
+    //         "USERNAME" : "taha",
+    //         "PASSWORD" : "h+5iUmkAfBZPW2XIFlnegA=="
+    //     },
+    //     "ENCONTER_TYPE" : "Create Patient"
+    // }
         var patient = {
             data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
