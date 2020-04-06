@@ -291,7 +291,8 @@ class FindPatient extends React.Component {
                 "USERNAME" : localStorage.getItem("username"),
                 "PASSWORD" : localStorage.getItem("password")
             },
-            "ENCONTER_TYPE" : "Create Patient"
+            "ENCONTER_TYPE" : "Create Patient",
+            "WORKFLOW" : localStorage.getItem("selectedWorkflowId")
         }
     // var metadata = {
     //     "authentication" : {
@@ -304,11 +305,11 @@ class FindPatient extends React.Component {
             data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
         }
-        console.log(JSON.stringify(patient))
-        await this.props.savePatient(patient);
-        await createNotification('success', 'Patient Created');
-        await this.closeAddPatientModal()
-    }
+            await console.log(JSON.stringify(patient))
+            await this.props.savePatient(patient);
+            await createNotification('success','Patient Created');
+            await this.closeAddPatientModal()
+}
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
