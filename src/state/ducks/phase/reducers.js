@@ -1,43 +1,65 @@
 import * as types from "./types";
+import createReducer from "../../utils/createReducer";
+import { REJECTED } from "../../../utilities/constants/globalconstants";
 
-const initialState = { phaseName: '', phaseuuId: '', phaseId: '' , isCreated: false};
+const initialState = {
+    current: null,
+    loading: false,
+    loaded: false,
+    error: null,
+    phaseName: '',
+    phaseuuId: '',
+    phaseId: '',
+    isCreated: false,
+    allphase: [],
+    allWorkPhase: [],
+    workPhase: [],
+    phase: {}
+};
 
-const phaseReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case types.ACTIVE_PHASE:
-            return {
-                phaseName: action.phaseName,
-                phaseuuId: action.uuid,
-                phaseId: action.phaseId
-            }
-        case types.CREATE_PHASE:
-            return {
-                ...state,
-                item: action.payload
-            };
-        case types.GET_ALL_PHASE:
-            return {
-                ...state,
-                allphase: action.payload
-            };
-        case types.GET_WORKFLOW_PHASE:
-            return {
-                ...state,
-                allWorkPhase: action.payload
-            };
-        case types.CREATE_WORKFLOW_PHASE:
-            return {
-                ...state,
-                 workPhase: action.payload,
-                 isCreated : true
-            };    
-        case types.DELETE_WORKFLOW_PHASE:
-                return {
-                    ...state,
-                     workPhase: action.payload
-                };  
-        default: return state
-    }
-}
+const phaseReducer = createReducer(initialState)({
+    [types.SET_PROJECT]: (state, { payload }) => ({
+        ...state,
+        current: payload,
+        loading: true,
+        error: null
+    }),
+
+    [types.ACTIVE_PHASE]: (state, { payload }) => ({
+        ...state
+    }),
+    [types.GET_ALL_PHASE + REJECTED]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        error: payload
+    }),
+    [types.CREATE_PHASE]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        phase: payload
+    }),
+    [types.GET_ALL_PHASE]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        allphase: payload
+    }),
+    [types.CREATE_WORKFLOW_PHASE]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        workPhase: payload
+    }),
+    [types.GET_WORKFLOW_PHASE]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        allWorkPhase: payload
+    }),
+    [types.DELETE_WORKFLOW_PHASE]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        workPhase: payload
+    }),
+
+})
 
 export default phaseReducer
+

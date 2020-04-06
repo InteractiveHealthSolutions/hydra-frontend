@@ -7,6 +7,8 @@ import moment from 'moment'
 import { locationAction } from '../../../../state/ducks/location';
 import { ModalFormTemplate } from '../../../ui/modal/modalFormTemplate/ModalFormTemplate';
 import { LoaderDots } from "../../common/loader/LoaderDots"
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
+import { history } from '../../../../history';
 
 const EventHeaderSearch = lazy(() => import('./EventHeaderSearch'))
 const EventContainer = lazy(() => import('./EventContainer'))
@@ -211,32 +213,46 @@ class EventList extends React.Component {
         })
     }
 
+    handleAddEvent = () => {
+        localStorage.setItem("active-event", JSON.stringify(""))
+        history.push('/event/planner');
+    }
+
     render() {
         const { selectedLocation, activeEvent, fltLocation, voidReason, openModal, openVoidModal } = this.state;
         console.log("showEventSummary", openModal)
         return (
-            <div className="main-event">
-                <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
-                    <EventHeaderSearch
-                        selectedLocation={selectedLocation}
-                        handleChangeLocation={this.handleChangeLocation}
-                        handleAddEvent={this.handleAddEvent}
-                    />
-                    <EventContainer
-                        location={fltLocation}
-                        deleteEvent={this.deleteEvent}
-                        eventSummary={this.showEventSummary}
-                    />
-
-                    {/* Summary */}
+            <>
+                <CardTemplate
+                    title={
+                        <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
+                            <EventHeaderSearch
+                                selectedLocation={selectedLocation}
+                                handleChangeLocation={this.handleChangeLocation}
+                                handleAddEvent={this.handleAddEvent}
+                            />
+                        </Suspense>
+                    }
+                    action={
+                        <button className="btn btn-primary btn_custom_e_add" onClick={this.handleAddEvent}>Add Event</button>
+                    }
+                    contentHeight = "450px"
+                >
+                    <Suspense fallback={<LoaderDots withMargin="true" height={30} width={30} />}>
+                        <EventContainer
+                            location={fltLocation}
+                            deleteEvent={this.deleteEvent}
+                            eventSummary={this.showEventSummary}
+                        />
+                    </Suspense>
+                </CardTemplate >
+                <Suspense fallback={<LoaderDots withMargin="true" height={0} width={0} />}>
                     <EventSummary
                         openModal={openModal}
                         closeModal={this.closeModal}
                         event={activeEvent}
                     />
                 </Suspense>
-
-                {/* //voided  */}
                 <ModalFormTemplate
                     openVoidModal={openVoidModal}
                     closeVoidModal={this.closeVoidModal}
@@ -256,11 +272,8 @@ class EventList extends React.Component {
                         />
                     </div>
                 </ModalFormTemplate>
+            </>
 
-                <EventSideBackButton
-                    navigateTo=""
-                ></EventSideBackButton>
-            </div >
         );
     }
 }

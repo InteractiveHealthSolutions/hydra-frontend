@@ -60,9 +60,9 @@ class Roles extends React.Component {
                 description: '',
                 selectedIRoles: [],
                 selectedPriviliges: [],
-                
+
             },
-            retire:false,
+            retire: false,
             rowData: [],
             forEdit: false,
             selectedUUID: '',
@@ -109,63 +109,63 @@ class Roles extends React.Component {
         priviligesList: PropTypes.array.isRequired
     };
     async componentWillMount() {
-           this.props.getRoles();
-            await this.setState({ rowData: this.dataBuilder() });
-            await this.props.getPriviliges();
-            await this.createInheritedRoleOptions();
-            await this.createPriviligesOption();
-           await console.log('helllo '+JSON.stringify(this.props.rolesList))
-        
-        
-     }
+        this.props.getRoles();
+        await this.setState({ rowData: this.dataBuilder() });
+        await this.props.getPriviliges();
+        await this.createInheritedRoleOptions();
+        await this.createPriviligesOption();
+        await console.log('helllo ' + JSON.stringify(this.props.rolesList))
+
+
+    }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
             this.setState({ rowData: this.dataBuilder() })
-           await this.createInheritedRoleOptions();
-         await console.log('helllo props'+JSON.stringify(this.state.rowData))
+            await this.createInheritedRoleOptions();
+            await console.log('helllo props' + JSON.stringify(this.state.rowData))
         }
-        
+
     }
     async handleSubmit(event) {
-    await event.preventDefault();
-           if (this.state.forEdit == true) {
-               if(this.state.retire == true) {
-                  await this.props.deleteRole(this.state.selectedUUID)
-               }
-               else {
-                await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
-               }
-               await this.setState({retire:false})
-               await this.props.getRoles();
+        await event.preventDefault();
+        if (this.state.forEdit == true) {
+            if (this.state.retire == true) {
+                await this.props.deleteRole(this.state.selectedUUID)
             }
-            else
-                await this.props.postRole(this.state.roleFormData);
-                await this.props.getRoles();
-            
-        
+            else {
+                await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
+            }
+            await this.setState({ retire: false })
+            await this.props.getRoles();
+        }
+        else
+            await this.props.postRole(this.state.roleFormData);
+        await this.props.getRoles();
+
+
         //console.log('submitted '+JSON.stringify(this.state.roleFormData))
         this.closeAddRoleModal();
     }
-     handleChange(event) {
-        
-            const { name, value } = event.target;
-            const { roleFormData } = this.state;
-            if(name == 'retire') {
-                this.setState({
-                  retire : event.target.checked
-                });
-            }
-            else {
-                this.setState({
-                    roleFormData: {
-                        ...roleFormData,
-                        [name]: value
-                    }
-                });
-            }
-            
-        
-        
+    handleChange(event) {
+
+        const { name, value } = event.target;
+        const { roleFormData } = this.state;
+        if (name == 'retire') {
+            this.setState({
+                retire: event.target.checked
+            });
+        }
+        else {
+            this.setState({
+                roleFormData: {
+                    ...roleFormData,
+                    [name]: value
+                }
+            });
+        }
+
+
+
         console.log("on change " + event.target.name + " " + this.state.retire);
     }
     dataBuilder() {
@@ -196,7 +196,7 @@ class Roles extends React.Component {
         this.setState({ openAddRoleModal: false })
     }
     createInheritedRoleOptions() {
-        if(this.props.rolesList != undefined) {
+        if (this.props.rolesList != undefined) {
             this.props.rolesList.results.forEach(element => {
                 this.inheritedRolesOption.push({
                     "label": element.name,
@@ -204,15 +204,17 @@ class Roles extends React.Component {
                 })
             })
         }
-      
+
     }
     createPriviligesOption() {
-        this.props.priviligesList.results.forEach(element => {
-            this.privilegesOption.push({
-                "label": element.display,
-                "value": element.description
-            })
-        });
+        if (this.props.priviligesList !== undefined && this.props.priviligesList.results !== undefined) {
+            this.props.priviligesList.results.forEach(element => {
+                this.privilegesOption.push({
+                    "label": element.display,
+                    "value": element.description
+                })
+            });
+        }
     }
     selectedInheritedRoles(params) {
         const { roleFormData } = this.state;
@@ -251,14 +253,14 @@ class Roles extends React.Component {
 
 
     render() {
-        const { roleFormData ,rowData,columnDefs} = this.state;
+        const { roleFormData, rowData, columnDefs } = this.state;
         if (this.props.isLoading) return <Loaders />;
         return (
-            <div className="row container-fluid l-main-container">
+            <>
                 <CardTemplate
                     title="User Role Management"
                     action={<button type="button" onClick={() => this.openAddRoleModal()} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add User Role</button>}
-                  >
+                >
                     <div className="card-body rm-paadding">
                         <AgGrid
                             onGridReady={this.onGridReady}
@@ -269,53 +271,6 @@ class Roles extends React.Component {
                         />
                     </div>
                 </CardTemplate>
-{/* 
-
-                <div className="card fp-header">
-                    <div className="card-header">
-                        {/* <div className="input-group search-btn">
-                            <input type="text" name="quickFilter" id="quickFilter" placeholder="Search..." onChange={this.onQuickFilterText} className="form-control bg-light border-0 small lt-input-search" aria-label="Search" aria-describedby="basic-addon2" />
-                            <div className="input-group-append">
-                                <button className="btn btn-primary" type="button">
-                                    <i className="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div> */}
-                      {/*  <div className="row">
-                            <div className="col-md-8 col-sm-4">
-                                <span className="text-muted">User Role Management</span>
-                            </div>
-                            <div className="col-md-4 col-sm-2">
-                                <button type="button" onClick={() => this.openAddRoleModal()} className="fp-btn btn btn-primary ">
-                                    + Add User Role
-            </button>                            </div>
-                        </div>
-                    </div>
-                    <div className="card-body rm-paadding">
-                        <div className="d-flex justify-content-center">
-                            <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
-                                <AgGridReact
-                                    columnDefs={this.state.columnDefs}
-                                    rowData={this.state.rowData}
-                                    modules={AllCommunityModules}
-                                    context={this.state.context}
-                                    frameworkComponents={this.state.frameworkComponents}
-                                    enableSorting
-                                    enableFilter
-                                    rowAnimation
-                                    quickFilterText={this.state.quickFilterText}
-                                    enableRangeSelection={true}
-                                    pagination={true}
-                                    paginationPageSize="12"
-                                    isExternalFilterPresent={true}
-                                    enableColResize="true"
-                                    onCellClicked={this.onCellClicked}
-                                >
-                                </AgGridReact>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
                 <Modal show={this.state.openAddRoleModal} onHide={() => this.closeAddRoleModal()} backdrop="static" style={{ marginTop: '40px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.forEdit ? 'Edit' : 'Add New'} Role</Modal.Title>
@@ -364,20 +319,20 @@ class Roles extends React.Component {
                             {/* <button type="button" onClick={() => { this.closeAddRoleModal() }} class="btn btn-danger">
                                 Cancel
                         </button> */}
-                           {
-                            this.state.forEdit ?
-                            <div class="form-check">
-                            <input type="checkbox" name="retire" onChange={this.handleChange}/>
-                            <label>Delete</label> 
-                            </div> : ''
-                        }  
+                            {
+                                this.state.forEdit ?
+                                    <div class="form-check">
+                                        <input type="checkbox" name="retire" onChange={this.handleChange} />
+                                        <label>Delete</label>
+                                    </div> : ''
+                            }
                             <button type="submit" class="btn btn-primary">
                                 Save
                         </button>
                         </Modal.Footer>
                     </form>
                 </Modal>
-            </div>
+            </>
         )
     }
 }

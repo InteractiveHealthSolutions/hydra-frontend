@@ -12,6 +12,7 @@ import { componentAction } from '../../../state/ducks/stages'
 import { connect } from 'react-redux';
 import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
 import Loaders from "../common/loader/Loader"
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate';
 
 class Component extends React.Component {
     constructor(props) {
@@ -266,37 +267,33 @@ class Component extends React.Component {
     render() {
         if (this.props.isloading) return <Loaders />;
         return (
-            <div className="main-cp">
-                <div className="row">
-                    <div className="col-sm-6 col-md-6 col-lg-6">
-                        <h4 className="header_title">{localStorage.getItem("active-phases-name")} - Stages</h4>
-                    </div>
-                    <div className="col-sm-6 col-md-6 col-lg-6">
-                        <button className="btn btn-primary btn-gobal heading" onClick={() => this.openModal()}>Add Stage</button>
-                        <button className="btn btn-primary btn-gobal heading" onClick={() => this.openCreateModal()}>Create Stage</button>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="card" id="component-maincard">
-                        <Sortable
-                            options={{
-                                animation: 100,
-                                easing: "cubic-bezier(1, 0, 0, 1)"
-                            }}
-                            ref={(c) => {
-                                if (c) {
-                                    this.sortable = c.sortable;
-                                }
-                            }}
-                            onChange={(order) => {
-                                this.reorder(order);
-                            }}
-                            tag="ul">
-                            {this.state.listItems}
-                        </Sortable>
-
-                    </div>
-                </div>
+            <>
+                <CardTemplate
+                    title={localStorage.getItem("active-phases-name") + "- Stages"}
+                    action={
+                        <>
+                            <button className="btn btn-primary adjust-space" onClick={() => this.openModal()}>Add Stage</button>
+                            <button className="btn btn-primary" onClick={() => this.openCreateModal()}>Create Stage</button>
+                        </>
+                    }
+                >
+                    <Sortable
+                        options={{
+                            animation: 100,
+                            easing: "cubic-bezier(1, 0, 0, 1)"
+                        }}
+                        ref={(c) => {
+                            if (c) {
+                                this.sortable = c.sortable;
+                            }
+                        }}
+                        onChange={(order) => {
+                            this.reorder(order);
+                        }}
+                        tag="ul">
+                        {this.state.listItems}
+                    </Sortable>
+                </CardTemplate>
                 <Modal show={this.state.openModal} onHide={() => this.closeModal()} style={{ marginTop: '100px' }}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add Stage</Modal.Title>
@@ -313,13 +310,8 @@ class Component extends React.Component {
                             </Button>
                         </Modal.Footer>
                     </form>
-
                 </Modal>
-
-                <WorkflowSideBackButton
-                    navigateTo="phase"
-                ></WorkflowSideBackButton>
-            </div >
+            </>
         );
     }
 

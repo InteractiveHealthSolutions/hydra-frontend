@@ -24,7 +24,8 @@ class HomePage extends React.Component {
         this.setState({ hover: '' });
     }
     redirectLink() {
-        window.location.href = 'https://wiki.ihsinformatics.com/display/PROJ/Hydra+User+Guide'
+        window.open("https://wiki.ihsinformatics.com/display/PROJ/Hydra+User+Guide");
+       // window.location.href = 'https://wiki.ihsinformatics.com/display/PROJ/Hydra+User+Guide'
     }
 
     handleDashBoard(e) {
@@ -74,7 +75,7 @@ class HomePage extends React.Component {
 
                             <div className="row" id="menu-row">
                                 <div className="col-md-3 col-sm-6">
-                                    <Link to="/FindPatient">
+                                    <Link to="/patient">
                                         <div className="box-first" onMouseEnter={() => this.onMouseHoverIn('Find Patient')} onMouseLeave={() => this.onMouseHoverOut()}>
                                             <img id="icon-img" src={require('../../../assets/searchpatient.png')} alt="" />
                                             <div className="tag-name"><h5 className="h5">Find Patient</h5></div>
@@ -91,8 +92,7 @@ class HomePage extends React.Component {
                                 </div>
 
                                 <div className="col-md-3 col-sm-6">
-                                
-                                    <Link to="/events">
+                                    <Link to="/event">
                                         <div className="box" onMouseEnter={() => this.onMouseHoverIn('Events')} onMouseLeave={() => this.onMouseHoverOut()}>
                                             <img id="icon-img" src={require('../../../assets/events.png')} alt="" />
                                             <div className="tag-name-events"> <h5 className="h5">Events</h5></div>

@@ -56,17 +56,17 @@ export default function FormBuilderCard(props) {
 
   function onItemSelectedProp(ev) {
     setDisplayOrder(ev.value)
-    console.log("display order is set")
-    //localStorage.setItem(`${ev.name}`, ev.value)
+
   }
 
   useEffect(() => {
-    editValue()
+    if (props.data && props.editeMood) {
+      editValue()
+    }
   }, [])
 
   function editValue() {
     let dataField = props.data
-    console.log("dataField ", dataField, dataField.uuid)
     localStorage.setItem(`${dataField.uuid}-defaultValue`, dataField.defaultValue ? dataField.defaultValue : "")
     localStorage.setItem(`${dataField.uuid}-errorMsg`, dataField.errorMessage ? dataField.errorMessage : "")
     localStorage.setItem(`${dataField.uuid}-questionText`, dataField.displayText ? dataField.displayText : "")
@@ -81,7 +81,7 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-rxp`, dataField.regix ? dataField.regix : "")
     localStorage.setItem(`${dataField.uuid}-futureDate`, dataField.allowFutureDate ? dataField.allowFutureDate : "")
     localStorage.setItem(`${dataField.uuid}-pastDate`, dataField.allowPastDate ? dataField.allowPastDate : "")
-
+    localStorage.setItem(`${dataField.uuid}-disabled`, dataField.disabled ? dataField.disabled : "")
   }
 
   return (
