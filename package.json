@@ -86,7 +86,7 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "homepage": ".",
+    "homepage": "https://ihnhydra.ihsinformatics.com",
     "eslintConfig": {
         "extends": "react-app"
     },
