@@ -13,7 +13,7 @@ export const questionService = {
 function saveConcept(concept) {
     const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
         localStorage.getItem('password'));
-    console.log("concept res", concept);
+    //console.log("concept res", concept);
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
@@ -21,7 +21,7 @@ function saveConcept(concept) {
     };
     return fetch(`${BASE_URL}/concept`, requestOptions)
         .then(handleResponse).then(conceptData => {
-            console.log("concept res", conceptData);
+            //console.log("concept res", conceptData);
             return conceptData;
         }, e => console.log('error', e)
         ).catch(err => {
