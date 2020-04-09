@@ -9,7 +9,7 @@ import { userActions } from './store/actions';
 import { store } from './state/store';
 import SignUp from './views/components/administration/user/signup/SignUp';
 import Header from './views/components/header/Header';
-import Workflow from './views/components/workflow/Workflow';
+import WorkflowContainer from './views/components/workflow/WorkflowContainer'
 import Phase from './views/components/phases/Phase';
 import Component from './views/components/stages/Component';
 import EventList from './views/components/events/eventlist/EventList';
@@ -117,7 +117,7 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
+                                                <PrivateRoute exact path="/workflow" name="Workflow" component={WorkflowContainer} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
                                                 <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
                                                 <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
