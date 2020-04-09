@@ -16,7 +16,7 @@ import TabPanel from '../../../../../ui/tabs/TabPanel'
 import { LoaderDots } from "../../../../common/loader/LoaderDots";
 import Sortable from 'react-sortablejs';
 import * as _ from 'lodash';
-
+import { history } from '../../../../../../history';
 
 class FormBuilder extends React.Component {
 
@@ -75,7 +75,7 @@ class FormBuilder extends React.Component {
       nestedSort: false
     };
     this.sortable = null;
-    this.activeForm = JSON.parse(localStorage.getItem('active_form'))
+    this.activeForm = []
   }
 
   resetForm = () => { };
@@ -121,13 +121,14 @@ class FormBuilder extends React.Component {
 
   async UNSAFE_componentWillMount() {
     this.removeLocalStorage()
+    this.activeForm = await JSON.parse(localStorage.getItem('active_form'))
     this.setActiveForm()
     await this.props.getAllEncounterType();
   }
 
   async setActiveForm() {
     let form = this.activeForm
-    if (form.name !== undefined) {
+    if (form !== null && form.name !== undefined) {
       this.setState({
         hydramoduleFormId: form.hydramoduleFormId,
         formName: form.name,
@@ -436,7 +437,8 @@ class FormBuilder extends React.Component {
     // e.preventDefault()
     localStorage.removeItem('active_form')
     await this.removeLocalStorage()
-    this.props.prevStep()
+    history.push('/administration/form')
+    //this.props.prevStep()
   }
   handleRetiredChecked = (param) => {
     this.setState({

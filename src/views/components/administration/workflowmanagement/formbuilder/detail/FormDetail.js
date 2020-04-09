@@ -12,6 +12,7 @@ import { createNotification } from '../../../../../../utilities/helpers/helper'
 import Loaders from '../../../../common/loader/Loader';
 import { AgGrid } from '../../../../../ui/AgGridTable/AgGrid';
 import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
+import { history } from '../../../../../../history';
 
 function FormDetail(props) {
 
@@ -66,13 +67,15 @@ function FormDetail(props) {
         if (formdata.colDef.headerName == 'Edit') {
             console.log("form data :: ", formdata.data)
             localStorage.setItem("active_form", JSON.stringify(formdata.data))
-            props.nextStep();
+            history.push('/administration/form/create')
+            // props.nextStep();
         }
     };
 
     function nextStep() {
         localStorage.setItem("active_form", JSON.stringify([]))
-        props.nextStep();
+        history.push('/administration/form/create')
+        // props.nextStep();
     }
 
     function onGridReady(params) {

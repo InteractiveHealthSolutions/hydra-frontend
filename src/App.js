@@ -43,6 +43,8 @@ import SystemSettings from './views/components/administration/systemsettings/sys
 import styled from 'styled-components';
 import LocationManagement from './views/components/administration/location/home/LocationManagement';
 import FormHome from './views/components/administration/workflowmanagement/formbuilder/FormHome';
+import FormBuilder from './views/components/administration/workflowmanagement/formbuilder/create/FormBuilder';
+
 import Assets from './views/components/administration/eventmanagement/assets/Assets';
 import Services from './views/components/administration/eventmanagement/services/Services';
 import Workforce from './views/components/administration/eventmanagement/workforce/Workforce';
@@ -209,9 +211,9 @@ class App extends React.Component {
                                                                         </NavText>
                                                                     </NavItem>
                                                                     {/* formbuilder */}
-                                                                    <NavItem eventKey="/administration/formbuilder" onClick={this.toggleSidebar}>
+                                                                    <NavItem eventKey="/administration/form" onClick={this.toggleSidebar}>
                                                                         <NavText>
-                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/formbuilder" >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/form" >
                                                                                 <i class="fas fa-cubes" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
                                                                                 Form Builder
                                                                             </Link>
@@ -277,7 +279,8 @@ class App extends React.Component {
                                                                 <Route path="/administration/assets" component={Assets} />
                                                                 <Route path="/administration/services" component={Services} />
                                                                 <Route path="/administration/workforce" component={Workforce} />
-                                                                <Route path="/administration/formbuilder" component={FormHome} />
+                                                                <Route exact path="/administration/form" component={FormHome} />
+                                                                <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
