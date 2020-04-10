@@ -48,17 +48,18 @@ export default class QuestionConfiguration extends Component {
             patientGivenName: "",
             patientGivenNameMandatory: 'yes',
             patientFamilyName: "",
-            patientFamilyNameMandatory: 'yes'
+            patientFamilyNameMandatory: 'yes',
+            disabled: 'yes',
+
         }
 
-       // console.log("QuestionConfiguration", this.props.dataField);
+        // console.log("QuestionConfiguration", this.props.dataField);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
     async setDefaultValue() {
-        //console.log("defaultValue component", localStorage.getItem(`${this.props.uuid}-errorMsg`))
         await this.setState({
             defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
@@ -88,8 +89,8 @@ export default class QuestionConfiguration extends Component {
             patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
+            disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
         }, () => {
-           // console.log("defaultValue", this.state.allowPastDaate)
         })
     }
 
@@ -100,102 +101,18 @@ export default class QuestionConfiguration extends Component {
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
-    setStateAccordingToControlId(controlId, value) {
-        switch (controlId) {
-            case "displayOrder":
-                this.setState({
-                    displayOrder: value
-                })
-                break;
-            case "defaultValue":
-                this.setState({
-                    defaultValue: value
-                })
-                break;
-            case "errorMsg":
-                this.setState({
-                    errorMsg: value
-                })
-                break;
-            case "allowCharacter":
-                this.setState({
-                    allowCharacter: value
-                })
-                break;
-            case "questionText":
-                this.setState({
-                    questionText: value
-                })
-                break;
-            case "mandatory":
-                this.setState({
-                    mandatory: value
-                })
-                break;
-            case "headingTitle":
-                this.setState({
-                    headingTitle: value
-                })
-                break;
-            case "minLength":
-                this.setState({
-                    minLength: value
-                })
-                break;
-            case "maxLength":
-                this.setState({
-                    maxLength: value
-                })
-                break;
-            case "minValue":
-                this.setState({
-                    minValue: value
-                })
-                break;
-            case "maxValue":
-                this.setState({
-                    maxValue: value
-                })
-                break;
-            case "rxp":
-                this.setState({
-                    regix: value
-                })
-                break;
-            case "dateformat":
-                this.setState({
-                    dateformat: value
-                })
-                break;
-            case "futureDate":
-                this.setState({
-                    allowFutureDate: value
-                })
-                break;
-            case "pastDate":
-                this.setState({
-                    allowPastDaate: value
-                })
-                break;
-            default:
-        }
-
-    }
-
     handleRadioChange = (ev) => {
         this.setState({
             [ev.controlId]: ev.value
         }, () => {
 
         })
-        //console.log("handleRadioChange",`${ev.name} = ` ,ev.value)
-        // this.setStateAccordingToControlId(ev.controlId, ev.value)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
     onItemCheckedProp = (ev) => {
         this.setState({
-            [ev.controlId]: ev.value 
-        }, () =>{
+            [ev.controlId]: ev.value
+        }, () => {
             //console.log("handleGivenName inside", this.state.patientGivenNameMandatory)
         })
         localStorage.setItem(`${ev.name}`, ev.value)
@@ -206,7 +123,7 @@ export default class QuestionConfiguration extends Component {
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -335,15 +252,26 @@ export default class QuestionConfiguration extends Component {
                                         ))}
                                     </> : ""
                             } */}
+                            <>
+                                <TextBox
+                                    controlId="defaultValue"
+                                    title="Default Value"
+                                    type="text"
+                                    name={uuid + "-defaultValue"}
+                                    value={defaultValue}
+                                    onItemSelectedProp={this.onItemSelectedProp}
+                                />
+                                <RadioGroup
+                                    controlId="disabled"
+                                    title="Disabled?"
+                                    key="Disabled"
+                                    name={uuid + "-disabled"}
+                                    value={disabled}
+                                    handleRadioChange={this.handleRadioChange}
+                                    options={[{ key: "5" + this.props.uuid, title: "Yes" }, { key: "6" + this.props.uuid, title: "No" }]}
+                                />
+                            </>
 
-                            <TextBox
-                                controlId="defaultValue"
-                                title="Default Value"
-                                type="text"
-                                name={uuid + "-defaultValue"}
-                                value={defaultValue}
-                                onItemSelectedProp={this.onItemSelectedProp}
-                            />
                         </> : ""
                 }
                 {

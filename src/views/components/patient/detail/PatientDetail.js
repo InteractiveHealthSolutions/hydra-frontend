@@ -11,6 +11,8 @@ import { PatiendSideBackButton } from '../../common/sidebutton/SideBackButton'
 import '../../common/sidebutton/sidebutton.css'
 import './patientdetail.css';
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import Chip from '@material-ui/core/Chip';
+import Icon from '@material-ui/core/Icon';
 
 class PatientDetail extends React.Component {
     constructor(props) {
@@ -52,7 +54,15 @@ class PatientDetail extends React.Component {
                     }
                     action={
                         <>
-                            <button className="btn btn-primary workflowDisplay" >{localStorage.getItem("selectedWorkflow")}</button>
+                            <Chip
+                                style={{ margin: '8px' }}
+                                label={localStorage.getItem("selectedWorkflow")}
+                                clickable={true}
+                                deleteIcon={<Icon className="fa fa-plus-circle" />}
+                                color="#4258d0"
+                                variant="outlined"
+                            />
+                            {/* <button className="btn btn-primary workflowDisplay" >{localStorage.getItem("selectedWorkflow")}</button> */}
                             <button className="btn btn-primary " onClick={this.openGeneralActionsModal}> General Actions</button>
                         </>
                     }
@@ -235,7 +245,7 @@ class PatientDetail extends React.Component {
                                     </ExpansionPanelSummary>
                                 </div> */}
                                 <div class="card pd-actions-list">
-                                    <Link to="/FindPatient/PatientDetail/visit">
+                                    <Link to="/patient/detail/visit">
                                         <ExpansionPanelSummary
                                             aria-controls="panel1a-content"
                                             id="panel1a-header">

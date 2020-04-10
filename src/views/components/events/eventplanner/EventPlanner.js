@@ -459,7 +459,7 @@ class EventPlanner extends Component {
     render() {
         const { personaldata, locationData, eventTypeData, location, formErrors, startDate, endDate, calenderDate, eventTypeOption, description, locationTypeOption, locationName, eventName } = this.state;
         return (
-            <div className="row no-gutters">
+            <div className="row">
                 <div className="col-md-7">
                     <form onSubmit={this.handleSubmit} >
                         <CardTemplate

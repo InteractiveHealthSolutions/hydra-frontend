@@ -13,7 +13,7 @@ export const setActivePatient = (patient) => async dispatch => {
 
   localStorage.setItem('active-patient', JSON.stringify(patient));
   dispatch(setPatient({ patient }));
-  history.push('/FindPatient/PatientDetail');
+  history.push('/patient/detail');
 }
 
 const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });

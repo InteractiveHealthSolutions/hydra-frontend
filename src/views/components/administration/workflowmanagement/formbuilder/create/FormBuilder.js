@@ -1,5 +1,4 @@
-import React from "react";
-import AppForm from "../formComponents/AppForm";
+import React, { forwardRef } from "react";
 import { connect } from "react-redux";
 import { questionAction } from "../../../../../../state/ducks/questions";
 import { encounterAction } from "../../../../../../state/ducks/encounter";
@@ -15,7 +14,9 @@ import { questionService } from '../../../../../../services/questionservice'
 import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
 import TabPanel from '../../../../../ui/tabs/TabPanel'
 import { LoaderDots } from "../../../../common/loader/LoaderDots";
-
+import Sortable from 'react-sortablejs';
+import * as _ from 'lodash';
+import { history } from '../../../../../../history';
 
 class FormBuilder extends React.Component {
 
@@ -69,10 +70,12 @@ class FormBuilder extends React.Component {
       isFormExist: false,
       hydramoduleFormId: null,
       isEdit: false,
-      formRetiredVal: false
+      formRetiredVal: false,
+      CustomComponent: "",
+      nestedSort: false
     };
-
-    this.activeForm = JSON.parse(localStorage.getItem('active_form'))
+    this.sortable = null;
+    this.activeForm = []
   }
 
   resetForm = () => { };
@@ -118,20 +121,22 @@ class FormBuilder extends React.Component {
 
   async UNSAFE_componentWillMount() {
     this.removeLocalStorage()
+    this.activeForm = await JSON.parse(localStorage.getItem('active_form'))
     this.setActiveForm()
     await this.props.getAllEncounterType();
   }
 
   async setActiveForm() {
     let form = this.activeForm
-    if (form.name !== undefined) {
+    if (form !== null && form.name !== undefined) {
       this.setState({
         hydramoduleFormId: form.hydramoduleFormId,
         formName: form.name,
         formDescription: form.description,
         addFormList: await this.editFormListFormat(form.formFields),
         formRetiredVal: form.retired,
-        isEdit: form.retired
+        isEdit: form.retired,
+        editeMood: true
       })
     }
 
@@ -164,7 +169,8 @@ class FormBuilder extends React.Component {
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
-      regix: element.regix
+      regix: element.regix,
+      editeMood: false
     };
   }
   editFormListFormat(list) {
@@ -186,9 +192,6 @@ class FormBuilder extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.removeLocalStorage();
-  }
 
   submit = async () => {
     const { formName, hydramoduleFormId } = this.state
@@ -274,6 +277,7 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-patientAgeMandatory`)
       localStorage.removeItem(`${element.uuid}-patientRelationship`)
       localStorage.removeItem(`${element.uuid}-patientRelationshipMandatory`)
+      localStorage.removeItem(`${element.uuid}-disabled`)
     });
   }
 
@@ -328,6 +332,7 @@ class FormBuilder extends React.Component {
       let field = {
         name: element.label,
         field: element.uuid,
+        displayOrder: element.displayOrder,
         scoreable: localStorage.getItem(`${element.uuid}-score`) ? true : false,
         errorMessage: localStorage.getItem(`${element.uuid}-errorMsg`),
         minOccurrence: 0,
@@ -342,6 +347,7 @@ class FormBuilder extends React.Component {
         allowPastDate: localStorage.getItem(`${element.uuid}-pastDate`) ? localStorage.getItem(`${element.uuid}-pastDate`) : false,
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
+        disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
@@ -376,6 +382,7 @@ class FormBuilder extends React.Component {
 
   onDragStart = (ev, uuid) => {
     // console.log("onDrag start", ev)
+    this.setState({ nestedSort: false })
     ev.dataTransfer.setData('id', uuid)
   }
   handleExpandClick = (ev, category) => {
@@ -430,16 +437,36 @@ class FormBuilder extends React.Component {
     // e.preventDefault()
     localStorage.removeItem('active_form')
     await this.removeLocalStorage()
-    this.props.prevStep()
+    history.push('/administration/form')
+    //this.props.prevStep()
   }
   handleRetiredChecked = (param) => {
     this.setState({
       formRetiredVal: param.target.checked,
     })
   }
+  reorder(order) {
+    let tempArray = [];
+    for (var i = 0; i < order.length; i++) {
+      for (var j = 0; j < this.state.addFormList.length; j++) {
+        if (order[i] === this.state.addFormList[j].uuid) {
+          tempArray.push({
+            ...this.state.addFormList[j],
+            displayOrder: i
+          });
+        }
+      }
+    }
+    console.log("tempArray ", tempArray)
+    this.setState({ addFormList: tempArray });
+  }
+
+  handleNested = () => {
+    (this.state.nestedSort) ? this.setState({ nestedSort: false }) : console.log("")
+  }
 
   render() {
-    const { addFormList, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
+    const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
     return (
       <div className="row">
@@ -457,6 +484,7 @@ class FormBuilder extends React.Component {
                   controlId="default"
                   title="Default Questions"
                   data={defaultQuestion}
+                  handleNested={this.handleNested}
                 />
               }
               searchTab={
@@ -483,6 +511,7 @@ class FormBuilder extends React.Component {
                               controlId="field"
                               key={index}
                               data={item}
+                              handleNested={this.handleNested}
                             />
                           )
                         })}
@@ -546,7 +575,35 @@ class FormBuilder extends React.Component {
               </div>
             </div>
             <hr className="divider_right" />
-            <ul
+            <div
+              className="ul_form"
+              onDragOver={(e) => this.onDragOver(e)}
+              onDrop={(e) => { this.state.nestedSort ? console.log("") : this.onDrop(e) }}
+            >
+              <Sortable
+                options={{
+                  onStart: (evt) => { this.setState({ nestedSort: true }); },
+                  onEnd: (evt) => { console.log(evt.newIndex) }
+                }}
+                onChange={(e) => this.reorder(e)}
+                tag="ul"
+              >
+                {
+                  addFormList.map((item, index) => {
+                    return (
+                      <DraggedFormItem
+                        key={index}
+                        data={item}
+                        editeMood={editeMood}
+                        handleDelete={this.handleDelete}
+                      />
+                    )
+                  })
+                }
+              </Sortable>
+            </div>
+
+            {/* <ul
               className="ul_form"
               onDragOver={(e) => this.onDragOver(e)}
               onDrop={(e) => this.onDrop(e)}
@@ -560,7 +617,7 @@ class FormBuilder extends React.Component {
                   />
                 )
               })}
-            </ul>
+            </ul> */}
           </CardTemplate>
         </div>
       </div >

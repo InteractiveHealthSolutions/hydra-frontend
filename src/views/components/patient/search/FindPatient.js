@@ -24,10 +24,13 @@ import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
 
 import './findpatient.css';
-import Loaders from '../../common/loader/Loader';
+import {LoaderDots} from '../../common/loader/LoaderDots';
 import moment from 'moment';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid'
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import Chip from '@material-ui/core/Chip';
+import Icon from '@material-ui/core/Icon';
+
 class FindPatient extends React.Component {
 
     constructor(props) {
@@ -119,9 +122,8 @@ class FindPatient extends React.Component {
         });
 
     }
-    async openWorkflowModal() {
+    openWorkflowModal = async () => {
         await this.props.getAllWorkflows();
-
         await this.setState({ workflowData: this.createWorkflowCheckBox() })
 
         await this.setState({ openWorkflowModal: true });
@@ -217,7 +219,7 @@ class FindPatient extends React.Component {
 
             await this.setState({ workflowData: this.createWorkflowCheckBox() })
         }
-        if(nextProps.locationLists != undefined) {
+        if (nextProps.locationLists != undefined) {
             await this.populateDropDown();
         }
     }
@@ -232,7 +234,7 @@ class FindPatient extends React.Component {
                     "middle": element.person.preferredName.middleName,
                     "familyname": element.person.preferredName.familyName,
                     "age": element.person.age,
-                    "gender": element.person.gender,
+                    "gender": element.person.gender == "F" ? "Female" : "Male",
                     "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
                     "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
                     "uuid": element.uuid
@@ -282,33 +284,34 @@ class FindPatient extends React.Component {
                 "payload_type": "DOB"
             },
             {
-                "param_name": "location",
-                "value": this.state.patient.location,
-                "payload_type": "LOCATION"
-            }];
-        //    var metadata = {
-        //        "authentication" : {
-        //            "USERNAME" : localStorage.getItem("username"),
-        //            "PASSWORD" : aes256.encrypt("'T''h''e''B''e''s''t''S''e''c''r''e''t''K''e''y'",localStorage.getItem("password"))
-        //        },
-        //        "ENCONTER_TYPE" : "Create Patient"
-        //    }
-        var metadata = {
-            "authentication": {
-                "USERNAME": "taha",
-                "PASSWORD": "h+5iUmkAfBZPW2XIFlnegA=="
+                "param_name":"location",
+                "value":this.state.patient.location,
+                "payload_type":"LOCATION"
+       }];
+      var metadata = {
+            "authentication" : {
+                "USERNAME" : localStorage.getItem("username"),
+                "PASSWORD" : localStorage.getItem("password")
             },
-            "ENCONTER_TYPE": "Create Patient"
+            "ENCONTER_TYPE" : "Create Patient",
+            "WORKFLOW" : localStorage.getItem("selectedWorkflowId")
         }
+    // var metadata = {
+    //     "authentication" : {
+    //         "USERNAME" : "taha",
+    //         "PASSWORD" : "h+5iUmkAfBZPW2XIFlnegA=="
+    //     },
+    //     "ENCONTER_TYPE" : "Create Patient"
+    // }
         var patient = {
             data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
         }
-        console.log(JSON.stringify(patient))
-        await this.props.savePatient(patient);
-        await createNotification('success', 'Patient Created');
-        await this.closeAddPatientModal()
-    }
+            await console.log(JSON.stringify(patient))
+            await this.props.savePatient(patient);
+            await createNotification('success','Patient Created');
+            await this.closeAddPatientModal()
+}
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
@@ -333,7 +336,7 @@ class FindPatient extends React.Component {
     }
     populateDropDown() {
         let array = [];
-        if(this.props.locationLists != undefined && this.props.locationLists.results !=  undefined) {
+        if (this.props.locationLists != undefined && this.props.locationLists.results != undefined) {
             this.props.locationLists.results.forEach(element => {
                 array.push(
                     <option value={element.uuid}>{element.name}</option>
@@ -343,7 +346,7 @@ class FindPatient extends React.Component {
                 location: array
             })
         }
-   
+
     }
     searchIdhandleClick = e => {
         e.preventDefault();
@@ -392,13 +395,23 @@ class FindPatient extends React.Component {
                     }
                     action={
                         <>
-                            <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>{localStorage.getItem("selectedWorkflow")}</button>
+                            <Chip
+                                style={{ margin: '8px' }}
+                                label={localStorage.getItem("selectedWorkflow")}
+                                clickable={true}
+                                onClick={this.openWorkflowModal}
+                                onDelete={this.openWorkflowModal}
+                                deleteIcon={<Icon className="fa fa-plus-circle" />}
+                                color="#4258d0"
+                                variant="outlined"
+                            />
+                            {/* <button className="btn btn-primary workFlowButton" onClick={this.openWorkflowModal}>{localStorage.getItem("selectedWorkflow")}</button> */}
                             <button class="fp-btn btn btn-primary" onClick={e => this.openAddPatientModal()}><i class="fas fa-plus"></i> Create New</button>
                         </>
                     }
                 >
                     {
-                        (this.props.searchLoading) ? <Loaders /> :
+                        (this.props.searchLoading) ? <LoaderDots withMargin="true"  /> :
                             <AgGrid
                                 onGridReady={this.onGridReady}
                                 columnDefs={columnDefs}

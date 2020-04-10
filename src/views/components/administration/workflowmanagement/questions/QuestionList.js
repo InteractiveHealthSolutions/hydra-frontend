@@ -270,8 +270,7 @@ class QuestionList extends React.Component {
         } else if (e.controlId == "description") {
             this.setState({ description: e.value });
         } else if (e.controlId == "conceptName") {
-            //alert('hi')
-
+          
             this.setState({ definedOptions: [] });
             if (e.uuid) {
                this.setState({
@@ -328,7 +327,6 @@ class QuestionList extends React.Component {
                 }
             }
             else {
-                //alert('should be a concept')
                 this.setState({optionError : true})
             }
         }
@@ -454,6 +452,11 @@ class QuestionList extends React.Component {
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;
+        }
+        if(JSON.stringify(questionConceptClass) == '{}' && this.state.showWidgetType == true) {
+            //this.mandatoryFieldError();
+            questionConceptClass = { title: "Question", key: "8d491e50-c2cc-11de-8d13-0010c6dffd0f" }
+            //return;
         }
         if(JSON.stringify(questionConceptClass) == '{}') {
             this.mandatoryFieldError();
@@ -658,7 +661,6 @@ class QuestionList extends React.Component {
 
     }
     onChangeEdit(e) {
-        alert(e.value)
         if (e.controlId == "widgettype") {
             this.setState({ widgetType: e });
 
