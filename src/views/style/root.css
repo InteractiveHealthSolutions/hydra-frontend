@@ -14,6 +14,8 @@
   --link-color: #639A67;
   --link-hover: #205D67;
   --label-color: rgb(66, 88, 208);
+  --primary: rgb(66, 88, 208) !important;
+  --secondary: #6c757d;
 }
 
 .btn-primary {

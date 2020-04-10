@@ -16,6 +16,10 @@ export default class DefaultExpendable extends Component {
 
         }
     }
+    handleNested = () => {
+        this.props.handleNested()
+    }
+
     render() {
         const { title, data, controlId } = this.props
         return (
@@ -26,6 +30,7 @@ export default class DefaultExpendable extends Component {
                             controlId="default"
                             key={index}
                             data={item}
+                            handleNested={this.handleNested}
                         />
                     )
                 })}

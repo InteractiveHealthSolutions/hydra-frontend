@@ -80,7 +80,7 @@ function EventHeaderSearch(props) {
     }
     function handleAddEvent() {
         localStorage.setItem("active-event", JSON.stringify(""))
-        history.push('/event/eventplanner');
+        history.push('/event/planner');
     }
 
     if (props.isLoading) return <LoaderDots withMargin="true" height={40} width={40} />;
