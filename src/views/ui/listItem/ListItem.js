@@ -25,7 +25,11 @@ const styles = {
     leftWall: color => ({
         width: "0.5em",
         backgroundColor: color
-    })
+    }),
+    img: {
+        marginLeft:'8px',
+        marginTop:'12px'
+    }
 };
 
 export default function ListItem({
@@ -39,13 +43,17 @@ export default function ListItem({
         <li
             style={styles.li}
         >
+
             <div style={styles.itemleft} onClick={(evt) => handleOnClick(evt, data)} >
                 <div style={styles.leftWall(completed ? "var(--bg)" : "red")} />
+                {view? <span style ={styles.img} ><i class="fas fa-align-justify gradient"></i></span>:""}
                 <ListBody name={view ? data.form.name : data.name} description="" />
             </div>
-            <span onClick={() => handleDeleteOnClick(data)}>
-                <i className='fas fa-times' style={styles.cross}></i>
-            </span>
+            {(view) ? "" :
+                <span onClick={() => handleDeleteOnClick(data)}>
+                    <i className='fas fa-times' style={styles.cross}></i>
+                </span>
+            }
         </li>
     )
 }
