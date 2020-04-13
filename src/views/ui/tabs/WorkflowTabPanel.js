@@ -7,8 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import WidgetsIcon from '@material-ui/icons/Widgets';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
+import {ComponentViewContainer} from '../../components/patient/dataView'
 import './tabpanel.css'
 
 function TabPanel(props) {
@@ -99,7 +98,9 @@ export default function WorkflowTabPanel({ tabData, tabPanelData, ...props }) {
                     tabPanelData ?
                         tabPanelData.map((element, index) => (
                             <TabPanel value={value} index={index} dir={theme.direction}>
-                                <p>{element.phaseName}</p>
+                               <ComponentViewContainer
+                                 phaseUuid ={element.phaseUUID}
+                               />
                             </TabPanel>
                         ))
                         : null

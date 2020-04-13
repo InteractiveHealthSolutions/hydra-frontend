@@ -52,10 +52,10 @@ export const getFormByUuid = (uuid) => async dispatch =>
 const setFormByUuidAction = (payload) => ({ type: types.GET_FORM_BY_UUID, payload })
 
 
-export const getComponentFormRelation = () => async dispatch => {
+export const getComponentFormRelation = (filterWith, phaseUuid, componentUUID) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/componentform")
-    .then(res => dispatch(getComponentFormRelations(filterStageForm(res))))
+    .then(res => dispatch(getComponentFormRelations(filterStageForm(res, filterWith, phaseUuid, componentUUID))))
     .catch(displayError);
 };
 const getComponentFormRelations = payload => ({
@@ -63,16 +63,29 @@ const getComponentFormRelations = payload => ({
   payload
 });
 
-function filterStageForm(StageFormData) {
+function filterStageForm(StageFormData, filterWith, phaseUuid, componentUUID) {
   let filteredForm = [];
-  let activeComponent = localStorage.getItem("active-component-uuid");
-  let phase = localStorage.getItem("active-phases-uuid");
-  let workflow = localStorage.getItem("active-workflow-uuid")
+  let phase = "";
+  let workflow = "";
+  let activeComponent = "";
+  if (filterWith === "dataview" && phaseUuid && componentUUID) {
+    phase = phaseUuid;
+    workflow = localStorage.getItem("selectedWorkflowId")
+    activeComponent = componentUUID
+  } else {
+    phase = localStorage.getItem("active-phases-uuid");
+    workflow = localStorage.getItem("active-workflow-uuid")
+    activeComponent = localStorage.getItem("active-component-uuid");
+  }
+
+  console.log("componentForms Form vv ", phase ,workflow,activeComponent)
+
   StageFormData.ComponentsFormsMap.forEach(element => {
     if (activeComponent === element.component.uuid && phase === element.phase.uuid && workflow === element.workflow.uuid) {
       filteredForm.push(element);
     }
   });
+  console.log("componentForms Form vv ", filteredForm)
   return filteredForm;
 }
 

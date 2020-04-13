@@ -32,16 +32,16 @@ export default function ListItem({
     handleOnClick,
     handleDeleteOnClick,
     data,
+    view,
     completed, ...reset
 }) {
-
     return (
         <li
             style={styles.li}
         >
             <div style={styles.itemleft} onClick={(evt) => handleOnClick(evt, data)} >
                 <div style={styles.leftWall(completed ? "var(--bg)" : "red")} />
-                <ListBody name={data.name} description="" />
+                <ListBody name={view ? data.form.name : data.name} description="" />
             </div>
             <span onClick={() => handleDeleteOnClick(data)}>
                 <i className='fas fa-times' style={styles.cross}></i>
