@@ -143,7 +143,7 @@ class FormBuilder extends React.Component {
   }
 
   formatFieldItem(element) {
-    // console.log("formatFieldItem", element)
+    console.log("formatFieldItem", element.field.name, element.displayOrder)
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -170,13 +170,14 @@ class FormBuilder extends React.Component {
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
       regix: element.regix,
+      disabled: element.disabled,
       editeMood: false
     };
   }
   editFormListFormat(list) {
     let array = []
     if (list) {
-      list.forEach(element => {
+      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach(element => {
         array.push(this.formatFieldItem(element));
       });
     }
@@ -411,6 +412,8 @@ class FormBuilder extends React.Component {
     })
   }
 
+
+
   onItemSelectedProp = (e) => {
     if (e.controlId === "formDescription") {
       this.setState({
@@ -589,35 +592,20 @@ class FormBuilder extends React.Component {
                 tag="ul"
               >
                 {
-                  addFormList.map((item, index) => {
-                    return (
-                      <DraggedFormItem
-                        key={index}
-                        data={item}
-                        editeMood={editeMood}
-                        handleDelete={this.handleDelete}
-                      />
-                    )
-                  })
+                  addFormList.sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map((item, index) => {
+                      return (
+                        <DraggedFormItem
+                          key={index}
+                          data={item}
+                          editeMood={editeMood}
+                          handleDelete={this.handleDelete}
+                        />
+                      )
+                    })
                 }
               </Sortable>
             </div>
-
-            {/* <ul
-              className="ul_form"
-              onDragOver={(e) => this.onDragOver(e)}
-              onDrop={(e) => this.onDrop(e)}
-            >
-              {addFormList.map((item, index) => {
-                return (
-                  <DraggedFormItem
-                    key={index}
-                    data={item}
-                    handleDelete={this.handleDelete}
-                  />
-                )
-              })}
-            </ul> */}
           </CardTemplate>
         </div>
       </div >
