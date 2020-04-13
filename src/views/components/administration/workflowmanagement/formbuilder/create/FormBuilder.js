@@ -170,6 +170,7 @@ class FormBuilder extends React.Component {
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
       regix: element.regix,
+      disabled:element.disabled,
       editeMood: false
     };
   }
