@@ -221,12 +221,14 @@ class PatientDetail extends React.Component {
                                     </ExpansionPanelSummary>
                                 </div> */}
                                 <div class="card pd-actions-list">
-                                    <ExpansionPanelSummary
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header">
-                                        <span className="icon-padding" ><i class="fa fa-plus gradient"></i></span>
-                                        <Typography >Enter Data</Typography>
-                                    </ExpansionPanelSummary>
+                                    <Link to="/patient/detail/dataview">
+                                        <ExpansionPanelSummary
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header">
+                                            <span className="icon-padding" ><i class="fa fa-plus gradient"></i></span>
+                                            <Typography >Enter Data</Typography>
+                                        </ExpansionPanelSummary>
+                                    </Link>
                                 </div>
                                 {/* <div class="card pd-actions-list">
                                     <ExpansionPanelSummary

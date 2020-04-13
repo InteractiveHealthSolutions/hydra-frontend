@@ -45,18 +45,27 @@ export const savePhaseComponent = (component) => async dispatch => {
 const savePhaseComponentAction = (payload) => ({ type: types.CREATE_PHASE_COMPONENT, payload })
 
 
-export const fetchPhaseComponent = () => async dispatch => {
+export const fetchPhaseComponent = (filterWith) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/phasecomponent")
-    .then(res => dispatch(fetchPhaseComponentAction(filterStage(res)))).catch(displayError)
+    .then(res => dispatch(fetchPhaseComponentAction(filterStage(res, filterWith)))).catch(displayError)
 }
 
 const fetchPhaseComponentAction = (payload) => ({ type: types.GET_ALL_PHASE_COMPONENT, payload })
 
-function filterStage(phaseStageData) {
+function filterStage(phaseStageData, filterWith) {
   let filteredComponent = [];
-  let activePhase = localStorage.getItem('active-phases-uuid');
-  let activeWorkflow = localStorage.getItem('active-workflow-uuid');
+  let activePhase = ""
+  let activeWorkflow = ""
+  if (filterWith === "dataview") {
+    activePhase = localStorage.getItem('active-phases-uuid');
+    activeWorkflow = localStorage.getItem('selectedWorkflowId');
+  } else {
+    activePhase = localStorage.getItem('active-phases-uuid');
+    activeWorkflow = localStorage.getItem('active-workflow-uuid');
+  }
+
+
   phaseStageData.PhaseComponentsMap.forEach(element => {
     if (activePhase === element.phaseUUID && activeWorkflow === element.workflowUUID) {
       filteredComponent.push(element);

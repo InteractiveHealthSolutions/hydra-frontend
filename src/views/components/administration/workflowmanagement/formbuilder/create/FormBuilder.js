@@ -602,22 +602,6 @@ class FormBuilder extends React.Component {
                 }
               </Sortable>
             </div>
-
-            {/* <ul
-              className="ul_form"
-              onDragOver={(e) => this.onDragOver(e)}
-              onDrop={(e) => this.onDrop(e)}
-            >
-              {addFormList.map((item, index) => {
-                return (
-                  <DraggedFormItem
-                    key={index}
-                    data={item}
-                    handleDelete={this.handleDelete}
-                  />
-                )
-              })}
-            </ul> */}
           </CardTemplate>
         </div>
       </div >
