@@ -21,7 +21,7 @@ class Component extends React.Component {
         this.state = {
             items: [],
             openModal: false,
-            availableComponents: [],
+            availableComponents: [],    
             componentToAdd: 0,
             listItems: [],
             components: [],
@@ -36,13 +36,13 @@ class Component extends React.Component {
         this.components = [];
 
     }
-
-    async componentWillMount() {
+     //init() oncreateview() 
+    async UNSAFE_componentWillMount() {
         await this.props.getAllComponents()
         await this.props.getAllPhaseComponent()
     }
 
-    async componentWillReceiveProps(newProps) {
+    async UNSAFE_componentWillReceiveProps(newProps) {
 
         if (newProps.phaseComponentList !== undefined) {
             await this.setState({
@@ -324,13 +324,12 @@ const mapStateToProps = state => ({
     isloading: state.stages.loading
 })
 
-const mapsDispatchToProps = {
+const mapsDispatchToProps = { //action 
     getAllComponents: componentAction.fetchcomponents,
     saveComponent: componentAction.saveComponent,
     setActiveComponent: componentAction.setActiveComponent,
     savePhaseComponent: componentAction.savePhaseComponent,
     getAllPhaseComponent: componentAction.fetchPhaseComponent,
     deletePhaseComponent: componentAction.deletePhaseComponent
-
 }
 export default connect(mapStateToProps, mapsDispatchToProps)(Component);

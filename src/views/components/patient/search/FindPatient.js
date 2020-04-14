@@ -131,7 +131,7 @@ class FindPatient extends React.Component {
     closeWorkflowModal() {
         this.setState({ openWorkflowModal: false })
     }
-    async componentWillMount() {
+    async usn() {
         await this.setState({ rowData: [] })
         await this.props.getAllWorkflows();
 
