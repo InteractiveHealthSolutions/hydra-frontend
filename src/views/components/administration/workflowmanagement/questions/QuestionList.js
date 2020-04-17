@@ -12,6 +12,7 @@ import TextBox from "./formComponents/widgets/TextBox";
 import CheckBox from "./formComponents/widgets/CheckBox";
 import SingleSelect from "./formComponents/widgets/SingleSelect";
 import { createNotification } from "../../../../../utilities/helpers/helper";
+//import { history } from '../history';
 import AppForm from "./formComponents/AppForm";
 import AutoSearchComplete from "./formComponents/widgets/AutoSearchComplete";
 import { questionService } from "../../../../../services/questionservice";
@@ -208,6 +209,7 @@ class QuestionList extends React.Component {
         }
     }
     resetForm = () => {
+        
         window.location.reload();
     };
 
@@ -437,7 +439,7 @@ class QuestionList extends React.Component {
             this.closeEditQuestionModal();
             this.props.getAllQuestion();
             this.setState({optionError:false})
-            //    this.resetForm();
+              this.resetForm();
         });
     }
     submit = () => {
@@ -513,7 +515,7 @@ class QuestionList extends React.Component {
                             );
                             this.props.getAllQuestion();
                             this.closeQuestionModal();
-                            //this.resetForm();
+                            this.resetForm();
                         });
                    
                      return;
@@ -546,7 +548,7 @@ class QuestionList extends React.Component {
                         this.props.getAllQuestion();
                         this.setState({optionError:false})
                         this.closeQuestionModal();
-                        // this.resetForm();
+                        this.resetForm();
                     });
                     return;
                 }
@@ -596,14 +598,14 @@ class QuestionList extends React.Component {
                                 console.log('dtaa'+JSON.stringify(fieldData));
                                 questionService.saveField(fieldData).then(d => {
                                     createNotification(
-                                        "success",
+                                        "success",  
                                         "Question Saved!"
                                     );
                                     this.closeQuestionModal();
                                     this.props.getAllQuestion();
-                                    this.setState({optionError:false})
+                                    this.setState({optionError:false});
 
-                                    //this.resetForm();
+                                    this.resetForm();
 
                                 });
                             }
