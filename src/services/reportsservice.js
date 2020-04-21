@@ -2,7 +2,7 @@ import { history } from '../history';
 import { authenticationGenerator } from '../utilities/helpers';
 import { existsTypeAnnotation } from '@babel/types';
 export const reportService = {
-    downloadReport
+    downloadReport,downloadDump
 }
 function downloadReport(params,name,ext) {
     const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
@@ -15,6 +15,19 @@ function downloadReport(params,name,ext) {
         
     )
        }
+	 
+function downloadDump(params,name,ext) {
+    const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
+        localStorage.getItem('password'));
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token }
+    };
+    return fetch('/hydra/report/dump/'+name+'?'+params, requestOptions).then(response=>handleResponse(response,name,ext)
+        
+    )
+       }	 
+	   
 
 function handleResponse(response,name,ext) {
     return response.blob().then(blob => {
