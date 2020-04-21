@@ -20,6 +20,8 @@ export const DatePickerField = ({ ...props }) => {
             {...field}
             {...props}
             className="form-control"
+            showMonthDropdown
+            showYearDropdown 
             selected={(field.value && new Date(field.value)) || null}
             onChange={val => {
                 setFieldValue(field.name, val);
