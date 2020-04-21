@@ -113,7 +113,7 @@ class FormBuilder extends React.Component {
   };
 
   returnConceptList = value => {
-    // console.log("returnConceptList", value)
+  //   console.log("returnConceptList", value)
     this.setState({
       currentObject: value
     });
@@ -143,7 +143,7 @@ class FormBuilder extends React.Component {
   }
 
   formatFieldItem(element) {
-    // console.log("formatFieldItem", element)
+    console.log("formatFieldItem", element.field.name, element.displayOrder)
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -170,13 +170,14 @@ class FormBuilder extends React.Component {
       mandatory: element.mandatory,
       defaultValue: element.defaultValue,
       regix: element.regix,
+      disabled: element.disabled,
       editeMood: false
     };
   }
   editFormListFormat(list) {
     let array = []
     if (list) {
-      list.forEach(element => {
+      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach(element => {
         array.push(this.formatFieldItem(element));
       });
     }
@@ -225,7 +226,6 @@ class FormBuilder extends React.Component {
       formFields: formFieldList,
       retired: formRetiredVal
     }
-    console.log("newform", newform)
     await this.props.saveFormFields(newform)
     await createNotification("success", "Saved Successfully")
     await this.setState({
@@ -348,7 +348,7 @@ class FormBuilder extends React.Component {
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
-        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
+        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
@@ -364,7 +364,7 @@ class FormBuilder extends React.Component {
     await this.setState({
       formFieldList: [...this.state.formFieldList, object]
     }, () => {
-      // console.log("setFieldList", this.state.formFieldList);
+      
     })
   }
 
@@ -410,6 +410,8 @@ class FormBuilder extends React.Component {
       addFormList: (this.state.addFormList.length > 0) ? [...this.state.addFormList, dropArray[0]] : dropArray
     })
   }
+
+
 
   onItemSelectedProp = (e) => {
     if (e.controlId === "formDescription") {
@@ -589,35 +591,20 @@ class FormBuilder extends React.Component {
                 tag="ul"
               >
                 {
-                  addFormList.map((item, index) => {
-                    return (
-                      <DraggedFormItem
-                        key={index}
-                        data={item}
-                        editeMood={editeMood}
-                        handleDelete={this.handleDelete}
-                      />
-                    )
-                  })
+                  addFormList.sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map((item, index) => {
+                      return (
+                        <DraggedFormItem
+                          key={index}
+                          data={item}
+                          editeMood={editeMood}
+                          handleDelete={this.handleDelete}
+                        />
+                      )
+                    })
                 }
               </Sortable>
             </div>
-
-            {/* <ul
-              className="ul_form"
-              onDragOver={(e) => this.onDragOver(e)}
-              onDrop={(e) => this.onDrop(e)}
-            >
-              {addFormList.map((item, index) => {
-                return (
-                  <DraggedFormItem
-                    key={index}
-                    data={item}
-                    handleDelete={this.handleDelete}
-                  />
-                )
-              })}
-            </ul> */}
           </CardTemplate>
         </div>
       </div >

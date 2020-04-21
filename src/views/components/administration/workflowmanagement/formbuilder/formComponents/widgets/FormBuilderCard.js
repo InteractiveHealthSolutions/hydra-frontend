@@ -81,7 +81,7 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-rxp`, dataField.regix ? dataField.regix : "")
     localStorage.setItem(`${dataField.uuid}-futureDate`, dataField.allowFutureDate ? dataField.allowFutureDate : "")
     localStorage.setItem(`${dataField.uuid}-pastDate`, dataField.allowPastDate ? dataField.allowPastDate : "")
-    localStorage.setItem(`${dataField.uuid}-disabled`, dataField.disabled ? dataField.disabled : "")
+    localStorage.setItem(`${dataField.uuid}-disabled`, dataField.disabled ? dataField.disabled == true ? "Yes" : "No" : "No")
   }
 
   return (
