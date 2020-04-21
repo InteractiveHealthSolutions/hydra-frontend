@@ -5,7 +5,7 @@ export function CreateYupSchema(schema, config) {
     const { field: { fieldId }, mandatory, validationType, validations = [] } = config;
     console.log("", validations)
     if (!yup[validationType]) {
-        return schema[fieldId] = mandatory ? "required" : "";
+        return schema
     }
     let validator = yup[validationType]();
     validations.forEach(validation => {

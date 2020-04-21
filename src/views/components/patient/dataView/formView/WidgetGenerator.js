@@ -44,7 +44,7 @@ import {
 import DatePicker from "react-datepicker";
 
 import CustomSelect from './CustomSelect'
-
+import AddressWidget from './AddressWidget'
 
 import styles from './fromview.module.css';
 import makeAnimated from 'react-select/animated';
@@ -106,7 +106,8 @@ const WidgetGenerator = ({
     handleBlur,
     setFieldTouched,
     touched,
-    errors
+    errors,
+    country
 }) => {
 
 
@@ -124,9 +125,6 @@ const WidgetGenerator = ({
                         className='form-control'
                         onChange={value => setFieldValue(fieldId, value.target.value)}
                     />
-                    {/* <FormControl>
-                        <CustomTextField name={fieldId} />
-                    </FormControl> */}
                 </FormGroup>
             )
         case SINGLE_SELECT_DROPDOWN:
@@ -189,7 +187,15 @@ const WidgetGenerator = ({
         case ADDRESS:
             return (
                 <FormGroup>
-                    <div>{displayText}</div>
+                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
+                    <AddressWidget
+                        country={country}
+                        fieldId={fieldId}
+                        setFieldValue={setFieldValue}
+                        errors={errors}
+                        touched={touched}
+                        values={values}
+                    />
                 </FormGroup>)
         case CONTACT_TRACING:
             return (

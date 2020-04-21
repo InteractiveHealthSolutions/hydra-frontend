@@ -11,7 +11,7 @@ import {
 
 
 
-const FormView = ({ form: { field, name, formFields } }) => {
+const FormView = ({ form: { field, name, formFields }, country }) => {
     const initialValues = {};
     formFields.forEach(item => {
         initialValues[item.field.fieldId] = "";
@@ -58,6 +58,7 @@ const FormView = ({ form: { field, name, formFields } }) => {
                                             handleBlur={handleBlur}
                                             errors={errors}
                                             touched={touched}
+                                            country ={country}
                                         /> : null}
 
                                     <div style={{ marginTop: '8px' }}></div>
@@ -65,7 +66,7 @@ const FormView = ({ form: { field, name, formFields } }) => {
                             )) : null
 
                         }
-                        <pre>{JSON.stringify(values, null, 2)}</pre>
+                        {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
                     </CardTemplate>
                 </form>
             )}
