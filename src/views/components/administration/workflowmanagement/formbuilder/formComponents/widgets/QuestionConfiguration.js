@@ -12,6 +12,7 @@ import {
     CONTACT_TRACING
 } from '../../../../../../../utilities/constants/globalconstants'
 import CheckBox from './CheckBox';
+import Select from 'react-select';
 
 export default class QuestionConfiguration extends Component {
 
@@ -19,7 +20,7 @@ export default class QuestionConfiguration extends Component {
         super(props)
         this.state = {
             isScorable: false,
-            defaultValue: "",
+            defaultValue: {},
             errorMsg: "",
             minValue: "",
             maxValue: "",
@@ -53,15 +54,16 @@ export default class QuestionConfiguration extends Component {
 
         }
 
-        // console.log("QuestionConfiguration", this.props.dataField);
+     console.log("QuestionConfiguration", this.props.data);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
     async setDefaultValue() {
+console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
         await this.setState({
-            defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`),
+            defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)) : "",
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
             allowCharacter: localStorage.getItem(`${this.props.uuid}-allowCharacter`),
             questionText: localStorage.getItem(`${this.props.uuid}-questionText`),
@@ -94,6 +96,14 @@ export default class QuestionConfiguration extends Component {
         })
     }
 
+    onHandleDefaultValue = (ev,name,controlId) => {
+        console.log("Naam dena",JSON.stringify(ev))
+        this.setState({
+            [controlId]: ev
+        })
+        localStorage.setItem(`${name}`, JSON.stringify(ev))
+    }
+
     onItemSelectedProp = (ev) => {
         this.setState({
             [ev.controlId]: ev.value
@@ -119,7 +129,8 @@ export default class QuestionConfiguration extends Component {
     }
 
     render() {
-
+        console.log("defaultValue defaultValue", this.state.defaultValue);
+        console.log("coded options", this.props.dataField)
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
@@ -214,53 +225,7 @@ export default class QuestionConfiguration extends Component {
                 {
                     (datatype === CODED) ?
                         <>
-                            {/* <RadioGroup
-                                controlId="scorable"
-                                title="Is this scorable"
-                                key="scorable"
-                                name={uuid + "-scorable"}
-                                value={isScorable}
-                                handleRadioChange={this.handleRadioChange}
-                                options={[{ key: "3" + uuid, title: "Yes"}, { key: "4" + this.props.uuid, title: "No" }]}
-                            />
-                            {
-                                (this.state.isScorable) ?
-                                    <>
-                                        {this.props.data.map(option => (
-                                            <div className="row">
-                                                <div className="col-sm-6 col-md-8">
-                                                    <TextBox
-                                                        controlId="answer"
-                                                        title={option.concept.display}
-                                                        type="text"
-                                                        placeholdertext="Change  your question text"
-                                                        name={option.concept.display}
-                                                        onItemSelectedProp={this.onItemSelectedProp}
-                                                    />
-                                                </div>
-                                                <div className="col-sm-6 col-md-4">
-                                                    <TextBox
-                                                        controlId="score"
-                                                        title="Score"
-                                                        type="number"
-                                                        min="0"
-                                                        name="score"
-                                                        onItemSelectedProp={this.onItemSelectedProp}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </> : ""
-                            } */}
-                            <>
-                                <TextBox
-                                    controlId="defaultValue"
-                                    title="Default Value"
-                                    type="text"
-                                    name={uuid + "-defaultValue"}
-                                    value={defaultValue}
-                                    onItemSelectedProp={this.onItemSelectedProp}
-                                />
+
                                 <RadioGroup
                                     controlId="disabled"
                                     title="Disabled?"
@@ -270,7 +235,25 @@ export default class QuestionConfiguration extends Component {
                                     handleRadioChange={this.handleRadioChange}
                                     options={[{ key: "5" + this.props.uuid, title: "Yes" }, { key: "6" + this.props.uuid, title: "No" }]}
                                 />
-                            </>
+
+                            <label htmlFor="start date" className="ec-label">Default Value</label>
+                             <Select
+                                        controlId="defaultValue"
+                                        title="Default Value"
+                                        name={uuid + "-defaultValue"}
+                                        value={defaultValue}
+                                        onChange={(evt)=> this.onHandleDefaultValue(evt,uuid + "-defaultValue","defaultValue" )}
+                                        options={this.props.data.map((option) =>(
+                                            {
+                                                label:option.concept.display,
+                                                value:option.uuid
+                                            }
+                                        ))}
+
+                                    />
+                            
+                           
+                            
 
                         </> : ""
                 }

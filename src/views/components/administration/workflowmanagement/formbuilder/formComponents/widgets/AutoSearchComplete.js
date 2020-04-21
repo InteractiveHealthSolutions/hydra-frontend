@@ -104,7 +104,7 @@ class AutoSearchComplete extends Component {
       dataType: element.field.attributeName ? element.field.attributeName : "",
       uuid: element.field.uuid,
       controlId: this.props.controlId,
-      answers: element.answers ? element.answers : []
+      answers: element.field.answers ? element.field.answers : []
     };
   }
 
