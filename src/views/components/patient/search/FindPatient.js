@@ -296,13 +296,6 @@ class FindPatient extends React.Component {
             "ENCONTER_TYPE" : "Create Patient",
             "WORKFLOW" : localStorage.getItem("selectedWorkflowId")
         }
-    // var metadata = {
-    //     "authentication" : {
-    //         "USERNAME" : "taha",
-    //         "PASSWORD" : "h+5iUmkAfBZPW2XIFlnegA=="
-    //     },
-    //     "ENCONTER_TYPE" : "Create Patient"
-    // }
         var patient = {
             data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
@@ -353,7 +346,12 @@ class FindPatient extends React.Component {
         this.searchPatient(e);
     };
     onCellClicked = event => {
-        this.props.setActivePatient(event.data)
+        if(localStorage.getItem("selectedWorkflow")){
+
+            this.props.setActivePatient(event.data)
+        }else{
+            this.openWorkflowModal()
+        }
     };
 
     onRowSelected = (event) => {

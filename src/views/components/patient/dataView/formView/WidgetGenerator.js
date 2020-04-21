@@ -48,6 +48,8 @@ import AddressWidget from './AddressWidget'
 
 import styles from './fromview.module.css';
 import makeAnimated from 'react-select/animated';
+import ContactTracingWidget from './ContactTracingWidget'
+
 
 const animatedComponents = makeAnimated();
 
@@ -98,7 +100,8 @@ const WidgetGenerator = ({
     type: {
         field: { fieldType: { display }, fieldId, answers, name },
         displayText,
-        mandatory
+        mandatory,
+        children
     },
     setFieldValue,
     values,
@@ -199,14 +202,17 @@ const WidgetGenerator = ({
                 </FormGroup>)
         case CONTACT_TRACING:
             return (
-                <FormGroup>
-                    <div>{name}</div>
-                    <Field
-                        name={fieldId}
-                        type="input"
-                        as={TextField}
+                    <ContactTracingWidget
+                      displayText ={displayText}
+                      name ={name}
+                      country={country}
+                      fieldId={fieldId}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                      values={values}  
+                      children ={children}          
                     />
-                </FormGroup>
             )
         case AGE:
             return (
