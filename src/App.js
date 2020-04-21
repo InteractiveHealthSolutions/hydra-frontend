@@ -49,7 +49,7 @@ import Engine from './views/components/administration/workflowmanagement/ruleeng
 import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
-import {WorkflowFormViewContainer} from './views/components/patient/dataView'
+import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView'
 
 
 const Main = styled.main`
@@ -130,6 +130,7 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/patient/detail" component={PatientDetail} />
                                                 <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <PrivateRoute exact path="/patient/detail/dataview" component={WorkflowFormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataview/form" component={FormViewContainer}/>
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav

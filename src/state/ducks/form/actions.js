@@ -78,8 +78,6 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
     activeComponent = localStorage.getItem("active-component-uuid");
   }
 
-  console.log("componentForms Form vv ", phase, workflow, activeComponent)
-
   StageFormData.ComponentsFormsMap.forEach(element => {
     if (activeComponent === null) {
         if (phase === element.phase.uuid && workflow === element.workflow.uuid) {
@@ -95,7 +93,7 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
 
 export const deleteComponentFormRelation = uuid => async dispatch => {
   console.log(" called");
-  fetch(DELETE, "/hydra/componentform" + uuid)
+  fetch(DELETE, "/hydra/componentform/" + uuid)
     .then(res => dispatch(setDeleteComponentFormRelations(res)))
     .catch(displayError);
 };
