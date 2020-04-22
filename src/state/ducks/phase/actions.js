@@ -41,18 +41,23 @@ export const saveWorkflowPhase = phase => async dispatch =>
 
 const saveWorkflowPhaseAction = payload => ({ type: types.CREATE_WORKFLOW_PHASE, payload })
 
-export const getAllWorkflowPhase = () => async dispatch => {
+export const getAllWorkflowPhase = (filterWith) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/workflowphases")
-    .then(res => { dispatch(getWorkflowPhaseAction(filterPhases(res))) }).catch(displayError)
+    .then(res => { dispatch(getWorkflowPhaseAction(filterPhases(res,filterWith))) }).catch(displayError)
 }
 
 const getWorkflowPhaseAction = payload => ({ type: types.GET_WORKFLOW_PHASE, payload })
 
-function filterPhases(workflowphaseData) {
+function filterPhases(workflowphaseData ,filterWith) {
   let filteredPhases = [];
-  let activeWorkflow = localStorage.getItem('active-workflow-uuid');
-  console.log("workflowphaseData", workflowphaseData, activeWorkflow)
+  let activeWorkflow = ""
+  if(filterWith === "dataview"){
+     activeWorkflow =   localStorage.getItem('selectedWorkflowId');
+  } else{
+     activeWorkflow =   localStorage.getItem('active-workflow-uuid');
+  }
+
   workflowphaseData.workflowPhasesMap.forEach(element => {
     if (activeWorkflow === element.workflowUUID) {
       filteredPhases.push(element);

@@ -113,7 +113,7 @@ class FormBuilder extends React.Component {
   };
 
   returnConceptList = value => {
-    // console.log("returnConceptList", value)
+  //   console.log("returnConceptList", value)
     this.setState({
       currentObject: value
     });
@@ -226,7 +226,6 @@ class FormBuilder extends React.Component {
       formFields: formFieldList,
       retired: formRetiredVal
     }
-    console.log("newform", newform)
     await this.props.saveFormFields(newform)
     await createNotification("success", "Saved Successfully")
     await this.setState({
@@ -349,7 +348,7 @@ class FormBuilder extends React.Component {
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
-        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`),
+        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
@@ -365,7 +364,7 @@ class FormBuilder extends React.Component {
     await this.setState({
       formFieldList: [...this.state.formFieldList, object]
     }, () => {
-      // console.log("setFieldList", this.state.formFieldList);
+      
     })
   }
 

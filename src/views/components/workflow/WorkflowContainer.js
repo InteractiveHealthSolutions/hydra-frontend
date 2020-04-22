@@ -9,6 +9,7 @@ export default function WorkflowContainer() {
     const dispatch = useDispatch();
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [workflowToAdd, setWorkflowToAdd] = useState('')
+  
     useEffect(() => {
         dispatch(workflowAction.getAllWorkflow())
     }, [])

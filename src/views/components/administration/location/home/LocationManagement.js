@@ -254,7 +254,12 @@ class LocationManagement extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
-
+        var array  = this.state.rowData;
+        var existingObj = array.filter(data => data.display == this.state.locationName);
+        if(JSON.stringify(existingObj) != '[]') {
+            createNotification('warning','Location with this name already exist');
+            return;
+        }
         const { country, city, address, locationTag, parentLocation, landmark, locationName, stateProvince, description, activeLocation } = this.state
         let locationForm = {}
         let submit = true;

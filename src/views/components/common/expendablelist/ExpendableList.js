@@ -21,6 +21,7 @@ export const ExpendableList = ({
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
+                <span className="icon-padding" ><i class="fas fa-poll-h gradient"></i></span>
                 <Typography >{title}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails >
