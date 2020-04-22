@@ -97,7 +97,7 @@ export default class QuestionConfiguration extends Component {
     }
 
     onHandleDefaultValue = (ev,name,controlId) => {
-        console.log("Naam dena",JSON.stringify(ev))
+       // console.log("Naam dena",JSON.stringify(ev))
         this.setState({
             [controlId]: ev
         })
@@ -129,8 +129,8 @@ export default class QuestionConfiguration extends Component {
     }
 
     render() {
-        console.log("defaultValue defaultValue", this.state.defaultValue);
-        console.log("coded options", this.props.dataField)
+        //console.log("defaultValue defaultValue", this.state.defaultValue);
+        //console.log("coded options", this.props.dataField)
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,

@@ -68,7 +68,7 @@ function Assets(props) {
     const [activeCurrency, setActiveCurrency] = useState({})
 
     function statusFormatter(params) {
-        console.log("Formater ", params.value);
+       // console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
 
@@ -78,7 +78,7 @@ function Assets(props) {
 
 
     useEffect(() => {
-        console.log("assets List ::", props.assetList)
+       // console.log("assets List ::", props.assetList)
         if (props.assetList !== undefined) {
             setRowData(props.assetList.assets)
         }
@@ -105,7 +105,7 @@ function Assets(props) {
 
     useEffect(() => {
         if (props.setting !== undefined && props.setting.value !== undefined) {
-            console.log("currencyFormatter insdie", props.setting.value)
+           // console.log("currencyFormatter insdie", props.setting.value)
             localStorage.setItem("currency", props.setting.value)
             setActiveCurrency(props.setting)
         }
@@ -126,7 +126,7 @@ function Assets(props) {
     }
 
     async function saveAssets(assetForm) {
-        console.log("assetForm", assetForm);
+       // console.log("assetForm", assetForm);
         await props.saveAsset(assetForm);
         await props.getAllAsset();
         createNotification("success", "Saved successfully")
@@ -138,7 +138,7 @@ function Assets(props) {
             name: assetTypeName,
             assetCategory: assetCategoryName
         }
-        console.log("assetTypeForm", assetTypeForm);
+        //console.log("assetTypeForm", assetTypeForm);
         await props.saveAssetType(assetTypeForm);
         await props.getAllAssetType();
         createNotification("success", "Saved successfully")
@@ -150,7 +150,7 @@ function Assets(props) {
         const assetCategoryForm = {
             name: assetCategoryName,
         }
-        console.log("assetCategoryForm", assetCategoryForm);
+        //console.log("assetCategoryForm", assetCategoryForm);
         await props.saveAssetCategory(assetCategoryForm);
         await props.getAllAssetCategory();
         createNotification("success", "Category Saved successfully")
@@ -189,7 +189,7 @@ function Assets(props) {
                     referenceId: referenceId
                 }
             }
-            console.log("assetForm", assetForm)
+           // console.log("assetForm", assetForm)
             isAssetType ? saveAssetType() : saveAssets(assetForm);
 
         }
@@ -221,7 +221,7 @@ function Assets(props) {
     function onCellClicked(event) {
 
         if (event.colDef.headerName == 'Edit') {
-            console.log("assetType", event.data.assetType ? event.data.assetType.name : "")
+           // console.log("assetType", event.data.assetType ? event.data.assetType.name : "")
             setModalTitle("Edit Asset")
             setActionType('EditAsset')
             setActiveAssets(event.data)
@@ -280,7 +280,7 @@ function Assets(props) {
 
     async function populateDropDown() {
         let array = [];
-        console.log("populateDropDown ", availableAssetType)
+       // console.log("populateDropDown ", availableAssetType)
         await availableAssetType.forEach(element => {
             array.push(
                 <option value={element.uuid}>{element.name}</option>
@@ -292,7 +292,7 @@ function Assets(props) {
 
     function populateCategoryDropDown() {
         let array = [];
-        console.log("populateDropDown ", availableAssetCategory)
+       // console.log("populateDropDown ", availableAssetCategory)
         availableAssetCategory.forEach(element => {
             array.push(
                 <option value={element.uuid}>{element.name}</option>

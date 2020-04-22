@@ -96,11 +96,11 @@ class FormBuilder extends React.Component {
   };
 
   onItemSelectedFunc = val => {
-    console.log("quesion selected", val)
+   // console.log("quesion selected", val)
   };
 
   returnConceptList = value => {
-    console.log("returnConceptList", value)
+   // console.log("returnConceptList", value)
     this.setState({
       currentObject: value
     });
@@ -127,7 +127,7 @@ class FormBuilder extends React.Component {
   }
 
   formatFieldItem(element) {
-    console.log("formatFieldItem", element)
+   // console.log("formatFieldItem", element)
     return {
       label: element.field ? element.field.name : element.field,
       value: element.field ? element.field.name : element.field,
@@ -163,12 +163,12 @@ class FormBuilder extends React.Component {
         array.push(this.formatFieldItem(element));
       });
     }
-    console.log("editFormListFormat", array)
+    //console.log("editFormListFormat", array)
     return array
   }
 
   async componentWillReceiveProps(nextProps) {
-    console.log("formObject", nextProps.formObject)
+    //console.log("formObject", nextProps.formObject)
     if (nextProps.questionList !== undefined) {
       await this.setState({
         questionListItem: nextProps.questionList
@@ -191,7 +191,7 @@ class FormBuilder extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("componentWillUnmount", "called")
+    //console.log("componentWillUnmount", "called")
     this.removeLocalStorage();
   }
 
@@ -227,7 +227,7 @@ class FormBuilder extends React.Component {
       formFields: formFieldList,
       retired: formRetiredVal
     }
-    console.log("newform", newform)
+    //console.log("newform", newform)
     await this.props.saveFormFields(newform)
     await createNotification("success", "Saved Successfully")
     await this.setState({
@@ -305,7 +305,7 @@ class FormBuilder extends React.Component {
     await this.setState({
       formFieldList: [...this.state.formFieldList, object]
     }, () => {
-      console.log("setFieldList", this.state.formFieldList);
+      ///console.log("setFieldList", this.state.formFieldList);
     })
 
   }
@@ -313,7 +313,7 @@ class FormBuilder extends React.Component {
   deleteOption = (e, key) => {
     var array = [...this.state.definedOptions];
     array = array.filter(item => item.key !== key);
-    console.log("array", array);
+    //console.log("array", array);
     this.setState({ definedOptions: array });
   };
 
@@ -323,7 +323,7 @@ class FormBuilder extends React.Component {
   }
 
   onDragStart = (ev, uuid) => {
-    console.log("onDrag start", ev)
+    //console.log("onDrag start", ev)
     ev.dataTransfer.setData('id', uuid)
   }
   handleExpandClick = (ev, category) => {
@@ -331,7 +331,7 @@ class FormBuilder extends React.Component {
   };
 
   handleDelete = (ev) => {
-    console.log("handle delete :: ", ev)
+    //("handle delete :: ", ev)
     this.setState({
       addFormList: this.state.addFormList.filter(data => data.uuid !== ev)
     })
@@ -362,7 +362,7 @@ class FormBuilder extends React.Component {
         formName: e.value
       })
     }
-    console.log("encounter type selected value :", e)
+   // console.log("encounter type selected value :", e)
   }
   openModall = () => {
     this.setState({

@@ -79,7 +79,7 @@ class Roles extends React.Component {
 
     }
     onCellClicked = (event) => {
-        console.log('event ' + event.data.uuid)
+       // console.log('event ' + event.data.uuid)
         if (event.column.colId == 'edit') {
             this.setState({
                 openAddRoleModal: true, forEdit: true, selectedUUID: event.data.uuid

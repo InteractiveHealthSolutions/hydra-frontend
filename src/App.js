@@ -84,7 +84,7 @@ class App extends React.Component {
     }
 
     toggleSidebar = (navigateTo) => {
-        console.log("navigateTo", navigateTo)
+        //console.log("navigateTo", navigateTo)
     }
 
     onToggle = (expanded) => {

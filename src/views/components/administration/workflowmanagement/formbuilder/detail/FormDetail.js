@@ -39,7 +39,7 @@ function FormDetail(props) {
     const [rowData, setRowData] = useState([]);
 
     function statusFormatter(params) {
-        console.log("Formater ", params.value);
+       // console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
 
@@ -60,12 +60,12 @@ function FormDetail(props) {
 
 
     function onRowSelected(event) {
-        console.log('onRowSelected: ' + event.node.data);
+       // console.log('onRowSelected: ' + event.node.data);
     };
 
     function onCellClicked(formdata) {
         if (formdata.colDef.headerName == 'Edit') {
-            console.log("form data :: ", formdata.data)
+           // console.log("form data :: ", formdata.data)
             localStorage.setItem("active_form", JSON.stringify(formdata.data))
             history.push('/administration/form/create')
             // props.nextStep();

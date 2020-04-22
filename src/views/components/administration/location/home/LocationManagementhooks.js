@@ -64,7 +64,7 @@ function LocationManagement(props) {
     useEffect(() => {
 
         let edite = document.getElementsByClassName('edite');
-        console.log("edite docmuentdddd ",edite);
+        //console.log("edite docmuentdddd ",edite);
         for (let i = 0; i < edite.length; i++)
             edite[i].addEventListener("click",function(event) {
                 event.preventDefault();
@@ -75,12 +75,12 @@ function LocationManagement(props) {
 
     useEffect(() => {
         if (props.locationLists !== undefined) {
-            console.log("locationLists", props.locationLists);
+           /// console.log("locationLists", props.locationLists);
             setRowData(props.locationLists.results)
         }
 
         let edite = document.getElementsByClassName('edite');
-        console.log("edite docmuent ",edite);
+      //  console.log("edite docmuent ",edite);
 
     }, [props.locationLists])
 
@@ -99,7 +99,7 @@ function LocationManagement(props) {
 
     function onRowSelected(event) {
 
-        console.log('onRowSelected: ' + event.node.data);
+       // console.log('onRowSelected: ' + event.node.data);
     };
 
     function onCellClicked(event) {
@@ -130,7 +130,7 @@ function LocationManagement(props) {
         closeModal();
     }
     function handleChange(e) {
-        console.log("prope", e.target.name);
+      //  console.log("prope", e.target.name);
         switch (e.target.name) {
             case "locationName":
                 setLocationToAdd(e.target.value);

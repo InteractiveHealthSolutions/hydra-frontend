@@ -9,7 +9,7 @@ import { LoaderDots } from '../../../../../common/loader/LoaderDots'
 class AutoSearchComplete extends Component {
   constructor(props, context) {
     super(props, context);
-    console.log("Prop", props.value);
+   // console.log("Prop", props.value);
     // Set initial State
     this.state = {
       // Current value of the select field
@@ -90,13 +90,13 @@ class AutoSearchComplete extends Component {
     list.forEach(element => {
       array.push(this.formatFieldItem(element));
     });
-    console.log("formatFieldList", array)
+   // console.log("formatFieldList", array)
     return array;
   }
 
 
   formatFieldItem(element) {
-    console.log("formatFieldItem", element)
+  //  console.log("formatFieldItem", element)
     return {
       label: element.field.display ? element.field.display : element.field,
       value: element.field.display ? element.field.display : element.field,
@@ -109,7 +109,7 @@ class AutoSearchComplete extends Component {
   }
 
   formatItem(element) {
-    console.log("formatItem", element)
+    //console.log("formatItem", element)
     return {
       label: element.person.display ? element.person.display : element,
       value: element.person.display ? element.person.display : element,
@@ -177,9 +177,9 @@ class AutoSearchComplete extends Component {
     });
 
     if (this.props.searchFor === "Workforce") {
-      console.log("onSelect", val);
+     // console.log("onSelect", val);
       const o = this.state.autocompleteData.filter(option => option.value == val);
-      console.log("onSelect", o);
+     // console.log("onSelect", o);
       if (o) {
         await this.setState({ returnData: o[0] });
         this.props.onItemSelectedProp(o[0]);

@@ -371,7 +371,7 @@ class FormBuilder extends React.Component {
   deleteOption = (e, key) => {
     var array = [...this.state.definedOptions];
     array = array.filter(item => item.key !== key);
-    console.log("array", array);
+    //console.log("array", array);
     this.setState({ definedOptions: array });
   };
 

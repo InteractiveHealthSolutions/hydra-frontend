@@ -189,13 +189,13 @@ class LocationManagement extends React.Component {
 
     onRowSelected = (event) => {
 
-        console.log('onRowSelected: ' + event.node.data);
+       // console.log('onRowSelected: ' + event.node.data);
     };
 
     onCellClicked = (event) => {
 
         if (event.colDef.headerName === 'Edit') {
-            console.log("data", event.data)
+          //  console.log("data", event.data)
             this.setState({
                 locationName: event.data.display,
                 address: event.data.address1,
@@ -336,7 +336,7 @@ class LocationManagement extends React.Component {
     }
 
     handleChange(e) {
-        console.log("prope", e.target.value);
+       // console.log("prope", e.target.value);
         this.setState({
             [e.target.name]: e.target.value
         })
@@ -424,7 +424,7 @@ class LocationManagement extends React.Component {
         await this.props.getAllLocation();
     }
     async handleChangeLocationTag(params) {
-        console.log('params ' + JSON.stringify(params))
+       // console.log('params ' + JSON.stringify(params))
         await this.setState({
             locationTag: params
         })

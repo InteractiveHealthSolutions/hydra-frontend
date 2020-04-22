@@ -30,7 +30,7 @@ export class DraggedFormItem extends Component {
   render() {
 
     const { data, key, editeMood } = this.props;
-    console.log("dragged data", data)
+    ///console.log("dragged data", data)
     return (
       <li
         key={data.uuid}
