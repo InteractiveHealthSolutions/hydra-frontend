@@ -26,7 +26,7 @@ class PatientDetail extends React.Component {
         this.closeGeneralActionsModal = this.closeGeneralActionsModal.bind(this);
     }
     componentDidMount() {
-        console.log("patient detail :", this.currentPatient.identifier)
+        console.log("patient detail :", this.currentPatient)
     }
     openModal() {
         this.setState({ openModal: true });
@@ -48,7 +48,7 @@ class PatientDetail extends React.Component {
                 <CardTemplate
                     title={this.currentPatient.given + " " + this.currentPatient.familyname}
                     subTitle={
-                        this.currentPatient.gender != "M" ? "Female" : "Male" +
+                            this.currentPatient.gender +
                             " - " + this.currentPatient.age + " year(s) (" + this.currentPatient.birthday + ")" +
                             " -  Identifier (" + this.currentPatient.identifier + ")"
                     }
