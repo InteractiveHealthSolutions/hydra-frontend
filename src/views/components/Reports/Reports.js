@@ -327,7 +327,7 @@ class Reports extends React.Component {
 
         }
         var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD'); 
-		if(this.state.selectedWorkflow != ''){
+		if(this.state.currentReport == 'encounters' || this.state.currentReport == 'patients'){
 			parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow;
 		}
 		
@@ -643,7 +643,7 @@ class Reports extends React.Component {
                                                 {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                         </tr>
                                         {this.state.currentReport == 'patients' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
+                                            <tr style={{ backgroundColor: "#b1bfc4" }}>
                                                 <td></td>
                                                 <td colSpan={3}>
                                                     Additional Filters
@@ -705,7 +705,7 @@ class Reports extends React.Component {
                                                 {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                         </tr>
                                         {this.state.currentReport == 'encounters' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
+                                            <tr style={{ backgroundColor: "#b1bfc4" }}>
                                                 <td></td>
                                                 <td colSpan={3}>
                                                     Additional Filters
