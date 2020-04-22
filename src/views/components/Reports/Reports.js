@@ -373,7 +373,7 @@ class Reports extends React.Component {
     render() {
         return (
             <CardTemplate
-                title={	
+                /*title={	
                     <div className="row">
 					
                         <div className="col-sm-2">
@@ -439,9 +439,9 @@ class Reports extends React.Component {
                         </div>
 
                     </div>
-                }
+                }*/
             >
-                <div className="row">
+			{/*<div className="row">
                     <div className="col-sm-12">
                         <div className="card inner-card">
                             <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
@@ -477,7 +477,7 @@ class Reports extends React.Component {
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
 
                                         {this.state.currentReport == 'facilityPatients' &&
@@ -499,7 +499,7 @@ class Reports extends React.Component {
                                                 </button>
                                                 <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'disaggregationPatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -525,7 +525,7 @@ class Reports extends React.Component {
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'diagnosedTbPatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -550,7 +550,7 @@ class Reports extends React.Component {
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'presumptivePatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -569,15 +569,14 @@ class Reports extends React.Component {
                         </div>
                     </div>
                 </div>
+	*/}
 				
-				
-				<div className="row">
+				{/*<div className="row">
 					
                         <div className="col-sm-2">
-							<br/>
 							<b>Dumps</b>
 						</div>	
-				</div>
+				</div>*/}
 
 				<div className="row" align="center">
 
@@ -635,7 +634,7 @@ class Reports extends React.Component {
                                                 Patients
                                                 </td>
                                             <td>
-                                                This is a report
+                                                Dumps for patient data in selected workflow
                                                 </td>
                                             <td align="center">
                                                 <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
@@ -661,7 +660,7 @@ class Reports extends React.Component {
                                                 Providers
                                                 </td>
                                             <td>
-                                                This is a report
+                                                Dumps for provider/user data
                                                 </td>
                                             <td align="center">
                                                 <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
@@ -678,7 +677,8 @@ class Reports extends React.Component {
                                                 Locations
                                                 </td>
                                             <td>
-                                                This is a report
+																																		Dumps for locations data
+
                                                 </td>
                                             <td align="center">
                                                 <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
@@ -695,7 +695,8 @@ class Reports extends React.Component {
                                                 Encounters
                                                 </td>
                                             <td>
-                                                This is a report
+																																		Dumps for all encounters entered in selected wokflow
+
                                                 </td>
                                             <td align="center">
                                                 <button onClick={e => this.downloadDump('zip')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
