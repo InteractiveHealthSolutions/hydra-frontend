@@ -6,13 +6,18 @@ import {
     FormGroup,
 }
     from '@material-ui/core'
+import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate' 
+
 export default function AddressWidget({
     fieldId,
     setFieldValue,
     errors,
     touched,
     country,
-    values
+    values,
+    displayText,
+    name,
+    mandatory
 }) {
 
     const [dumy, setDumy] = useState([])
@@ -52,7 +57,9 @@ export default function AddressWidget({
   
 
     return (
-        <>
+        <CardTemplate
+         title ={<label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>}
+        >
             <FormGroup>
                 <label>Country</label>
                 <CustomSelect
@@ -115,6 +122,6 @@ export default function AddressWidget({
                     onChange={value => setFieldValue(fieldId + "-landmark", value.target.value)}
                 />
             </FormGroup>
-        </>
+        </CardTemplate>
     )
 }
