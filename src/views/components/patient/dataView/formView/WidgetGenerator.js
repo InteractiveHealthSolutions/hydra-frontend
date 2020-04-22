@@ -1,7 +1,5 @@
 import React from 'react'
-import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
-import * as Yup from 'yup'
-import DateFnsUtils from '@date-io/date-fns';
+
 import {
     Formik,
     Field,
@@ -41,59 +39,13 @@ import {
     AGE,
     ADDRESS
 } from '../../../../../utilities/constants/globalconstants'
-import DatePicker from "react-datepicker";
-
 import CustomSelect from './CustomSelect'
 import AddressWidget from './AddressWidget'
-
 import styles from './fromview.module.css';
-import makeAnimated from 'react-select/animated';
 import ContactTracingWidget from './ContactTracingWidget'
-
-
-const animatedComponents = makeAnimated();
-
-const CustomRadioButton = ({ label, ...props }) => {
-    const [field] = useField(props);
-    return <FormControlLabel {...field} control={<Radio />} label={label} />;
-};
-
-
-
-const CustomTextField = ({
-    placeholder,
-    ...props
-}) => {
-    const [field, meta] = useField(props)
-    const errorText = meta.error && meta.touched ? meta.error : "";
-    return (
-
-        <TextField
-            placeholder={placeholder}
-            {...field}
-            helperText={errorText}
-            error={!!errorText}
-            className="form-control"
-        />
-    );
-};
-
-
-export const DatePickerField = ({ ...props }) => {
-    const { setFieldValue } = useFormikContext();
-    const [field] = useField(props);
-    return (
-        <DatePicker
-            {...field}
-            {...props}
-            className="form-control"
-            selected={(field.value && new Date(field.value)) || null}
-            onChange={val => {
-                setFieldValue(field.name, val);
-            }}
-        />
-    );
-};
+import {DatePickerField} from './DatePickerField'
+import {CustomRadioButton} from './CustomRadioButton'
+import {HeadingWidget} from './HeadingWidget'
 
 
 const WidgetGenerator = ({
@@ -184,22 +136,25 @@ const WidgetGenerator = ({
             )
         case HEADING:
             return (
-                <FormGroup>
-                    <div className={styles.heading_}> {displayText ? displayText : name}</div>
-                </FormGroup>)
+                    <HeadingWidget 
+                        displayText ={displayText}
+                        name = {name}
+                    />
+                )
         case ADDRESS:
             return (
-                <FormGroup>
-                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    <AddressWidget
-                        country={country}
-                        fieldId={fieldId}
-                        setFieldValue={setFieldValue}
-                        errors={errors}
-                        touched={touched}
-                        values={values}
-                    />
-                </FormGroup>)
+                        <AddressWidget
+                            country={country}
+                            fieldId={fieldId}
+                            setFieldValue={setFieldValue}
+                            errors={errors}
+                            touched={touched}
+                            values={values}
+                            mandatory ={mandatory}
+                            displayText ={displayText}
+                            name ={name}
+                        />
+                    )
         case CONTACT_TRACING:
             return (
                     <ContactTracingWidget
@@ -228,7 +183,7 @@ const WidgetGenerator = ({
         case DATE_TIME_PICKER:
             return (
                 <FormGroup>
-                    <div>{displayText ? displayText : name}</div>
+                    <label>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
                 </FormGroup>
             )

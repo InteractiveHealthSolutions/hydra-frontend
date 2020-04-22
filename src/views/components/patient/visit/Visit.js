@@ -141,7 +141,7 @@ class Visits extends React.Component {
                                     <div className="form-group row">
                                         <label className="col-form-label col-sm-4 " >{value.concept.display}</label>
                                         <div className="col-sm-8">
-                                            <input type="text" className="form-control" name="name" value={value.value.display != undefined ? value.value.display : value.value} disabled />
+                                          <input type="text" className="form-control" name="name" value={(value !== undefined && value.display !== undefined) ? value.display : value} disabled />
                                         </div>
                                     </div>
                                 )
