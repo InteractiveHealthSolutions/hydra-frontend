@@ -580,6 +580,7 @@ class Reports extends React.Component {
 
 				<div className="row" align="center">
 
+					<b align="center">&nbsp;&nbsp;&nbsp;&nbsp;Filters: </b>							
 					<div className="col-sm-2">
                             <div className="row filter-label required">
                                 Start Date
