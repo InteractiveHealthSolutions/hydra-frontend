@@ -281,6 +281,12 @@ class UserList extends React.Component {
     }
     async handleSubmit(e) {
         e.preventDefault();
+        var array  = this.state.rowData;
+        var existingObj = array.filter(data => data.display == this.state.user.username);
+        if(JSON.stringify(existingObj) != '[]' && !this.state.forEdit) {
+            createNotification('warning','User with this name already exist');
+            return;
+        }
         const { user } = this.state;
         if(user.retire == true) {
             await this.props.deleteUser(this.state.activeuserUUID);
@@ -332,10 +338,11 @@ class UserList extends React.Component {
                     }
                 }
                 else {
+                    alert(user.isProvider);
+                    alert(user.provider);
                     if(user.password=='') {
                         await console.log('submitt '+JSON.stringify(user))
                         await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
-                        
                     }
                     else {
                         await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
