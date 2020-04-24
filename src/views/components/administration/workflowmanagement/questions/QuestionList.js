@@ -628,6 +628,10 @@ class QuestionList extends React.Component {
     }
     async onCellClicked(event) {
         if (event.column.colId === "edit") {
+            if(event.data.description == 'Default field required by Hydra') {
+                createNotification('info','Default fields are not editable');
+                return;
+            }
             await this.setState({ definedOptions: [] });
             await this.setState({ widgetsToShowEdit: [] });
             if (event.data.fieldType.display == 'Single Select Dropdown' ||
@@ -823,7 +827,7 @@ class QuestionList extends React.Component {
                                 title="Description"
                                 onItemSelectedProp={this.onItemSelectedFunc}
                             ></TextArea>
-                            {this.state.textBoxSelected ? (
+                            {/* {this.state.textBoxSelected ? (
                                 <>
                                     <TextBox
                                         controlId="characters"
@@ -834,7 +838,7 @@ class QuestionList extends React.Component {
                                 </>
                             ) : (
                                     ""
-                                )}
+                                )} */}
 
                             {this.state.selectableSelected ? (
                                 <div

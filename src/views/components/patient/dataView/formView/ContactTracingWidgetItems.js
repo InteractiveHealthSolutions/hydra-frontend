@@ -1,34 +1,13 @@
 import React from 'react'
 import { CustomInput } from './CustomInput'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
-import DatePicker from "react-datepicker";
-import {
-    useField,
-    useFormikContext
-}
-    from 'formik'
+import {DatePickerField} from './DatePickerField'
+
 import {
     FormGroup,
 }
     from '@material-ui/core'
 
-export const DatePickerField = ({ ...props }) => {
-    const { setFieldValue } = useFormikContext();
-    const [field] = useField(props);
-    return (
-        <DatePicker
-            {...field}
-            {...props}
-            className="form-control"
-            showMonthDropdown
-            showYearDropdown 
-            selected={(field.value && new Date(field.value)) || null}
-            onChange={val => {
-                setFieldValue(field.name, val);
-            }}
-        />
-    );
-};
 
 export const ContactTracingWidgetItems =
     ({
