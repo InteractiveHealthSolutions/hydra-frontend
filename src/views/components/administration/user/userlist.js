@@ -338,8 +338,6 @@ class UserList extends React.Component {
                     }
                 }
                 else {
-                    alert(user.isProvider);
-                    alert(user.provider);
                     if(user.password=='') {
                         await console.log('submitt '+JSON.stringify(user))
                         await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
@@ -348,11 +346,11 @@ class UserList extends React.Component {
                         await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
                     }
                     if(user.isProvider && user.provider == 'no') {
-                        this.props.deleteProvider(user.currentProvider.uuid);
-                     }
-                     if(!user.isProvider && user.provider == 'yes') {
-                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
-                     }
+                        await this.props.deleteProvider(user.currentProvider.uuid);
+                    }
+                    if((!user.isProvider && user.provider == 'yes') || (user.provider && user.provider == 'yes')) {
+                        await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                    }
                    
                     await this.setState({ forEdit: false ,retire:false});
                 }
