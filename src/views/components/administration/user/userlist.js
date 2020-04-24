@@ -338,8 +338,8 @@ class UserList extends React.Component {
                     }
                 }
                 else {
-                    alert(user.isProvider);
-                    alert(user.provider);
+                    //alert(user.isProvider);
+                    //alert(user.provider);
                     if(user.password=='') {
                         await console.log('submitt '+JSON.stringify(user))
                         await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
