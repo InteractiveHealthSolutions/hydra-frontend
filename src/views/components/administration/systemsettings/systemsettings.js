@@ -183,14 +183,15 @@ class SystemSetting extends React.Component {
                 date: '',
                 country: '',
                 currency: '',
-                defaultValueCountry : {
-                    'label' : '',
-                    'value' : ''
-                },
+               
                 defaultValueCurrency : {
                     "label" : "",
                     "value" : ""
                 }
+            },
+            defaultCountry: {
+                "label": "",
+                "value": ""
             },
             colorCountryError: false,
             colorCurrencyError: false,
@@ -233,19 +234,23 @@ class SystemSetting extends React.Component {
         await this.setState({
             formData: {
                 ...this.state.formData,
-                country: this.props.setting.value
-                
+               // country: this.props.setting.value,
+                defaultValueCountry : {
+                    "label" : this.props.setting.value,
+                    "value" : this.props.setting.value
+                }
             },
-            defaultValueCountry : {
-                "label" : this.state.country,
-                "value" : this.props.setting.value
+            defaultCountry: {
+                "label": this.props.setting.value,
+                "value": this.props.setting.value
             }
+          
         });
         await this.props.getSettingsByUUID('5a74a10b-3eae-43f6-b019-d0823e28ead1');
         await this.setState({
             formData: {
                 ...this.state.formData,
-                currency: this.props.setting.value,
+               // currency: this.props.setting.value,
                 defaultValueCurrency : {
                     "label" : this.props.setting.value,
                     "value" : this.props.setting.value
@@ -253,7 +258,8 @@ class SystemSetting extends React.Component {
             }
             
         });
-        await console.log('dataaaa '+this.state.exampleExpression)
+        await console.log('dataaaa '+this.state.exampleExpression);
+        await console.log('form data '+JSON.stringify(this.state.formData.defaultValueCountry));
     }
     handleChangeCountry = country => {
         const {formData} = this.state;
@@ -290,7 +296,12 @@ class SystemSetting extends React.Component {
     }
     async handleSubmit(e) {
         e.preventDefault();
-        if(this.state.formData.country == '') {
+        if(this.state.formData.country == '' && this.state.formData.currency == '') {
+           this.setState({colorCountryError:true});
+           this.setState({colorCurrencyError:true});
+           return;
+        }
+        else if(this.state.formData.country == '') {
           this.setState({colorCountryError:true});
           return;
         }
@@ -369,9 +380,11 @@ class SystemSetting extends React.Component {
                                                 <div className="col-sm-8">
                                                     <Select
                                                         //components={animatedComponents}
-                                                        options={this.countryOptions}
+                                                        options={this.state.countryOptions}
                                                         onChange={this.handleChangeCountry}
-                                                        defaultValue={this.state.defaultValueCountry}
+                                                        defaultValue={{"label" : this.state.formData.country,
+                                                                       "value" : this.state.formData.country
+                                                                    }}
 
                                                         name="country"
                                                         styles={{
