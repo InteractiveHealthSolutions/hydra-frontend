@@ -155,6 +155,7 @@ const WidgetGenerator = ({
                 )
         case ADDRESS:
             return (
+                  
                         <AddressWidget
                             country={country}
                             fieldId={fieldId}
@@ -166,6 +167,7 @@ const WidgetGenerator = ({
                             displayText ={displayText}
                             name ={name}
                         />
+                        
                     )
         case CONTACT_TRACING:
             return (

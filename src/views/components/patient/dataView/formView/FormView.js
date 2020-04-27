@@ -7,6 +7,7 @@ import {
     Formik,
 }
     from 'formik'
+import { ADDRESS } from '../../../../../utilities/constants/globalconstants';
 
 
 
@@ -14,7 +15,17 @@ import {
 const FormView = ({ form: { field, name, formFields }, country }) => {
     const initialValues = {};
     formFields.forEach(item => {
-        initialValues[item.field.fieldId] = "";
+        const fieldName = item.field.fieldId
+        const fieldType = item.field.attributeName
+        if(fieldType === ADDRESS){
+            initialValues[fieldName+"-country"] = "";
+            initialValues[fieldName+"-province"] = "";
+            initialValues[fieldName+"-city"] = "";
+            initialValues[fieldName+"-address"] = "";
+        }else{
+            initialValues[item.field.fieldId] = "";
+        }
+
     });
 
     const yepSchema = formFields.reduce(CreateYupSchema, {});
