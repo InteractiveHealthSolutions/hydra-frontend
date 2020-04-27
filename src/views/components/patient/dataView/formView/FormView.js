@@ -1,7 +1,7 @@
 import React from 'react'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 import WidgetGenerator from './WidgetGenerator'
-import { CreateYupSchema } from './CreateYupSchema'
+import { CreateYupSchema, FormValidation } from './CreateYupSchema'
 import * as yup from "yup";
 import {
     Formik,
@@ -24,7 +24,10 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
 
         <Formik
             initialValues={initialValues}
-            validationSchema={validateSchema}
+            // validationSchema={validateSchema}
+            validate ={(values) => {
+                return FormValidation(formFields ,values)
+            }}
             onSubmit={(data) => {
                 console.log(data)
             }}
@@ -66,7 +69,8 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
                             )) : null
 
                         }
-                        {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
+                          <pre>{JSON.stringify(values, null, 2)}</pre>
+                        <pre>{JSON.stringify(errors, null, 2)}</pre>
                     </CardTemplate>
                 </form>
             )}

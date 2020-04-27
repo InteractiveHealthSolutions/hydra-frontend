@@ -15,3 +15,6 @@
 .radio_ {
   color: var(--bg) !important;
 }
+.error{
+  color: red;
+}

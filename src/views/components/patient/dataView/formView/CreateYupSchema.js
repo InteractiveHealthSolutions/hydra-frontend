@@ -20,3 +20,16 @@ export function CreateYupSchema(schema, config) {
     return schema;
 }
 
+export function FormValidation(questionList, formValues){
+   const errors = {}
+   questionList.forEach(items => {
+        const fieldName = items.field.fieldId
+        console.log("Form-Field",items.mandatory, fieldName,formValues[fieldName])
+        if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null )){
+                errors[fieldName] = items.errorMessage?items.errorMessage :"Field is required"
+        }
+    })  
+
+    return errors
+}
+

@@ -80,6 +80,9 @@ const WidgetGenerator = ({
                         className='form-control'
                         onChange={value => setFieldValue(fieldId, value.target.value)}
                     />
+                    {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         case SINGLE_SELECT_DROPDOWN:
@@ -100,6 +103,9 @@ const WidgetGenerator = ({
                         isMulti={false}
 
                     />
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }                  
                 </FormGroup>
             )
         case SINGLE_SELECT_RADIOBUTTON:
@@ -111,6 +117,9 @@ const WidgetGenerator = ({
                             <CustomRadioButton name={fieldId} type="radio" value={element.uuid} label={element.concept.display} />
                         ))
                     }
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                     }
                 </FormGroup>
             )
         case MULTIPLE_CHOICE:
@@ -132,6 +141,9 @@ const WidgetGenerator = ({
                         isMulti={true}
 
                     />
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         case HEADING:
@@ -185,6 +197,9 @@ const WidgetGenerator = ({
                 <FormGroup>
                     <label>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
+                    {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         default:
