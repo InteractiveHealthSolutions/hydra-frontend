@@ -122,9 +122,10 @@ export default function FormBuilderCard(props) {
         <CardContent>
           <QuestionConfiguration
             datatype={props.data.dataType}
-            data={props.data.answers}
+            answers={props.data.answers}
             uuid={props.data.uuid}
             dataField={props.data}
+            editeMood ={props.editeMood}
           />
         </CardContent>
       </Collapse>

@@ -54,16 +54,16 @@ export default class QuestionConfiguration extends Component {
 
         }
 
-     console.log("QuestionConfiguration", this.props.data);
+     console.log("QuestionConfiguration", this.props.answers);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
     async setDefaultValue() {
-console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
+      //console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
         await this.setState({
-            defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)) : "",
+            defaultValue: this.setDefault(),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
             allowCharacter: localStorage.getItem(`${this.props.uuid}-allowCharacter`),
             questionText: localStorage.getItem(`${this.props.uuid}-questionText`),
@@ -94,6 +94,16 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
             disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
         }, () => {
         })
+    }
+
+    setDefault(){
+       return this.props.editeMood?
+           this.props.answers?
+             this.props.answers.filter(el=> el.uuid === localStorage.getItem(`${this.props.uuid}-defaultValue`))
+             .map(data => ({
+                label:data.concept.display,
+                value:data.uuid
+            })):"" :localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)):"" 
     }
 
     onHandleDefaultValue = (ev,name,controlId) => {
@@ -129,8 +139,6 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
     }
 
     render() {
-        console.log("defaultValue defaultValue", this.state.defaultValue);
-        console.log("coded options", this.props.dataField)
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
@@ -243,7 +251,7 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
                                         name={uuid + "-defaultValue"}
                                         value={defaultValue}
                                         onChange={(evt)=> this.onHandleDefaultValue(evt,uuid + "-defaultValue","defaultValue" )}
-                                        options={this.props.data.map((option) =>(
+                                        options={this.props.answers.map((option) =>(
                                             {
                                                 label:option.concept.display,
                                                 value:option.uuid

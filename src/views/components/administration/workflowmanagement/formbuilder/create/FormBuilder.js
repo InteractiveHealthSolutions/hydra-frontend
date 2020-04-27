@@ -151,7 +151,7 @@ class FormBuilder extends React.Component {
       dataType: element.field ? element.field.attributeName : "",
       uuid: element.field ? element.field.uuid : "",
       controlId: this.props.controlId,
-      answers: element.answers ? element.answers : [],
+      answers:element.field.answers ? element.field.answers : [],
       formFieldId: element.formFieldId,
       displayOrder: element.displayOrder,
       minOccurrence: element.minOccurrence,
@@ -168,7 +168,7 @@ class FormBuilder extends React.Component {
       scoreable: element.scoreable,
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
-      defaultValue: element.defaultValue,
+      defaultValue:element.defaultValue,
       regix: element.regix,
       disabled: element.disabled,
       editeMood: false
