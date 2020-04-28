@@ -349,7 +349,8 @@ class UserList extends React.Component {
                         await this.props.deleteProvider(user.currentProvider.uuid);
                     }
                     if((!user.isProvider && user.provider == 'yes') || (user.provider && user.provider == 'yes')) {
-                        await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
+                         await this.props.deleteProvider(user.currentProvider.uuid);
+                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
                     }
                    
                     await this.setState({ forEdit: false ,retire:false});
