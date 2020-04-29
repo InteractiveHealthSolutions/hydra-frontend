@@ -9,9 +9,10 @@ import { encountersAction } from '../../../../state/ducks/encounters';
 
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-import './visit.css';
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
+import './visit.css';
+
 
 class Visits extends React.Component {
 
@@ -40,6 +41,9 @@ class Visits extends React.Component {
                     headerName: "Enterer", field: "enterer", width: 200
                 },
                 {
+                    headerName: "isAutomated", field: "isAutomated", width: 200 , hide:true
+                },
+                {
                     headerName: "View",
                     field: "view",
                     template:
@@ -54,6 +58,12 @@ class Visits extends React.Component {
 
 
             ],
+            rowClassRules: {
+              "qxr-row": function(params) {
+                  'data.isAutomated == true'
+                  return true;
+            }
+        },
             rowData: [],
             openViewModal: false,
             activePatient: JSON.parse(localStorage.getItem('active-patient'))
@@ -64,6 +74,7 @@ class Visits extends React.Component {
     static propTypes = {
         encountersList: PropTypes.array.isRequired
     }
+    
     async componentDidMount() {
         await this.props.getEncountersForAPatient(this.state.activePatient.uuid);
         await console.log('encounters ' + JSON.stringify(this.props.encountersList))
@@ -76,6 +87,8 @@ class Visits extends React.Component {
         }
     }
     async onCellClicked(event) {
+        alert(JSON.stringify(this.state.rowClassRules))
+        alert(JSON.stringify(event.data.isAutomated))
         if (event.column.colId == 'view') {
             await this.setState({ obs: event.data.obs, openViewModal: true })
         }
@@ -91,11 +104,12 @@ class Visits extends React.Component {
                 data.push({
                     "visit": element.visit == null ? 'None' : element.visit,
                     "view": "view",
-                    "encounterDate": element.encounterDatetime != null ? moment(element.encounterDatetime).format("YYYY_MM_DD") : "",
+                    "encounterDate": element.encounterDatetime != null ? moment(element.encounterDatetime).format("YYYY-MM-DD") : "",
                     "encounterType": element.encounterType.display,
                     "providers": providers.slice(0, -1),
-                    "location": element.location.display,
+                    "location": element.location != null ? element.location.display : '',
                     "enterer": element.auditInfo.creator.display,
+                    "isAutomated":element.auditInfo.creator.display == 'QXR-user'?true:false,
                     "obs": element.obs
                 })
             });
@@ -113,20 +127,26 @@ class Visits extends React.Component {
         window.onresize = () => {
             this.gridApi.sizeColumnsToFit();
         }
+        
+
+        
     }
+    
+   
     render() {
-        const { columnDefs, rowData } = this.state
+        const { columnDefs, rowData ,rowClassRules} = this.state
         return (
-            <>
+            <div className = "test">
                 <CardTemplate
                     title="Patient Visits"
                 >
                     <AgGrid
                         onGridReady={this.onGridReady}
                         columnDefs={columnDefs}
-                        onRowSelected={this.onRowSelected}
                         rowData={rowData}
+                        rowAnimation
                         onCellClicked={event => { this.onCellClicked(event) }}
+                        rowClassRules={rowClassRules}
                     />
 
                 </CardTemplate>
@@ -151,7 +171,7 @@ class Visits extends React.Component {
                     <Modal.Footer>
                     </Modal.Footer>
                 </Modal>
-            </>
+            </div>
 
             // <div className="row container-fluid l-main-container">
             //     <div className="card fp-header" style={{ marginTop: '100px', marginLeft: '30px' }}>
