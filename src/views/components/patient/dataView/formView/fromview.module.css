@@ -18,3 +18,15 @@
 .error{
   color: red;
 }
+.extra_padding_margin_right{
+  margin-right: 0;
+  padding-right:2;
+}
+.extra_padding_margin_left{
+  margin-left: 0;
+  padding-left:2;
+}
+.font_adjust{
+  color: #222 !important;
+  font-weight: bold !important;
+}

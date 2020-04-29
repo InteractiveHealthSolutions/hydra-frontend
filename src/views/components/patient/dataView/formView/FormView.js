@@ -4,15 +4,14 @@ import WidgetGenerator from './WidgetGenerator'
 import { CreateYupSchema, FormValidation } from './CreateValidationSchema'
 import * as yup from "yup";
 import {
-    Formik,
+    Formik, Form,
 }
     from 'formik'
 import { ADDRESS } from '../../../../../utilities/constants/globalconstants';
+import styles from './fromview.module.css';
+import { FormLabel } from '@material-ui/core';
 
-
-
-
-const FormView = ({ form: { field, name, formFields }, country }) => {
+const FormView = ({ form: { field, name, formFields }, country ,currentPatient }) => {
     const initialValues = {};
     formFields.forEach(item => {
         const fieldName = item.field.fieldId
@@ -33,15 +32,29 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
 
     return (
         <div className="row">
-            <div className="col-md-4" style={{ marginRight: 0,paddingRight:1}}>
+            <div className="col-md-4" style= {{marginRight:0,paddingRight:4}}>
                 <CardTemplate
-                    title="Detail"
+                    title="Patient Detail"
                 >
-
-
+                   <div className="row">
+                       <div className ="col-md-4"><FormLabel>Name</FormLabel></div>
+                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.given + " " + currentPatient.familyname}</FormLabel></div>
+                   </div>
+                   <div className="row">
+                       <div className ="col-md-4"><FormLabel>Identifier</FormLabel></div>
+                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.identifier}</FormLabel></div>
+                   </div>
+                   <div className="row">
+                       <div className ="col-md-4"><FormLabel>Gender</FormLabel></div>
+                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.gender}</FormLabel></div>
+                   </div>
+                   <div className="row">
+                       <div className ="col-md-4"><FormLabel>DOB</FormLabel></div>
+                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.age + " year(s) (" + currentPatient.birthday + ")" }</FormLabel></div>
+                   </div>
                 </CardTemplate>
             </div>
-            <div className="col-md-8"  style={{ marginLeft: 0,paddingLeft:1}}>
+            <div className="col-md-8" style ={{marginLeft:0 ,paddingLeft:4}}>
                 <Formik
                     initialValues={initialValues}
                     // validationSchema={validateSchema}
@@ -96,10 +109,7 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
                     )}
                 </Formik>
             </div>
-
         </div>
-
-
     )
 }
 
