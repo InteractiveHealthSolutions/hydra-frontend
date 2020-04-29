@@ -46,6 +46,7 @@ import ContactTracingWidget from './ContactTracingWidget'
 import {DatePickerField} from './DatePickerField'
 import {CustomRadioButton} from './CustomRadioButton'
 import {HeadingWidget} from './HeadingWidget'
+import { CustomCheckBox } from './CustomCheckBox'
 
 
 const WidgetGenerator = ({
@@ -126,7 +127,13 @@ const WidgetGenerator = ({
             return (
                 <FormGroup>
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    <CustomSelect
+                    {
+                        answers.map((element, index) => (
+                            <CustomCheckBox name={fieldId} type="checkbox" value={element.uuid} label={element.concept.display} />
+                        ))
+                    }
+                    
+                    {/* <CustomSelect
                         name={fieldId}
                         handleChange={setFieldValue}
                         options={answers.map(data => (
@@ -140,7 +147,7 @@ const WidgetGenerator = ({
                         touched={touched}
                         isMulti={true}
 
-                    />
+                    /> */}
                      {
                        errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
                     }
@@ -197,7 +204,7 @@ const WidgetGenerator = ({
         case DATE_TIME_PICKER:
             return (
                 <FormGroup>
-                    <label>{displayText ? displayText : name}</label>
+                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
                     {
                        errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""

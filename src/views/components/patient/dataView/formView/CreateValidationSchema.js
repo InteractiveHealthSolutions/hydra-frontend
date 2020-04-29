@@ -42,38 +42,45 @@ export function FormValidation(questionList, formValues){
         const fieldType = items.field.attributeName
         
         console.log("Form-Field",items.mandatory, fieldName,formValues[fieldName])
-        if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null )){
+        if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length<=0 )){
                 errors[fieldName] = items.errorMessage?items.errorMessage :"Field is required"
         }
 
-        if(fieldType ===TEXT){
+        switch(fieldType){
+            case TEXT: 
 
+            break;
+            case NUMERIC: 
+
+            break;
+            case CODED: 
+
+            break;
+            case DATE_TIME: 
+
+            break;
+            case AGE: 
+
+            break;
+            case CONTACT_TRACING: 
+
+            break;
+            case ADDRESS: 
+                if(formValues[fieldName+"-country"] === "" ){
+                    errors[fieldName+"-country"] = items.errorMessage? items.errorMessage :"Field is required"
+                }
+                if(formValues[fieldName+"-province"] === "" ){
+                    errors[fieldName+"-province"] = items.errorMessage? items.errorMessage :"Field is required"
+                }
+                if(formValues[fieldName+"-city"] === "" ){
+                    errors[fieldName+"-city"] = items.errorMessage? items.errorMessage :"Field is required"
+                }
+                if(formValues[fieldName+"-address"] === "" ){
+                    errors[fieldName+"-address"] = items.errorMessage? items.errorMessage :"Field is required"
+                }
+            break;
+         
         }
-        else if(fieldType === NUMERIC){
-
-        }
-        else if (fieldType === CODED){
-
-        }else if (fieldType ===  DATE_TIME){
-
-        }else if(fieldType === CONTACT_TRACING){
-            
-        }else if(fieldType === ADDRESS){
-
-            if(formValues[fieldName+"-country"] === "" ){
-                errors[fieldName+"-country"] = items.errorMessage? items.errorMessage :"Field is required"
-            }
-            if(formValues[fieldName+"-province"] === "" ){
-                errors[fieldName+"-province"] = items.errorMessage? items.errorMessage :"Field is required"
-            }
-            if(formValues[fieldName+"-city"] === "" ){
-                errors[fieldName+"-city"] = items.errorMessage? items.errorMessage :"Field is required"
-            }
-            if(formValues[fieldName+"-address"] === "" ){
-                errors[fieldName+"-address"] = items.errorMessage? items.errorMessage :"Field is required"
-            }
-        }
-      
 
     })  
 

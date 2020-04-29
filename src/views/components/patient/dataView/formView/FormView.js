@@ -1,7 +1,7 @@
 import React from 'react'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 import WidgetGenerator from './WidgetGenerator'
-import { CreateYupSchema, FormValidation } from './CreateYupSchema'
+import { CreateYupSchema, FormValidation } from './CreateValidationSchema'
 import * as yup from "yup";
 import {
     Formik,
@@ -17,12 +17,12 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
     formFields.forEach(item => {
         const fieldName = item.field.fieldId
         const fieldType = item.field.attributeName
-        if(fieldType === ADDRESS){
-            initialValues[fieldName+"-country"] = "";
-            initialValues[fieldName+"-province"] = "";
-            initialValues[fieldName+"-city"] = "";
-            initialValues[fieldName+"-address"] = "";
-        }else{
+        if (fieldType === ADDRESS) {
+            initialValues[fieldName + "-country"] = "";
+            initialValues[fieldName + "-province"] = "";
+            initialValues[fieldName + "-city"] = "";
+            initialValues[fieldName + "-address"] = "";
+        } else {
             initialValues[item.field.fieldId] = "";
         }
 
@@ -32,60 +32,74 @@ const FormView = ({ form: { field, name, formFields }, country }) => {
     const validateSchema = yup.object().shape(yepSchema);
 
     return (
+        <div className="row">
+            <div className="col-md-4" style={{ marginRight: 0,paddingRight:1}}>
+                <CardTemplate
+                    title="Detail"
+                >
 
-        <Formik
-            initialValues={initialValues}
-            // validationSchema={validateSchema}
-            validate ={(values) => {
-                return FormValidation(formFields ,values)
-            }}
-            onSubmit={(data) => {
-                console.log(data)
-            }}
-        >{({
-            values,
-            touched,
-            dirty,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            handleReset,
-            setFieldValue,
-            setFieldTouched,
-            isSubmitting
-        }) => (
-                <form onSubmit={handleSubmit}>
-                    <CardTemplate
-                        title={name}
-                        action={<button type='submit' className='btn btn-primary '>Save</button>}
-                    >
-                        {
-                            formFields ? formFields.map((data, index) => (
-                                <>
-                                    {(data.field.fieldType) ?
-                                        <WidgetGenerator
-                                            type={data}
-                                            setFieldValue={setFieldValue}
-                                            values={values}
-                                            handleChange={handleChange}
-                                            handleBlur={handleBlur}
-                                            errors={errors}
-                                            touched={touched}
-                                            country ={country}
-                                        /> : null}
 
-                                    <div style={{ marginTop: '8px' }}></div>
-                                </>
-                            )) : null
+                </CardTemplate>
+            </div>
+            <div className="col-md-8"  style={{ marginLeft: 0,paddingLeft:1}}>
+                <Formik
+                    initialValues={initialValues}
+                    // validationSchema={validateSchema}
+                    validate={(values) => {
+                        return FormValidation(formFields, values)
+                    }}
+                    onSubmit={(data) => {
+                        console.log(data)
+                    }}
+                >{({
+                    values,
+                    touched,
+                    dirty,
+                    errors,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    handleReset,
+                    setFieldValue,
+                    setFieldTouched,
+                    isSubmitting
+                }) => (
+                        <form onSubmit={handleSubmit}>
+                            <CardTemplate
+                                title={name}
+                                action={<button type='submit' className='btn btn-primary '>Save</button>}
+                            >
+                                {
+                                    formFields ? formFields.map((data, index) => (
+                                        <>
+                                            {(data.field.fieldType) ?
+                                                <WidgetGenerator
+                                                    type={data}
+                                                    setFieldValue={setFieldValue}
+                                                    values={values}
+                                                    handleChange={handleChange}
+                                                    handleBlur={handleBlur}
+                                                    errors={errors}
+                                                    touched={touched}
+                                                    country={country}
+                                                /> : null}
 
-                        }
-                          <pre>{JSON.stringify(values, null, 2)}</pre>
-                        <pre>{JSON.stringify(errors, null, 2)}</pre>
-                    </CardTemplate>
-                </form>
-            )}
-        </Formik>
+                                            <div style={{ marginTop: '8px' }}></div>
+                                        </>
+                                    )) : null
+
+                                }
+                                <pre>{JSON.stringify(values, null, 2)}</pre>
+                                <pre>{JSON.stringify(errors, null, 2)}</pre>
+                            </CardTemplate>
+                        </form>
+                    )}
+                </Formik>
+            </div>
+
+        </div>
+
+
     )
 }
 

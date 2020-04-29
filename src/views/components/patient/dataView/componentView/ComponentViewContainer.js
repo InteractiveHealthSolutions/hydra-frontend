@@ -23,7 +23,7 @@ export default function ComponentViewContainer({ phaseUuid }) {
         console.log("clicked :: ", data.form)
         localStorage.setItem("form",JSON.stringify(data.form))
 
-        history.push('/patient/detail/dataview/form')
+        history.push('/patient/detail/dataentry/form')
     }
 
     return loading ? <LoaderDots withMargin="true" height={40} width={40} /> :

@@ -102,6 +102,17 @@ const setDeleteComponentFormRelations = payload => ({
   payload
 });
 
+export  const formSubmissions  = (formData) => async dispatch =>{
+  dispatch(setProject())
+  fetch(DELETE, "/hydra/formSubmission", formData)
+    .then(res => dispatch(setFormSubmission(res)))
+    .catch(displayError);
+}
+const setFormSubmission = payload => ({
+  type: types.FORM_SUBMISSION,
+  payload
+});
+
 const setProject = () => ({
   type: types.SET_PROJECT
 });
