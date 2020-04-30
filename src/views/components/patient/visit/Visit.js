@@ -23,7 +23,7 @@ class Visits extends React.Component {
             obs: [],
             columnDefs: [
                 {
-                    headerName: "Visit", field: "visit", width: 200
+                    headerName: "Visit", field: "visit", width: 150
                 },
                 {
                     headerName: "Encounter Date", field: "encounterDate", width: 200
@@ -49,7 +49,7 @@ class Visits extends React.Component {
                     template:
                         `
                         <button style={{ lineHeight: 0.5, color: "#808080" }}><i class="fas fa-eye "></i></button>                    `
-                    , width: 70
+                    , width: 120
                 },
 
                 {
@@ -60,8 +60,8 @@ class Visits extends React.Component {
             ],
             rowClassRules: {
               "qxr-row": function(params) {
-                  'data.isAutomated == true'
-                  return true;
+                  return params.data.isAutomated
+                  //return false;
             }
         },
             rowData: [],
