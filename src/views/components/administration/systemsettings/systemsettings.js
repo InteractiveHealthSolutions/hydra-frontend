@@ -314,6 +314,7 @@ class SystemSetting extends React.Component {
             await this.props.postSystemSettings('6a78a10b-3eae-43f6-b019-d0823e28ebd1',this.getJSON(this.state.formData.date))
             await this.props.postSystemSettings('3h98a10f-3edz-43f6-b020-d0823e28ebd1',this.getJSON(this.state.formData.country))
             await this.props.postSystemSettings('5a74a10b-3eae-43f6-b019-d0823e28ead1',this.getJSON(this.state.formData.currency))
+            await window.location.reload();
             await createNotification('success','Global Config Updated');
     
         }
