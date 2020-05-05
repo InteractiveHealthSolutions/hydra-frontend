@@ -221,7 +221,7 @@ class PatientDetail extends React.Component {
                                     </ExpansionPanelSummary>
                                 </div> */}
                                 <div class="card pd-actions-list">
-                                    <Link to="/patient/detail/dataview">
+                                    <Link to="/patient/detail/dataentry">
                                         <ExpansionPanelSummary
                                             aria-controls="panel1a-content"
                                             id="panel1a-header">
