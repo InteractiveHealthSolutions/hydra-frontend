@@ -51,6 +51,7 @@ export default class QuestionConfiguration extends Component {
             patientFamilyName: "",
             patientFamilyNameMandatory: 'yes',
             disabled: 'yes',
+            allowDecimal:false
 
         }
 
@@ -91,7 +92,8 @@ export default class QuestionConfiguration extends Component {
             patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
-            disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
+            disabled:  localStorage.getItem(`${this.props.uuid}-disabled`),
+            allowDecimal: localStorage.getItem(`${this.props.uuid}-allowDecimal`)
         }, () => {
         })
     }
@@ -142,7 +144,7 @@ export default class QuestionConfiguration extends Component {
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -226,6 +228,7 @@ export default class QuestionConfiguration extends Component {
                                 name={uuid + "-allowDecimal"}
                                 onItemCheckedProp={this.onItemCheckedProp}
                                 title="Allow Decimal"
+                                value={allowDecimal}
                             />
                         </> : ""
                 }
