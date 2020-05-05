@@ -537,6 +537,7 @@ class QuestionList extends React.Component {
                         attributeName: questionDataType.value,
                         tableName: this.state.isAttribute ? "Attribute" : ""
                         ,
+                        
                         answers: this.fieldAnswerFormat()
                     };
                     console.log('data' + JSON.stringify(data))
@@ -628,6 +629,10 @@ class QuestionList extends React.Component {
     }
     async onCellClicked(event) {
         if (event.column.colId === "edit") {
+            if(event.data.isDefault == true) {
+                createNotification('info','Default fields are not editable');
+                return;
+            }
             await this.setState({ definedOptions: [] });
             await this.setState({ widgetsToShowEdit: [] });
             if (event.data.fieldType.display == 'Single Select Dropdown' ||
@@ -823,7 +828,7 @@ class QuestionList extends React.Component {
                                 title="Description"
                                 onItemSelectedProp={this.onItemSelectedFunc}
                             ></TextArea>
-                            {this.state.textBoxSelected ? (
+                            {/* {this.state.textBoxSelected ? (
                                 <>
                                     <TextBox
                                         controlId="characters"
@@ -834,7 +839,7 @@ class QuestionList extends React.Component {
                                 </>
                             ) : (
                                     ""
-                                )}
+                                )} */}
 
                             {this.state.selectableSelected ? (
                                 <div
