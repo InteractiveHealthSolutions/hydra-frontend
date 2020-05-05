@@ -20,9 +20,8 @@ export default function ComponentViewContainer({ phaseUuid }) {
 
 
     function handleOnClick(evt, data) {
-        console.log("clicked :: ", data.form)
-        localStorage.setItem("form",JSON.stringify(data.form))
-
+        console.log("clicked :: ", data)
+        localStorage.setItem("form",JSON.stringify(data))
         history.push('/patient/detail/dataentry/form')
     }
 

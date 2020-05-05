@@ -11,7 +11,13 @@ import { ADDRESS } from '../../../../../utilities/constants/globalconstants';
 import styles from './fromview.module.css';
 import { FormLabel } from '@material-ui/core';
 
-const FormView = ({ form: { field, name, formFields }, country ,currentPatient }) => {
+const FormView = ({ 
+     form: { field, name, formFields },
+     country ,
+     currentPatient ,
+     submitForm
+    }) => {
+
     const initialValues = {};
     formFields.forEach(item => {
         const fieldName = item.field.fieldId
@@ -63,6 +69,7 @@ const FormView = ({ form: { field, name, formFields }, country ,currentPatient }
                     }}
                     onSubmit={(data) => {
                         console.log(data)
+                        submitForm(data)
                     }}
                 >{({
                     values,

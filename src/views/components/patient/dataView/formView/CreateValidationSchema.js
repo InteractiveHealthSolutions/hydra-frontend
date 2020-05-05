@@ -50,7 +50,8 @@ export function FormValidation(questionList, formValues){
             case TEXT: 
 
             break;
-            case NUMERIC: 
+            case NUMERIC:
+
 
             break;
             case CODED: 
@@ -62,8 +63,11 @@ export function FormValidation(questionList, formValues){
             case AGE: 
 
             break;
-            case CONTACT_TRACING: 
+            case CONTACT_TRACING:
 
+                if(items.createPatient){
+                    
+                }
             break;
             case ADDRESS: 
                 if(formValues[fieldName+"-country"] === "" ){
