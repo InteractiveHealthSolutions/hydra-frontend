@@ -1,21 +1,17 @@
 import React, { Component, useState, useEffect } from 'react'
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import './formdetail.css';
 import { formAction } from "../../../../../../state/ducks/form";
-import { createNotification } from '../../../../../../utilities/helpers/helper'
 import Loaders from '../../../../common/loader/Loader';
 import { AgGrid } from '../../../../../ui/AgGridTable/AgGrid';
 import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
 import { history } from '../../../../../../history';
-
+import {useDispatch ,useSelector} from 'react-redux'
 function FormDetail(props) {
 
+    const dispatch = useDispatch()
     const [columnDefs, setColumnDefs] = useState([
         {
             headerName: "Name", field: "name"
@@ -35,28 +31,28 @@ function FormDetail(props) {
             headerName: "Status", field: "retired", valueFormatter: statusFormatter, filter: "agSetColumnFilter", width: 60
         }
     ]);
-
-    const [rowData, setRowData] = useState([]);
-
+    const [dummy, reload] = useState(false);
     function statusFormatter(params) {
         console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
 
-    useEffect(() => {
-        if (props.formList !== undefined) {
-            setRowData(props.formList.forms)
-        }
-    }, [props.formList])
+    const {rowData,isLoading} = useSelector((state) =>({
+        rowData : state.formField.forms.forms,
+        isLoading: state.formField.loading
+    }))
 
 
     useEffect(() => {
-        getAllForms();
+          dispatch(formAction.fetchForms())
     }, []);
 
-    async function getAllForms() {
-        await props.getAllForm();
-    }
+    useEffect(() => {
+        if(localStorage.getItem("check")){
+            reload(!dummy);
+            localStorage.setItem("check",false)
+        }
+    }, [])
 
 
     function onRowSelected(event) {
@@ -67,6 +63,7 @@ function FormDetail(props) {
         if (formdata.colDef.headerName == 'Edit') {
             console.log("form data :: ", formdata.data)
             localStorage.setItem("active_form", JSON.stringify(formdata.data))
+            localStorage.setItem("check",true)
             history.push('/administration/form/create')
             // props.nextStep();
         }
@@ -86,8 +83,8 @@ function FormDetail(props) {
             this.gridApi.sizeColumnsToFit();
         }
     }
-
-    if (props.isLoading) return <Loaders />;
+    console.log("rowData :: " , rowData)
+    if (isLoading) return <Loaders />;
     return (
         <CardTemplate
             title="Form"
@@ -108,14 +105,4 @@ function FormDetail(props) {
     )
 }
 
-const mapStateToProps = state => ({
-    formList: state.formField.forms,
-    isLoading: state.formField.loading
-});
-
-const mapDispatchToProps = {
-    getAllForm: formAction.fetchForms
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(FormDetail) 
+export default FormDetail
