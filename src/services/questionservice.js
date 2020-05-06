@@ -1,6 +1,6 @@
 import { history } from '../history';
 import { authenticationGenerator } from '../utilities/helpers';
-
+import {BASE_URL} from '../utilities/constants/globalconstants'
 export const questionService = {
     saveConcept,
     saveField,
@@ -13,15 +13,15 @@ export const questionService = {
 function saveConcept(concept) {
     const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
         localStorage.getItem('password'));
-    console.log("concept res", concept);
+    //console.log("concept res", concept);
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(concept)
     };
-    return fetch('/concept', requestOptions)
+    return fetch(`${BASE_URL}/concept`, requestOptions)
         .then(handleResponse).then(conceptData => {
-            console.log("concept res", conceptData);
+            //console.log("concept res", conceptData);
             return conceptData;
         }, e => console.log('error', e)
         ).catch(err => {
@@ -37,7 +37,7 @@ function saveField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch('/hydra/hydraField', requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -54,7 +54,7 @@ function saveEditedField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch('/hydra/hydraField', requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -70,7 +70,7 @@ function searchEncounterType(name) {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': token }
     };
-    return fetch(`/encountertype?q=${name}`, requestOptions)
+    return fetch(`${BASE_URL}/encountertype?q=${name}`, requestOptions)
         .then(handleResponse).then(encounterTypeData => {
             return encounterTypeData;
         }, e => console.log('error', e)

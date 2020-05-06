@@ -28,7 +28,7 @@ const setEvent = (Event) => ({ type: types.ACTIVE_EVENT, Event })
 export const saveEvent = (event) => async dispatch => {
   fetch(POST, "/hydra/event", event)
     .then(res => {
-      console.log("saveEvent", res);
+     // console.log("saveEvent", res);
       history.push('/events');
       dispatch(eventAction(res))
     }).catch(displayError)
