@@ -7,6 +7,7 @@ import {
 }
     from '@material-ui/core'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate' 
+import styles from './fromview.module.css';
 
 export default function AddressWidget({
     fieldId,
@@ -71,11 +72,14 @@ export default function AddressWidget({
                     isMulti={false}
 
                 />
+                {
+                    errors[fieldId + "-country"]? <span className ={styles.error}>{errors[fieldId + "-country"]}</span> :""
+                }
             </FormGroup>
             <FormGroup>
                 <label >Province/State</label>
                 <CustomSelect
-                    name={fieldId + "-province-state"}
+                    name={fieldId + "-province"}
                     handleChange={handleProvinceChange}
                     options={provinceList? provinceList.map(element => ({
                         label: element.display,
@@ -86,11 +90,14 @@ export default function AddressWidget({
                     isMulti={false}
 
                 />
+                 {
+                    errors[fieldId + "-province"]? <span className ={styles.error}>{errors[fieldId + "-province"]}</span> :""
+                }
             </FormGroup>
             <FormGroup>
                 <label >City/Village</label>
                 <CustomSelect
-                    name={fieldId + "-city-village"}
+                    name={fieldId + "-city"}
                     handleChange={setFieldValue}
                     options={cityList ? cityList.map((element) => ({
                         label: element.display,
@@ -101,6 +108,9 @@ export default function AddressWidget({
                     touched={touched}
                     isMulti={false}
                 />
+                 {
+                    errors[fieldId + "-city"]? <span className ={styles.error}>{errors[fieldId + "-city"]}</span> :""
+                }
             </FormGroup>
             <FormGroup>
                 <label >Address</label>
@@ -111,6 +121,9 @@ export default function AddressWidget({
                     className='form-control'
                     onChange={value => setFieldValue(fieldId + "-address", value.target.value)}
                 />
+                 {
+                    errors[fieldId + "-address"]? <span className ={styles.error}>{errors[fieldId + "-address"]}</span> :""
+                }
             </FormGroup>
             <FormGroup>
                 <label >Nearest Landmark</label>

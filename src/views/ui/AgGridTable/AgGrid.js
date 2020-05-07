@@ -15,7 +15,8 @@ export const AgGrid = ({
     onCellClicked,
     onGridReady,
     height,
-    handleCellEditingStopped
+    handleCellEditingStopped,
+    rowClassRules
 }) => (
         <div className="d-flex justify-content-center ">
             <div
@@ -43,6 +44,7 @@ export const AgGrid = ({
                     paginationAutoPageSize={true}
                     isExternalFilterPresent={true}
                     enableColResize="true"
+                    rowClassRules={rowClassRules}
                 >
                 </AgGridReact>
             </div>

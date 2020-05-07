@@ -22,9 +22,9 @@ export class DraggedFormItem extends Component {
     this.setState({ expanded: !this.state.expanded })
     // console.log("ExpandClick")
   }
-  handleDelete = (e) => {
+  handleDelete = (e,key) => {
     // console.log("delete", e)
-    this.props.handleDelete(e)
+    this.props.handleDelete(e,key)
   }
 
   render() {

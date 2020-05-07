@@ -51,19 +51,20 @@ export default class QuestionConfiguration extends Component {
             patientFamilyName: "",
             patientFamilyNameMandatory: 'yes',
             disabled: 'yes',
+            allowDecimal:false
 
         }
 
-     console.log("QuestionConfiguration", this.props.data);
+     console.log("QuestionConfiguration", this.props.answers);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
     async setDefaultValue() {
-         //console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
+      //console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
         await this.setState({
-           // defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)) : "",
+            defaultValue: this.setDefault(),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
             allowCharacter: localStorage.getItem(`${this.props.uuid}-allowCharacter`),
             questionText: localStorage.getItem(`${this.props.uuid}-questionText`),
@@ -91,9 +92,20 @@ export default class QuestionConfiguration extends Component {
             patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
-            disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
+            disabled:  localStorage.getItem(`${this.props.uuid}-disabled`),
+            allowDecimal: localStorage.getItem(`${this.props.uuid}-allowDecimal`)
         }, () => {
         })
+    }
+
+    setDefault(){
+       return this.props.editeMood?
+           this.props.answers?
+             this.props.answers.filter(el=> el.uuid === localStorage.getItem(`${this.props.uuid}-defaultValue`))
+             .map(data => ({
+                label:data.concept.display,
+                value:data.uuid
+            })):"" :localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)):"" 
     }
 
     onHandleDefaultValue = (ev,name,controlId) => {
@@ -134,7 +146,7 @@ export default class QuestionConfiguration extends Component {
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
@@ -218,6 +230,7 @@ export default class QuestionConfiguration extends Component {
                                 name={uuid + "-allowDecimal"}
                                 onItemCheckedProp={this.onItemCheckedProp}
                                 title="Allow Decimal"
+                                value={allowDecimal}
                             />
                         </> : ""
                 }
@@ -235,14 +248,14 @@ export default class QuestionConfiguration extends Component {
                                     options={[{ key: "5" + this.props.uuid, title: "Yes" }, { key: "6" + this.props.uuid, title: "No" }]}
                                 />
 
-                            {/* <label htmlFor="start date" className="ec-label">Default Value</label>
+                            <label htmlFor="start date" className="ec-label">Default Value</label>
                              <Select
                                         controlId="defaultValue"
                                         title="Default Value"
                                         name={uuid + "-defaultValue"}
                                         value={defaultValue}
                                         onChange={(evt)=> this.onHandleDefaultValue(evt,uuid + "-defaultValue","defaultValue" )}
-                                        options={this.props.data.map((option) =>(
+                                        options={this.props.answers.map((option) =>(
                                             {
                                                 label:option.concept.display,
                                                 value:option.uuid
@@ -251,7 +264,7 @@ export default class QuestionConfiguration extends Component {
 
                                     />
                         
-                             */}
+                            
 
                         </> : ""
                 }

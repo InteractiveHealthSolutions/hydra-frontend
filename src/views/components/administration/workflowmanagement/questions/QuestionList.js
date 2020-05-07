@@ -537,6 +537,7 @@ class QuestionList extends React.Component {
                         attributeName: questionDataType.value,
                         tableName: this.state.isAttribute ? "Attribute" : ""
                         ,
+                        
                         answers: this.fieldAnswerFormat()
                     };
                     console.log('data' + JSON.stringify(data))
@@ -628,7 +629,7 @@ class QuestionList extends React.Component {
     }
     async onCellClicked(event) {
         if (event.column.colId === "edit") {
-            if(event.data.description == 'Default field required by Hydra') {
+            if(event.data.isDefault == true) {
                 createNotification('info','Default fields are not editable');
                 return;
             }

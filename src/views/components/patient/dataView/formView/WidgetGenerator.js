@@ -46,6 +46,7 @@ import ContactTracingWidget from './ContactTracingWidget'
 import {DatePickerField} from './DatePickerField'
 import {CustomRadioButton} from './CustomRadioButton'
 import {HeadingWidget} from './HeadingWidget'
+import { CustomCheckBox } from './CustomCheckBox'
 
 
 const WidgetGenerator = ({
@@ -80,6 +81,9 @@ const WidgetGenerator = ({
                         className='form-control'
                         onChange={value => setFieldValue(fieldId, value.target.value)}
                     />
+                    {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         case SINGLE_SELECT_DROPDOWN:
@@ -100,6 +104,9 @@ const WidgetGenerator = ({
                         isMulti={false}
 
                     />
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }                  
                 </FormGroup>
             )
         case SINGLE_SELECT_RADIOBUTTON:
@@ -111,13 +118,22 @@ const WidgetGenerator = ({
                             <CustomRadioButton name={fieldId} type="radio" value={element.uuid} label={element.concept.display} />
                         ))
                     }
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                     }
                 </FormGroup>
             )
         case MULTIPLE_CHOICE:
             return (
                 <FormGroup>
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    <CustomSelect
+                    {
+                        answers.map((element, index) => (
+                            <CustomCheckBox name={fieldId} type="checkbox" value={element.uuid} label={element.concept.display} />
+                        ))
+                    }
+                    
+                    {/* <CustomSelect
                         name={fieldId}
                         handleChange={setFieldValue}
                         options={answers.map(data => (
@@ -131,7 +147,10 @@ const WidgetGenerator = ({
                         touched={touched}
                         isMulti={true}
 
-                    />
+                    /> */}
+                     {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         case HEADING:
@@ -143,6 +162,7 @@ const WidgetGenerator = ({
                 )
         case ADDRESS:
             return (
+                  
                         <AddressWidget
                             country={country}
                             fieldId={fieldId}
@@ -154,6 +174,7 @@ const WidgetGenerator = ({
                             displayText ={displayText}
                             name ={name}
                         />
+                        
                     )
         case CONTACT_TRACING:
             return (
@@ -183,8 +204,11 @@ const WidgetGenerator = ({
         case DATE_TIME_PICKER:
             return (
                 <FormGroup>
-                    <label>{displayText ? displayText : name}</label>
+                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
+                    {
+                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    }
                 </FormGroup>
             )
         default:

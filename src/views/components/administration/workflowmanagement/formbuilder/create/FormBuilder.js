@@ -72,7 +72,8 @@ class FormBuilder extends React.Component {
       isEdit: false,
       formRetiredVal: false,
       CustomComponent: "",
-      nestedSort: false
+      nestedSort: false,
+      dragSorting:false
     };
     this.sortable = null;
     this.activeForm = []
@@ -151,7 +152,7 @@ class FormBuilder extends React.Component {
       dataType: element.field ? element.field.attributeName : "",
       uuid: element.field ? element.field.uuid : "",
       controlId: this.props.controlId,
-      answers: element.answers ? element.answers : [],
+      answers:element.field.answers ? element.field.answers : [],
       formFieldId: element.formFieldId,
       displayOrder: element.displayOrder,
       minOccurrence: element.minOccurrence,
@@ -168,7 +169,7 @@ class FormBuilder extends React.Component {
       scoreable: element.scoreable,
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
-      defaultValue: element.defaultValue,
+      defaultValue:element.defaultValue,
       regix: element.regix,
       disabled: element.disabled,
       editeMood: false
@@ -177,8 +178,12 @@ class FormBuilder extends React.Component {
   editFormListFormat(list) {
     let array = []
     if (list) {
-      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach(element => {
-        array.push(this.formatFieldItem(element));
+      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach((element,index) => {
+        array.push
+        ({
+          ...this.formatFieldItem(element),
+          displayOrder: index
+        } );
       });
     }
     //console.log("editFormListFormat", array)
@@ -348,8 +353,7 @@ class FormBuilder extends React.Component {
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
-        defaultValue:"",
-        //defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
+        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
@@ -390,14 +394,14 @@ class FormBuilder extends React.Component {
     this.setState({ expanded: !this.state.expanded });
   };
 
-  handleDelete = (ev) => {
-    // console.log("handle delete :: ", ev)
+  handleDelete = (ev,key) => {
+     console.log("handle delete :: ", ev,key)
     this.setState({
       addFormList: this.state.addFormList.filter(data => data.uuid !== ev)
     })
   }
 
-  onDrop = (ev) => {
+  onDrop = async(ev) => {
     const { currentObject, defaultQuestion } = this.state
     const uuid = ev.dataTransfer.getData('id')
     const activeItem = ev.dataTransfer.getData('comingfrom')
@@ -407,9 +411,24 @@ class FormBuilder extends React.Component {
     } else {
       dropArray = currentObject.filter(data => data.uuid == uuid)
     }
-    this.setState({
+   await this.setState({
       addFormList: (this.state.addFormList.length > 0) ? [...this.state.addFormList, dropArray[0]] : dropArray
     })
+    this.adddOrder();
+  }
+
+  adddOrder =() =>{
+     var reOrder =[]
+     var formList = this.state.addFormList;
+         for(var i =0 ;i<formList.length ;i++){
+          reOrder.push({
+            ...formList[i],
+            displayOrder: i
+          });
+         }
+    this.setState({
+      addFormList: reOrder
+    })     
   }
 
 
@@ -449,6 +468,7 @@ class FormBuilder extends React.Component {
     })
   }
   reorder(order) {
+  
     let tempArray = [];
     for (var i = 0; i < order.length; i++) {
       for (var j = 0; j < this.state.addFormList.length; j++) {
@@ -461,7 +481,7 @@ class FormBuilder extends React.Component {
       }
     }
     console.log("tempArray ", tempArray)
-    this.setState({ addFormList: tempArray });
+    this.setState({ addFormList: tempArray ,dragSorting:true });
   }
 
   handleNested = () => {
@@ -469,8 +489,10 @@ class FormBuilder extends React.Component {
   }
 
   render() {
+ 
     const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
+    console.log("addFormList ",  addFormList)
     return (
       <div className="row">
         <div className="form_adjustment col-sm-6 col-md-4">
