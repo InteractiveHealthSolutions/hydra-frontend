@@ -12,15 +12,7 @@ import {
     from 'formik'
 import {
     TextField,
-    Button,
-    Checkbox,
-    Radio,
-    FormControlLabel,
-    MenuItem,
     FormGroup,
-    Input,
-    FormControl
-
 }
     from '@material-ui/core'
 
@@ -96,7 +88,7 @@ const WidgetGenerator = ({
                         options={answers.map(data => (
                             {
                                 label: data.concept.display,
-                                value: data.uuid
+                                value: data.concept.uuid
                             })
                         )}
                         error={errors}
@@ -129,7 +121,7 @@ const WidgetGenerator = ({
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     {
                         answers.map((element, index) => (
-                            <CustomCheckBox name={fieldId} type="checkbox" value={element.uuid} label={element.concept.display} />
+                            <CustomCheckBox name={fieldId} type="checkbox" value={element.concept.uuid} label={element.concept.display} />
                         ))
                     }
                     

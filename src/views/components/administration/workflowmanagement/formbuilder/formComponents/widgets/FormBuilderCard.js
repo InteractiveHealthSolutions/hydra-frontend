@@ -71,7 +71,7 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-errorMsg`, dataField.errorMessage ? dataField.errorMessage : "")
     localStorage.setItem(`${dataField.uuid}-questionText`, dataField.displayText ? dataField.displayText : "")
     localStorage.setItem(`${dataField.uuid}-mandatory`, dataField.mandatory ? dataField.mandatory == true ? "Yes" : "No" : "No")
-    localStorage.setItem(`${dataField.uuid}-headingTitle`, dataField.displayText ? dataField.displayText : "")
+    localStorage.setItem(`${dataField.uuid}-headingTitle-${dataField.displayOrder}`, dataField.displayText ? dataField.displayText : "")
     localStorage.setItem(`${dataField.uuid}-minValue`, dataField.minValue ? dataField.minValue : "")
     localStorage.setItem(`${dataField.uuid}-maxValue`, dataField.maxValue ? dataField.maxValue : "")
     localStorage.setItem(`${dataField.uuid}-maxLength`, dataField.maxLength ? dataField.maxLength : "")
@@ -123,6 +123,7 @@ export default function FormBuilderCard(props) {
             datatype={props.data.dataType}
             answers={props.data.answers}
             uuid={props.data.uuid}
+            displayOrder ={props.data.displayOrder}
             dataField={props.data}
             editeMood ={props.editeMood}
           />
