@@ -27,7 +27,8 @@ import TestOrderList from './views/components/labtestorder/TestOrderList'
 import AddTestOrder from './views/components/labtestorder/AddTestOrder';
 import SampleList from './views/components/labtestsample/samplelist';
 import Roles from './views/components/administration/roles/roles';
-import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList'
+import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList';
+import OptionList from './views/components/administration/workflowmanagement/questions/OptionList';
 import TestResults from './views/components/testresults/TestResuts';
 import Reports from './views/components/Reports/Reports'
 import SystemSetting from './views/components/administration/systemsettings/systemsettings'
@@ -210,6 +211,14 @@ class App extends React.Component {
                                                                             </Link>
                                                                         </NavText>
                                                                     </NavItem>
+                                                                    <NavItem eventKey="/administration/options" onClick={this.toggleSidebar}>
+                                                                        <NavText >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/options" >
+                                                                                <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                 Option Bank
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
                                                                     {/* formbuilder */}
                                                                     <NavItem eventKey="/administration/form" onClick={this.toggleSidebar}>
                                                                         <NavText>
@@ -282,6 +291,7 @@ class App extends React.Component {
                                                                 <Route exact path="/administration/form" component={FormHome} />
                                                                 <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
+                                                                <Route path="/administration/options" component={OptionList} />
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
                                                         </Main>

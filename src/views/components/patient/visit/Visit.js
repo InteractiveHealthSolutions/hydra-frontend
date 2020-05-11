@@ -87,8 +87,6 @@ class Visits extends React.Component {
         }
     }
     async onCellClicked(event) {
-        alert(JSON.stringify(this.state.rowClassRules))
-        alert(JSON.stringify(event.data.isAutomated))
         if (event.column.colId == 'view') {
             await this.setState({ obs: event.data.obs, openViewModal: true })
         }
