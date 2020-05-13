@@ -21,6 +21,7 @@ import {
 import moment from 'moment'
 
 export default function FormViewContainer() {
+  const [numberOfContact, setNumberOfContact] = useState([])
   const form = JSON.parse(localStorage.getItem("form"))
   const currentPatient = JSON.parse(localStorage.getItem("active-patient"));
   const dispatch = useDispatch()
@@ -61,11 +62,15 @@ export default function FormViewContainer() {
         uuid: form.uuid
       }
     }
+
+    console.log("format-Data", list)
     var formData = {
       data: JSON.stringify(list),
       metadata: JSON.stringify(metadata)
     }
-    dispatch(formAction.formSubmission(formData))
+
+   dispatch(formAction.formSubmission(formData))
+  
   }
 
   async function dataFormat(dataForm) {
@@ -73,13 +78,12 @@ export default function FormViewContainer() {
     await form.form.formFields.forEach(element => {
       switch (element.field.fieldType.display) {
         case MULTIPLE_CHOICE:
-            console.log("dataForm :: ", dataForm[element.field.fieldId])
-            formArray.push({
-              payload_type: "OBS_CODED_MULTI",
-              person_attribute: true,
-              param_name: element.field.concept.uuid,
-              value: dataForm[element.field.fieldId]
-            })
+          formArray.push({
+            payload_type: "OBS_CODED_MULTI",
+            person_attribute: true,
+            param_name: element.field.concept.uuid,
+            value: dataForm[element.field.fieldId]
+          })
           break;
         case SINGLE_SELECT_DROPDOWN:
           formArray.push({
@@ -132,10 +136,33 @@ export default function FormViewContainer() {
           console.log("dataForm :: ", dataForm[element.field.fieldId])
           break;
         case ADDRESS:
-          // console.log("dataForm :: ", dataForm[element.field.fieldId])
+          formArray.push({
+            payload_type: "ADDRESS",
+            person_attribute: true,
+            param_name: element.field.uuid,
+            value: {
+              Country: dataForm[element.field.fieldId + "-country"].value,
+              "City/Village": dataForm[element.field.fieldId + "-province"].value,
+              "Province/State": dataForm[element.field.fieldId + "-city"].value,
+              address2: dataForm[element.field.fieldId + "-address"],
+              address3: dataForm[element.field.fieldId + "-landmark"]
+            }
+          })
           break;
         case CONTACT_TRACING:
-          // console.log("dataForm :: ", dataForm[element.field.fieldId])
+          formArray.push({
+            payload_type: "CONTACT_TRACING",
+            person_attribute: false,
+            param_name: "ContactRegistry",
+            createPatient: element.createPatient,
+            numberOfPeople: parseInt(dataForm[element.field.name]),
+            value: contactTracingDataFormat(
+              dataForm['Contact Tracing'],
+              element.field.fieldId,
+              element.children,
+              dataForm
+            )
+          })
           break;
         default:
           break;
@@ -166,11 +193,62 @@ export default function FormViewContainer() {
       }
     )
 
-
-    console.log("final Product loop", formArray)
+    //console.log("final Product loop", formArray)
     //setFormatedDataForm(formArray)
 
     return formArray
+  }
+
+  function contactTracingDataFormat(numberOfContact, field, children, dataForm) {
+    let numberOfContactArr = []
+    let ageVal = ""
+    let genderVal = ""
+    let firstNameVal = ""
+    let familyNameVal = ""
+    let identifierVal = ""
+    let relationshipVal = ""
+    var i;
+    for (i = 1; i <= numberOfContact; i++) {
+      children.forEach((element, index) => {
+        if (index < 6) {
+          switch (element.field.uuid) {
+            case "73e557b7-0be7-4e96-b1f2-11c39534ec29":
+              ageVal = moment(dataForm[field + "-dob-" + i]).format('MM/DD/YY')
+              break;
+
+            case "73eb7357-7eb0-4e96-b1f2-11c39534ec29":
+              genderVal = dataForm[field + "-gender-" + i]
+              break;
+
+            case "73e557b7-7eb0-4e96-2f1b-11c39534ec29":
+              firstNameVal = dataForm[field + "-firstName-" + i]
+              break;
+
+            case "73e557b7-7eb0-4e96-b1f2-11c39534e92c":
+              familyNameVal = dataForm[field + "-familyName-" + i]
+              break;
+
+            case "37e557b7-7eb0-4e96-b1f2-11c395ec4329":
+              identifierVal = dataForm[field + "-identifier-" + i]
+              break;
+
+            case "37e557b7-0be7-4e96-b1f2-11c395ec4329":
+              relationshipVal = dataForm[field + "-relationship-" + i]
+              break;
+          }
+        }
+      });
+      numberOfContactArr.push({
+        age: "",
+        dob: ageVal,
+        gender: genderVal,
+        patientGivenName: firstNameVal,
+        patientFamilyName: familyNameVal,
+        patientID: identifierVal,
+        relation: relationshipVal
+      })
+    }
+    return numberOfContactArr
   }
 
   return <FormView

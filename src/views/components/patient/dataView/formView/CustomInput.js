@@ -16,9 +16,9 @@ export const CustomInput =
             <label >{displayText? displayText:name}</label>
             <input
                 type="text"
-                name={fieldId + `-${name}`}
+                name={name}
                 className='form-control'
-                onChange={value => setFieldValue(fieldId + `-${name.trim()}`, value.target.value)}
+                onChange={value => setFieldValue(name, value.target.value)}
             />
         </FormGroup>
 

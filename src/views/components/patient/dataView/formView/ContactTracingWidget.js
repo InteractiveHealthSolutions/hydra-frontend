@@ -26,7 +26,6 @@ export default function ContactTracingWidget({
             setNumberOfContact(arr)
         setFieldValue(name,value)
     }
-    console.log("numberOfContact", numberOfContact)
     return (
         <>
             <CustomInput
@@ -39,12 +38,12 @@ export default function ContactTracingWidget({
             {
                 (numberOfContact? numberOfContact.map((el,index) => (
                         <ContactTracingWidgetItems 
-                        displayText= {displayText}
-                        name ={name}
-                        fieldId= {fieldId}
-                        setFieldValue={setFieldValue}
-                        children ={children}
-                        contactNumber= {index+1}
+                            displayText= {displayText}
+                            name ={name}
+                            fieldId= {fieldId}
+                            setFieldValue={setFieldValue}
+                            children ={children}
+                            contactNumber= {index+1}
                     />
                 ))
                   
