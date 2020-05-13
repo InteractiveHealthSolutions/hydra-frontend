@@ -448,22 +448,14 @@ class QuestionList extends React.Component {
         var questionConcept = this.state.conceptName;
         var variableName = this.state.question;
         var questionDescription = this.state.description;
-        var questionConceptClass = this.state.conceptClass;
+        var questionConceptClass = { title: "Question", key: "8d491e50-c2cc-11de-8d13-0010c6dffd0f" };
         var options = this.state.definedOptions;
         var questionDataType = this.state.dataType;
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;
         }
-        if(JSON.stringify(questionConceptClass) == '{}' && this.state.showWidgetType == true) {
-            //this.mandatoryFieldError();
-            questionConceptClass = { title: "Question", key: "8d491e50-c2cc-11de-8d13-0010c6dffd0f" }
-            //return;
-        }
-        if(JSON.stringify(questionConceptClass) == '{}') {
-            this.mandatoryFieldError();
-            return;
-        }
+        
         var displayText = this.state.displayText;
         if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConceptClass.value == 'Question' ) {
             this.mandatoryFieldError();
@@ -527,7 +519,6 @@ class QuestionList extends React.Component {
             if (questionConcept.uuid) {
                 if (questionWidgetType != undefined) {
                     var data = {
-
                         name: displayText,
                         description: questionDescription,
                         fieldType: questionWidgetType.key,
@@ -537,7 +528,6 @@ class QuestionList extends React.Component {
                         attributeName: questionDataType.value,
                         tableName: this.state.isAttribute ? "Attribute" : ""
                         ,
-                        
                         answers: this.fieldAnswerFormat()
                     };
                     console.log('data' + JSON.stringify(data))
@@ -756,7 +746,7 @@ class QuestionList extends React.Component {
                                 isRequired={true}
                                 pattern="[a-zA-Z]+\s?[a-zA-Z]"
                             ></AutoSearchComplete>
-                            {this.state.hideIsOption ? (
+                            {/* {this.state.hideIsOption ? (
                                 ""
                             ) : (
                                     <RadioGroup
@@ -766,7 +756,7 @@ class QuestionList extends React.Component {
                                         isRequired="true"
                                         controlId="class"
                                     ></RadioGroup>
-                                )}
+                                )} */}
                             {this.state.showWidgetType ? (
                                 <>
                                     <SingleSelect
