@@ -35,15 +35,17 @@ import CustomSelect from './CustomSelect'
 import AddressWidget from './AddressWidget'
 import styles from './fromview.module.css';
 import ContactTracingWidget from './ContactTracingWidget'
-import {DatePickerField} from './DatePickerField'
-import {CustomRadioButton} from './CustomRadioButton'
-import {HeadingWidget} from './HeadingWidget'
+import { DatePickerField } from './DatePickerField'
+import { CustomRadioButton } from './CustomRadioButton'
+import { HeadingWidget } from './HeadingWidget'
 import { CustomCheckBox } from './CustomCheckBox'
+import CheckRule from './CheckRule'
+
 
 
 const WidgetGenerator = ({
     type: {
-        field: { fieldType: { display }, fieldId, answers, name },
+        field: { parsedRule, fieldType: { display }, fieldId, answers, name },
         displayText,
         mandatory,
         children
@@ -58,48 +60,54 @@ const WidgetGenerator = ({
     country
 }) => {
 
-
+     console.log("parsedRule" , parsedRule)
 
     switch (display) {
 
         case TEXT_BOX:
             return (
-                <FormGroup>
-                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    <input
-                        placeholder=""
-                        type="text"
-                        name={fieldId}
-                        className='form-control'
-                        onChange={value => setFieldValue(fieldId, value.target.value)}
-                    />
-                    {
-                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
-                    }
-                </FormGroup>
+                <CheckRule
+                    rule={parsedRule}
+                >
+                    <FormGroup>
+                        <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
+                        <input
+                            placeholder=""
+                            type="text"
+                            name={fieldId}
+                            className='form-control'
+                            onChange={value => setFieldValue(fieldId, value.target.value)}
+                        />
+                        {
+                            errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
+                        }
+                    </FormGroup>
+                </CheckRule>
             )
         case SINGLE_SELECT_DROPDOWN:
             return (
-                <FormGroup>
-                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    <CustomSelect
-                        name={fieldId}
-                        handleChange={setFieldValue}
-                        options={answers.map(data => (
-                            {
-                                label: data.concept.display,
-                                value: data.concept.uuid
-                            })
-                        )}
-                        error={errors}
-                        touched={touched}
-                        isMulti={false}
+           
+                    <FormGroup>
+                        <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
+                        <CustomSelect
+                            name={fieldId}
+                            handleChange={setFieldValue}
+                            options={answers.map(data => (
+                                {
+                                    label: data.concept.display,
+                                    value: data.concept.uuid
+                                })
+                            )}
+                            error={errors}
+                            touched={touched}
+                            isMulti={false}
 
-                    />
-                     {
-                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
-                    }                  
-                </FormGroup>
+                        />
+                        {
+                            errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
+                        }
+                    </FormGroup>
+
             )
         case SINGLE_SELECT_RADIOBUTTON:
             return (
@@ -110,9 +118,9 @@ const WidgetGenerator = ({
                             <CustomRadioButton name={fieldId} type="radio" value={element.uuid} label={element.concept.display} />
                         ))
                     }
-                     {
-                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
-                     }
+                    {
+                        errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
+                    }
                 </FormGroup>
             )
         case MULTIPLE_CHOICE:
@@ -124,7 +132,7 @@ const WidgetGenerator = ({
                             <CustomCheckBox name={fieldId} type="checkbox" value={element.concept.uuid} label={element.concept.display} />
                         ))
                     }
-                    
+
                     {/* <CustomSelect
                         name={fieldId}
                         handleChange={setFieldValue}
@@ -140,47 +148,47 @@ const WidgetGenerator = ({
                         isMulti={true}
 
                     /> */}
-                     {
-                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                    {
+                        errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
                     }
                 </FormGroup>
             )
         case HEADING:
             return (
-                    <HeadingWidget 
-                        displayText ={displayText}
-                        name = {name}
-                    />
-                )
+                <HeadingWidget
+                    displayText={displayText}
+                    name={name}
+                />
+            )
         case ADDRESS:
             return (
-                  
-                        <AddressWidget
-                            country={country}
-                            fieldId={fieldId}
-                            setFieldValue={setFieldValue}
-                            errors={errors}
-                            touched={touched}
-                            values={values}
-                            mandatory ={mandatory}
-                            displayText ={displayText}
-                            name ={name}
-                        />
-                        
-                    )
+
+                <AddressWidget
+                    country={country}
+                    fieldId={fieldId}
+                    setFieldValue={setFieldValue}
+                    errors={errors}
+                    touched={touched}
+                    values={values}
+                    mandatory={mandatory}
+                    displayText={displayText}
+                    name={name}
+                />
+
+            )
         case CONTACT_TRACING:
             return (
-                    <ContactTracingWidget
-                      displayText ={displayText}
-                      name ={name}
-                      country={country}
-                      fieldId={fieldId}
-                      setFieldValue={setFieldValue}
-                      errors={errors}
-                      touched={touched}
-                      values={values}  
-                      children ={children}          
-                    />
+                <ContactTracingWidget
+                    displayText={displayText}
+                    name={name}
+                    country={country}
+                    fieldId={fieldId}
+                    setFieldValue={setFieldValue}
+                    errors={errors}
+                    touched={touched}
+                    values={values}
+                    children={children}
+                />
             )
         case AGE:
             return (
@@ -199,7 +207,7 @@ const WidgetGenerator = ({
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
                     {
-                       errors[fieldId]? <span className ={styles.error}>{errors[fieldId]}</span> :""
+                        errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
                     }
                 </FormGroup>
             )

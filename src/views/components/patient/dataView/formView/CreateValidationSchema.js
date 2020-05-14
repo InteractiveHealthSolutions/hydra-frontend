@@ -40,22 +40,20 @@ export function FormValidation(questionList, formValues){
    questionList.forEach(items => {
         const fieldName = items.field.fieldId
         const fieldType = items.field.attributeName
-        
-        // console.log("Form-Field",items.mandatory, fieldName,formValues[fieldName])
-        // if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length<=0 )){
-        //         errors[fieldName] = items.errorMessage?items.errorMessage :"Field is required"
-        // }
+        const fieldTypeDisplayText = items.field.fieldType.display
+        console.log("Form-Field",items.mandatory, fieldName,formValues[fieldName])
+        if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length<=0 )){
+                errors[fieldName] = items.errorMessage?items.errorMessage :"Field is required"
+        }
 
-        switch(fieldType){
+        switch(fieldTypeDisplayText){
             case TEXT: 
-
             break;
             case NUMERIC:
-
-
             break;
-            case CODED: 
-
+            case SINGLE_SELECT_DROPDOWN:
+            break;
+            case MULTIPLE_CHOICE:
             break;
             case DATE_TIME: 
 
@@ -64,6 +62,7 @@ export function FormValidation(questionList, formValues){
 
             break;
             case CONTACT_TRACING:
+
             break;
             case ADDRESS: 
                 if(formValues[fieldName+"-country"] === "" ){
