@@ -201,7 +201,7 @@ class OptionList extends React.Component {
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body >
-                        <AppForm title="Create New Question">
+                        <AppForm title="Create New Option">
                             <AutoSearchComplete
                                 controlId="conceptName"
                                 title="Name"
