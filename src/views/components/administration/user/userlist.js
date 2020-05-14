@@ -228,16 +228,16 @@ class UserList extends React.Component {
                 this.state.roles.pop(event.target.value);
             this.setState({ noRoleSelected: false });
         }
-        else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
-            const { name, value } = event.target;
-            const { user } = this.state;
-            this.setState({
-                user: {
-                    ...user,
-                    [name]: value + '-'
-                }
-            });
-        }
+        // else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
+        //     const { name, value } = event.target;
+        //     const { user } = this.state;
+        //     this.setState({
+        //         user: {
+        //             ...user,
+        //             [name]: value + '-'
+        //         }
+        //     });
+        // }
         else if (event.target.name === 'password' || event.target.name === 'confirmpassword') {
             this.setState({ invalidPassword: false });
 
