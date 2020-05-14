@@ -12,6 +12,7 @@ import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
 import { registrationJSON , editJSON , providerJSON, editUserJSONWithPassword} from '../../../../utilities/helpers/JSONcreator';
 import { createNotification } from '../../../../utilities/helpers/helper';
 import { providerAction } from '../../../../state/ducks/provider';
+import { personAction } from '../../../../state/ducks/person'; 
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
@@ -168,13 +169,17 @@ class UserList extends React.Component {
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
+            await this.props.getPersonByUUID(event.data.person.uuid);
+            await alert(JSON.stringify(this.props.person.names[0].familyName))
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
                 activeuserUUID: event.data.uuid,
                 user: {
-                    familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
-                    givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    //familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
+                   // givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    familyname : this.props.person.names[0].familyName,
+                    givenname : this.props.person.names[0].givenName,
                     username: event.data.display,
                     gender: event.data.person.gender,
                     provider: this.props.provider.results.length != 0?'yes':'no',
@@ -619,7 +624,8 @@ const mapStateToProps = state => ({
     userError: state.user.userError,
     createdUser: state.user.user,
     provider: state.provider.provider,
-    workforce:state.workforce.workforce
+    workforce:state.workforce.workforce,
+    person:state.person.person
 
 });
 const mapDispatchToProps = {
@@ -633,6 +639,7 @@ const mapDispatchToProps = {
     saveProvider:providerAction.saveProvider,
     getProviderByUser:providerAction.getProviderByUser,
     deleteProvider:providerAction.deleteProvider,
-    fetchParticipantByUser:workforceAction.fetchParticipantByUser
+    fetchParticipantByUser:workforceAction.fetchParticipantByUser,
+    getPersonByUUID: personAction.getPersonByUUID
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);
