@@ -288,8 +288,9 @@ class QuestionList extends React.Component {
                 this.setState({
                      question: e.value.toLowerCase().replace(/ /g, "_"),
                      hideIsOption: false,
-                     showWidgetType: false,
-                     variableNameReadOnly: "true"
+                     showWidgetType: true,
+                     variableNameReadOnly: "true",
+                     showDataType: true
                  });
             }
             e.answers.map(option => this.formatForOptionAndAddInState(option));
@@ -445,7 +446,12 @@ class QuestionList extends React.Component {
         });
     }
     submit = () => {
-     //console.log("defined options "+JSON.stringify(this.state.definedOptions))
+        this.state.definedOptions.forEach(element => {
+            if(element.value == undefined) {
+               createNotification('error','Option can not be blank');
+               return;
+            }
+        })
         var questionWidgetType = this.state.widgetType;
         var questionConcept = this.state.conceptName;
         var variableName = this.state.question;
