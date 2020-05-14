@@ -1,6 +1,6 @@
 import * as types from './types';
 
-const initialstate = { all_roles: [], role: {}, loading: false }
+const initialstate = { all_roles: [], role: {}, loading: false ,systemIds: []}
 
 const rolesReducer = (state = initialstate, action) => {
  // console.log('action ' + JSON.stringify(action.type));
@@ -23,6 +23,11 @@ const rolesReducer = (state = initialstate, action) => {
     case types.DELETE_ROLE: 
       return {
         role : action.payload,
+        loading : false
+      }
+    case types.GET_USERS_BY_ROLE:
+      return {
+        systemIds : action.payload,
         loading : false
       }
     default: return state
