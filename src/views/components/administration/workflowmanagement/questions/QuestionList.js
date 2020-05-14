@@ -217,13 +217,15 @@ class QuestionList extends React.Component {
         this.setState({ optionError:false,openQuestionModal: true });
     }
     closeQuestionModal() {
-        this.setState({ openQuestionModal: false })
+        this.setState({ openQuestionModal: false });
+        this.resetForm()
     }
     openEditQuestionModal() {
         this.setState({ optionError:false,openEditQuestionModal: true });
     }
     closeEditQuestionModal() {
-        this.setState({ openEditQuestionModal: false })
+        this.setState({ openEditQuestionModal: false });
+        this.resetForm()
     }
     onQuickFilterText = (event) => {
         this.setState({ quickFilterText: event.target.value });
