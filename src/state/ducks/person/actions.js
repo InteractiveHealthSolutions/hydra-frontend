@@ -24,6 +24,14 @@ export const fetchPersons = () => async dispatch =>
 
 const setpersonsAction = (payload) => ({ type: types.GET_ALL_PERSON, payload })
 
+export const getPersonByUUID = (uuid) => async dispatch => 
+  fetch(GET,"/person/"+uuid+"?v=full")
+    .then(res => dispatch(getPersonByUUIDAction(res))).catch(displayError)
+
+const getPersonByUUIDAction = (payload) => ({
+  type: types.GET_PERSON_BY_UUID,
+  payload
+})
 
 
 
