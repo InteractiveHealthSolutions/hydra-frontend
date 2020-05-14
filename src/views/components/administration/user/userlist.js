@@ -170,7 +170,6 @@ class UserList extends React.Component {
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
             await this.props.getPersonByUUID(event.data.person.uuid);
-            await alert(JSON.stringify(this.props.person.names[0].familyName))
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
