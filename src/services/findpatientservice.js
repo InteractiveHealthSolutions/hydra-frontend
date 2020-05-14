@@ -31,7 +31,7 @@ function getSearchPatient(query) {
 function filterPatient(patientData) {
     let filteredPatient = [];
     patientData.results.forEach(element => {
-        console.log("element patient  :: ",JSON.stringify(element))
+        //console.log("element patient  :: ",JSON.stringify(element))
         filteredPatient.push({
             "identifier":element.identifiers[0].identifier,
             "given":element.person.preferredName.givenName,

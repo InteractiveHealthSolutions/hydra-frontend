@@ -8,7 +8,7 @@ export const IMAGE_PORT =
 
 export const BLANK_AVATAR = "/images/icon-avatar.svg";
 
-export const BASE_URL = process.env.HYDRA_APP_API_BASEURL
+export const BASE_URL = process.env.REACT_APP_API_PROD
 
 /// middleware Actions 
 export const API = "API"

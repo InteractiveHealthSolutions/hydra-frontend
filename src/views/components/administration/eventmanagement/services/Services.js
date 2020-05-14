@@ -66,7 +66,7 @@ function Services(props) {
 
 
     function statusFormatter(params) {
-        console.log("Formater ", params.value);
+        //console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
 
@@ -85,7 +85,7 @@ function Services(props) {
     useEffect(() => {
 
         if (props.serviceTypeList !== undefined) {
-            console.log("serviceTypeLis",props.serviceTypeList)
+            //console.log("serviceTypeLis",props.serviceTypeList)
             setAvailableServicesType(props.serviceTypeList.serviceTypes);
             if (availableServicesType !== undefined)
                 populateDropDown();
@@ -122,7 +122,7 @@ function Services(props) {
 
     function onCellClicked(event) {
         if (event.colDef.headerName == 'Edit') {
-            console.log("serviceType", event.data.serviceType)
+          //  console.log("serviceType", event.data.serviceType)
             setModalTitle("Edit Service")
             setActionType("EditService")
             setAssociatedForm(event.data.serviceType)
@@ -139,7 +139,7 @@ function Services(props) {
             name: serviceTypeName,
             encounterType: associatedForm.uuid
         }
-        console.log("assetTypeForm", assetTypeForm)
+       // console.log("assetTypeForm", assetTypeForm)
         await props.saveServiceType(assetTypeForm);
         await props.fetchServiceType();
         resetForm()
@@ -169,7 +169,7 @@ function Services(props) {
                 // referenceId: filterLabtestType(autocompleteLabtestTypeValue).value
             }
         }
-        console.log("serviceForm", serviceForm)
+       // console.log("serviceForm", serviceForm)
         await props.saveService(serviceForm);
         await getAllService();
         resetForm()
@@ -228,7 +228,7 @@ function Services(props) {
 
     function populateDropDown() {
         let array = [];
-        console.log("populateDropDown ", availableServicesType)
+       // console.log("populateDropDown ", availableServicesType)
         availableServicesType.forEach(element => {
             array.push(
                 <option value={element.uuid}>{element.name}</option>
