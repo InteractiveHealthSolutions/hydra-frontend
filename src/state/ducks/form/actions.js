@@ -92,7 +92,7 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
 }
 
 export const deleteComponentFormRelation = uuid => async dispatch => {
-  console.log(" called");
+ // console.log(" called");
   fetch(DELETE, "/hydra/componentform/" + uuid)
     .then(res => dispatch(setDeleteComponentFormRelations(res)))
     .catch(displayError);
