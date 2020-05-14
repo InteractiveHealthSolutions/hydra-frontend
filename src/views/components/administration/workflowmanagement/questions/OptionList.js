@@ -78,7 +78,8 @@ class OptionList extends React.Component {
         this.setState({ openOptionModal: true });
     }
     closeOptionModal() {
-        this.setState({ openOptionModal: false,alreadyExist:false })
+        this.setState({ openOptionModal: false,alreadyExist:false });
+        this.resetForm();
     }
     onItemSelectedFunc = e => {
     if (e.controlId == "variableName") {
@@ -116,12 +117,17 @@ class OptionList extends React.Component {
     }
     submit = () => {
         if(this.state.alreadyExist) {
-            createNotification('error','Option with this name already exist')
+            createNotification('error','Option with this name already exist');
+            this.setState({alreadyExist:false})
+            return;
         }
         var questionConcept = this.state.conceptName;
         var variableName = this.state.question;
         var questionDescription = this.state.description;
-        if(questionConcept == '' || questionDescription == '') {
+        if(( questionConcept == undefined) || (questionDescription == '' || questionDescription == undefined)) {
+            createNotification('error','Please fill mandatory fields');
+        }
+        else if(questionConcept.value == '') {
             createNotification('error','Please fill mandatory fields');
         }
         if (!/[a-zA-Z]+\s?[a-zA-Z]/.test(questionConcept)) {
@@ -152,7 +158,6 @@ class OptionList extends React.Component {
                 createNotification("success","Option Saved!");
                 this.props.getAllOptions();
                 this.closeOptionModal();
-                this.resetForm();
             });
             return;
         }
