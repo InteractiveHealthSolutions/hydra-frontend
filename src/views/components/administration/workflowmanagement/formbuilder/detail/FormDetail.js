@@ -50,10 +50,11 @@ function FormDetail(props) {
     useEffect(() => {
         if(localStorage.getItem("check")){
             reload(!dummy);
-            console.log("Form reload")
+            console.log("Form reload" ,dummy)
             reload(!dummy);
-            console.log("Form Reload")
+            console.log("Form Reload" ,dummy)
             reload(!dummy);
+            console.log("Form Reload" ,dummy)
             localStorage.setItem("check",false)
         }
     }, [])
