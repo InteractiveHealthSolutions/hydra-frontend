@@ -16,6 +16,11 @@
   --label-color: rgb(66, 88, 208);
   --primary: rgb(66, 88, 208) !important;
   --secondary: #6c757d;
+  --darkgreen: 	rgb(0,100,0);
+  --maroon: rgb(128,0,0);
+  --orange:rgb(255,165,0);
+  --crimson:	rgb(220,20,60);
+  --indigo:	rgb(75,0,130);
 }
 
 .btn-primary {

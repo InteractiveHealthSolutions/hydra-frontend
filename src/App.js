@@ -14,7 +14,7 @@ import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import Form from './views/components/form/Form';
+import Form from './views/components/form/FormContainer';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
