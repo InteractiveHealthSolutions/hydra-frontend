@@ -44,18 +44,14 @@ function FormDetail(props) {
 
 
     useEffect(() => {
+          console.log("Form reload fetch" ,localStorage.getItem("check"))
           dispatch(formAction.fetchForms())
     }, []);
 
     useEffect(() => {
-        if(localStorage.getItem("check")){
-            reload(!dummy);
-            console.log("Form reload" ,dummy)
-            reload(!dummy);
-            console.log("Form Reload" ,dummy)
-            reload(!dummy);
-            console.log("Form Reload" ,dummy)
+        if(localStorage.getItem("check") === "true"){
             localStorage.setItem("check",false)
+            window.location.reload()
         }
     }, [])
 
