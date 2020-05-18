@@ -118,7 +118,7 @@ class OptionList extends React.Component {
     submit = () => {
         if(this.state.alreadyExist) {
             createNotification('error','Option with this name already exist');
-            this.setState({alreadyExist:false})
+            //this.setState({alreadyExist:false})
             return;
         }
         var questionConcept = this.state.conceptName;
@@ -157,6 +157,7 @@ class OptionList extends React.Component {
    
                 createNotification("success","Option Saved!");
                 this.props.getAllOptions();
+                this.setState({alreadyExist:false})
                 this.closeOptionModal();
             });
             return;
@@ -208,6 +209,7 @@ class OptionList extends React.Component {
                                 onItemSelectedProp={this.onItemSelectedFunc}
                                 isRequired={true}
                                 pattern="[a-zA-Z]+\s?[a-zA-Z]"
+                                parentComponent="Options"
                             ></AutoSearchComplete>
                             <TextBox
                                 value={this.state.question}

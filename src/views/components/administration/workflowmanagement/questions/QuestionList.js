@@ -753,6 +753,7 @@ class QuestionList extends React.Component {
                                 onItemSelectedProp={this.onItemSelectedFunc}
                                 isRequired={true}
                                 pattern="[a-zA-Z]+\s?[a-zA-Z]"
+                                parentComponent="Questions"
                             ></AutoSearchComplete>
                             {/* {this.state.hideIsOption ? (
                                 ""
@@ -859,6 +860,7 @@ class QuestionList extends React.Component {
                                                         controlId={definedOption.controlId}
                                                         title={definedOption.title}
                                                         onItemSelectedProp={this.onItemSelectedFunc}
+                                                        parentComponent="Options"
                                                     ></AutoSearchComplete>
                                                 </div>
                                                 <div className="col-md-1" style={{ textAlign: "center" }}>
