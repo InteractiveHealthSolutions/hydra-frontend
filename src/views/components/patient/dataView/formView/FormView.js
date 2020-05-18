@@ -1,7 +1,7 @@
 import React from 'react'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 import WidgetGenerator from './WidgetGenerator'
-import { CreateYupSchema, FormValidation } from './CreateValidationSchema'
+import { CreateYupSchema, FormValidation } from './validation/CreateValidationSchema'
 import * as yup from "yup";
 import {
     Formik, Form,

@@ -1,5 +1,5 @@
 import React from 'react'
-import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
+import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
 import { ContactWidgetType } from './ContactWidgetType'
 
 

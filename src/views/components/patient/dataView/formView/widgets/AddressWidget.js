@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomSelect from './CustomSelect'
-import { locationAction } from '../../../../../state/ducks/location';
+import { locationAction } from '../../../../../../state/ducks/location';
 import {
     FormGroup,
 }
     from '@material-ui/core'
-import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate' 
-import styles from './fromview.module.css';
+import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate' 
+import styles from '../fromview.module.css';
 
 export default function AddressWidget({
     fieldId,

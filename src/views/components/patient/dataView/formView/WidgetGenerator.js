@@ -31,15 +31,15 @@ import {
     AGE,
     ADDRESS
 } from '../../../../../utilities/constants/globalconstants'
-import CustomSelect from './CustomSelect'
-import AddressWidget from './AddressWidget'
+import CustomSelect from './widgets/CustomSelect'
+import AddressWidget from './widgets/AddressWidget'
 import styles from './fromview.module.css';
-import ContactTracingWidget from './ContactTracingWidget'
-import { DatePickerField } from './DatePickerField'
-import { CustomRadioButton } from './CustomRadioButton'
-import { HeadingWidget } from './HeadingWidget'
-import { CustomCheckBox } from './CustomCheckBox'
-import CheckRule from './CheckRule'
+import ContactTracingWidget from './widgets/ContactTracingWidget'
+import { DatePickerField } from './widgets/DatePickerField'
+import { CustomRadioButton } from './widgets/CustomRadioButton'
+import { HeadingWidget } from './widgets/HeadingWidget'
+import { CustomCheckBox } from './widgets/CustomCheckBox'
+import CheckRule from './parser/CheckRule'
 
 
 

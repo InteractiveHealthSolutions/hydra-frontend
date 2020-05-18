@@ -1,6 +1,6 @@
 import React from 'react'
 import { CustomInput } from './CustomInput'
-import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
+import CardTemplate from '../../../../../ui/cards/SimpleCard/CardTemplate'
 import { DatePickerField } from './DatePickerField'
 import { CustomRadioButton } from './CustomRadioButton'
 import {

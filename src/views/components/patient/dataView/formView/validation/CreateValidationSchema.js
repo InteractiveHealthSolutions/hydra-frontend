@@ -13,7 +13,7 @@ import {
     HEADING,
     AGE,
     ADDRESS
-} from '../../../../../utilities/constants/globalconstants'
+} from '../../../../../../utilities/constants/globalconstants'
 
 export function CreateYupSchema(schema, config) {
     console.log("CreateYupSchema", config)

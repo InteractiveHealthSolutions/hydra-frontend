@@ -1,4 +1,3 @@
-import { isInstanced } from "./InstancedOf"
 import {
     NUMERIC,
     CODED,
@@ -13,7 +12,7 @@ import {
     HEADING,
     AGE,
     ADDRESS
-} from '../../../../../utilities/constants/globalconstants'
+} from '../../../../../../utilities/constants/globalconstants'
 
 export async function sExpressionParser(configString, values, type) {
 
