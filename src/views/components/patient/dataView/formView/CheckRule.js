@@ -3,19 +3,23 @@ import { sExpressionParser } from './SepressionParser'
 
 export default function CheckRule({
     rule,
-    children
+    children,
+    values,
+    type
 }) {
+
+  
     const [visible, setVisible] = useState(true)
     useEffect(() => {
+    
         if (rule !== null) {
-            async function checkCondition() {
-                console.log("sExpressionParser ", sExpressionParser(rule))
-                let isHide = await sExpressionParser(rule)
-                setVisible(isHide)
-            }
             checkCondition()
         }
-    }, [])
+    })
+    async function checkCondition() {
+            let isHide = await sExpressionParser(rule,values,type)
+            setVisible(isHide)
+}
 
     ///this function must be generalized. hide and show . autoselect 
     return (

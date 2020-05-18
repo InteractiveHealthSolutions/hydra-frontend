@@ -74,15 +74,11 @@ const FormView = ({
                 >{({
                     values,
                     touched,
-                    dirty,
                     errors,
                     handleChange,
                     handleBlur,
                     handleSubmit,
-                    handleReset,
-                    setFieldValue,
-                    setFieldTouched,
-                    isSubmitting
+                    setFieldValue
                 }) => (
                         <form onSubmit={handleSubmit}>
                             <CardTemplate

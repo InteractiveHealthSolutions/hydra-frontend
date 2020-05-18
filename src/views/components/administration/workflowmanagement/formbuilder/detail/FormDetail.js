@@ -49,16 +49,12 @@ function FormDetail(props) {
 
     
     useEffect(() => {
-        if(localStorage.getItem("check")){
-            reload(!dummy);
-            console.log("formdummy :: ", dummy)
-            reload(dummy);
-            console.log("formdummy :: ", dummy)
-            reload(!dummy);
-            console.log("formdummy :: ", dummy)
+        if(localStorage.getItem("check") === "true"){
             localStorage.setItem("check",false)
+            window.location.reload()
         }
     }, [])
+
     
 
     function onRowSelected(event) {

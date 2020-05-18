@@ -60,7 +60,7 @@ const WidgetGenerator = ({
     country
 }) => {
 
-     console.log("parsedRule" , parsedRule)
+    //console.log("parsedRule", parsedRule)
 
     switch (display) {
 
@@ -68,6 +68,8 @@ const WidgetGenerator = ({
             return (
                 <CheckRule
                     rule={parsedRule}
+                    values ={values}
+                    type ={display}
                 >
                     <FormGroup>
                         <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
@@ -86,7 +88,11 @@ const WidgetGenerator = ({
             )
         case SINGLE_SELECT_DROPDOWN:
             return (
-           
+                <CheckRule
+                    rule={parsedRule}
+                    values ={values}
+                    type ={display}
+                >
                     <FormGroup>
                         <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                         <CustomSelect
@@ -107,21 +113,28 @@ const WidgetGenerator = ({
                             errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
                         }
                     </FormGroup>
+                </CheckRule>
 
             )
         case SINGLE_SELECT_RADIOBUTTON:
             return (
-                <FormGroup>
-                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
-                    {
-                        answers.map((element, index) => (
-                            <CustomRadioButton name={fieldId} type="radio" value={element.uuid} label={element.concept.display} />
-                        ))
-                    }
-                    {
-                        errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
-                    }
-                </FormGroup>
+                <CheckRule
+                    rule={parsedRule}
+                    values ={values}
+                    type ={display}
+                >
+                    <FormGroup>
+                        <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
+                        {
+                            answers.map((element, index) => (
+                                <CustomRadioButton name={fieldId} type="radio" value={element.concept.uuid} label={element.concept.display} />
+                            ))
+                        }
+                        {
+                            errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
+                        }
+                    </FormGroup>
+                </CheckRule>
             )
         case MULTIPLE_CHOICE:
             return (
