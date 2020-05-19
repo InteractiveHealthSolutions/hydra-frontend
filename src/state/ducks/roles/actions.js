@@ -41,6 +41,11 @@ export const getUsersByRole = (uuid) => async dispatch =>
 
 const getUsersByRoleAction = payload => ({type : types.GET_USERS_BY_ROLE, payload});
 
+export const getRoleByUUID = (uuid) => async dispatch =>
+  fetch(GET,"/role/"+uuid+"?v=full")
+   .then(res => {dispatch(getRoleByUUIDAction(res))}).catch(displayError)
+
+const getRoleByUUIDAction = payload => ({type : types.GET_ROLE_BY_UUID, payload})
 const setProject = () => ({
   type: types.SET_PROJECT
 });   

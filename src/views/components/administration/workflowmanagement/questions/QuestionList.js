@@ -451,6 +451,7 @@ class QuestionList extends React.Component {
                createNotification('error','Option can not be blank');
                return;
             }
+            return;
         })
         var questionWidgetType = this.state.widgetType;
         var questionConcept = this.state.conceptName;

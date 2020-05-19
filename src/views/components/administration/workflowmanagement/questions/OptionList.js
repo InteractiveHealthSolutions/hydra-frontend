@@ -126,9 +126,11 @@ class OptionList extends React.Component {
         var questionDescription = this.state.description;
         if(( questionConcept == undefined) || (questionDescription == '' || questionDescription == undefined)) {
             createNotification('error','Please fill mandatory fields');
+            return;
         }
         else if(questionConcept.value == '') {
             createNotification('error','Please fill mandatory fields');
+            return;
         }
         if (!/[a-zA-Z]+\s?[a-zA-Z]/.test(questionConcept)) {
             createNotification('warning', 'Name can not contain special characters')
