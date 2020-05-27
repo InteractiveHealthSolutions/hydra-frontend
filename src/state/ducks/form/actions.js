@@ -65,6 +65,7 @@ const getComponentFormRelations = payload => ({
 });
 
 function filterStageForm(StageFormData, filterWith, phaseUuid) {
+
   let filteredForm = [];
   let phase = "";
   let workflow = "";
@@ -79,6 +80,7 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
     activeComponent = localStorage.getItem("active-component-uuid");
   }
 
+  console.log("componentForms Form vv ", StageFormData)
   StageFormData.ComponentsFormsMap.forEach(element => {
     if (activeComponent === null) {
       if (phase === element.phase.uuid && workflow === element.workflow.uuid) {
@@ -88,7 +90,6 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
       filteredForm.push(element);
     }
   });
-  console.log("componentForms Form vv ", filteredForm)
   return filteredForm;
 }
 

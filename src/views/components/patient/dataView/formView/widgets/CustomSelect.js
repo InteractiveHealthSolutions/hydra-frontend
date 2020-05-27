@@ -9,15 +9,17 @@ const CustomSelect = ({
     name,
     touched,
     error,
-    isMulti
+    isMulti,
+    value
 }) => {
-
     return (
-            <Select
-                options={options}
-                isMulti ={isMulti}
-                onChange={value => handleChange(name, value)}
-            />
+        <Select
+            id = {name}
+            value={value}
+            options={options}
+            isMulti={isMulti}
+            onChange={val => handleChange(name, val)}
+        />
     )
 }
 export default CustomSelect

@@ -251,6 +251,37 @@ export default function FormViewContainer() {
     return numberOfContactArr
   }
 
+
+  // const [reload, setReload] = useState(true)
+  // const [initialValues ,setInitialValues]=useState({})
+
+  // useEffect(() => {
+  //   const initialValue = {};
+  //   form.form.formFields.forEach(item => {
+  //       const fieldName = item.field.fieldId
+  //       const fieldType = item.field.attributeName
+  //       if (fieldType === ADDRESS) {
+  //           initialValue[fieldName + "-country"] = "";
+  //           initialValue[fieldName + "-province"] = "";
+  //           initialValue[fieldName + "-city"] = "";
+  //           initialValue[fieldName + "-address"] = "";
+  //       } else {
+  //         initialValue[item.field.fieldId] = "";
+  //       }
+  //   });
+  //   setInitialValues(initialValue)
+  // }, [])
+
+
+ 
+
+  // function handleAutoSelect(name, val) {
+  //     console.log("handleAutoSelect ", name, val)
+  //     initialValues[name] = val
+  //     setReload(false)
+  // }
+  // console.log("handleAutoSelect  re i",reload, initialValues)
+
   return <FormView
     form={form.form}
     country={country}

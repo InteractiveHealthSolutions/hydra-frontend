@@ -6,7 +6,6 @@ import { displayError, createNotification } from '../../utilities/helpers/helper
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
     localStorage.getItem('password'));
-    console.log("token" ,token)
   const requestOptions = {
     method: method,
     headers: {
@@ -15,10 +14,10 @@ export default async (method, path, data) => {
     },
     body: JSON.stringify(data)
   };
-  console.log("path" ,path,requestOptions)
+
   return  fetch(path, requestOptions)
     .then(handleResponse).then(response => {
-      console.log("api Response ....", response);
+      console.log("api Response ....", response.data);
       return response;
     }).catch(displayError);
 };
@@ -35,8 +34,9 @@ async function handleResponse(response) {
       console.log("api error ....", error);
       return Promise.reject(error)
     }
+    console.log("api data text....", text);
     const data = text && JSON.parse(text);
-    console.log("api data ....", data);
+    console.log("api data ....", text);
     return Promise.resolve(data);
   });
 }

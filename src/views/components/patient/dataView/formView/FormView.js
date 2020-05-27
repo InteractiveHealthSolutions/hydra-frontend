@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
 import WidgetGenerator from './WidgetGenerator'
 import { CreateYupSchema, FormValidation } from './validation/CreateValidationSchema'
@@ -10,14 +10,17 @@ import {
 import { ADDRESS } from '../../../../../utilities/constants/globalconstants';
 import styles from './fromview.module.css';
 import { FormLabel } from '@material-ui/core';
+import { autoSelectParser } from './parser/Parser'
 
-const FormView = ({ 
-     form: { field, name, formFields },
-     country ,
-     currentPatient ,
-     submitForm
-    }) => {
-
+function FormView({
+    form: { field, name, formFields },
+    country,
+    currentPatient,
+    submitForm,
+}) {
+    const [reload, setReload] = useState(true)
+    const yepSchema = formFields.reduce(CreateYupSchema, {});
+    const validateSchema = yup.object().shape(yepSchema);
     const initialValues = {};
     formFields.forEach(item => {
         const fieldName = item.field.fieldId
@@ -30,41 +33,54 @@ const FormView = ({
         } else {
             initialValues[item.field.fieldId] = "";
         }
-
     });
 
-    const yepSchema = formFields.reduce(CreateYupSchema, {});
-    const validateSchema = yup.object().shape(yepSchema);
+
+    function handleAutoSelect(name, val, setFieldValue, setFieldTouched) {
+        // debugger;
+        console.log("handleAutoSelect tt", name, val)
+        //  setFieldValue(name, val)
+       //  setFieldValue(name, val);
+        // setTimeout(() => setFieldTouched(name, true));
+        //initialValues[name] = val
+        var objSelect = document.getElementById(name);
+        console.log("objSelect",objSelect)
+        // document.querySelector('#'+name).value = 
+        // setReload(!reload)
+    }
+
 
     return (
         <div className="row">
-            <div className="col-md-4" style= {{marginRight:0,paddingRight:4}}>
+            <div className="col-md-4" style={{ marginRight: 0, paddingRight: 4 }}>
                 <CardTemplate
                     title="Patient Detail"
                 >
-                   <div className="row">
-                       <div className ="col-md-4"><FormLabel>Name</FormLabel></div>
-                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.given + " " + currentPatient.familyname}</FormLabel></div>
-                   </div>
-                   <div className="row">
-                       <div className ="col-md-4"><FormLabel>Identifier</FormLabel></div>
-                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.identifier}</FormLabel></div>
-                   </div>
-                   <div className="row">
-                       <div className ="col-md-4"><FormLabel>Gender</FormLabel></div>
-                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.gender}</FormLabel></div>
-                   </div>
-                   <div className="row">
-                       <div className ="col-md-4"><FormLabel>DOB</FormLabel></div>
-                       <div className ="col-md-8"><FormLabel className ={styles.font_adjust}>{currentPatient.age + " year(s) (" + currentPatient.birthday + ")" }</FormLabel></div>
-                   </div>
+                    <div className="row">
+                        <div className="col-md-4"><FormLabel>Name</FormLabel></div>
+                        <div className="col-md-8"><FormLabel className={styles.font_adjust}>{currentPatient.given + " " + currentPatient.familyname}</FormLabel></div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4"><FormLabel>Identifier</FormLabel></div>
+                        <div className="col-md-8"><FormLabel className={styles.font_adjust}>{currentPatient.identifier}</FormLabel></div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4"><FormLabel>Gender</FormLabel></div>
+                        <div className="col-md-8"><FormLabel className={styles.font_adjust}>{currentPatient.gender}</FormLabel></div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4"><FormLabel>DOB</FormLabel></div>
+                        <div className="col-md-8"><FormLabel className={styles.font_adjust}>{currentPatient.age + " year(s) (" + currentPatient.birthday + ")"}</FormLabel></div>
+                    </div>
                 </CardTemplate>
             </div>
-            <div className="col-md-8" style ={{marginLeft:0 ,paddingLeft:4}}>
+            <div className="col-md-8" style={{ marginLeft: 0, paddingLeft: 4 }}>
                 <Formik
+                    enableReinitialize={true}
                     initialValues={initialValues}
                     // validationSchema={validateSchema}
                     validate={(values) => {
+                        // initialValues["1024"] = { label: "CHIKUNGUNYA FEVER", value: "120742AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
                         return FormValidation(formFields, values)
                     }}
                     onSubmit={(data) => {
@@ -78,7 +94,8 @@ const FormView = ({
                     handleChange,
                     handleBlur,
                     handleSubmit,
-                    setFieldValue
+                    setFieldValue,
+                    setFieldTouched
                 }) => (
                         <form onSubmit={handleSubmit}>
                             <CardTemplate
@@ -98,6 +115,8 @@ const FormView = ({
                                                     errors={errors}
                                                     touched={touched}
                                                     country={country}
+                                                    setFieldTouched={setFieldTouched}
+                                                    handleAutoSelect={handleAutoSelect}
                                                 /> : null}
 
                                             <div style={{ marginTop: '8px' }}></div>
@@ -105,8 +124,8 @@ const FormView = ({
                                     )) : null
 
                                 }
-                                {/* <pre>{JSON.stringify(values, null, 2)}</pre>
-                                <pre>{JSON.stringify(errors, null, 2)}</pre> */}
+                                <pre>{JSON.stringify(values, null, 2)}</pre>
+                                <pre>{JSON.stringify(errors, null, 2)}</pre>
                             </CardTemplate>
                         </form>
                     )}
