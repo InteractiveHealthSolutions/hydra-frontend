@@ -61,6 +61,8 @@ export default class QuestionConfiguration extends Component {
         await this.setDefaultValue()
     }
 
+
+
     async setDefaultValue() {
       //console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
         await this.setState({
@@ -69,7 +71,7 @@ export default class QuestionConfiguration extends Component {
             allowCharacter: localStorage.getItem(`${this.props.uuid}-allowCharacter`),
             questionText: localStorage.getItem(`${this.props.uuid}-questionText`),
             mandatory: localStorage.getItem(`${this.props.uuid}-mandatory`),
-            headingTitle: localStorage.getItem(`${this.props.uuid}-headingTitle`),
+            headingTitle: localStorage.getItem(`${this.props.uuid}-headingTitle -${this.props.displayOrder}`),
             minValue: localStorage.getItem(`${this.props.uuid}-minValue`),
             maxValue: localStorage.getItem(`${this.props.uuid}-maxValue`),
             maxLength: localStorage.getItem(`${this.props.uuid}-maxLength`),
@@ -120,6 +122,7 @@ export default class QuestionConfiguration extends Component {
         this.setState({
             [ev.controlId]: ev.value
         })
+        console.log("ev.name" ,ev.name )
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
@@ -144,17 +147,17 @@ export default class QuestionConfiguration extends Component {
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName,headingTitle, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
                 {(datatype === HEADING) ?
                     <TextBox
-                        controlId="questionText"
+                        controlId="headingTitle"
                         title="Title"
                         type="text"
-                        name={uuid + "-questionText"}
-                        value={questionText}
+                        name={uuid + "-headingTitle-"+this.props.displayOrder}
+                        value ={localStorage.getItem(uuid + "-headingTitle-"+this.props.displayOrder)}
                         onItemSelectedProp={this.onItemSelectedProp}
                     /> : ""
                 }

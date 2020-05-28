@@ -30,6 +30,11 @@ const rolesReducer = (state = initialstate, action) => {
         systemIds : action.payload,
         loading : false
       }
+    case types.GET_ROLE_BY_UUID:
+      return {
+        role: action.payload,
+        loading : false
+      }
     default: return state
 
   }

@@ -13,7 +13,7 @@ import {
     HEADING,
     AGE,
     ADDRESS
-} from '../../../../../utilities/constants/globalconstants'
+} from '../../../../../../utilities/constants/globalconstants'
 
 export function CreateYupSchema(schema, config) {
     console.log("CreateYupSchema", config)
@@ -40,22 +40,20 @@ export function FormValidation(questionList, formValues){
    questionList.forEach(items => {
         const fieldName = items.field.fieldId
         const fieldType = items.field.attributeName
-        
+        const fieldTypeDisplayText = items.field.fieldType.display
         console.log("Form-Field",items.mandatory, fieldName,formValues[fieldName])
         if(items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length<=0 )){
                 errors[fieldName] = items.errorMessage?items.errorMessage :"Field is required"
         }
 
-        switch(fieldType){
+        switch(fieldTypeDisplayText){
             case TEXT: 
-
             break;
             case NUMERIC:
-
-
             break;
-            case CODED: 
-
+            case SINGLE_SELECT_DROPDOWN:
+            break;
+            case MULTIPLE_CHOICE:
             break;
             case DATE_TIME: 
 
@@ -65,9 +63,6 @@ export function FormValidation(questionList, formValues){
             break;
             case CONTACT_TRACING:
 
-                if(items.createPatient){
-                    
-                }
             break;
             case ADDRESS: 
                 if(formValues[fieldName+"-country"] === "" ){

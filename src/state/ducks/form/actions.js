@@ -36,6 +36,7 @@ export const searchForm = componentUuid => async dispatch =>
 const setSearchForm = payload => ({ type: types.SEARCH_FORM, payload });
 
 export const saveComponentFormRelation = componentform => async dispatch => {
+  dispatch(setProject())
   fetch(POST, "/hydra/componentform", componentform)
     .then(res => dispatch(setComponentFormRelation(res)))
     .catch(displayError);
@@ -64,11 +65,12 @@ const getComponentFormRelations = payload => ({
 });
 
 function filterStageForm(StageFormData, filterWith, phaseUuid) {
+
   let filteredForm = [];
   let phase = "";
   let workflow = "";
   let activeComponent = "";
-  if (filterWith === "dataview" && phaseUuid ) {
+  if (filterWith === "dataview" && phaseUuid) {
     phase = phaseUuid;
     workflow = localStorage.getItem("selectedWorkflowId")
     activeComponent = null
@@ -78,31 +80,31 @@ function filterStageForm(StageFormData, filterWith, phaseUuid) {
     activeComponent = localStorage.getItem("active-component-uuid");
   }
 
+  console.log("componentForms Form vv ", StageFormData)
   StageFormData.ComponentsFormsMap.forEach(element => {
     if (activeComponent === null) {
-        if (phase === element.phase.uuid && workflow === element.workflow.uuid) {
-          filteredForm.push(element);
-        }
+      if (phase === element.phase.uuid && workflow === element.workflow.uuid) {
+        filteredForm.push(element);
+      }
     } else if (activeComponent === element.component.uuid && phase === element.phase.uuid && workflow === element.workflow.uuid) {
       filteredForm.push(element);
     }
   });
-  console.log("componentForms Form vv ", filteredForm)
   return filteredForm;
 }
 
 export const deleteComponentFormRelation = uuid => async dispatch => {
- // console.log(" called");
+  dispatch(setProject())
   fetch(DELETE, "/hydra/componentform/" + uuid)
     .then(res => dispatch(setDeleteComponentFormRelations(res)))
     .catch(displayError);
 };
 const setDeleteComponentFormRelations = payload => ({
-  type: types.GET_COMPONENT_FORM_RELATION,
+  type: types.DELETE_COMPONENT_FORM_RELATION,
   payload
 });
 
-export  const formSubmission  = (formData) => async dispatch =>{
+export const formSubmission = (formData) => async dispatch => {
   dispatch(setProject())
   fetch(POST, "/hydra/formSubmission", formData)
     .then(res => dispatch(setFormSubmission(res)))

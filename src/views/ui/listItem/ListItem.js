@@ -37,17 +37,19 @@ export default function ListItem({
     handleDeleteOnClick,
     data,
     view,
+    color,
     completed, ...reset
 }) {
+    //completed ? "var(--bg)" : "red"
     return (
         <li
             style={styles.li}
         >
 
             <div style={styles.itemleft} onClick={(evt) => handleOnClick(evt, data)} >
-                <div style={styles.leftWall(completed ? "var(--bg)" : "red")} />
+                <div style={styles.leftWall(color)} />
                 {view? <span style ={styles.img} ><i class="fas fa-align-justify gradient"></i></span>:""}
-                <ListBody name={view ? data.form.name : data.name} description="" />
+                <ListBody name={view ? data.form.name : data.name? data.name : data.form.name} description="" />
             </div>
             {(view) ? "" :
                 <span onClick={() => handleDeleteOnClick(data)}>

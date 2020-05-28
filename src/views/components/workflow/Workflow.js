@@ -28,6 +28,7 @@ const Workflow = ({
         action={
           <button className="btn btn-primary _btn" onClick={() => openModal()}> <i class="fas fa-plus"></i> Create</button>
         }
+        contentHeight = "450px"
       >
         <Sortable
           options={{
@@ -43,7 +44,7 @@ const Workflow = ({
               workflowLists.workflows.map(element => (
                 <ListItem
                   handleOnClick={handleOnClick}
-                  completed={true}
+                  color = "var(--bg)"
                   handleDeleteOnClick={handleDeleteOnClick}
                   data={element}
                 />

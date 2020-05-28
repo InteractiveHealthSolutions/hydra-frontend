@@ -16,6 +16,7 @@ import Loaders from '../../common/loader/Loader';
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
 import { createNotification } from '../../../../utilities/helpers/helper';
+import { elementMatches } from '@fullcalendar/core';
 
 const animatedComponents = makeAnimated();
 
@@ -68,22 +69,28 @@ class Roles extends React.Component {
             forEdit: false,
             selectedUUID: '',
             //retire:false
-            userSysIdList:[]
+            userSysIdList:[],
+            defaultPriviliges : [],
+            selectedRole: {}
         }
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.inheritedRolesOption = [];
         this.privilegesOption = [];
         this.selectedInheritedRoles = this.selectedInheritedRoles.bind(this);
+        this.createDefaultPriviliges = this.createDefaultPriviliges.bind(this);
         this.selectedPriviliges = this.selectedPriviliges.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.onCellClicked = this.onCellClicked.bind(this);
 
     }
-    onCellClicked = (event) => {
+    async onCellClicked(event)  {
         console.log('event ' + event.data.uuid)
         if (event.column.colId == 'edit') {
-            this.setState({
+            await this.props.getRoleByUUID(event.data.uuid);
+            await this.setState({selectedRole:this.props.role})
+            await this.createDefaultPriviliges();
+            await this.setState({
                 openAddRoleModal: true, forEdit: true, selectedUUID: event.data.uuid
                 , roleFormData: {
                     name: event.data.role,
@@ -93,6 +100,16 @@ class Roles extends React.Component {
 
         }
     }
+    createDefaultPriviliges() {
+        if(this.state.selectedRole != undefined) {
+            this.state.selectedRole.privileges.forEach(element => {
+            this.state.defaultPriviliges.push({
+                "label" : element.display,
+                "value" : element.uuid
+            })
+        })
+    }
+}
     openAddRoleModal() {
         this.setState({
             openAddRoleModal: true, forEdit: false, roleFormData: {
@@ -134,6 +151,10 @@ class Roles extends React.Component {
         if(newProps.usersByRoleList != undefined) {
             this.setState({userSysIdList : newProps.usersByRoleList});
         }
+        if(newProps.role != undefined) {
+            this.setState({selectedRole:newProps.role})
+            this.createDefaultPriviliges()
+        }
 
     }
     async handleSubmit(event) {
@@ -147,6 +168,8 @@ class Roles extends React.Component {
         if (this.state.forEdit == true) {
             if (this.state.retire == true) {
                  await this.props.getUsersByRole(this.state.selectedUUID);
+                 await this.setState({selectedRole:this.props.role});
+                 await this.createDefaultPriviliges();
                  if(JSON.stringify(this.state.userSysIdList) == '[]' ) {
                     await this.props.deleteRole(this.state.selectedUUID);
                     await this.closeAddRoleModal();
@@ -334,6 +357,7 @@ class Roles extends React.Component {
                                 <label htmlFor="prev" className="col-form-label col-sm-4">Privileges</label>
                                 <div className="col-sm-8">
                                     <Select
+                                        defaultValue={this.state.defaultPriviliges}
                                         components={animatedComponents}
                                         options={this.privilegesOption}
                                         onChange={this.selectedPriviliges}
@@ -370,7 +394,8 @@ const mapStateToProps = state => ({
     rolesList: state.roles.allRoles,
     priviligesList: state.priviliges.allPriviliges,
     isLoading: state.roles.loading,
-    usersByRoleList: state.roles.systemIds
+    usersByRoleList: state.roles.systemIds,
+    role : state.roles.role
 })
 
 const mapsDispatchToProps = {
@@ -379,6 +404,7 @@ const mapsDispatchToProps = {
     postRole: rolesAction.postRole,
     editRole: rolesAction.putRole,
     deleteRole: rolesAction.deleteRole,
-    getUsersByRole: rolesAction.getUsersByRole
+    getUsersByRole: rolesAction.getUsersByRole,
+    getRoleByUUID: rolesAction.getRoleByUUID
 }
 export default connect(mapStateToProps, mapsDispatchToProps)(Roles);
