@@ -8,7 +8,7 @@ import Homepage from './views/components/home/Homepage';
 import { userActions } from './store/actions';
 import Header from './views/components/header/Header';
 import WorkflowContainer from './views/components/workflow/WorkflowContainer'
-import Phase from './views/components/phases/Phase';
+import Phase from './views/components/phases/PhaseContainer';
 import Component from './views/components/stages/Component';
 import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';

@@ -7,7 +7,6 @@ let axios = require('axios');
 
 export const login = (username, password) => async dispatch => {
   dispatch(setProject())
- console.log("BASE_URL" ,BASE_URL)
   const token = authenticationGenerator.generateAuthenticationToken(username, password);
   const requestOptions = {
     method: 'GET',
@@ -17,7 +16,7 @@ export const login = (username, password) => async dispatch => {
     }
   };
 
-  await fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
+  await fetch(`user?v=full&q=${username}`, requestOptions)
     .then(handleResponseLogin)
     .then(user => {
       if (user === 'authorized') {

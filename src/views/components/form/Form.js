@@ -49,6 +49,7 @@ export const Form = ({
                                 color="var(--indigo)"
                                 handleDeleteOnClick={handleDeleteOnClick}
                                 data={element}
+                                name = {element.form.name}
                             />
                         )) : null
                     }
