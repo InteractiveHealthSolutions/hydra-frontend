@@ -44,6 +44,7 @@ function FormDetail(props) {
  
 
     useEffect(() => {
+          console.log("Form reload fetch" ,localStorage.getItem("check"))
           dispatch(formAction.fetchForms())
     }, []);
 

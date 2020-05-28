@@ -57,8 +57,17 @@ class AutoSearchComplete extends Component {
 
   formatList(list) {
     let array = [];
+   
     list.forEach(element => {
-      array.push(this.formatItem(element));
+      if(this.props.parentComponent == "Options") {
+        array.push(this.formatItem(element));
+      }
+      if(this.props.parentComponent == "Questions") {
+        if(element.conceptClass.display == 'Question') {
+          array.push(this.formatItem(element));
+        }
+      }
+      
     });
     return array;
   }

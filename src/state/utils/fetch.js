@@ -2,6 +2,7 @@ import { authenticationGenerator } from '../../utilities/helpers';
 import { userService } from '../../services/userservice';
 import { history } from '../../history';
 import { displayError, createNotification } from '../../utilities/helpers/helper'
+import { BASE_URL } from '../../utilities/constants/globalconstants'
 
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
@@ -23,7 +24,7 @@ export default async (method, path, data) => {
 };
 
 async function handleResponse(response) {
-  console.log("api Response ....", response);
+ // console.log("api Response ....", response);
   return await response.text().then(text => {
     if (!response.ok) {
       if (response.status === 401) {

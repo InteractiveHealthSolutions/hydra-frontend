@@ -37,11 +37,11 @@ function QuestionListModal(props) {
     }
 
     function onRowSelected(form) {
-        console.log('onRowSelected: ' + JSON.stringify(form.node.data));
+       // console.log('onRowSelected: ' + JSON.stringify(form.node.data));
     };
 
     function onCellClicked(form) {
-        console.log('onRowSelected: ' + JSON.stringify(form.node.data));
+      //  console.log('onRowSelected: ' + JSON.stringify(form.node.data));
     };
 
     function closeModal() {

@@ -1,12 +1,13 @@
 import * as types from "./types";
 import { authenticationGenerator } from '../../../utilities/helpers';
 import { history } from '../../../history';
+import { BASE_URL } from '../../../utilities/constants/globalconstants'
 let axios = require('axios');
 
 
 export const login = (username, password) => async dispatch => {
   dispatch(setProject())
-  const baseUrl = "http://localhost:8080/openmrs/ws/rest/v1"
+ console.log("BASE_URL" ,BASE_URL)
   const token = authenticationGenerator.generateAuthenticationToken(username, password);
   const requestOptions = {
     method: 'GET',
@@ -16,7 +17,7 @@ export const login = (username, password) => async dispatch => {
     }
   };
 
-  await fetch(`user?v=full&q=${username}`, requestOptions)
+  await fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
     .then(handleResponseLogin)
     .then(user => {
       if (user === 'authorized') {

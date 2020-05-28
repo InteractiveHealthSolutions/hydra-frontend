@@ -12,6 +12,7 @@ import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
 import { registrationJSON , editJSON , providerJSON, editUserJSONWithPassword} from '../../../../utilities/helpers/JSONcreator';
 import { createNotification } from '../../../../utilities/helpers/helper';
 import { providerAction } from '../../../../state/ducks/provider';
+import { personAction } from '../../../../state/ducks/person'; 
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
@@ -168,13 +169,16 @@ class UserList extends React.Component {
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
+            await this.props.getPersonByUUID(event.data.person.uuid);
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
                 activeuserUUID: event.data.uuid,
                 user: {
-                    familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
-                    givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    //familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
+                   // givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    familyname : this.props.person.names[0].familyName,
+                    givenname : this.props.person.names[0].givenName,
                     username: event.data.display,
                     gender: event.data.person.gender,
                     provider: this.props.provider.results.length != 0?'yes':'no',
@@ -228,16 +232,16 @@ class UserList extends React.Component {
                 this.state.roles.pop(event.target.value);
             this.setState({ noRoleSelected: false });
         }
-        else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
-            const { name, value } = event.target;
-            const { user } = this.state;
-            this.setState({
-                user: {
-                    ...user,
-                    [name]: value + '-'
-                }
-            });
-        }
+        // else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
+        //     const { name, value } = event.target;
+        //     const { user } = this.state;
+        //     this.setState({
+        //         user: {
+        //             ...user,
+        //             [name]: value + '-'
+        //         }
+        //     });
+        // }
         else if (event.target.name === 'password' || event.target.name === 'confirmpassword') {
             this.setState({ invalidPassword: false });
 
@@ -456,13 +460,13 @@ class UserList extends React.Component {
                             <div className="form-group row" >
                                 <label htmlFor="familyname" class="col-sm-4 col-form-label required">Family Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="familyname" pattern="^[a-zA-Z ]+${1,15}" placeholder="max 15 characters (no space)" maxlength="25" value={user.familyname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="familyname" pattern="^[a-zA-Z ]+${1,25}" placeholder="max 25 characters" maxlength="25" value={user.familyname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div className="form-group row">
                                 <label htmlFor="givenname" className="col-sm-4 col-form-label required">Given Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z ]+${1,15}" placeholder="max 15 characters (no space)" maxlength="25" value={user.givenname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z ]+${1,25}" placeholder="max 25 characters" maxlength="25" value={user.givenname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -619,7 +623,8 @@ const mapStateToProps = state => ({
     userError: state.user.userError,
     createdUser: state.user.user,
     provider: state.provider.provider,
-    workforce:state.workforce.workforce
+    workforce:state.workforce.workforce,
+    person:state.person.person
 
 });
 const mapDispatchToProps = {
@@ -633,6 +638,7 @@ const mapDispatchToProps = {
     saveProvider:providerAction.saveProvider,
     getProviderByUser:providerAction.getProviderByUser,
     deleteProvider:providerAction.deleteProvider,
-    fetchParticipantByUser:workforceAction.fetchParticipantByUser
+    fetchParticipantByUser:workforceAction.fetchParticipantByUser,
+    getPersonByUUID: personAction.getPersonByUUID
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);
