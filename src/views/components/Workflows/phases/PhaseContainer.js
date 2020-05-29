@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { phaseAction } from '../../../state/ducks/phase'
+import { phaseAction } from '../../../../state/ducks/phase'
 import { Phase } from './Phase'
 
 export default function PhaseContainer() {

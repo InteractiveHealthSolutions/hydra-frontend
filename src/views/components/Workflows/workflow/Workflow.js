@@ -1,9 +1,9 @@
 import React from 'react'
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
-import ListItem from '../../ui/listItem/ListItem'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import ListItem from '../../../ui/listItem/ListItem'
 import Sortable from 'react-sortablejs';
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { ModalFormTemplate, FormDialog, CustomizedDialog } from '../../ui/modal'
+import { ModalFormTemplate, FormDialog, CustomizedDialog } from '../../../ui/modal'
 import './workflow.css';
 
 const Workflow = ({

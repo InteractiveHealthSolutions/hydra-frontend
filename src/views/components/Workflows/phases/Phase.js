@@ -1,9 +1,9 @@
 import React from 'react'
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
-import ListItem from '../../ui/listItem/ListItem'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import ListItem from '../../../ui/listItem/ListItem'
 import Sortable from 'react-sortablejs';
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { CustomizedDialog } from '../../ui/modal'
+import { CustomizedDialog } from '../../../ui/modal'
 import './phase.css';
 
 export const Phase = ({
