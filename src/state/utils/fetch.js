@@ -16,7 +16,7 @@ export default async (method, path, data) => {
     body: JSON.stringify(data)
   };
 
-  return  fetch(path, requestOptions)
+  return  fetch(`${BASE_URL}/${path}`, requestOptions)
     .then(handleResponse).then(response => {
       console.log("api Response ....", response.data);
       return response;
