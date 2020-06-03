@@ -13,7 +13,7 @@ function downloadReport(params,name,ext) {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': token }
     };
-    return fetch(`${BASE_URL}/hydra/report?`+params, requestOptions).then(response=>handleResponse(response,name,ext)
+    return fetch(`/hydra/report?`+params, requestOptions).then(response=>handleResponse(response,name,ext)
         
     )
        }
@@ -25,7 +25,7 @@ function downloadDump(params,name,ext) {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': token }
     };
-    return fetch(`${BASE_URL}/hydra/report/dump/`+name+'?'+params, requestOptions).then(response=>handleResponse(response,name,ext)
+    return fetch(`/hydra/report/dump/`+name+'?'+params, requestOptions).then(response=>handleResponse(response,name,ext)
         
     )
        }	 

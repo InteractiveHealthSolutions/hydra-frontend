@@ -88,7 +88,8 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "homepage": "https://hydratest.ihsinformatics.com",
+    "proxy": "http://ihs.ihsinformatics.com:6811/openmrs/ws/rest/v1",
+    "homepage": ".",
     "eslintConfig": {
         "extends": "react-app"
     },
