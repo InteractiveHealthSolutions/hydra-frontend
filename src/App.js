@@ -14,7 +14,7 @@ import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import Form from './views/components/form/Form';
+import Form from './views/components/form/FormContainer';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
@@ -27,7 +27,8 @@ import TestOrderList from './views/components/labtestorder/TestOrderList'
 import AddTestOrder from './views/components/labtestorder/AddTestOrder';
 import SampleList from './views/components/labtestsample/samplelist';
 import Roles from './views/components/administration/roles/roles';
-import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList'
+import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList';
+import OptionList from './views/components/administration/workflowmanagement/questions/OptionList';
 import TestResults from './views/components/testresults/TestResuts';
 import Reports from './views/components/Reports/Reports'
 import SystemSetting from './views/components/administration/systemsettings/systemsettings'
@@ -49,7 +50,7 @@ import Engine from './views/components/administration/workflowmanagement/ruleeng
 import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
-import {WorkflowFormViewContainer} from './views/components/patient/dataView'
+import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView'
 
 
 const Main = styled.main`
@@ -129,7 +130,8 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/patient" component={FindPatient} />
                                                 <PrivateRoute exact path="/patient/detail" component={PatientDetail} />
                                                 <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
-                                                <PrivateRoute exact path="/patient/detail/dataview" component={WorkflowFormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataentry" component={WorkflowFormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
@@ -209,6 +211,14 @@ class App extends React.Component {
                                                                             </Link>
                                                                         </NavText>
                                                                     </NavItem>
+                                                                    <NavItem eventKey="/administration/options" onClick={this.toggleSidebar}>
+                                                                        <NavText >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/options" >
+                                                                                <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                 Option Bank
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
                                                                     {/* formbuilder */}
                                                                     <NavItem eventKey="/administration/form" onClick={this.toggleSidebar}>
                                                                         <NavText>
@@ -281,6 +291,7 @@ class App extends React.Component {
                                                                 <Route exact path="/administration/form" component={FormHome} />
                                                                 <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
+                                                                <Route path="/administration/options" component={OptionList} />
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
                                                         </Main>

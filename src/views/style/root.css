@@ -16,6 +16,11 @@
   --label-color: rgb(66, 88, 208);
   --primary: rgb(66, 88, 208) !important;
   --secondary: #6c757d;
+  --darkgreen: 	rgb(0,100,0);
+  --maroon: rgb(128,0,0);
+  --orange:rgb(255,165,0);
+  --crimson:	rgb(220,20,60);
+  --indigo:	rgb(75,0,130);
 }
 
 .btn-primary {
@@ -32,7 +37,7 @@
   color: #222;
   /* font-size:40px; */
   margin-top: 30px;
-  margin-left: 114px;
+  /* margin-left: 114px; */
   border-left: solid 2px var(--theme-secondary-color);
   border-right: solid 2px var(--theme-secondary-color);
   padding: 0 10px;
@@ -103,6 +108,9 @@ body {
   color: red;
 }
 
+.MuiIconButton-colorSecondary{
+  color:var(--bg)!important;
+}
 /* .form-group.required .col-form-label:after {
   content:"*" !important;
   color:red !important;

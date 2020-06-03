@@ -8,9 +8,11 @@ import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import { userAction } from '../../../../state/ducks/user'
 import { rolesAction } from '../../../../state/ducks/roles';
 import { workforceAction } from '../../../../state/ducks/workforce'
-import { registrationJSON , editJSON , providerJSON} from '../../../../utilities/helpers/JSONcreator';
+import { systemSettingsAction } from '../../../../state/ducks/systemsettings'
+import { registrationJSON , editJSON , providerJSON, editUserJSONWithPassword} from '../../../../utilities/helpers/JSONcreator';
 import { createNotification } from '../../../../utilities/helpers/helper';
 import { providerAction } from '../../../../state/ducks/provider';
+import { personAction } from '../../../../state/ducks/person'; 
 import ButtonRenderer from '../../../../utilities/helpers/ButtonRenderer';
 import DatePicker from "react-datepicker";
 import makeAnimated from 'react-select/animated';
@@ -74,7 +76,8 @@ class UserList extends React.Component {
                 dateofbirth: '',
                 role: [],
                 cnic: '',
-                retire:false
+                retire:false,
+                systemId: ''
             },
             submitted: false,
             invalidPassword: false,
@@ -82,7 +85,7 @@ class UserList extends React.Component {
             allRoles: [],
             startDate: '',
             roles: [],
-            forEdit: false
+            forEdit: false,
         }
         this.handleChangeDate = this.handleChangeDate.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -108,16 +111,22 @@ class UserList extends React.Component {
         await this.props.getRoles();
         await this.roleHelper();
         await console.log('rolesss' + JSON.stringify(this.state.allRoles))
+        await this.props.getSettingsByUUID('6a78a10b-3eae-43f6-b019-d0823e28ebd1');
+        await this.setState({dateFormat : this.props.setting.value});
+      
 
     }
    async componentWillReceiveProps(newProps) {
         if (newProps.users != undefined) {
-          await  this.setState({ rowData: newProps.users.results })
+           await this.setState({ rowData: newProps.users.results })
         }
         if(newProps.rolesList != undefined) {
            await this.roleHelper();
-            await console.log('rolesss' + JSON.stringify(this.state.allRoles))
+           await console.log('rolesss' + JSON.stringify(this.state.allRoles))
 
+        }
+        if(newProps.setting != undefined) {
+            await this.setState({dateFormat : this.props.setting.value});
         }
    
     }
@@ -160,13 +169,16 @@ class UserList extends React.Component {
             await this.setExistingRoles(event.data.roles);
             await console.log('hii'+JSON.stringify(this.state.roles))
             await this.props.getProviderByUser(event.data.uuid);
+            await this.props.getPersonByUUID(event.data.person.uuid);
             await this.setState({
                 forEdit: true,
                 openAddUserModal: true,
                 activeuserUUID: event.data.uuid,
                 user: {
-                    familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
-                    givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    //familyname: event.data.person.display.substr(0, event.data.person.display.indexOf(' ')),
+                   // givenname: event.data.person.display.substr(event.data.person.display.indexOf(' ') + 1),
+                    familyname : this.props.person.names[0].familyName,
+                    givenname : this.props.person.names[0].givenName,
                     username: event.data.display,
                     gender: event.data.person.gender,
                     provider: this.props.provider.results.length != 0?'yes':'no',
@@ -179,8 +191,9 @@ class UserList extends React.Component {
                     cnic: '',
                     isProvider:this.props.provider.results.length != 0?true:false,
                     currentProvider:this.props.provider.results.length != 0?this.props.provider.results[0]:'',
-                    retire:false
-                }
+                    retire:false,
+                    systemId: event.data.systemId
+                },
             })
         }
         if(event.column.colId == "edit" && event.data.retired) {
@@ -219,16 +232,16 @@ class UserList extends React.Component {
                 this.state.roles.pop(event.target.value);
             this.setState({ noRoleSelected: false });
         }
-        else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
-            const { name, value } = event.target;
-            const { user } = this.state;
-            this.setState({
-                user: {
-                    ...user,
-                    [name]: value + '-'
-                }
-            });
-        }
+        // else if (event.target.name === 'cnic' && (event.target.value.length === 5 || event.target.value.length === 13)) {
+        //     const { name, value } = event.target;
+        //     const { user } = this.state;
+        //     this.setState({
+        //         user: {
+        //             ...user,
+        //             [name]: value + '-'
+        //         }
+        //     });
+        // }
         else if (event.target.name === 'password' || event.target.name === 'confirmpassword') {
             this.setState({ invalidPassword: false });
 
@@ -281,6 +294,12 @@ class UserList extends React.Component {
     }
     async handleSubmit(e) {
         e.preventDefault();
+        var array  = this.state.rowData;
+        var existingObj = array.filter(data => data.display == this.state.user.username);
+        if(JSON.stringify(existingObj) != '[]' && !this.state.forEdit) {
+            createNotification('warning','User with this name already exist');
+            return;
+        }
         const { user } = this.state;
         if(user.retire == true) {
             await this.props.deleteUser(this.state.activeuserUUID);
@@ -335,23 +354,24 @@ class UserList extends React.Component {
                     if(user.password=='') {
                         await console.log('submitt '+JSON.stringify(user))
                         await this.props.updateUser(this.state.activeuserUUID, editJSON(user));
-                        
                     }
                     else {
-                        await this.props.updateUser(this.state.activeuserUUID, registrationJSON(user));
+                        await this.props.updateUser(this.state.activeuserUUID, editUserJSONWithPassword(user));
                     }
                     if(user.isProvider && user.provider == 'no') {
-                        this.props.deleteProvider(user.currentProvider.uuid);
-                     }
-                     if(!user.isProvider && user.provider == 'yes') {
+                        await this.props.deleteProvider(user.currentProvider.uuid);
+                    }
+                    if((!user.isProvider && user.provider == 'yes') || (user.provider && user.provider == 'yes')) {
+                         await this.props.deleteProvider(user.currentProvider.uuid);
                          await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
-                     }
+                    }
                    
                     await this.setState({ forEdit: false ,retire:false});
                 }
+                await this.closeModal();
+                 
                 this.props.userError ? createNotification('error', 'User Not Created') :
                     createNotification('success', 'User Registered Successfully');
-                await this.closeModal();
                 await this.props.getAllUsers();
             }
     
@@ -374,7 +394,8 @@ class UserList extends React.Component {
                 dateofbirth: '',
                 role: [],
                 defaultRole:[],
-                cnic: ''
+                cnic: '',
+                systemId : ''
             },
             submitted: false,
             invalidPassword: false,
@@ -439,13 +460,13 @@ class UserList extends React.Component {
                             <div className="form-group row" >
                                 <label htmlFor="familyname" class="col-sm-4 col-form-label required">Family Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="familyname" pattern="^[a-zA-Z ]+${1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.familyname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="familyname" pattern="^[a-zA-Z ]+${1,25}" placeholder="max 25 characters" maxlength="25" value={user.familyname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div className="form-group row">
                                 <label htmlFor="givenname" className="col-sm-4 col-form-label required">Given Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z ]+${1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={user.givenname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="givenname" pattern="^[a-zA-Z ]+${1,25}" placeholder="max 25 characters" maxlength="25" value={user.givenname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -498,7 +519,7 @@ class UserList extends React.Component {
                             <div className="form-group row ">
                                 <label htmlFor="username" class="col-sm-4 col-form-label required">Username</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="username" value={user.username} title="Username should start with an alphabet, Can contain [numbers, underscore, dash and dot]" maxLength="10" minLength="4" pattern="^[^0-9][A-Za-z0-9]+(?:[ _.][A-Za-z0-9]+)*" autoComplete="off" onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="username" value={user.username} title="Username should start with an alphabet, Can contain [numbers, underscore, dash and dot]" maxLength="20" minLength="4" pattern="^[^0-9][A-Za-z0-9]+(?:[ _.][A-Za-z0-9]+)*" autoComplete="off" onChange={this.handleChange} disabled = {this.state.forEdit} required />
                                 </div>
                             </div>
                             <div className="form-group row ">
@@ -548,7 +569,7 @@ class UserList extends React.Component {
                                 <label htmlFor="dateofbirth" class="col-sm-4 col-form-label required">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <DatePicker selected={user.dateofbirth} showMonthDropdown
-                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat="dd/MM/yyyy" placeholderText="Click to select a date" required />
+                                        showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleChangeDate} className="form-control user-date-picker" maxDate={new Date()} dateFormat={this.state.dateFormat} placeholderText="Click to select a date" required />
                                 </div>
                             </div>
                             <div className="form-group row ">
@@ -596,15 +617,18 @@ class UserList extends React.Component {
 }
 const mapStateToProps = state => ({
     users: state.user.users,
+    setting: state.systemSettings.systemSetting,
     rolesList: state.roles.allRoles,
     isLoading: state.user.loading,
     userError: state.user.userError,
     createdUser: state.user.user,
     provider: state.provider.provider,
-    workforce:state.workforce.workforce
+    workforce:state.workforce.workforce,
+    person:state.person.person
 
 });
 const mapDispatchToProps = {
+    getSettingsByUUID: systemSettingsAction.getSystemSettingsByUUID,
     getAllUsers: userAction.fetchUsers,
     saveUser: userAction.saveUser,
     updateUser: userAction.editUsers,
@@ -614,6 +638,7 @@ const mapDispatchToProps = {
     saveProvider:providerAction.saveProvider,
     getProviderByUser:providerAction.getProviderByUser,
     deleteProvider:providerAction.deleteProvider,
-    fetchParticipantByUser:workforceAction.fetchParticipantByUser
+    fetchParticipantByUser:workforceAction.fetchParticipantByUser,
+    getPersonByUUID: personAction.getPersonByUUID
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

@@ -15,6 +15,8 @@ import './roles.css';
 import Loaders from '../../common/loader/Loader';
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
+import { createNotification } from '../../../../utilities/helpers/helper';
+import { elementMatches } from '@fullcalendar/core';
 
 const animatedComponents = makeAnimated();
 
@@ -67,21 +69,28 @@ class Roles extends React.Component {
             forEdit: false,
             selectedUUID: '',
             //retire:false
+            userSysIdList:[],
+            defaultPriviliges : [],
+            selectedRole: {}
         }
         this.onQuickFilterText = this.onQuickFilterText.bind(this);
         this.inheritedRolesOption = [];
         this.privilegesOption = [];
         this.selectedInheritedRoles = this.selectedInheritedRoles.bind(this);
+        this.createDefaultPriviliges = this.createDefaultPriviliges.bind(this);
         this.selectedPriviliges = this.selectedPriviliges.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.onCellClicked = this.onCellClicked.bind(this)
+        this.onCellClicked = this.onCellClicked.bind(this);
 
     }
-    onCellClicked = (event) => {
+    async onCellClicked(event)  {
         console.log('event ' + event.data.uuid)
         if (event.column.colId == 'edit') {
-            this.setState({
+            await this.props.getRoleByUUID(event.data.uuid);
+            await this.setState({selectedRole:this.props.role})
+            await this.createDefaultPriviliges();
+            await this.setState({
                 openAddRoleModal: true, forEdit: true, selectedUUID: event.data.uuid
                 , roleFormData: {
                     name: event.data.role,
@@ -91,6 +100,16 @@ class Roles extends React.Component {
 
         }
     }
+    createDefaultPriviliges() {
+        if(this.state.selectedRole != undefined) {
+            this.state.selectedRole.privileges.forEach(element => {
+            this.state.defaultPriviliges.push({
+                "label" : element.display,
+                "value" : element.uuid
+            })
+        })
+    }
+}
     openAddRoleModal() {
         this.setState({
             openAddRoleModal: true, forEdit: false, roleFormData: {
@@ -106,45 +125,79 @@ class Roles extends React.Component {
     };
     static propTypes = {
         rolesList: PropTypes.array.isRequired,
-        priviligesList: PropTypes.array.isRequired
+        priviligesList: PropTypes.array.isRequired,
+        usersByRoleList: PropTypes.array.isRequired
     };
     async componentWillMount() {
         this.props.getRoles();
-        await this.setState({ rowData: this.dataBuilder() });
+        this.setState({ rowData: this.dataBuilder() });
         await this.props.getPriviliges();
-        await this.createInheritedRoleOptions();
-        await this.createPriviligesOption();
-        await console.log('helllo ' + JSON.stringify(this.props.rolesList))
-
-
+        this.createInheritedRoleOptions();
+        this.createPriviligesOption();
+        console.log('helllo ' + JSON.stringify(this.props.rolesList))
     }
     async componentWillReceiveProps(newProps) {
         if (newProps.rolesList != undefined) {
             this.setState({ rowData: this.dataBuilder() })
-            await this.createInheritedRoleOptions();
-            await console.log('helllo props' + JSON.stringify(this.state.rowData))
+            this.createInheritedRoleOptions();
+            console.log('helllo props' + JSON.stringify(this.state.rowData))
+        }
+        else {
+            this.props.getRoles()
+        }
+        if(newProps.priviligesList != undefined) {
+            this.createPriviligesOption();
+        }
+        if(newProps.usersByRoleList != undefined) {
+            this.setState({userSysIdList : newProps.usersByRoleList});
+        }
+        if(newProps.role != undefined) {
+            this.setState({selectedRole:newProps.role})
+            this.createDefaultPriviliges()
         }
 
     }
     async handleSubmit(event) {
         await event.preventDefault();
+        var array  = this.state.rowData;
+        var existingObj = array.filter(data => data.role == this.state.roleFormData.name);
+        if(JSON.stringify(existingObj) != '[]' && !this.state.forEdit) {
+            createNotification('warning','Role with this name already exist');
+            return;
+        }
         if (this.state.forEdit == true) {
             if (this.state.retire == true) {
-                await this.props.deleteRole(this.state.selectedUUID)
-            }
+                 await this.props.getUsersByRole(this.state.selectedUUID);
+                 await this.setState({selectedRole:this.props.role});
+                 await this.createDefaultPriviliges();
+                 if(JSON.stringify(this.state.userSysIdList) == '[]' ) {
+                    await this.props.deleteRole(this.state.selectedUUID);
+                    await this.closeAddRoleModal();
+
+                    await createNotification('success',"Role successfully deleted");
+
+                 }
+                 else {
+                     createNotification('warning','Can not delete this role. It has following user Ids are associated with it '+JSON.stringify(this.state.userSysIdList));
+                     createNotification('info','Please remove the association first')
+                     await this.closeAddRoleModal();
+                 }
+             }
             else {
-                await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
-            }
-            await this.setState({ retire: false })
+                 await this.props.editRole(this.state.roleFormData, this.state.selectedUUID);
+                 await this.closeAddRoleModal();
+
+             }
+             this.setState({ retire: false })
+        }
+        else{
+            await this.props.postRole(this.state.roleFormData);
+            await createNotification('success','New role created');
+            await this.closeAddRoleModal();
             await this.props.getRoles();
         }
-        else
-            await this.props.postRole(this.state.roleFormData);
-        await this.props.getRoles();
+            
 
-
-        //console.log('submitted '+JSON.stringify(this.state.roleFormData))
-        this.closeAddRoleModal();
     }
     handleChange(event) {
 
@@ -169,7 +222,7 @@ class Roles extends React.Component {
         console.log("on change " + event.target.name + " " + this.state.retire);
     }
     dataBuilder() {
-        if (this.props.rolesList != undefined) {
+       if (this.props.rolesList != undefined) {
             let data = [];
             this.props.rolesList.results.forEach(element => {
                 let inheritedRoles = '';
@@ -228,14 +281,13 @@ class Roles extends React.Component {
     }
     async selectedPriviliges(params) {
         const { roleFormData } = this.state;
-        await this.setState({
+        this.setState({
             roleFormData: {
                 ...roleFormData,
                 selectedPriviliges: params
-
             }
         });
-        await console.log(this.state.roleFormData.selectedPriviliges)
+        console.log(this.state.roleFormData.selectedPriviliges)
         console.log('left ' + JSON.stringify(this.selectedPriviliges))
     }
     onGridReady = (params) => {
@@ -305,6 +357,7 @@ class Roles extends React.Component {
                                 <label htmlFor="prev" className="col-form-label col-sm-4">Privileges</label>
                                 <div className="col-sm-8">
                                     <Select
+                                        defaultValue={this.state.defaultPriviliges}
                                         components={animatedComponents}
                                         options={this.privilegesOption}
                                         onChange={this.selectedPriviliges}
@@ -332,6 +385,7 @@ class Roles extends React.Component {
                         </Modal.Footer>
                     </form>
                 </Modal>
+                
             </>
         )
     }
@@ -339,7 +393,9 @@ class Roles extends React.Component {
 const mapStateToProps = state => ({
     rolesList: state.roles.allRoles,
     priviligesList: state.priviliges.allPriviliges,
-    isLoading: state.roles.loading
+    isLoading: state.roles.loading,
+    usersByRoleList: state.roles.systemIds,
+    role : state.roles.role
 })
 
 const mapsDispatchToProps = {
@@ -347,6 +403,8 @@ const mapsDispatchToProps = {
     getPriviliges: priviligesAction.getAllPriviliges,
     postRole: rolesAction.postRole,
     editRole: rolesAction.putRole,
-    deleteRole: rolesAction.deleteRole
+    deleteRole: rolesAction.deleteRole,
+    getUsersByRole: rolesAction.getUsersByRole,
+    getRoleByUUID: rolesAction.getRoleByUUID
 }
 export default connect(mapStateToProps, mapsDispatchToProps)(Roles);

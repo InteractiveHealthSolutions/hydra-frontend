@@ -9,9 +9,10 @@ import { encountersAction } from '../../../../state/ducks/encounters';
 
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-import './visit.css';
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid';
+import './visit.css';
+
 
 class Visits extends React.Component {
 
@@ -22,7 +23,7 @@ class Visits extends React.Component {
             obs: [],
             columnDefs: [
                 {
-                    headerName: "Visit", field: "visit", width: 200
+                    headerName: "Visit", field: "visit", width: 150
                 },
                 {
                     headerName: "Encounter Date", field: "encounterDate", width: 200
@@ -40,12 +41,15 @@ class Visits extends React.Component {
                     headerName: "Enterer", field: "enterer", width: 200
                 },
                 {
+                    headerName: "isAutomated", field: "isAutomated", width: 200 , hide:true
+                },
+                {
                     headerName: "View",
                     field: "view",
                     template:
                         `
                         <button style={{ lineHeight: 0.5, color: "#808080" }}><i class="fas fa-eye "></i></button>                    `
-                    , width: 70
+                    , width: 120
                 },
 
                 {
@@ -54,6 +58,12 @@ class Visits extends React.Component {
 
 
             ],
+            rowClassRules: {
+              "qxr-row": function(params) {
+                  return params.data.isAutomated
+                  //return false;
+            }
+        },
             rowData: [],
             openViewModal: false,
             activePatient: JSON.parse(localStorage.getItem('active-patient'))
@@ -64,6 +74,7 @@ class Visits extends React.Component {
     static propTypes = {
         encountersList: PropTypes.array.isRequired
     }
+    
     async componentDidMount() {
         await this.props.getEncountersForAPatient(this.state.activePatient.uuid);
         await console.log('encounters ' + JSON.stringify(this.props.encountersList))
@@ -91,11 +102,12 @@ class Visits extends React.Component {
                 data.push({
                     "visit": element.visit == null ? 'None' : element.visit,
                     "view": "view",
-                    "encounterDate": element.encounterDatetime != null ? moment(element.encounterDatetime).format("YYYY_MM_DD") : "",
+                    "encounterDate": element.encounterDatetime != null ? moment(element.encounterDatetime).format("YYYY-MM-DD") : "",
                     "encounterType": element.encounterType.display,
                     "providers": providers.slice(0, -1),
-                    "location": element.location.display,
+                    "location": element.location != null ? element.location.display : '',
                     "enterer": element.auditInfo.creator.display,
+                    "isAutomated":element.auditInfo.creator.display == 'QXR-user'?true:false,
                     "obs": element.obs
                 })
             });
@@ -113,20 +125,26 @@ class Visits extends React.Component {
         window.onresize = () => {
             this.gridApi.sizeColumnsToFit();
         }
+        
+
+        
     }
+    
+   
     render() {
-        const { columnDefs, rowData } = this.state
+        const { columnDefs, rowData ,rowClassRules} = this.state
         return (
-            <>
+            <div className = "test">
                 <CardTemplate
                     title="Patient Visits"
                 >
                     <AgGrid
                         onGridReady={this.onGridReady}
                         columnDefs={columnDefs}
-                        onRowSelected={this.onRowSelected}
                         rowData={rowData}
+                        rowAnimation
                         onCellClicked={event => { this.onCellClicked(event) }}
+                        rowClassRules={rowClassRules}
                     />
 
                 </CardTemplate>
@@ -141,7 +159,7 @@ class Visits extends React.Component {
                                     <div className="form-group row">
                                         <label className="col-form-label col-sm-4 " >{value.concept.display}</label>
                                         <div className="col-sm-8">
-                                            <input type="text" className="form-control" name="name" value={value.value.display != undefined ? value.value.display : value.value} disabled />
+                                          <input type="text" className="form-control" name="name" value={(value !== undefined && value.display !== undefined) ? value.display : value} disabled />
                                         </div>
                                     </div>
                                 )
@@ -151,7 +169,7 @@ class Visits extends React.Component {
                     <Modal.Footer>
                     </Modal.Footer>
                 </Modal>
-            </>
+            </div>
 
             // <div className="row container-fluid l-main-container">
             //     <div className="card fp-header" style={{ marginTop: '100px', marginLeft: '30px' }}>

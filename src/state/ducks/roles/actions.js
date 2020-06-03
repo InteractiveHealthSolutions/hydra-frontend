@@ -34,6 +34,18 @@ export const deleteRole = (uuid) => async dispatch =>
     then(res => {dispatch(deleteRoleOption(res))}).catch(displayError)
 
 const deleteRoleOption = payload => ({type : types.DELETE_ROLE, payload})
+
+export const getUsersByRole = (uuid) => async dispatch => 
+  fetch(GET,"/hydra/customservices/getUserByRole?role="+uuid)
+   .then(res => {dispatch(getUsersByRoleAction(res))}).catch(displayError)
+
+const getUsersByRoleAction = payload => ({type : types.GET_USERS_BY_ROLE, payload});
+
+export const getRoleByUUID = (uuid) => async dispatch =>
+  fetch(GET,"/role/"+uuid+"?v=full")
+   .then(res => {dispatch(getRoleByUUIDAction(res))}).catch(displayError)
+
+const getRoleByUUIDAction = payload => ({type : types.GET_ROLE_BY_UUID, payload})
 const setProject = () => ({
   type: types.SET_PROJECT
 });   

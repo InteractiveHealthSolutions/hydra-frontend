@@ -22,15 +22,15 @@ export class DraggedFormItem extends Component {
     this.setState({ expanded: !this.state.expanded })
     // console.log("ExpandClick")
   }
-  handleDelete = (e) => {
+  handleDelete = (e,key) => {
     // console.log("delete", e)
-    this.props.handleDelete(e)
+    this.props.handleDelete(e,key)
   }
 
   render() {
 
     const { data, key, editeMood } = this.props;
-    console.log("dragged data", data)
+    console.log("dragged data", data.displayOrder)
     return (
       <li
         key={data.uuid}

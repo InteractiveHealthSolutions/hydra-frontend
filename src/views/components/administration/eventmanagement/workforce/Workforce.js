@@ -58,7 +58,7 @@ function Workforce(props) {
     const [activeCurrency, setActiveCurrency] = useState({})
 
     function statusFormatter(params) {
-        console.log("Formater ", params.value);
+       // console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
     function currencyFormatter(params) {
@@ -75,7 +75,7 @@ function Workforce(props) {
 
     useEffect(() => {
         if (props.salaryTypeList !== undefined) {
-            console.log("salaryTypeList", props.salaryTypeList)
+           // console.log("salaryTypeList", props.salaryTypeList)
             setAvailableSalaryTypes(props.salaryTypeList.salaryTypes)
             if (availableSalaryTypes !== undefined)
                 populateDropDown();
@@ -84,7 +84,7 @@ function Workforce(props) {
 
     useEffect(() => {
         if (props.setting !== undefined && props.setting.value !== undefined) {
-            console.log("currencyFormatter insdie", props.setting)
+           // console.log("currencyFormatter insdie", props.setting)
             localStorage.setItem("currency", props.setting.value)
             setActiveCurrency(props.setting)
         }
@@ -134,7 +134,7 @@ function Workforce(props) {
 
     function populateDropDown() {
         let array = [];
-        console.log("populateDropDown ", availableSalaryTypes)
+       // console.log("populateDropDown ", availableSalaryTypes)
         availableSalaryTypes.forEach(element => {
             array.push(
                 <option value={element.uuid}>{element.name}</option>
@@ -144,12 +144,12 @@ function Workforce(props) {
     }
 
     function onRowSelected(event) {
-        console.log('onRowSelected: ' + event.node.data);
+       // console.log('onRowSelected: ' + event.node.data);
     };
 
     function onCellClicked(event) {
         if (event.colDef.headerName == 'Edit') {
-            console.log("event data", event.data)
+          //  console.log("event data", event.data)
             setActionType('EditType')
             setModalTitle('Edit Workforce')
             setworkforceName(event.data.name)

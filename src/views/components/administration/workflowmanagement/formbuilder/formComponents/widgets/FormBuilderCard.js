@@ -50,8 +50,8 @@ export default function FormBuilderCard(props) {
     setExpanded(!expanded);
   };
 
-  function handleDelete(e) {
-    props.handleDelete(e)
+  function handleDelete(e,key) {
+    props.handleDelete(e,key)
   }
 
   function onItemSelectedProp(ev) {
@@ -71,7 +71,7 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-errorMsg`, dataField.errorMessage ? dataField.errorMessage : "")
     localStorage.setItem(`${dataField.uuid}-questionText`, dataField.displayText ? dataField.displayText : "")
     localStorage.setItem(`${dataField.uuid}-mandatory`, dataField.mandatory ? dataField.mandatory == true ? "Yes" : "No" : "No")
-    localStorage.setItem(`${dataField.uuid}-headingTitle`, dataField.displayText ? dataField.displayText : "")
+    localStorage.setItem(`${dataField.uuid}-headingTitle-${dataField.displayOrder}`, dataField.displayText ? dataField.displayText : "")
     localStorage.setItem(`${dataField.uuid}-minValue`, dataField.minValue ? dataField.minValue : "")
     localStorage.setItem(`${dataField.uuid}-maxValue`, dataField.maxValue ? dataField.maxValue : "")
     localStorage.setItem(`${dataField.uuid}-maxLength`, dataField.maxLength ? dataField.maxLength : "")
@@ -83,7 +83,6 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-pastDate`, dataField.allowPastDate ? dataField.allowPastDate : "")
     localStorage.setItem(`${dataField.uuid}-disabled`, dataField.disabled ? dataField.disabled == true ? "Yes" : "No" : "No")
   }
-
   return (
     <Box
       boxShadow={2}
@@ -94,7 +93,7 @@ export default function FormBuilderCard(props) {
     >
       <CardHeader
         action={
-          <Chip label="Delete" onDelete={() => handleDelete(props.data.uuid)} color="primary" variant="outlined" />
+          <Chip label="Delete" onDelete={() => handleDelete(props.data.uuid , props.data.displayOrder)} color="primary" variant="outlined" />
         }
         title={props.data.value}
         subheader={`Data Type : ${props.data.dataType}`}
@@ -122,9 +121,11 @@ export default function FormBuilderCard(props) {
         <CardContent>
           <QuestionConfiguration
             datatype={props.data.dataType}
-            data={props.data.answers}
+            answers={props.data.answers}
             uuid={props.data.uuid}
+            displayOrder ={props.data.displayOrder}
             dataField={props.data}
+            editeMood ={props.editeMood}
           />
         </CardContent>
       </Collapse>

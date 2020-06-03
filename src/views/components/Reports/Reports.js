@@ -56,9 +56,13 @@ class Reports extends React.Component {
             country: '',
             currentFilters: [],
             currentReport: '',
+			currentDump: '',
             noAdditionalFiltersFlag: false,
             startDate: '',
+			startDumpDate: '',
             endDate: '',
+			startDumpDate: '',
+			endDumpDate: '',
             selectedLocation: [],
             filters: [],
             selectedWorkflow: '',
@@ -78,6 +82,8 @@ class Reports extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeDynamicFilters = this.handleChangeDynamicFilters.bind(this)
         this.handleStartChangeDate = this.handleStartChangeDate.bind(this);
+		this.handleStartChangeDumpDate = this.handleStartChangeDumpDate.bind(this);
+		this.handleEndChangeDumpDate = this.handleEndChangeDumpDate.bind(this);
         this.handleEndChangeDate = this.handleEndChangeDate.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
     }
@@ -290,11 +296,49 @@ class Reports extends React.Component {
             startDate: date
         });
     }
+	handleStartChangeDumpDate(date) {
+
+        this.setState({
+            startDumpDate: date
+        });
+    }
+	handleEndChangeDumpDate(date) {
+
+        this.setState({
+            endDumpDate: date
+        });
+    }
     handleEndChangeDate(date) {
 
         this.setState({
             endDate: date
         });
+    }
+	
+	downloadDump(ext) {
+        
+        if (this.state.currentReport == '') {
+            createNotification('warning', 'Select a Report to download')
+            return;
+        }
+        if (this.state.startDumpDate == '' || this.state.endDumpDate == '') {
+            createNotification('warning', 'Select all mandatory fields')
+            return;
+
+        }
+        var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD'); 
+		if(this.state.currentReport == 'encounters' || this.state.currentReport == 'patients'){
+			parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow;
+		}
+		
+        if (this.state[this.state.currentReport] != undefined) {
+            this.state[this.state.currentReport].forEach(element => {
+                parameterString = parameterString + element.name + '=' + element.value.replace(/\s/g, '') + '&';
+            })
+        }
+		
+        reportService.downloadDump(parameterString, this.state.currentReport, ext);
+
     }
 
     downloadReport(ext) {
@@ -329,9 +373,9 @@ class Reports extends React.Component {
     render() {
         return (
             <CardTemplate
-                title={
+                /*title={	
                     <div className="row">
-
+					
                         <div className="col-sm-2">
                             <div className="row filter-label required">
                                 Province
@@ -395,9 +439,9 @@ class Reports extends React.Component {
                         </div>
 
                     </div>
-                }
+                }*/
             >
-                <div className="row">
+			{/*<div className="row">
                     <div className="col-sm-12">
                         <div className="card inner-card">
                             <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
@@ -429,11 +473,11 @@ class Reports extends React.Component {
                                             <td>
                                                 This is a report
                                                 </td>
-                                            <td>
+                                            <td align="center">
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
 
                                         {this.state.currentReport == 'facilityPatients' &&
@@ -450,12 +494,12 @@ class Reports extends React.Component {
                                             <td>
                                                 This is a report
                                                 </td>
-                                            <td>
+                                            <td align="center">
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button>
                                                 <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'disaggregationPatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -477,11 +521,11 @@ class Reports extends React.Component {
                                             <td>
                                                 This is a report
                                                 </td>
-                                            <td>
+                                            <td align="center">
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'diagnosedTbPatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -502,11 +546,11 @@ class Reports extends React.Component {
                                             <td>
                                                 This is a report
                                                 </td>
-                                            <td>
+                                            <td align="center">
                                                 <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>
-                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                                </td>
                                         </tr>
                                         {this.state.currentReport == 'presumptivePatients' &&
                                             <tr style={{ backgroundColor: "#87CEEB" }}>
@@ -517,7 +561,7 @@ class Reports extends React.Component {
                                                         Workflow
                                                   </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
                                                     <label style={{ marginLeft: "15px" }}>Presumptive TB</label> : <Select className="filter" options={this.optionsTB} name="pTb" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}
+                                                </td></tr>}		
                                     </tbody>
                                 </table>
                             </RadioGroup>
@@ -525,7 +569,160 @@ class Reports extends React.Component {
                         </div>
                     </div>
                 </div>
-            </CardTemplate>
+	*/}
+				
+				{/*<div className="row">
+					
+                        <div className="col-sm-2">
+							<b>Dumps</b>
+						</div>	
+				</div>*/}
+
+				<div className="row" align="center">
+
+					<b align="center">&nbsp;&nbsp;&nbsp;&nbsp;Filters: </b>							
+					<div className="col-sm-2">
+                            <div className="row filter-label required">
+                                Start Date
+                       </div>
+                            <div className="col-sm-2">
+                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDumpDate} showMonthDropdown
+                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                            </div>
+                        </div>
+
+					<div className="col-sm-2">
+                            <div className="row filter-label required">
+                                End Date
+                       </div>
+                            <div className="col-sm-2">
+                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDumpDate} showMonthDropdown
+                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                            </div>
+                        </div>
+
+				</div>
+
+				<br/>
+				<div className="row">
+                    <div className="col-sm-12">
+                        <div className="card inner-card">
+                            <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
+
+                                <table className="table table-bordered">
+                                    <thead className="thead-light">
+                                        <th style={{ width: "10px" }}>
+
+                                        </th>
+                                        <th style={{ width: "300px" }}>
+                                            Dump Name
+                    </th>
+                                        <th>
+                                            Description
+                    </th>
+                                        <th style={{ width: "180px" }}>
+                                            Export
+                    </th>
+                                    </thead>
+                                    <tbody>
+                                        
+										<tr style={{ height: '20px' }}>
+                                            <td>
+                                                <FormControlLabel value="patients" control={<Radio color="primary" />} />
+
+                                            </td>
+                                            <td>
+                                                Patients
+                                                </td>
+                                            <td>
+                                                Dumps for patient data in selected workflow
+                                                </td>
+                                            <td align="center">
+                                                <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
+                                                </button>{/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
+                                                </button>*/}
+                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                        </tr>
+                                        {this.state.currentReport == 'patients' &&
+                                            <tr style={{ backgroundColor: "#b1bfc4" }}>
+                                                <td></td>
+                                                <td colSpan={3}>
+                                                    Additional Filters
+                                                  <label className="dynamic-filter-label">
+                                                        Workflow
+                                                  </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
+                                                </td></tr>}
+										<tr style={{ height: '20px' }}>
+                                            <td>
+                                                <FormControlLabel value="providers" control={<Radio color="primary" />} />
+
+                                            </td>
+                                            <td>
+                                                Providers
+                                                </td>
+                                            <td>
+                                                Dumps for provider/user data
+                                                </td>
+                                            <td align="center">
+                                                <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
+                                                </button>{/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
+                                                </button>*/}
+                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                        </tr>
+										<tr style={{ height: '20px' }}>
+                                            <td>
+                                                <FormControlLabel value="locations" control={<Radio color="primary" />} />
+
+                                            </td>
+                                            <td>
+                                                Locations
+                                                </td>
+                                            <td>
+																																		Dumps for locations data
+
+                                                </td>
+                                            <td align="center">
+                                                <button onClick={e => this.downloadDump('csv')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
+                                                </button>{/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
+                                                </button>*/}
+                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                        </tr>
+										<tr style={{ height: '20px' }}>
+                                            <td>
+                                                <FormControlLabel value="encounters" control={<Radio color="primary" />} />
+
+                                            </td>
+                                            <td>
+                                                Encounters
+                                                </td>
+                                            <td>
+																																		Dumps for all encounters entered in selected wokflow
+
+                                                </td>
+                                            <td align="center">
+                                                <button onClick={e => this.downloadDump('zip')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
+                                                </button>{/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
+                                                </button>*/}
+                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                        </tr>
+                                        {this.state.currentReport == 'encounters' &&
+                                            <tr style={{ backgroundColor: "#b1bfc4" }}>
+                                                <td></td>
+                                                <td colSpan={3}>
+                                                    Additional Filters
+                                                  <label className="dynamic-filter-label">
+                                                        Workflow
+                                                  </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
+                                                </td></tr>}			
+                                    </tbody>
+                                </table>
+                            </RadioGroup>
+
+                        </div>
+                    </div>
+                </div>				
+				
+            </CardTemplate>			
         )
     }
 }
