@@ -96,8 +96,9 @@ class BasicActionDetail extends Component {
                         height="500px"
                         action={
                             <>
-                                <button onClick={this.props.prevStep.bind(this)} className='service-btn btn btn-primary btn-re'>Go Back</button>
                                 <button type="submit" className='service-btn btn btn-primary btn-re'>Next</button>
+                                <button onClick={this.props.prevStep.bind(this)} className='service-btn btn btn-primary btn-re'>Go Back</button>
+
                             </>}
                     >
                         <div className="row" >

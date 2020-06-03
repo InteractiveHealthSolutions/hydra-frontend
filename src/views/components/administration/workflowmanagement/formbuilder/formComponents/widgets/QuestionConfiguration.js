@@ -51,24 +51,27 @@ export default class QuestionConfiguration extends Component {
             patientFamilyName: "",
             patientFamilyNameMandatory: 'yes',
             disabled: 'yes',
+            allowDecimal:false
 
         }
 
-     console.log("QuestionConfiguration", this.props.data);
+     console.log("QuestionConfiguration", this.props.answers);
     }
     async componentDidMount() {
         await this.setDefaultValue()
     }
 
+
+
     async setDefaultValue() {
-console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
+      //console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultValue`))
         await this.setState({
-            defaultValue: localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)) : "",
+            defaultValue: this.setDefault(),
             errorMsg: localStorage.getItem(`${this.props.uuid}-errorMsg`),
             allowCharacter: localStorage.getItem(`${this.props.uuid}-allowCharacter`),
             questionText: localStorage.getItem(`${this.props.uuid}-questionText`),
             mandatory: localStorage.getItem(`${this.props.uuid}-mandatory`),
-            headingTitle: localStorage.getItem(`${this.props.uuid}-headingTitle`),
+            headingTitle: localStorage.getItem(`${this.props.uuid}-headingTitle -${this.props.displayOrder}`),
             minValue: localStorage.getItem(`${this.props.uuid}-minValue`),
             maxValue: localStorage.getItem(`${this.props.uuid}-maxValue`),
             maxLength: localStorage.getItem(`${this.props.uuid}-maxLength`),
@@ -91,9 +94,20 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
             patientAgeMandatory: localStorage.getItem(`${this.props.uuid}-patientAgeMandatory`),
             patientRelationship: localStorage.getItem(`${this.props.uuid}-patientRelationship`),
             patientRelationshipMandatory: localStorage.getItem(`${this.props.uuid}-patientRelationshipMandatory`),
-            disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
+            disabled:  localStorage.getItem(`${this.props.uuid}-disabled`),
+            allowDecimal: localStorage.getItem(`${this.props.uuid}-allowDecimal`)
         }, () => {
         })
+    }
+
+    setDefault(){
+       return this.props.editeMood?
+           this.props.answers?
+             this.props.answers.filter(el=> el.uuid === localStorage.getItem(`${this.props.uuid}-defaultValue`))
+             .map(data => ({
+                label:data.concept.display,
+                value:data.uuid
+            })):"" :localStorage.getItem(`${this.props.uuid}-defaultValue`)? JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)):"" 
     }
 
     onHandleDefaultValue = (ev,name,controlId) => {
@@ -108,6 +122,7 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
         this.setState({
             [ev.controlId]: ev.value
         })
+        console.log("ev.name" ,ev.name )
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
@@ -129,22 +144,20 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
     }
 
     render() {
-        console.log("defaultValue defaultValue", this.state.defaultValue);
-        console.log("coded options", this.props.dataField)
         const { datatype, uuid } = this.props
         const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
             , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
-            patientFamilyName, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
+            patientFamilyName,headingTitle, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         return (
             <>
                 {/* common */}
                 {(datatype === HEADING) ?
                     <TextBox
-                        controlId="questionText"
+                        controlId="headingTitle"
                         title="Title"
                         type="text"
-                        name={uuid + "-questionText"}
-                        value={questionText}
+                        name={uuid + "-headingTitle-"+this.props.displayOrder}
+                        value ={localStorage.getItem(uuid + "-headingTitle-"+this.props.displayOrder)}
                         onItemSelectedProp={this.onItemSelectedProp}
                     /> : ""
                 }
@@ -218,6 +231,7 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
                                 name={uuid + "-allowDecimal"}
                                 onItemCheckedProp={this.onItemCheckedProp}
                                 title="Allow Decimal"
+                                value={allowDecimal}
                             />
                         </> : ""
                 }
@@ -243,7 +257,7 @@ console.log("setDefaultValue" ,localStorage.getItem(`${this.props.uuid}-defaultV
                                         name={uuid + "-defaultValue"}
                                         value={defaultValue}
                                         onChange={(evt)=> this.onHandleDefaultValue(evt,uuid + "-defaultValue","defaultValue" )}
-                                        options={this.props.data.map((option) =>(
+                                        options={this.props.answers.map((option) =>(
                                             {
                                                 label:option.concept.display,
                                                 value:option.uuid

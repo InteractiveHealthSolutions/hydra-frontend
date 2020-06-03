@@ -23,6 +23,11 @@ const personReducer = createReducer(initialState)({
         ...state,
         loading: false,
         persons: payload
+    }),
+    [types.GET_PERSON_BY_UUID]: (state, {payload}) => ({
+        ...state,
+        loading: false,
+        person:payload
     })
 
 })

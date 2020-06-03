@@ -8,7 +8,7 @@ export const IMAGE_PORT =
 
 export const BLANK_AVATAR = "/images/icon-avatar.svg";
 
-export const BASE_URL = process.env.HYDRA_APP_API_BASEURL
+export const BASE_URL = process.env.REACT_APP_API_PROD
 
 /// middleware Actions 
 export const API = "API"
@@ -70,9 +70,7 @@ export const NUMERIC = "Numeric";
 export const DATE_TIME = "Datetime";
 export const TEXT = "Text";
 export const CODED = "Coded";
-export const HEADING = "Heading";
-export const ADDRESS = "Address";
-export const CONTACT_TRACING = "Contact Tracing";
+
 
 //action types
 export const QUESTION = "Question";
@@ -96,4 +94,14 @@ export const VIEW_REPORTS = "View Reports";
 export const SERVICE_TITLE = "Services";
 export const ASSETS_TITLE = "Assets";
 
+///Widgets 
 
+export const DATE_TIME_PICKER = "Date/ Time Picker"
+export const TEXT_BOX = "Textbox"
+export const SINGLE_SELECT_DROPDOWN = "Single Select Dropdown"
+export const MULTIPLE_CHOICE = "Multiple Choice"
+export const SINGLE_SELECT_RADIOBUTTON = "Single Select Radiobuttons"
+export const HEADING = "Heading"
+export const AGE = "Age"
+export const ADDRESS = "Address"
+export const CONTACT_TRACING = "Contact Tracing"

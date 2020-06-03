@@ -10,7 +10,7 @@ class ButtonRenderer extends React.Component {
 
     render() {
         let button;
-        console.log('btn ' + this.props.data.testsample)
+      //  console.log('btn ' + this.props.data.testsample)
         if (this.props.colDef.headerName == "View Attribute Types")
             button = <button style={{ height: 20, lineHeight: 0.5 }} className='btn btn-primary' >View</button>
         else if (this.props.colDef.headerName == "Add Attribute Types")

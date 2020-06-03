@@ -12,7 +12,8 @@ const initialState = {
     componentForms: [],
     formbyuuid: {},
     componentFormRelations: [],
-    componentFormRelation: {}
+    componentFormRelation: {},
+    formSubmission:{}
 };
 
 const formReducer = createReducer(initialState)({
@@ -59,6 +60,11 @@ const formReducer = createReducer(initialState)({
         ...state,
         loading: false,
         componentFormRelation: payload
+    }),
+    [types.FORM_SUBMISSION]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        formSubmission: payload
     })
 
 

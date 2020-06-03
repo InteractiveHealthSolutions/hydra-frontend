@@ -217,13 +217,15 @@ class QuestionList extends React.Component {
         this.setState({ optionError:false,openQuestionModal: true });
     }
     closeQuestionModal() {
-        this.setState({ openQuestionModal: false })
+        this.setState({ openQuestionModal: false });
+        this.resetForm()
     }
     openEditQuestionModal() {
         this.setState({ optionError:false,openEditQuestionModal: true });
     }
     closeEditQuestionModal() {
-        this.setState({ openEditQuestionModal: false })
+        this.setState({ openEditQuestionModal: false });
+        this.resetForm()
     }
     onQuickFilterText = (event) => {
         this.setState({ quickFilterText: event.target.value });
@@ -286,8 +288,9 @@ class QuestionList extends React.Component {
                 this.setState({
                      question: e.value.toLowerCase().replace(/ /g, "_"),
                      hideIsOption: false,
-                     showWidgetType: false,
-                     variableNameReadOnly: "true"
+                     showWidgetType: true,
+                     variableNameReadOnly: "true",
+                     showDataType: true
                  });
             }
             e.answers.map(option => this.formatForOptionAndAddInState(option));
@@ -443,27 +446,25 @@ class QuestionList extends React.Component {
         });
     }
     submit = () => {
-     //console.log("defined options "+JSON.stringify(this.state.definedOptions))
+        this.state.definedOptions.forEach(element => {
+            if(element.value == undefined) {
+               createNotification('error','Option can not be blank');
+               return;
+            }
+            return;
+        })
         var questionWidgetType = this.state.widgetType;
         var questionConcept = this.state.conceptName;
         var variableName = this.state.question;
         var questionDescription = this.state.description;
-        var questionConceptClass = this.state.conceptClass;
+        var questionConceptClass = { title: "Question", key: "8d491e50-c2cc-11de-8d13-0010c6dffd0f" };
         var options = this.state.definedOptions;
         var questionDataType = this.state.dataType;
         if(questionDataType.value == "Coded" && this.state.definedOptions.length == 0) {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;
         }
-        if(JSON.stringify(questionConceptClass) == '{}' && this.state.showWidgetType == true) {
-            //this.mandatoryFieldError();
-            questionConceptClass = { title: "Question", key: "8d491e50-c2cc-11de-8d13-0010c6dffd0f" }
-            //return;
-        }
-        if(JSON.stringify(questionConceptClass) == '{}') {
-            this.mandatoryFieldError();
-            return;
-        }
+        
         var displayText = this.state.displayText;
         if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConceptClass.value == 'Question' ) {
             this.mandatoryFieldError();
@@ -527,7 +528,6 @@ class QuestionList extends React.Component {
             if (questionConcept.uuid) {
                 if (questionWidgetType != undefined) {
                     var data = {
-
                         name: displayText,
                         description: questionDescription,
                         fieldType: questionWidgetType.key,
@@ -628,6 +628,10 @@ class QuestionList extends React.Component {
     }
     async onCellClicked(event) {
         if (event.column.colId === "edit") {
+            if(event.data.isDefault == true) {
+                createNotification('info','Default fields are not editable');
+                return;
+            }
             await this.setState({ definedOptions: [] });
             await this.setState({ widgetsToShowEdit: [] });
             if (event.data.fieldType.display == 'Single Select Dropdown' ||
@@ -750,8 +754,9 @@ class QuestionList extends React.Component {
                                 onItemSelectedProp={this.onItemSelectedFunc}
                                 isRequired={true}
                                 pattern="[a-zA-Z]+\s?[a-zA-Z]"
+                                parentComponent="Questions"
                             ></AutoSearchComplete>
-                            {this.state.hideIsOption ? (
+                            {/* {this.state.hideIsOption ? (
                                 ""
                             ) : (
                                     <RadioGroup
@@ -761,7 +766,7 @@ class QuestionList extends React.Component {
                                         isRequired="true"
                                         controlId="class"
                                     ></RadioGroup>
-                                )}
+                                )} */}
                             {this.state.showWidgetType ? (
                                 <>
                                     <SingleSelect
@@ -823,7 +828,7 @@ class QuestionList extends React.Component {
                                 title="Description"
                                 onItemSelectedProp={this.onItemSelectedFunc}
                             ></TextArea>
-                            {this.state.textBoxSelected ? (
+                            {/* {this.state.textBoxSelected ? (
                                 <>
                                     <TextBox
                                         controlId="characters"
@@ -834,7 +839,7 @@ class QuestionList extends React.Component {
                                 </>
                             ) : (
                                     ""
-                                )}
+                                )} */}
 
                             {this.state.selectableSelected ? (
                                 <div
@@ -856,6 +861,7 @@ class QuestionList extends React.Component {
                                                         controlId={definedOption.controlId}
                                                         title={definedOption.title}
                                                         onItemSelectedProp={this.onItemSelectedFunc}
+                                                        parentComponent="Options"
                                                     ></AutoSearchComplete>
                                                 </div>
                                                 <div className="col-md-1" style={{ textAlign: "center" }}>

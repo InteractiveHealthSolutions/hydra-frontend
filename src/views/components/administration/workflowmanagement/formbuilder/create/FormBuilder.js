@@ -72,7 +72,8 @@ class FormBuilder extends React.Component {
       isEdit: false,
       formRetiredVal: false,
       CustomComponent: "",
-      nestedSort: false
+      nestedSort: false,
+      dragSorting:false
     };
     this.sortable = null;
     this.activeForm = []
@@ -128,6 +129,7 @@ class FormBuilder extends React.Component {
 
   async setActiveForm() {
     let form = this.activeForm
+    console.log("EditForm : ",form)
     if (form !== null && form.name !== undefined) {
       this.setState({
         hydramoduleFormId: form.hydramoduleFormId,
@@ -151,7 +153,7 @@ class FormBuilder extends React.Component {
       dataType: element.field ? element.field.attributeName : "",
       uuid: element.field ? element.field.uuid : "",
       controlId: this.props.controlId,
-      answers: element.answers ? element.answers : [],
+      answers:element.field.answers ? element.field.answers : [],
       formFieldId: element.formFieldId,
       displayOrder: element.displayOrder,
       minOccurrence: element.minOccurrence,
@@ -168,7 +170,7 @@ class FormBuilder extends React.Component {
       scoreable: element.scoreable,
       allowDecimal: element.allowDecimal,
       mandatory: element.mandatory,
-      defaultValue: element.defaultValue,
+      defaultValue:element.defaultValue,
       regix: element.regix,
       disabled: element.disabled,
       editeMood: false
@@ -177,8 +179,12 @@ class FormBuilder extends React.Component {
   editFormListFormat(list) {
     let array = []
     if (list) {
-      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach(element => {
-        array.push(this.formatFieldItem(element));
+      list.sort((a, b) => a.displayOrder - b.displayOrder).forEach((element,index) => {
+        array.push
+        ({
+          ...this.formatFieldItem(element),
+          displayOrder: index
+        } );
       });
     }
     //console.log("editFormListFormat", array)
@@ -218,6 +224,7 @@ class FormBuilder extends React.Component {
   async saveForm() {
     const { formName, formRetiredVal, formDescription, hydramoduleFormId } = this.state
     let formFieldList = await this.getAllField()
+    console.log("getAllField f",formFieldList )
     let newform = {
       hydramoduleFormId: hydramoduleFormId,
       name: formName,
@@ -226,6 +233,7 @@ class FormBuilder extends React.Component {
       formFields: formFieldList,
       retired: formRetiredVal
     }
+    console.log("newform " , newform)
     await this.props.saveFormFields(newform)
     await createNotification("success", "Saved Successfully")
     await this.setState({
@@ -285,7 +293,7 @@ class FormBuilder extends React.Component {
     let array = []
     const { addFormList } = this.state
 
-
+    console.log("getAllField" ,addFormList)
     addFormList.forEach(element => {
       let children = []
       if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
@@ -328,6 +336,7 @@ class FormBuilder extends React.Component {
           },
         ]
       }
+     
 
       let field = {
         name: element.label,
@@ -345,7 +354,7 @@ class FormBuilder extends React.Component {
         minSelections: 0,
         allowFutureDate: localStorage.getItem(`${element.uuid}-futureDate`) ? localStorage.getItem(`${element.uuid}-futureDate`) : false,
         allowPastDate: localStorage.getItem(`${element.uuid}-pastDate`) ? localStorage.getItem(`${element.uuid}-pastDate`) : false,
-        displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : "",
+        displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) :  localStorage.getItem(`${element.uuid}-headingTitle-${element.displayOrder}`)?  localStorage.getItem(`${element.uuid}-headingTitle-${element.displayOrder}`):"",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
@@ -353,6 +362,9 @@ class FormBuilder extends React.Component {
         characters: "",
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
         children: children ? children : []
+      }
+      if(element.dataType === 'Heading'){
+         field.field = "4e1640ca-d264-4f8f-9210-66c535053393" 
       }
       array.push(field)
     });
@@ -370,7 +382,7 @@ class FormBuilder extends React.Component {
 
   deleteOption = (e, key) => {
     var array = [...this.state.definedOptions];
-    array = array.filter(item => item.key !== key);
+    array = array.filter(item => item.key !== key );
     console.log("array", array);
     this.setState({ definedOptions: array });
   };
@@ -389,14 +401,16 @@ class FormBuilder extends React.Component {
     this.setState({ expanded: !this.state.expanded });
   };
 
-  handleDelete = (ev) => {
-    // console.log("handle delete :: ", ev)
+  handleDelete = (ev,key) => {
+
+      const filterList =  this.state.addFormList.filter(data => !(data.uuid === ev && data.displayOrder === key))
+      console.log("filterList" ,filterList)
     this.setState({
-      addFormList: this.state.addFormList.filter(data => data.uuid !== ev)
+      addFormList: filterList
     })
   }
 
-  onDrop = (ev) => {
+  onDrop = async(ev) => {
     const { currentObject, defaultQuestion } = this.state
     const uuid = ev.dataTransfer.getData('id')
     const activeItem = ev.dataTransfer.getData('comingfrom')
@@ -406,9 +420,27 @@ class FormBuilder extends React.Component {
     } else {
       dropArray = currentObject.filter(data => data.uuid == uuid)
     }
-    this.setState({
+   await this.setState({
       addFormList: (this.state.addFormList.length > 0) ? [...this.state.addFormList, dropArray[0]] : dropArray
     })
+    this.addOrder();
+  }
+
+  addOrder =() =>{
+     var reOrder =[]
+     var formList = this.state.addFormList;
+         for(var i =0 ;i<formList.length ;i++){
+           if(formList[i].dataType === 'Heading'){
+             formList[i].uuid = Math.random().toString(36).substr(2, 9)
+           }
+          reOrder.push({
+            ...formList[i],
+            displayOrder: i
+          });
+         }
+    this.setState({
+      addFormList: reOrder
+    })     
   }
 
 
@@ -448,6 +480,7 @@ class FormBuilder extends React.Component {
     })
   }
   reorder(order) {
+    console.log("reorder " , order)
     let tempArray = [];
     for (var i = 0; i < order.length; i++) {
       for (var j = 0; j < this.state.addFormList.length; j++) {
@@ -460,7 +493,7 @@ class FormBuilder extends React.Component {
       }
     }
     console.log("tempArray ", tempArray)
-    this.setState({ addFormList: tempArray });
+    this.setState({ addFormList: tempArray ,dragSorting:true });
   }
 
   handleNested = () => {
@@ -468,8 +501,10 @@ class FormBuilder extends React.Component {
   }
 
   render() {
+ 
     const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
+    console.log("addFormList ",  addFormList)
     return (
       <div className="row">
         <div className="form_adjustment col-sm-6 col-md-4">

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { componentAction } from '../../../../../state/ducks/stages'
 import { formAction } from '../../../../../state/ducks/form'
 import { LoaderDots } from '../../../common/loader/LoaderDots'
+import { history } from '../../../../../history'
 
 export default function ComponentViewContainer({ phaseUuid }) {
     const dispatch = useDispatch()
@@ -20,6 +21,8 @@ export default function ComponentViewContainer({ phaseUuid }) {
 
     function handleOnClick(evt, data) {
         console.log("clicked :: ", data)
+        localStorage.setItem("form",JSON.stringify(data))
+        history.push('/patient/detail/dataentry/form')
     }
 
     return loading ? <LoaderDots withMargin="true" height={40} width={40} /> :

@@ -31,7 +31,7 @@ function logInService(username, password) {
 }
 
 function registrationService(userJSON) {
-    console.log('user  '+JSON.stringify(userJSON))
+   // console.log('user  '+JSON.stringify(userJSON))
     const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
         localStorage.getItem('password'));
     const requestOptions = {
@@ -78,7 +78,7 @@ function handleResponseLogin(response) {
 }
 function handleResponse(response) {
     return response.text().then(text => {
-        console.log("userResp error:: ", JSON.stringify(text) )
+       // console.log("userResp error:: ", JSON.stringify(text) )
         const data = text && JSON.parse(text);
         if (!response.ok) {
             if (response.status === 401) {
@@ -88,11 +88,11 @@ function handleResponse(response) {
             }
 
             const  error = (data && data.error.message);
-            console.log("userResp error:: ", JSON.stringify(data) )
+           // console.log("userResp error:: ", JSON.stringify(data) )
             return Promise.reject(error);
 
         }
-        console.log("userResp :: ",data)
+       // console.log("userResp :: ",data)
         return data;
     });
 }

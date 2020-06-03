@@ -21,7 +21,7 @@ const eventPlannerReducer = createReducer(initialState)({
     }),
 
     [types.ACTIVE_EVENT_PLANNER]: (state, { payload }) => (() => {
-        console.log("payload", payload)
+        //console.log("payload", payload)
     }),
 
     [types.GET_ALL_EVENT_PLANNER + REJECTED]: (state, { payload }) => ({

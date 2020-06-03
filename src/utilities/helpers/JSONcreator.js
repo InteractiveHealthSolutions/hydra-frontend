@@ -17,7 +17,32 @@ export function editJSON(user) {
         },
         "name": user.givenName,
         "username" : user.username,
-        "roles" : user.role
+        "roles" : user.role,
+        "systemId" : user.systemId
+    };
+}
+export function editUserJSONWithPassword(user) {
+ 
+    return {
+        "person" : {
+            "names" : [{
+                "givenName" : user.givenname,
+                "familyName" : user.familyname
+            }],
+            "gender" : user.gender,
+            "birthdate" : user.dateofbirth,
+            "attributes": [
+                 {
+                   "attributeType": "03a15595-c156-439c-b1cf-9ccBac38f609",
+                   "value": user.cnic
+                 }
+             ]
+        },
+        //"name": user.givenName,
+        "username" : user.username,
+        "password" : user.password,
+        "roles" : user.role,
+        "systemId" : user.systemId
     };
 }
 export function registrationJSON(user) {
@@ -37,7 +62,7 @@ export function registrationJSON(user) {
                  }
              ]
         },
-        "name": user.givenName,
+        //"name": user.givenName,
         "username" : user.username,
         "password" : user.password,
         "roles" : user.role
