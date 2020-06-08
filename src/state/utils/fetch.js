@@ -10,6 +10,7 @@ export default async (method, path, data) => {
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       'Authorization': token
     },
     body: JSON.stringify(data)
