@@ -11,7 +11,8 @@ export default async (method, path, data) => {
     method: method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'Accept': 'application/json'
     },
     body: JSON.stringify(data)
   };
