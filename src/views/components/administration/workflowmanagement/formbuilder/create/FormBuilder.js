@@ -173,6 +173,7 @@ class FormBuilder extends React.Component {
       defaultValue:element.defaultValue,
       regix: element.regix,
       disabled: element.disabled,
+      isCore: element.isCore,
       editeMood: false
     };
   }
@@ -254,7 +255,8 @@ class FormBuilder extends React.Component {
   }
 
   async removeLocalStorage() {
-    const { addFormList } = this.state
+    const { addFormList } = this.state;
+    
     await addFormList.forEach(element => {
       localStorage.removeItem(`${element.uuid}-displayOrder`)
       localStorage.removeItem(`${element.uuid}-score`)
@@ -295,6 +297,7 @@ class FormBuilder extends React.Component {
 
     console.log("getAllField" ,addFormList)
     addFormList.forEach(element => {
+    
       let children = []
       if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
         children = [
@@ -336,7 +339,6 @@ class FormBuilder extends React.Component {
           },
         ]
       }
-     
 
       let field = {
         name: element.label,
@@ -360,6 +362,7 @@ class FormBuilder extends React.Component {
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
+        isCore: localStorage.getItem(`${element.uuid}-isCore`) === "Yes" ? true : false,
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
         children: children ? children : []
       }
