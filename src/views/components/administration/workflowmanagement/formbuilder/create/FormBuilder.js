@@ -360,6 +360,7 @@ class FormBuilder extends React.Component {
         defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value:"",
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
+        isCore: false,
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
         children: children ? children : []
       }
