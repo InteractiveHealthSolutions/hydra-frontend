@@ -11,12 +11,13 @@ export default async (method, path, data) => {
     method: method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'Accept': 'application/json'
     },
     body: JSON.stringify(data)
   };
 
-  return  fetch(path, requestOptions)
+  return  fetch(`${BASE_URL}/${path}`, requestOptions)
     .then(handleResponse).then(response => {
       console.log("api Response ....", response.data);
       return response;
