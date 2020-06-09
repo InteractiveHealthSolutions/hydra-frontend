@@ -326,6 +326,10 @@ class UserList extends React.Component {
             await this.props.getAllUsers();
         }
         else {
+            if(!/^[a-zA-Z ]+$/.test(user.familyname) || !/^[a-zA-Z ]+$/.test(user.givenname)) {
+               createNotification("error","Name cannot contain numbers");
+               return;
+            }
             if (user.password !== user.confirmpassword) {
                 this.setState({
                     invalidPassword: true

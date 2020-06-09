@@ -84,6 +84,7 @@ export default function FormBuilderCard(props) {
     localStorage.setItem(`${dataField.uuid}-disabled`, dataField.disabled ? dataField.disabled == true ? "Yes" : "No" : "No")
   }
   return (
+    
     <Box
       boxShadow={2}
       bgcolor="background.paper"
@@ -92,9 +93,12 @@ export default function FormBuilderCard(props) {
       style={{ marginRight: '16px' }}
     >
       <CardHeader
+      
         action={
+          !props.data.isCore ?
           <Chip label="Delete" onDelete={() => handleDelete(props.data.uuid , props.data.displayOrder)} color="primary" variant="outlined" />
-        }
+          :""
+       }
         title={props.data.value}
         subheader={`Data Type : ${props.data.dataType}`}
       />

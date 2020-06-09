@@ -464,9 +464,8 @@ class QuestionList extends React.Component {
             createNotification('warning', 'Coded questions should have atleast one option');
             return;
         }
-        
         var displayText = this.state.displayText;
-        if ((displayText == '' || questionDataType == {} || questionWidgetType == '') && questionConceptClass.value == 'Question' ) {
+        if ((displayText == '' || JSON.stringify(questionDataType) == '{}' || questionWidgetType == '')) {
             this.mandatoryFieldError();
             return;
         }
