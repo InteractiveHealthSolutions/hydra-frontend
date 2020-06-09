@@ -67,7 +67,8 @@ class Reports extends React.Component {
             filters: [],
             selectedWorkflow: '',
             selectedPresumptiveTB: '',
-            selectedForm: ''
+            selectedForm: '',
+            formOptions: []
         }
         this.filters = {
             reportname: 'FacilityPatients',
@@ -76,7 +77,7 @@ class Reports extends React.Component {
         }
         this.otherFilter = [];
         this.options = [];
-        this.formOptions = [];
+        // this.formOptions = [];
         this.optionsTB = [];
         //this.isMounted = true;
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
@@ -264,6 +265,21 @@ class Reports extends React.Component {
 
 
     }
+
+    async populateFormDropdown(list) {
+      
+        if (list) {
+            let formDropDown = [];
+            await list.forEach(element => {
+                formDropDown.push({
+                    "label": element.form.name,
+                    "value": element.form.uuid
+                })
+            });
+            console.log("populateFormDropdown", formDropDown)
+            await this.setState({ formOptions: formDropDown })
+        }
+    }
     async handleChangeDynamicFilters(event) {
         // if(this.state[this.state.currentReport] != undefined && this.state[this.state.currentReport].length > 2){
         // await    this.setState({[this.state.currentReport]:[]})
@@ -274,14 +290,7 @@ class Reports extends React.Component {
             reportService.getFormsByWorkflow(event.uuid).then(
                 data => {
                     console.log("############## RECEIVED DATA ##############", data);
-                    let opt = []
-                     data.forEach(ele => {
-                        opt.push({
-                            label: ele.form.name,
-                            value: ele.form.uuid
-                        })
-                    })
-                     this.setState({ formOptions: opt })
+                    this.populateFormDropdown(data)
                 })
         }
         else if (event.value == 'form') {
@@ -733,7 +742,7 @@ class Reports extends React.Component {
                                                         Workflow
                                                   </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
                                                     <label className="dynamic-filter-label"> Form </label> :
-                                                  <Select className="filter" options={this.formOptions} name="form" onChange={this.handleChangeDynamicFilters} />
+                                                  <Select className="filter" options={this.state.formOptions} name="form" onChange={this.handleChangeDynamicFilters} />
 
                                                 </td></tr>}
                                     </tbody>
