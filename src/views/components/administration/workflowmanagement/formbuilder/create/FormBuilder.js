@@ -234,7 +234,7 @@ class FormBuilder extends React.Component {
       retired: formRetiredVal
     }
     console.log("newform ", newform)
-    await this.props.saveFormFields(newform)
+    // await this.props.saveFormFields(newform)
     // await this.setState({
     //   addFormList: [],
     //   formName: "",
@@ -336,8 +336,15 @@ class FormBuilder extends React.Component {
           },
         ]
       }
+      let defaultUUid = ""
 
+      try {
+        defaultUUid = JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value
+      } catch (err) {
+        //console.log("defaultValue", localStorage.getItem(`${element.uuid}-defaultValue`))
+        defaultUUid = localStorage.getItem(`${element.uuid}-defaultValue`)
 
+      }
       let field = {
         name: element.label,
         field: element.uuid,
@@ -357,7 +364,7 @@ class FormBuilder extends React.Component {
         displayText: localStorage.getItem(`${element.uuid}-questionText`) ? localStorage.getItem(`${element.uuid}-questionText`) : localStorage.getItem(`${element.uuid}-headingTitle-${element.displayOrder}`) ? localStorage.getItem(`${element.uuid}-headingTitle-${element.displayOrder}`) : "",
         mandatory: localStorage.getItem(`${element.uuid}-mandatory`) === "Yes" ? true : false,
         disabled: localStorage.getItem(`${element.uuid}-disabled`) === "Yes" ? true : false,
-        defaultValue: localStorage.getItem(`${element.uuid}-defaultValue`) ? JSON.parse(localStorage.getItem(`${element.uuid}-defaultValue`)).value : "",
+        defaultValue: defaultUUid,
         regix: localStorage.getItem(`${element.uuid}-rxp`),
         characters: "",
         isCore: false,

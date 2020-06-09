@@ -96,16 +96,32 @@ export default class QuestionConfiguration extends Component {
             disabled: localStorage.getItem(`${this.props.uuid}-disabled`),
             allowDecimal: localStorage.getItem(`${this.props.uuid}-allowDecimal`)
         }, () => {
-            console.log("setDefaultValue", `${this.props.uuid}-defaultValue`, localStorage.getItem(`${this.props.uuid}-defaultValue`))
+            //console.log("setDefaultValue", `${this.props.uuid}-defaultValue`, localStorage.getItem(`${this.props.uuid}-defaultValue`))
 
         })
     }
 
     setDefault() {
         let defaultUUid = ""
-        
-        defaultUUid = localStorage.getItem(`${this.props.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)).value:""
-        console.log("setDefaultValue dd d" ,defaultUUid)
+
+        try {
+            defaultUUid = JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)).value
+        } catch (err) {
+           // console.log("defaultValue", localStorage.getItem(`${this.props.uuid}-defaultValue`))
+            defaultUUid = localStorage.getItem(`${this.props.uuid}-defaultValue`)
+
+        }
+
+        // if (typeof localStorage.getItem(`${this.props.uuid}-defaultValue`)  == "object"){
+        //     console.log("defaultValue", localStorage.getItem(`${this.props.uuid}-defaultValue`))
+        //   }else{
+        //     console.log("defaultValue not ", localStorage.getItem(`${this.props.uuid}-defaultValue`))
+        //     defaultUUid = localStorage.getItem(`${this.props.uuid}-defaultValue`)
+        //   }
+
+
+        //      defaultUUid = localStorage.getItem(`${this.props.uuid}-defaultValue`)?JSON.parse(localStorage.getItem(`${this.props.uuid}-defaultValue`)).value:""
+       // console.log("setDefaultValue dd d", defaultUUid)
 
         return this.props.answers ?
             this.props.answers.filter(el => el.uuid === defaultUUid)
@@ -123,7 +139,7 @@ export default class QuestionConfiguration extends Component {
     }
 
     onHandleDefaultValue = (ev, name, controlId) => {
-        console.log("Naam dena", name, JSON.stringify(ev))
+       // console.log("Naam dena", name, JSON.stringify(ev))
         this.setState({
             [controlId]: ev
         })
@@ -134,7 +150,7 @@ export default class QuestionConfiguration extends Component {
         this.setState({
             [ev.controlId]: ev.value
         })
-        console.log("ev.name", ev.name)
+       // console.log("ev.name", ev.name)
         localStorage.setItem(`${ev.name}`, ev.value)
     }
 
