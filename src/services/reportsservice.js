@@ -2,6 +2,7 @@ import { history } from "../history";
 import { authenticationGenerator } from "../utilities/helpers";
 import { existsTypeAnnotation } from "@babel/types";
 import { BASE_URL } from "../utilities/constants/globalconstants";
+import { userService } from '../services/userservice';
 
 export const reportService = {
   downloadReport,
@@ -46,10 +47,31 @@ function getFormsByWorkflow(workflow) {
     method: "GET",
     headers: { "Content-Type": "application/json", Authorization: token }
   };
-  return fetch(`/hydra/componentform`, requestOptions).then(response =>
-    filterFormsByWorkflow(workflow, response)
-  );
+  return fetch('/hydra/componentform', requestOptions)
+    .then(handleFormResponse)
+    .then(response =>
+      filterFormsByWorkflow(workflow, response)
+    );
 }
+
+
+
+async function handleFormResponse(response) {
+  return await response.text().then(text => {
+    if (!response.ok) {
+      if (response.status === 401) {
+        userService.logOutService();
+        history.push('/login');
+      }
+      const error = response.statusText;
+      console.log("api error ....", error);
+      return Promise.reject(error)
+    }
+    const data = text && JSON.parse(text);
+    return Promise.resolve(data);
+  });
+}
+
 
 function handleResponse(response, name, ext) {
   return response.blob().then(blob => {
