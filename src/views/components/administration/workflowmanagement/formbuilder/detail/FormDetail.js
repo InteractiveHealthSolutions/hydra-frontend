@@ -36,17 +36,17 @@ function FormDetail(props) {
         console.log("Formater ", params.value);
         return params.value === false ? 'Active' : 'Retired';
     }
-    const {rowData,isLoading} = useSelector((state) =>({
-        rowData : state.formField.forms.forms,
-        isLoading: state.formField.loading
-    }))
-   console.log("rowData" ,rowData)
- 
 
     useEffect(() => {
           console.log("Form reload fetch" ,localStorage.getItem("check"))
           dispatch(formAction.fetchForms())
     }, []);
+
+
+    const {rowData,isLoading} = useSelector((state) =>({
+        rowData : state.formField.forms.forms,
+        isLoading: state.formField.loading
+    }))
 
     
     useEffect(() => {
