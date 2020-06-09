@@ -275,13 +275,13 @@ class Reports extends React.Component {
                 data => {
                     console.log("############## RECEIVED DATA ##############", data);
                     let opt = []
-                    await data.forEach(ele => {
+                     data.forEach(ele => {
                         opt.push({
                             label: ele.form.name,
                             value: ele.form.uuid
                         })
                     })
-                    await this.setState({ formOptions: opt })
+                     this.setState({ formOptions: opt })
                 })
         }
         else if (event.value == 'form') {
