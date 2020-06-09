@@ -56,17 +56,19 @@ class Reports extends React.Component {
             country: '',
             currentFilters: [],
             currentReport: '',
-			currentDump: '',
+            currentDump: '',
             noAdditionalFiltersFlag: false,
             startDate: '',
-			startDumpDate: '',
+            startDumpDate: '',
             endDate: '',
-			startDumpDate: '',
-			endDumpDate: '',
+            startDumpDate: '',
+            endDumpDate: '',
             selectedLocation: [],
             filters: [],
             selectedWorkflow: '',
-            selectedPresumptiveTB: ''
+            selectedPresumptiveTB: '',
+            selectedForm: '',
+            formOptions: []
         }
         this.filters = {
             reportname: 'FacilityPatients',
@@ -75,6 +77,7 @@ class Reports extends React.Component {
         }
         this.otherFilter = [];
         this.options = [];
+        // this.formOptions = [];
         this.optionsTB = [];
         //this.isMounted = true;
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
@@ -82,8 +85,8 @@ class Reports extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeDynamicFilters = this.handleChangeDynamicFilters.bind(this)
         this.handleStartChangeDate = this.handleStartChangeDate.bind(this);
-		this.handleStartChangeDumpDate = this.handleStartChangeDumpDate.bind(this);
-		this.handleEndChangeDumpDate = this.handleEndChangeDumpDate.bind(this);
+        this.handleStartChangeDumpDate = this.handleStartChangeDumpDate.bind(this);
+        this.handleEndChangeDumpDate = this.handleEndChangeDumpDate.bind(this);
         this.handleEndChangeDate = this.handleEndChangeDate.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
     }
@@ -136,7 +139,8 @@ class Reports extends React.Component {
                 this.props.workflowList.workflows.forEach(element => {
                     this.options.push({
                         "label": element.name,
-                        "value": 'workflow'
+                        "value": 'workflow',
+                        "uuid": element.uuid
                     })
                 })
                 dropdown = <Select options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />;
@@ -261,12 +265,37 @@ class Reports extends React.Component {
 
 
     }
+
+    async populateFormDropdown(list) {
+      
+        if (list) {
+            let formDropDown = [];
+            await list.forEach(element => {
+                formDropDown.push({
+                    "label": element.form.name,
+                    "value": "form",
+                    "uuid": element.form.uuid
+                })
+            });
+            console.log("populateFormDropdown", formDropDown)
+            await this.setState({ formOptions: formDropDown })
+        }
+    }
     async handleChangeDynamicFilters(event) {
         // if(this.state[this.state.currentReport] != undefined && this.state[this.state.currentReport].length > 2){
         // await    this.setState({[this.state.currentReport]:[]})
         // }
         if (event.value == 'workflow') {
             await this.setState({ selectedWorkflow: event.label })
+            // TODO NAVEED send call to fetch forms by workflow
+            reportService.getFormsByWorkflow(event.uuid).then(
+                data => {
+                    console.log("############## RECEIVED DATA ##############", data);
+                    this.populateFormDropdown(data)
+                })
+        }
+        else if (event.value == 'form') {
+            await this.setState({ selectedForm: event.label })
         }
         else {
             this.setState({ selectedPresumptiveTB: event.label })
@@ -296,13 +325,13 @@ class Reports extends React.Component {
             startDate: date
         });
     }
-	handleStartChangeDumpDate(date) {
+    handleStartChangeDumpDate(date) {
 
         this.setState({
             startDumpDate: date
         });
     }
-	handleEndChangeDumpDate(date) {
+    handleEndChangeDumpDate(date) {
 
         this.setState({
             endDumpDate: date
@@ -314,9 +343,9 @@ class Reports extends React.Component {
             endDate: date
         });
     }
-	
-	downloadDump(ext) {
-        
+
+    downloadDump(ext) {
+
         if (this.state.currentReport == '') {
             createNotification('warning', 'Select a Report to download')
             return;
@@ -326,17 +355,17 @@ class Reports extends React.Component {
             return;
 
         }
-        var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD'); 
-		if(this.state.currentReport == 'encounters' || this.state.currentReport == 'patients'){
-			parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow;
-		}
-		
+        var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD');
+        if (this.state.currentReport == 'encounters' || this.state.currentReport == 'patients') {
+            parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow + '&form=' + this.state.selectedForm;
+        }
+
         if (this.state[this.state.currentReport] != undefined) {
             this.state[this.state.currentReport].forEach(element => {
                 parameterString = parameterString + element.name + '=' + element.value.replace(/\s/g, '') + '&';
             })
         }
-		
+
         reportService.downloadDump(parameterString, this.state.currentReport, ext);
 
     }
@@ -373,75 +402,75 @@ class Reports extends React.Component {
     render() {
         return (
             <CardTemplate
-                /*title={	
-                    <div className="row">
-					
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Province
-                       </div>
-                            <div className="row">
-                                <Select
+            /*title={	
+                <div className="row">
+            	
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Province
+                   </div>
+                        <div className="row">
+                            <Select
 
-                                    options={this.state.provinceDropDown}
-                                    className="reports-select-dropdown"
-                                    name="statetype"
-                                    onChange={this.handleProvinceChange}
+                                options={this.state.provinceDropDown}
+                                className="reports-select-dropdown"
+                                name="statetype"
+                                onChange={this.handleProvinceChange}
 
-                                />
-                            </div>
+                            />
                         </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                City
-                          </div>
-                            <div className="row">
-                                <Select
-
-                                    options={this.state.cityDropDown}
-                                    className="reports-select-dropdown"
-                                    name="statetype"
-                                    onChange={this.handleCityChange}
-
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-location-label required">
-                                Location
-                       </div>
-                            <div className="row">
-                                <ReactMultiSelectCheckboxes
-                                    options={this.state.locationDropDown}
-                                    name="statetype"
-                                    className="reports-location-dropdown"
-                                    onChange={this.handleLocationChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Start Date
-                         </div>
-                            <div className="row">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDate} showMonthDropdown
-                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <div className="row filter-label required">
-                                End Date
-                      </div>
-                            <div className="row">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDate} showMonthDropdown
-                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
-                        </div>
-
                     </div>
-                }*/
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            City
+                      </div>
+                        <div className="row">
+                            <Select
+
+                                options={this.state.cityDropDown}
+                                className="reports-select-dropdown"
+                                name="statetype"
+                                onChange={this.handleCityChange}
+
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-location-label required">
+                            Location
+                   </div>
+                        <div className="row">
+                            <ReactMultiSelectCheckboxes
+                                options={this.state.locationDropDown}
+                                name="statetype"
+                                className="reports-location-dropdown"
+                                onChange={this.handleLocationChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Start Date
+                     </div>
+                        <div className="row">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDate} showMonthDropdown
+                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            End Date
+                  </div>
+                        <div className="row">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDate} showMonthDropdown
+                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
+                        </div>
+                    </div>
+
+                </div>
+            }*/
             >
-			{/*<div className="row">
+                {/*<div className="row">
                     <div className="col-sm-12">
                         <div className="card inner-card">
                             <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
@@ -570,41 +599,41 @@ class Reports extends React.Component {
                     </div>
                 </div>
 	*/}
-				
-				{/*<div className="row">
+
+                {/*<div className="row">
 					
                         <div className="col-sm-2">
 							<b>Dumps</b>
 						</div>	
 				</div>*/}
 
-				<div className="row" align="center">
+                <div className="row" align="center">
 
-					<b align="center">&nbsp;&nbsp;&nbsp;&nbsp;Filters: </b>							
-					<div className="col-sm-2">
-                            <div className="row filter-label required">
-                                Start Date
+                    <b align="center">&nbsp;&nbsp;&nbsp;&nbsp;Filters: </b>
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            Start Date
                        </div>
-                            <div className="col-sm-2">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDumpDate} showMonthDropdown
-                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
+                        <div className="col-sm-2">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDumpDate} showMonthDropdown
+                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
                         </div>
+                    </div>
 
-					<div className="col-sm-2">
-                            <div className="row filter-label required">
-                                End Date
+                    <div className="col-sm-2">
+                        <div className="row filter-label required">
+                            End Date
                        </div>
-                            <div className="col-sm-2">
-                                <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDumpDate} showMonthDropdown
-                                    showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                            </div>
+                        <div className="col-sm-2">
+                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDumpDate} showMonthDropdown
+                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDumpDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
                         </div>
+                    </div>
 
-				</div>
+                </div>
 
-				<br/>
-				<div className="row">
+                <br />
+                <div className="row">
                     <div className="col-sm-12">
                         <div className="card inner-card">
                             <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
@@ -625,8 +654,8 @@ class Reports extends React.Component {
                     </th>
                                     </thead>
                                     <tbody>
-                                        
-										<tr style={{ height: '20px' }}>
+
+                                        <tr style={{ height: '20px' }}>
                                             <td>
                                                 <FormControlLabel value="patients" control={<Radio color="primary" />} />
 
@@ -652,7 +681,7 @@ class Reports extends React.Component {
                                                         Workflow
                                                   </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
                                                 </td></tr>}
-										<tr style={{ height: '20px' }}>
+                                        <tr style={{ height: '20px' }}>
                                             <td>
                                                 <FormControlLabel value="providers" control={<Radio color="primary" />} />
 
@@ -669,7 +698,7 @@ class Reports extends React.Component {
                                                 </button>*/}
                                                 {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                         </tr>
-										<tr style={{ height: '20px' }}>
+                                        <tr style={{ height: '20px' }}>
                                             <td>
                                                 <FormControlLabel value="locations" control={<Radio color="primary" />} />
 
@@ -678,7 +707,7 @@ class Reports extends React.Component {
                                                 Locations
                                                 </td>
                                             <td>
-																																		Dumps for locations data
+                                                Dumps for locations data
 
                                                 </td>
                                             <td align="center">
@@ -687,7 +716,7 @@ class Reports extends React.Component {
                                                 </button>*/}
                                                 {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                         </tr>
-										<tr style={{ height: '20px' }}>
+                                        <tr style={{ height: '20px' }}>
                                             <td>
                                                 <FormControlLabel value="encounters" control={<Radio color="primary" />} />
 
@@ -696,7 +725,7 @@ class Reports extends React.Component {
                                                 Encounters
                                                 </td>
                                             <td>
-																																		Dumps for all encounters entered in selected wokflow
+                                                Dumps for all encounters entered in selected wokflow
 
                                                 </td>
                                             <td align="center">
@@ -713,16 +742,19 @@ class Reports extends React.Component {
                                                   <label className="dynamic-filter-label">
                                                         Workflow
                                                   </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}			
+                                                    <label className="dynamic-filter-label"> Form </label> :
+                                                  <Select className="filter" options={this.state.formOptions} name="form" onChange={this.handleChangeDynamicFilters} />
+
+                                                </td></tr>}
                                     </tbody>
                                 </table>
                             </RadioGroup>
 
                         </div>
                     </div>
-                </div>				
-				
-            </CardTemplate>			
+                </div>
+
+            </CardTemplate>
         )
     }
 }
