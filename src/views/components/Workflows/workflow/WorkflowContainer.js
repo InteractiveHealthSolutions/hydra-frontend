@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { workflowAction } from '../../../state/ducks/workflow'
+import { workflowAction } from '../../../../state/ducks/workflow'
 import Workflow from './Workflow';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
