@@ -66,7 +66,8 @@ class Reports extends React.Component {
             selectedLocation: [],
             filters: [],
             selectedWorkflow: '',
-            selectedPresumptiveTB: ''
+            selectedPresumptiveTB: '',
+            selectedForm: ''
         }
         this.filters = {
             reportname: 'FacilityPatients',
@@ -75,6 +76,7 @@ class Reports extends React.Component {
         }
         this.otherFilter = [];
         this.options = [];
+        this.formOptions = [];
         this.optionsTB = [];
         //this.isMounted = true;
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
@@ -136,7 +138,8 @@ class Reports extends React.Component {
                 this.props.workflowList.workflows.forEach(element => {
                     this.options.push({
                         "label": element.name,
-                        "value": 'workflow'
+                        "value": 'workflow',
+                        "uuid": element.uuid
                     })
                 })
                 dropdown = <Select options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />;
@@ -267,6 +270,14 @@ class Reports extends React.Component {
         // }
         if (event.value == 'workflow') {
             await this.setState({ selectedWorkflow: event.label })
+            // TODO NAVEED send call to fetch forms by workflow
+            reportService.getFormsByWorkflow(event.uuid).then(
+                data=>{
+                    console.log("############## RECEIVED DATA ##############", data);
+                })
+        }
+        else if (event.value == 'form') {
+            await this.setState({ selectedForm: event.label })
         }
         else {
             this.setState({ selectedPresumptiveTB: event.label })
@@ -328,7 +339,7 @@ class Reports extends React.Component {
         }
         var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD'); 
 		if(this.state.currentReport == 'encounters' || this.state.currentReport == 'patients'){
-			parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow;
+			parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow + '&form=' + this.state.selectedForm;
 		}
 		
         if (this.state[this.state.currentReport] != undefined) {
@@ -651,6 +662,11 @@ class Reports extends React.Component {
                                                   <label className="dynamic-filter-label">
                                                         Workflow
                                                   </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
+                                                  </td>
+                                                  <td colSpan={3}>
+                                                  <label>
+                                                        Form
+                                                  </label> : <Select options={this.formOptions} name="form" onChange={this.handleChangeDynamicFilters} />
                                                 </td></tr>}
 										<tr style={{ height: '20px' }}>
                                             <td>
