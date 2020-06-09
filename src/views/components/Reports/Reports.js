@@ -273,7 +273,8 @@ class Reports extends React.Component {
             await list.forEach(element => {
                 formDropDown.push({
                     "label": element.form.name,
-                    "value": element.form.uuid
+                    "value": "form",
+                    "uuid": element.form.uuid
                 })
             });
             console.log("populateFormDropdown", formDropDown)
