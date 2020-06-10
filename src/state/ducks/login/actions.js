@@ -45,6 +45,7 @@ const handleResponseLogin = (response) => {
       }
       return 'unauthorized';
     }
+    console.log("hydra test response", text)
     localStorage.setItem('active_user', JSON.stringify(JSON.parse(text).results[0].privileges))
     return 'authorized';
   });
