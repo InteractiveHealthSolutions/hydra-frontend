@@ -110,7 +110,7 @@ class Login extends React.Component {
               className="login100-form validate-form"
               onSubmit={this.handleSubmit}
             >
-              <span className="login100-form-title" style={{ color: red }}>
+              <span className="login100-form-title" style={{ color: "red" }}>
                 Server is down for the maintenance
               </span>
 
