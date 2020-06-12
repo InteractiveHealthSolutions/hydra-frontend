@@ -5,7 +5,6 @@ import "./css/util.css";
 import "./css/main-login.css";
 import "./css/animate.css";
 import { userAction } from "../../../state/ducks/login";
-import { red } from "@material-ui/core/colors";
 
 const initialState = {
   username: "",
@@ -102,6 +101,9 @@ class Login extends React.Component {
     return (
       <div className="limiter">
         <div className="container-login100">
+          <span className="login100-form-title" style={{ color: "red" }}>
+            System is down for maintenance
+          </span>
           <div className="wrap-login100">
             <div className={isLoading ? "login100-pic rotate" : "login100-pic"}>
               <img src={require("../../../assets/logo.png")} alt="IMG" />
@@ -110,9 +112,7 @@ class Login extends React.Component {
               className="login100-form validate-form"
               onSubmit={this.handleSubmit}
             >
-              <span className="login100-form-title" style={{ color: "red" }}>
-                Server is down for the maintenance
-              </span>
+              <span className="login100-form-title">Sign In</span>
 
               <div className="wrap-input100 ">
                 <input
