@@ -88,8 +88,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://ihs.ihsinformatics.com:6815/openmrs/ws/rest/v1",
-  "homepage": ".",
+  "homepage": "https://hydrastaging.ihsinformatics.com",
   "eslintConfig": {
     "extends": "react-app"
   },
