@@ -101,10 +101,10 @@ class Login extends React.Component {
     return (
       <div className="limiter">
         <div className="container-login100">
-          <span className="login100-form-title" style={{ color: "red" }}>
-            System is down for maintenance
-          </span>
           <div className="wrap-login100">
+            <span className="login100-form-title" style={{ color: "red" }}>
+              System is down for maintenance
+            </span>
             <div className={isLoading ? "login100-pic rotate" : "login100-pic"}>
               <img src={require("../../../assets/logo.png")} alt="IMG" />
             </div>
