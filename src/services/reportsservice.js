@@ -18,7 +18,7 @@ function downloadReport(params, name, ext) {
     method: "GET",
     headers: { "Content-Type": "application/json", Authorization: token }
   };
-  return fetch(`/hydra/report?` + params, requestOptions).then(response =>
+  return fetch(`${BASE_URL}/hydra/report?` + params, requestOptions).then(response =>
     handleResponse(response, name, ext)
   );
 }
@@ -32,8 +32,7 @@ function downloadDump(params, name, ext) {
     method: "GET",
     headers: { "Content-Type": "application/json", Authorization: token }
   };
-  return fetch(
-    `/hydra/report/dump/` + name + "?" + params,
+  return fetch(`${BASE_URL}/hydra/report/dump/` + name + "?" + params,
     requestOptions
   ).then(response => handleResponse(response, name, ext));
 }
@@ -47,7 +46,7 @@ function getFormsByWorkflow(workflow) {
     method: "GET",
     headers: { "Content-Type": "application/json", Authorization: token }
   };
-  return fetch('/hydra/componentform', requestOptions)
+  return fetch(`${BASE_URL}/hydra/componentform`, requestOptions)
     .then(handleFormResponse)
     .then(response =>
       filterFormsByWorkflow(workflow, response)
