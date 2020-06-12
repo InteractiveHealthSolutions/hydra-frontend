@@ -1,35 +1,35 @@
 import React from 'react'
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
-import ListItem from '../../ui/listItem/ListItem'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import ListItem from '../../../ui/listItem/ListItem'
 import Sortable from 'react-sortablejs';
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { ModalFormTemplate, FormDialog, CustomizedDialog } from '../../ui/modal'
-import Card from "@material-ui/core/Card";
+import { CustomizedDialog } from '../../../ui/modal'
+import './phase.css';
 
-export const Form = ({
+export const Phase = ({
     isloading,
     openModal,
-    componentFormList,
-    formList,
+    workflowPhaseList,
+    phaseList,
     handleOnClick,
     handleDeleteOnClick,
     handleSubmit,
     handleChange,
     closeModal,
     modalIsOpen,
-    formToAdd,
-    ...rest
+    phaseToAdd,
+
 }) => (
         <>
             {(isloading) ? <LinearProgress /> : ""}
             <CardTemplate
-                title="Workflows"
+                title={localStorage.getItem('active-workflow-name') + "- Phases"}
                 action={
                     <button
                         className="btn btn-primary _btn"
                         onClick={() => openModal()}>
-                        <i class="fas fa-plus"></i> Add Form
-                    </button>
+                        <i class="fas fa-plus"></i> Add Phase
+            </button>
                 }
                 contentHeight="450px"
             >
@@ -43,12 +43,13 @@ export const Form = ({
                     }}
                     tag="ul">
                     {
-                        (componentFormList) ? componentFormList.map(element => (
+                        (workflowPhaseList) ? workflowPhaseList.map(element => (
                             <ListItem
                                 handleOnClick={handleOnClick}
-                                color="var(--indigo)"
+                                color="var(--orange)"
                                 handleDeleteOnClick={handleDeleteOnClick}
                                 data={element}
+                                name ={element.phaseName}
                             />
                         )) : null
                     }
@@ -58,19 +59,19 @@ export const Form = ({
                 open={modalIsOpen}
                 handleClose={closeModal}
                 handleSubmit={handleSubmit}
-                title="Add Form"
+                title="Add Phase"
             >
                 <div className="form-group">
-                    <label htmlFor="formName">Select a Form</label>
+                    <label htmlFor="phaseName">Select phase</label>
                     <select
                         className="form-control"
-                        name="formName"
-                        value={formToAdd}
+                        name="phaseName"
+                        value={phaseToAdd}
                         onChange={handleChange}
                         required
                     >
                         <option></option>
-                        {formList}
+                        {phaseList}
                     </select>
                 </div>
             </CustomizedDialog>

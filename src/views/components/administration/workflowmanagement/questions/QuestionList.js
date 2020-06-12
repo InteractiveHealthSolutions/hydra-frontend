@@ -218,7 +218,7 @@ class QuestionList extends React.Component {
     }
     closeQuestionModal() {
         this.setState({ openQuestionModal: false });
-        this.resetForm()
+        this.resetForm();
     }
     openEditQuestionModal() {
         this.setState({ optionError:false,openEditQuestionModal: true });

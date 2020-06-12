@@ -72,6 +72,7 @@ function searchEncounterType(name) {
     };
     return fetch(`${BASE_URL}/encountertype?q=${name}`, requestOptions)
         .then(handleResponse).then(encounterTypeData => {
+            console.log("encounterTypeData" , encounterTypeData)
             return encounterTypeData;
         }, e => console.log('error', e)
         ).catch(err => {
@@ -82,9 +83,9 @@ function searchEncounterType(name) {
 
 
 function handleResponse(response) {
-    if (!response.ok) {
-        throw Error(response.statusText + " - " + response.url)
-    }
+    // if (!response.ok) {
+    //     throw Error(response.statusText + " - " + response.url)
+    // }
     return response.text().then(text => {
         const data = text && JSON.parse(text);
         if (!response.ok) {

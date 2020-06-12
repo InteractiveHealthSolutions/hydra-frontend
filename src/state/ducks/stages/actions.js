@@ -28,9 +28,12 @@ const componentSaveAction = (payload) => ({
 })
 
 
-export const fetchcomponents = () => async dispatch =>
+export const fetchcomponents = () => async dispatch => {
+  dispatch(setProject())
   fetch(GET, "/hydra/component")
     .then(res => dispatch(fetchComponentAction(res))).catch(displayError)
+}
+
 
 const fetchComponentAction = (payload) => ({ type: types.GET_ALL_COMPONENT, payload })
 
@@ -58,7 +61,7 @@ function filterStage(phaseStageData, filterWith, phaseUuid) {
   let activePhase = ""
   let activeWorkflow = ""
   if (filterWith === "dataview" && phaseUuid) {
-    activePhase =    phaseUuid;
+    activePhase = phaseUuid;
     activeWorkflow = localStorage.getItem('selectedWorkflowId');
   } else {
     activePhase = localStorage.getItem('active-phases-uuid');
