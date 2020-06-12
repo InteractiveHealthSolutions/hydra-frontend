@@ -102,7 +102,7 @@ class Login extends React.Component {
       <div className="limiter">
         <div className="container-login100">
           <div className="wrap-login100">
-            <span className="login100-form-title" style={{ color: "red" }}>
+            <span style={{ color: "red", fontSize: "22px", fontStyle: "bold" }}>
               System is down for maintenance
             </span>
             <div className={isLoading ? "login100-pic rotate" : "login100-pic"}>
