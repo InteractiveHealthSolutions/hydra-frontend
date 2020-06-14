@@ -102,9 +102,6 @@ class Login extends React.Component {
       <div className="limiter">
         <div className="container-login100">
           <div className="wrap-login100">
-            <span style={{ color: "red", fontSize: "22px", fontStyle: "bold" }}>
-              System is down for maintenance
-            </span>
             <div className={isLoading ? "login100-pic rotate" : "login100-pic"}>
               <img src={require("../../../assets/logo.png")} alt="IMG" />
             </div>
@@ -142,7 +139,12 @@ class Login extends React.Component {
                   value={password}
                   onChange={this.handleChange}
                 />
-                <span className="focus-input100"></span>
+                <span
+                  className="focus-input100"
+                  style={{ color: "red", fontSize: "20px", fontStyle: "bold" }}
+                >
+                  System is down for maintenance
+                </span>
                 <span className="symbol-input100">
                   <i className="fa fa-lock" aria-hidden="true"></i>
                 </span>
