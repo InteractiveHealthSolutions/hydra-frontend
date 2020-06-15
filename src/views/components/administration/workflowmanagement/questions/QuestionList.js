@@ -633,8 +633,7 @@ class QuestionList extends React.Component {
             }
             await this.setState({ definedOptions: [] });
             await this.setState({ widgetsToShowEdit: [] });
-            if (event.data.fieldType.display == 'Single Select Dropdown' ||
-                event.data.fieldType.display == 'Single Select Radiobuttons') {
+            if (event.data.fieldType.display == 'Single Select Dropdown') {
                 await this.state.widgetsToShowEdit.push({
                     title: "Single Select Dropdown",
                     key: "6d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
@@ -642,7 +641,18 @@ class QuestionList extends React.Component {
                 await this.state.widgetsToShowEdit.push({
                     title: "Single Select Radiobuttons",
                     key: "5d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
+                }); 
+            }
+            else if (event.data.fieldType.display == 'Single Select Radiobuttons') {
+                await this.state.widgetsToShowEdit.push({
+                    title: "Single Select Radiobuttons",
+                    key: "5d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
                 });
+                await this.state.widgetsToShowEdit.push({
+                    title: "Single Select Dropdown",
+                    key: "6d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
+                });
+              
             }
             else {
                 await this.state.widgetsToShowEdit.push({
@@ -982,6 +992,7 @@ class QuestionList extends React.Component {
                                                         controlId={definedOption.controlId}
                                                         title={definedOption.title}
                                                         onItemSelectedProp={this.onChangeEdit}
+                                                        parentComponent="Options"
                                                     ></AutoSearchComplete>
                                                 </div>
                                                 <div className="col-md-1" style={{ textAlign: "center" }}>
