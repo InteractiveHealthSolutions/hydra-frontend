@@ -6,7 +6,6 @@ let axios = require("axios");
 
 export const login = (username, password) => async (dispatch) => {
   dispatch(setProject());
-  console.log("BASE_URL", BASE_URL);
   const token = authenticationGenerator.generateAuthenticationToken(
     username,
     password
@@ -51,6 +50,7 @@ const handleResponseLogin = (response) => {
       }
       return "unauthorized";
     }
+    console.log("response api : ", text);
     localStorage.setItem(
       "active_user",
       JSON.stringify(JSON.parse(text).results[0].privileges)

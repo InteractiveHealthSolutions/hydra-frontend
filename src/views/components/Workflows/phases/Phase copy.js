@@ -7,11 +7,11 @@ import './phase.css';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Card from '@material-ui/core/Card';
-import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
-import { phaseAction } from '../../../state/ducks/phase'
+import { WorkflowSideBackButton } from '../../common/sidebutton/SideBackButton'
+import { phaseAction } from '../../../../state/ducks/phase'
 import PropTypes from 'prop-types';
-import Loaders from "../common/loader/Loader"
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
+import Loaders from "../../common/loader/Loader"
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
 
 class Phase extends React.Component {
     constructor(props) {

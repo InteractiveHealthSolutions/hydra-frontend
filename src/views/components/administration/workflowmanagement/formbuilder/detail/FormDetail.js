@@ -42,12 +42,10 @@ function FormDetail(props) {
           dispatch(formAction.fetchForms())
     }, []);
 
-
     const {rowData,isLoading} = useSelector((state) =>({
         rowData : state.formField.forms.forms,
         isLoading: state.formField.loading
     }))
-
     
     useEffect(() => {
         if(localStorage.getItem("check") === "true"){

@@ -18,7 +18,7 @@ export class TextBox extends Component {
   render() {
     
     const { title, type, isRequired,disabled, name, min, step, pattern, controlId, placeholdertext, hydramoduleFormId } = this.props;
-    console.log("patientContacts" ,disabled)
+   // console.log("patientContacts" ,disabled)
     var opts = {}; if (hydramoduleFormId !== null && controlId === 'formName') { opts['readOnly'] = 'readOnly'; }
     var  disabledText ={}; if(disabled === "Yes") { disabledText['readOnly'] = 'readOnly'; }
     return (

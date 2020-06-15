@@ -1,9 +1,9 @@
 import React from 'react'
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate'
-import ListItem from '../../ui/listItem/ListItem'
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
+import ListItem from '../../../ui/listItem/ListItem'
 import Sortable from 'react-sortablejs';
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { ModalFormTemplate, FormDialog, CustomizedDialog } from '../../ui/modal'
+import { ModalFormTemplate, FormDialog, CustomizedDialog } from '../../../ui/modal'
 import './workflow.css';
 
 const Workflow = ({
@@ -28,7 +28,7 @@ const Workflow = ({
         action={
           <button className="btn btn-primary _btn" onClick={() => openModal()}> <i class="fas fa-plus"></i> Create</button>
         }
-        contentHeight = "450px"
+        contentHeight="450px"
       >
         <Sortable
           options={{
@@ -44,9 +44,10 @@ const Workflow = ({
               workflowLists.workflows.map(element => (
                 <ListItem
                   handleOnClick={handleOnClick}
-                  color = "var(--bg)"
+                  color="var(--bg)"
                   handleDeleteOnClick={handleDeleteOnClick}
                   data={element}
+                  name={element.name}
                 />
               )) : null
           }

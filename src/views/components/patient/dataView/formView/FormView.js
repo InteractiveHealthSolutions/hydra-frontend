@@ -18,7 +18,7 @@ function FormView({
     currentPatient,
     submitForm,
 }) {
-    const [reload, setReload] = useState(true)
+
     const yepSchema = formFields.reduce(CreateYupSchema, {});
     const validateSchema = yup.object().shape(yepSchema);
     const initialValues = {};
