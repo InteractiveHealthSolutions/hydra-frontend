@@ -83,13 +83,12 @@
     "yup": "^0.28.3"
   },
   "scripts": {
-    "start": "env-cmd -f .env.local react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://hydrademo.ihsinformatics.com/openmrs/ws/rest/v1",
-  "homepage": ".",
+  "homepage": "https://hydrademo.ihsinformatics.com",
   "eslintConfig": {
     "extends": "react-app"
   },
