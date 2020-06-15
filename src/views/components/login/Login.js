@@ -109,7 +109,12 @@ class Login extends React.Component {
               className="login100-form validate-form"
               onSubmit={this.handleSubmit}
             >
-              <span className="login100-form-title">Sign In</span>
+              <span
+                className="login100-form-title"
+                style={{ color: "red", fontSize: "20px", fontStyle: "bold" }}
+              >
+                System is down for maintenance
+              </span>
 
               <div className="wrap-input100 ">
                 <input
@@ -160,12 +165,7 @@ class Login extends React.Component {
                 ) : (
                   ""
                 )}
-                <span
-                  className="focus-input100"
-                  style={{ color: "red", fontSize: "20px", fontStyle: "bold" }}
-                >
-                  System is down for maintenance
-                </span>
+
                 <button
                   className={
                     isLoading
