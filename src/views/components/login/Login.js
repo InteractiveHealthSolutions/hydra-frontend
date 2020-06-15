@@ -139,12 +139,7 @@ class Login extends React.Component {
                   value={password}
                   onChange={this.handleChange}
                 />
-                <span
-                  className="focus-input100"
-                  style={{ color: "red", fontSize: "20px", fontStyle: "bold" }}
-                >
-                  System is down for maintenance
-                </span>
+
                 <span className="symbol-input100">
                   <i className="fa fa-lock" aria-hidden="true"></i>
                 </span>
@@ -165,6 +160,12 @@ class Login extends React.Component {
                 ) : (
                   ""
                 )}
+                <span
+                  className="focus-input100"
+                  style={{ color: "red", fontSize: "20px", fontStyle: "bold" }}
+                >
+                  System is down for maintenance
+                </span>
                 <button
                   className={
                     isLoading
