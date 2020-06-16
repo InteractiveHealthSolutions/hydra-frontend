@@ -27,8 +27,8 @@ const styles = {
         backgroundColor: color
     }),
     img: {
-        marginLeft:'8px',
-        marginTop:'12px'
+        marginLeft: '8px',
+        marginTop: '12px'
     }
 };
 
@@ -38,6 +38,7 @@ export default function ListItem({
     data,
     view,
     color,
+    name,
     completed, ...reset
 }) {
     //completed ? "var(--bg)" : "red"
@@ -48,8 +49,8 @@ export default function ListItem({
 
             <div style={styles.itemleft} onClick={(evt) => handleOnClick(evt, data)} >
                 <div style={styles.leftWall(color)} />
-                {view? <span style ={styles.img} ><i class="fas fa-align-justify gradient"></i></span>:""}
-                <ListBody name={view ? data.form.name : data.name? data.name : data.form.name} description="" />
+                {view ? <span style={styles.img} ><i class="fas fa-align-justify gradient"></i></span> : ""}
+                <ListBody name={view ? data.form.name : name} description="" />
             </div>
             {(view) ? "" :
                 <span onClick={() => handleDeleteOnClick(data)}>

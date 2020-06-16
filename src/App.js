@@ -7,14 +7,14 @@ import { PrivateRoute } from './views/components/route/PrivateRoute';
 import Homepage from './views/components/home/Homepage';
 import { userActions } from './store/actions';
 import Header from './views/components/header/Header';
-import WorkflowContainer from './views/components/workflow/WorkflowContainer'
-import Phase from './views/components/phases/Phase';
-import Component from './views/components/stages/Component';
+import Workflow from './views/components/Workflows/workflow/WorkflowContainer';
+import Phase from './views/components/Workflows/phases/PhaseContainer';
+import Component from './views/components/Workflows/stages/Component';
 import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import Form from './views/components/form/FormContainer';
+import Form from './views/components/Workflows/form/FormContainer';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
@@ -118,7 +118,7 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" name="Workflow" component={WorkflowContainer} />
+                                                <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
                                                 <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
                                                 <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
@@ -132,6 +132,8 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry" component={WorkflowFormViewContainer}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav

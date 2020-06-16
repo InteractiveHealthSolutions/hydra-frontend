@@ -6,7 +6,6 @@ import {
   createNotification,
 } from "../../utilities/helpers/helper";
 import { BASE_URL } from "../../utilities/constants/globalconstants";
-
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(
     localStorage.getItem("username"),
