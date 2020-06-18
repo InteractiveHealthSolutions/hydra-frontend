@@ -437,13 +437,13 @@ class FindPatient extends React.Component {
                             <div className="form-group row" >
                                 <label htmlFor="personname" class="col-sm-4 col-form-label required">Person Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="personname" autoComplete="off" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.personname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="personname" autoComplete="off" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,25}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.personname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div className="form-group row" >
                                 <label htmlFor="familyname" class="col-sm-4 col-form-label required">Family Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.familyname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,25}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.familyname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div class="form-group row">
