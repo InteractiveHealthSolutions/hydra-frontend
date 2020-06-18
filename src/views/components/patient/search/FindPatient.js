@@ -507,12 +507,19 @@ class FindPatient extends React.Component {
                         </form>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.openWorkflowModal} backdrop="static" onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '80px' }}>
+                <Modal 
+                  show={this.state.openWorkflowModal}
+                  backdrop="static" 
+                  onHide={() => this.setState({ openWorkflowModal: false })} 
+                  style={{ marginTop: '80px' }}>
                     <Modal.Header>
                         Select A Workflow
                 </Modal.Header>
-                    <Modal.Body>
-                        <RadioGroup aria-label="report" name="workflow" onChange={this.setWorkflow} >
+                    <Modal.Body style ={{height:'450px' ,overflowY: 'auto'}}>
+                        <RadioGroup  
+                        aria-label="report" 
+                        name="workflow"
+                        onChange={this.setWorkflow} >
 
                             {
                                 this.state.workflowData.map((value, i) => {
