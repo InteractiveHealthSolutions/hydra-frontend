@@ -23,8 +23,13 @@ export const saveForm = Form => async dispatch => {
 export const fetchForms = () => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/form?v=full")
-    .then(res => dispatch(setForm(res)))
-    .catch(displayError);
+    .then(res => {
+      dispatch(setForm(res))
+    })
+    .catch((error) => {
+      console.error("form fetch error", error)
+      dispatch(setError(error))
+    });
 }
 
 const setForm = payload => ({ type: types.GET_ALL_FORM, payload });
@@ -56,8 +61,14 @@ const setFormByUuidAction = (payload) => ({ type: types.GET_FORM_BY_UUID, payloa
 export const getComponentFormRelation = (filterWith, phaseUuid) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/componentform")
-    .then(res => dispatch(getComponentFormRelations(filterStageForm(res, filterWith, phaseUuid))))
-    .catch(displayError);
+    .then(res => {
+      console.log("componentform res ", res)
+      dispatch(getComponentFormRelations(filterStageForm(res, filterWith, phaseUuid)))
+    })
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
 };
 const getComponentFormRelations = payload => ({
   type: types.GET_COMPONENT_FORM_RELATION,
@@ -97,7 +108,10 @@ export const deleteComponentFormRelation = uuid => async dispatch => {
   dispatch(setProject())
   fetch(DELETE, "/hydra/componentform/" + uuid)
     .then(res => dispatch(setDeleteComponentFormRelations(res)))
-    .catch(displayError);
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
 };
 const setDeleteComponentFormRelations = payload => ({
   type: types.DELETE_COMPONENT_FORM_RELATION,
@@ -108,7 +122,10 @@ export const formSubmission = (formData) => async dispatch => {
   dispatch(setProject())
   fetch(POST, "/hydra/formSubmission", formData)
     .then(res => dispatch(setFormSubmission(res)))
-    .catch(displayError);
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
 }
 const setFormSubmission = payload => ({
   type: types.FORM_SUBMISSION,

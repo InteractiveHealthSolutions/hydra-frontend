@@ -14,6 +14,7 @@ import {
     ADDRESS
 } from '../../../../../../utilities/constants/globalconstants'
 
+//need to refactor 
 export async function hideParser(sepression, values, type) {
     let isHide = await parseLogic(sepression, values, type)
     return isHide
@@ -35,7 +36,7 @@ export async function autoSelectParser(sepression, values, type, answers, setFie
         let val = ""
         val = await answers ? answers.filter(element => element.concept.display === targetFieldAnswer) : null
         return {
-             name, value: {
+            name, value: {
                 label: val[0].concept.display,
                 value: val[0].concept.uuid
             }
@@ -60,23 +61,25 @@ export async function autoSelectParser(sepression, values, type, answers, setFie
 }
 
 
-
 function parseLogic(ruleArray, values, type) {
     var operator = ""
     var ruleFormatData = {}
     var ruleVal = []
     for (var i = 0; i < ruleArray.length; i++) {
         const element = ruleArray[i]
+        console.log("hide Parser", element)
+
         if (typeof element == "string") {
             operator = element
         } else if (typeof element == "object") {
-            const questionId = element.questionId
-            const val = values["" + questionId + ""]   //getTypeValue(values, questionId, type)
-            console.log("getTypeValue", val, type)
+            //const questionId = element.questionId
+            const val = values["" + element.questionId + ""]   //getTypeValue(values, questionId, type)
+            const displayLabel = val ? val.split("#")[1] : "";
+            //console.log("getTypeValue vaue", displayLabel)
 
             ruleVal.push({
                 questionId: element.questionId,
-                value: val,
+                value: displayLabel,
                 rule: element
             })
         }
@@ -93,6 +96,9 @@ function parseLogic(ruleArray, values, type) {
 function logicChecker(ruleList) {
     if (ruleList.operator === "OR") {
         // check one by one 
+        if (ruleList.data.length <= 0) {
+            return true
+        }
         for (let index = 0; index < ruleList.data.length; index++) {
             const element = ruleList.data[index].rule;
             const val = ruleList.data[index].value
@@ -122,7 +128,7 @@ function logicChecker(ruleList) {
 
 function orLogic(element, value) {
 
-    console.log("typeof ", value)
+    console.log("typeof orLogic ", value ? element.equals.filter(data => data.uuid === value).length > 0 : true)
     switch (typeof value) {
         case "string":
             console.log("typeof str", value)
@@ -144,12 +150,12 @@ function orLogic(element, value) {
         // return value ? element.equals.filter(data => data.uuid === value).length > 0 : false
         switch (typeof value) {
             case "string":
-                return value ? element.equals.filter(data => data.uuid === value).length > 0 : false  //is contain (value !== element.notEquals[0].uuid)
+                return value ? element.equals.filter(data => data.uuid === value).length > 0 : true  //is contain (value !== element.notEquals[0].uuid)
             case "object":
                 return value ? element.equals.filter(data => {
                     return value.label ? data.uuid === value.label :
                         value.filter(item => item === data.uuid)
-                }).length > 0 : false
+                }).length > 0 : true
         }
     }
 

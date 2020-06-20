@@ -29,7 +29,8 @@ import {
     SINGLE_SELECT_RADIOBUTTON,
     HEADING,
     AGE,
-    ADDRESS
+    ADDRESS,
+    BARCODE_READER
 } from '../../../../../utilities/constants/globalconstants'
 import CustomSelect from './widgets/CustomSelect'
 import AddressWidget from './widgets/AddressWidget'
@@ -60,6 +61,7 @@ const WidgetSelector = ({
     country,
     handleAutoSelect
 }) => {
+    console.log("Field Type", display)
     switch (display) {
         case TEXT_BOX:
             return (
@@ -112,7 +114,7 @@ const WidgetSelector = ({
                             <CustomRadioButton
                                 name={fieldId}
                                 type="radio"
-                                value={element.concept.uuid}
+                                value={element.concept.uuid + "#" + element.concept.display}
                                 label={element.concept.display}
                             />
                         ))
@@ -194,6 +196,22 @@ const WidgetSelector = ({
                 <FormGroup>
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     <DatePickerField name={fieldId} />
+                    {
+                        errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
+                    }
+                </FormGroup>
+            )
+        case 'Barcode Reader':
+            return (
+                <FormGroup>
+                    <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
+                    <input
+                        placeholder=""
+                        type="text"
+                        name={fieldId}
+                        className='form-control'
+                        onChange={value => setFieldValue(fieldId, value.target.value)}
+                    />
                     {
                         errors[fieldId] ? <span className={styles.error}>{errors[fieldId]}</span> : ""
                     }

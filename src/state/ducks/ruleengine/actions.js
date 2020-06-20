@@ -11,7 +11,13 @@ import { displayError } from '../../../utilities/helpers/helper'
 export const getFieldRule = () => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/fieldRule")
-    .then(res => dispatch(setFieldRuleAction(res))).catch(displayError)
+    .then(res => {
+      console.log("fieldRule res", res)
+      dispatch(setFieldRuleAction(res))
+    })
+    .catch((error) => {
+      console.error("fieldRule err", error)
+    })
 }
 
 
