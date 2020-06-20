@@ -16,7 +16,7 @@ export const login = (username, password) => async dispatch => {
     }
   };
 
-  await fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
+  await fetch("user?v=full&q="+username, requestOptions)
     .then(handleResponseLogin)
     .then(user => {
       if (user === 'authorized') {
