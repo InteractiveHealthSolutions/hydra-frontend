@@ -132,6 +132,8 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry" component={WorkflowFormViewContainer}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
