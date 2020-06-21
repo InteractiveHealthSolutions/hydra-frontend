@@ -2,6 +2,7 @@ import { authenticationGenerator } from '../../utilities/helpers';
 import { userService } from '../../services/userservice';
 import { history } from '../../history';
 import { displayError, createNotification } from '../../utilities/helpers/helper'
+import {BASE_URL} from '../../utilities/constants/generalconstants'
 
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
