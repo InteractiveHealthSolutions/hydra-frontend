@@ -73,8 +73,15 @@ function parseLogic(ruleArray, values, type) {
             operator = element
         } else if (typeof element == "object") {
             //const questionId = element.questionId
-            const val = values["" + element.questionId + ""]   //getTypeValue(values, questionId, type)
-            const displayLabel = val ? val.split("#")[1] : "";
+            const val = values["" + element.questionId + ""]
+            //getTypeValue(values, questionId, type)
+            console.log("getTypeValue before", typeof val === 'string' || val instanceof String)
+            let displayLabel = ""
+            if (isString(val)) {
+                displayLabel = val ? val.split("#")[1] : ""
+            } else {
+                displayLabel = val
+            }
             //console.log("getTypeValue vaue", displayLabel)
 
             ruleVal.push({
@@ -91,6 +98,10 @@ function parseLogic(ruleArray, values, type) {
     }
     console.log("getTypeValue", ruleFormatData)
     return logicChecker(ruleFormatData)
+}
+
+function isString(value) {
+    return typeof value === 'string' || value instanceof String;
 }
 
 function logicChecker(ruleList) {
@@ -128,22 +139,18 @@ function logicChecker(ruleList) {
 
 function orLogic(element, value) {
 
-    console.log("typeof orLogic ", value ? element.equals.filter(data => data.uuid === value).length > 0 : true)
-    switch (typeof value) {
-        case "string":
-            console.log("typeof str", value)
-        case "object":
-            console.log("typeof object", value.label ? value.label : value[0])
-    }
+    //  console.log("typeof orLogic ", value ? element.equals.filter(data => data.uuid === value).length > 0 : true)
     if (element.notEquals !== null && element.notEquals !== undefined) {
-        switch (typeof value) {
-            case "string":
-                return value ? element.notEquals.filter(data => data.uuid !== value).length > 0 : false  //is contain (value !== element.notEquals[0].uuid)
-            case "object":
-                return value ? element.notEquals.filter(data => {
-                    return value.label ? data.uuid !== value.label :
-                        value.filter(item => item !== data.uuid)
-                }).length > 0 : false
+        console.log("parse check In",value)
+        //need refactor
+        if (isString(value)) {
+            return value ? element.notEquals.filter(data => data.uuid !== value).length <= 0 : true
+        } else {
+            //consider the value is object type
+            return value ? element.notEquals.filter(data => {
+                return value.label ? data.uuid !== value.label :
+                    value.filter(item => item !== data.uuid)
+            }).length <= 0 : true
         }
 
     } else if (element.equals !== null && element.equals !== undefined) {
