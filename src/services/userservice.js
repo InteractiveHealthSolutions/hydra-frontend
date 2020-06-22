@@ -1,5 +1,6 @@
 import { authenticationGenerator } from '../utilities/helpers';
 import { history } from '../history';
+import {BASE_URL} from '../../utilities/constants/globalconstants'
 export const userService = {
 
     logInService,
@@ -17,7 +18,7 @@ function logInService(username, password) {
 
     
 
-    return fetch(`/user?v=full&q=${username}`, requestOptions)
+    return fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
         .then(handleResponseLogin)
         .then(user => {
             if (user === 'authorized') {
