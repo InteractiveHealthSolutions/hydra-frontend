@@ -5,7 +5,7 @@ import { BASE_URL } from '../../../utilities/constants/globalconstants'
 let axios = require('axios');
 
 
-export const login = (username, password) => async dispatch => {
+export const login = (username, password) => dispatch => {
   dispatch(setProject())
   const token = authenticationGenerator.generateAuthenticationToken(username, password);
   const requestOptions = {
@@ -16,24 +16,49 @@ export const login = (username, password) => async dispatch => {
     }
   };
 
-  await fetch(`user?v=full&q=${username}`, requestOptions)
-    .then(handleResponseLogin)
-    .then(user => {
-      if (user === 'authorized') {
+  fetch(`user?v=full&q=${username}`, requestOptions)
+    .then(CheckError)
+    .then(data => {
+        localStorage.setItem('active_user', JSON.stringify(data.results[0].privileges))
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
         dispatch(success(username));
         history.push("/");
-      }
-      else {
-        dispatch(failure(username));
-      }
+        console.log("login response", data)
     })
+    .catch((error) => {
+      dispatch(failure(error))
+      console.error("login response error", error)
+    })
+  // .then(user => {
+  //   if (user === 'authorized') {
+  //     localStorage.setItem('username', username);
+  //     localStorage.setItem('password', password);
+  //     dispatch(success(username));
+  //     history.push("/");
+  //   }
+  //   else {
+  //     dispatch(failure(username));
+  //   }
+  // })
 }
 
 const request = (user) => { return { type: types.LOGIN_REQUEST, user } };
 const success = (user) => { return { type: types.LOGIN_SUCCESS, user } };
 const failure = (user) => { return { type: types.LOGIN_FAILURE, user } };
+
+
+function CheckError(response) {
+  if (response.ok) {
+    return response.json();
+  } else {
+    if (response.status === 401) {
+      logout()
+    }
+    throw Error(response.statusText);
+  }
+}
+
 
 
 const handleResponseLogin = (response) => {

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Router, MemoryRouter, Link, Route, HashRouter, BrowserRouter, Switch } from 'react-router-dom';
-import LogIn from './views/components/login/Login';
+import Login from './views/components/login/LoginContainer';
 import { history } from './history'
 import IdleTimer from 'react-idle-timer'
 import { PrivateRoute } from './views/components/route/PrivateRoute';
@@ -108,7 +108,7 @@ class App extends React.Component {
                 />
                 <Router history={history}>
                     <Switch>
-                        <Route exact path="/login" name="Login" component={LogIn} />
+                        <Route exact path="/login" name="Login" component={Login} />
                         <Route path="/" render={() => (
                             <div className="app">
                                 <Header ></Header>

@@ -12,7 +12,8 @@ import {
     SINGLE_SELECT_RADIOBUTTON,
     HEADING,
     AGE,
-    ADDRESS
+    ADDRESS,
+    BARCODE_READER
 } from '../../../../../../utilities/constants/globalconstants'
 
 export function CreateYupSchema(schema, config) {
@@ -41,32 +42,42 @@ export function FormValidation(questionList, formValues) {
         const fieldName = items.field.fieldId
         const fieldType = items.field.attributeName
         const fieldTypeDisplayText = items.field.fieldType.display
-        console.log("Form-Field", items.mandatory, fieldName, formValues[fieldName])
+       // console.log("Form-Field", items.mandatory, fieldName, formValues[fieldName])
         if (items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length <= 0)) {
             errors[fieldName] = items.errorMessage ? items.errorMessage : "Field is required"
         }
-
+        console.log("Text Validation :: " ,fieldTypeDisplayText)
         switch (fieldTypeDisplayText) {
-            case TEXT:
-                //errors
-                /// min max ,length... 0 > 1
-                // 0 < max
+            case TEXT_BOX:
+                    console.log("Text Validation" ,items.minLength ,items.maxLength )
                 if (items.minLength && items.maxLength) {
-                    if (formValues[fieldName] < items.minLength && formValues[fieldName] > items.maxLength) {
+                    if (formValues[fieldName].length < items.minLength || formValues[fieldName].length > items.maxLength) {
                         errors[fieldName] = "Minimum length should be" + items.minLength + " and Maximum length should be " + items.maxLength
                     }
-                } else if (items.minLength && formValues[fieldName] < items.minLength) {
+                } else if (items.minLength && formValues[fieldName].length < items.minLength) {
                     errors[fieldName] = "Minimum length should be" + items.minLength
-                } else if (items.maxLength && formValues[fieldName] > items.minLength) {
+                } else if (items.maxLength && formValues[fieldName].length > items.minLength) {
                     errors[fieldName] = "Maximum length should be" + items.maxLength
                 }
                 //if (items.regix)
                 break;
-            case NUMERIC:
-                /// min value, max value and allow decimal
-                if (items.minValue)
-                    if (items.maxValue)
-                        break;
+            case BARCODE_READER:
+                console.log("Barcode Reader ff "  ,items.minValue ,items.maxValue)
+                    if (items.minValue && items.maxValue) {
+                        if (
+                            Number(formValues[fieldName]) > Number(items.minValue)
+                            && Number(formValues[fieldName]) < Number(items.maxValue)
+                        ) {
+                            errors[fieldName] = "Minimum value should be" + items.minLength + " and Maximum length should be " + items.maxLength
+                        }
+                    } else if (items.minValue && Number(formValues[fieldName]) > Number(items.minValue)) {
+                        errors[fieldName] = "Minimum value should be" + items.minValue
+                    }
+                    else if (items.maxValue && Number(formValues[fieldName]) < Number(items.maxValue)) {
+                        errors[fieldName] = "Maximum value should be" + items.maxValue
+                    }
+                    //check allow decimal                    
+                break;
             case SINGLE_SELECT_DROPDOWN:
                 break;
             case MULTIPLE_CHOICE:

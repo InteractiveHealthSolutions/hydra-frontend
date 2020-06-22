@@ -35,7 +35,7 @@ function FormView({
         }
     });
 
-
+    // not used
     function handleAutoSelect(name, val, setFieldValue, setFieldTouched) {
         // debugger;
         console.log("handleAutoSelect tt", name, val)
@@ -79,6 +79,8 @@ function FormView({
                     enableReinitialize={true}
                     initialValues={initialValues}
                     // validationSchema={validateSchema}
+                    validateOnChange={false}
+                    validateOnBlur={false}
                     validate={(values) => {
                         // initialValues["1024"] = { label: "CHIKUNGUNYA FEVER", value: "120742AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
                         return FormValidation(formFields, values)

@@ -201,13 +201,13 @@ const WidgetSelector = ({
                     }
                 </FormGroup>
             )
-        case 'Barcode Reader':
+        case BARCODE_READER:
             return (
                 <FormGroup>
                     <label className={mandatory ? "required" : ""}>{displayText ? displayText : name}</label>
                     <input
                         placeholder=""
-                        type="text"
+                        type="number"
                         name={fieldId}
                         className='form-control'
                         onChange={value => setFieldValue(fieldId, value.target.value)}
