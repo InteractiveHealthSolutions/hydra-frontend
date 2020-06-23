@@ -320,7 +320,7 @@ export default class QuestionConfiguration extends Component {
                                 onItemSelectedProp={this.onItemSelectedProp}
                             />
                             <TextBox
-                                controlId="rxp"
+                                controlId="regix"
                                 title="Regular Expression Pattern"
                                 type="text"
                                 value={regix}
