@@ -348,13 +348,13 @@ class LocationManagement extends React.Component {
             if (this.state.isEdit) {
                 await this.props.editLocation(this.state.activeLocation, locationForm);
                 await createNotification('success', 'Location Updated');
-                await window.location.reload();
+                await this.props.getAllLocation();
                 await this.closeModal()
             }
             else {
                 await this.props.saveLocation(locationForm);
                 createNotification('success', 'Location Created');
-                await window.location.reload();
+                await this.props.getAllLocation();
                 await this.closeModal();
 
             }
