@@ -12,6 +12,7 @@ const initialState = {
     patients: [],
     patientType: [],
     searchPatients: [],
+    isError: false
 };
 
 const patientReducer = createReducer(initialState)({
@@ -20,7 +21,8 @@ const patientReducer = createReducer(initialState)({
         ...state,
         current: payload,
         searchLoading: true,
-        error: null
+        error: null,
+        isError: false
     }),
 
     [types.ACTIVE_PATIENT]: (state, { payload }) => (() => {
@@ -31,32 +33,37 @@ const patientReducer = createReducer(initialState)({
         ...state,
         loading: false,
         searchLoading: false,
-        error: payload
+        error: payload,
+        isError: true
     }),
     [types.CREATE_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
         searchLoading: false,
-        patient: payload
+        patient: payload,
+        isError: false
     }),
 
     [types.GET_ALL_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
         searchLoading: false,
-        patients: payload
+        patients: payload,
+        isError: false
     }),
     [types.DELETE_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
         searchLoading: false,
-        patient: payload
+        patient: payload,
+        isError: false
     }),
     [types.SEARCH_PATIENT]: (state, { payload }) => ({
         ...state,
         loading: false,
         searchLoading: false,
-        searchPatients: payload
+        searchPatients: payload,
+        isError: false
     }),
 
 
