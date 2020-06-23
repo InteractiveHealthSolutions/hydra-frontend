@@ -1,6 +1,6 @@
 import { authenticationGenerator } from '../utilities/helpers';
 import { history } from '../history';
-import {BASE_URL} from '../../utilities/constants/globalconstants'
+import {BASE_URL} from '../utilities/constants/globalconstants'
 
 export const userService = {
 
