@@ -58,10 +58,8 @@ const WidgetSelector = ({
     setFieldTouched,
     touched,
     errors,
-    country,
-    handleAutoSelect
+    country
 }) => {
-    console.log("Field Type", display)
     switch (display) {
         case TEXT_BOX:
             return (
