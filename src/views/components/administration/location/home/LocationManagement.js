@@ -238,6 +238,7 @@ class LocationManagement extends React.Component {
                     "value": event.data.stateProvince
                 },
                 stateProvince: event.data.stateProvince,
+                country: event.data.country,
                 defaultParentLocation: event.data.parentLocation,
                 landmark: event.data.address2,
                 isEdit: true,
