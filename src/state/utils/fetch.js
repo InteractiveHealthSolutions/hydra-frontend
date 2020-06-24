@@ -3,7 +3,6 @@ import { userService } from '../../services/userservice';
 import { history } from '../../history';
 import { displayError, createNotification } from '../../utilities/helpers/helper'
 import {BASE_URL} from '../../utilities/constants/globalconstants'
-
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
     localStorage.getItem('password'));
@@ -17,7 +16,7 @@ export default async (method, path, data) => {
     body: JSON.stringify(data)
   };
 
-  return  fetch(`${BASE_URL}/${path}`, requestOptions)
+  return  fetch(path, requestOptions)
     .then(handleResponse).then(response => {
       console.log("api Response ....", response.data);
       return response;

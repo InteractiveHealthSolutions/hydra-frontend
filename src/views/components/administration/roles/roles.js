@@ -160,6 +160,7 @@ class Roles extends React.Component {
     async handleSubmit(event) {
         await event.preventDefault();
         var array  = this.state.rowData;
+        
         var existingObj = array.filter(data => data.role == this.state.roleFormData.name);
         if(JSON.stringify(existingObj) != '[]' && !this.state.forEdit) {
             createNotification('warning','Role with this name already exist');

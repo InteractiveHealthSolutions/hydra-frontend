@@ -19,7 +19,7 @@ function saveConcept(concept) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(concept)
     };
-    return fetch(`${BASE_URL}/concept`, requestOptions)
+    return fetch(`/concept`, requestOptions)
         .then(handleResponse).then(conceptData => {
             //console.log("concept res", conceptData);
             return conceptData;
@@ -37,7 +37,7 @@ function saveField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
+    return fetch(`/hydra/hydraField`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -54,7 +54,7 @@ function saveEditedField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
+    return fetch(`/hydra/hydraField`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -70,7 +70,7 @@ function searchEncounterType(name) {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': token }
     };
-    return fetch(`${BASE_URL}/encountertype?q=${name}`, requestOptions)
+    return fetch(`/encountertype?q=${name}`, requestOptions)
         .then(handleResponse).then(encounterTypeData => {
             console.log("encounterTypeData" , encounterTypeData)
             return encounterTypeData;
