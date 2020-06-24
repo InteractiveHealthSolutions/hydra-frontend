@@ -18,11 +18,13 @@ export const setActivePatient = (patient) => async dispatch => {
 
 const setPatient = (patient) => ({ type: types.ACTIVE_PATIENT, patient });
 
-
-
 export const savePatient = (Patient) => async dispatch =>
   fetch(POST, "/hydra/formSubmission", Patient)
-    .then(res => dispatch(patientAction(res))).catch(displayError)
+    .then(res => dispatch(patientAction(res)))
+    .catch((error) => {
+      dispatch(setError(error))
+      console.error("fetchPatient  error ", error)
+    })
 
 const patientAction = (payload) => ({
   type: types.CREATE_PATIENT,
@@ -31,13 +33,24 @@ const patientAction = (payload) => ({
 
 export const fetchPatients = (query) => async dispatch =>
   fetch(GET, "/patient?v=full&q=" + query)
-    .then(res => dispatch(setpatientAction(res))).catch(displayError)
+    .then((res) => {
+      dispatch(setpatientAction(res))
+    })
+    .catch((error) => {
+      dispatch(setError(error))
+      console.error("fetchPatient  error ", error)
+    })
 
 const setpatientAction = (payload) => ({ type: types.GET_ALL_PATIENT, payload })
 
 export const deletePatient = (uuid) => async dispatch => {
   fetch(DELETE, "/patient/" + uuid)
-    .then(res => dispatch(deletepatientAction(res))).catch(displayError)
+    .then(res =>
+      dispatch(deletepatientAction(res))
+    ).catch((error) => {
+      dispatch(setError(error))
+      console.error("fetchPatient  error ", error)
+    })
 }
 const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload })
 
@@ -45,7 +58,14 @@ const deletepatientAction = (payload) => ({ type: types.DELETE_PATIENT, payload 
 export const searchPatient = (query) => async dispatch => {
   dispatch(setProjectSearch())
   fetch(GET, "/patient?v=full&q=" + query + "&matchSimiliar")
-    .then(res => dispatch(searchPatientAction(res))).catch(displayError)
+    .then(res => {
+      console.log("fetchPatient  res ", res)
+      dispatch(searchPatientAction(res))
+    })
+    .catch((error) => {
+      dispatch(setError(error))
+      console.error("fetchPatient  error ", error)
+    })
 }
 const searchPatientAction = (payload) => ({ type: types.SEARCH_PATIENT, payload })
 

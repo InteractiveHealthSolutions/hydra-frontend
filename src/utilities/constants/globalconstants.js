@@ -72,6 +72,7 @@ export const TEXT = "Text";
 export const CODED = "Coded";
 
 
+
 //action types
 export const QUESTION = "Question";
 export const CODEDVALUE = "CodedValue";
@@ -105,3 +106,4 @@ export const HEADING = "Heading"
 export const AGE = "Age"
 export const ADDRESS = "Address"
 export const CONTACT_TRACING = "Contact Tracing"
+export const BARCODE_READER = "Barcode Reader"

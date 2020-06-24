@@ -105,7 +105,6 @@ class FindPatient extends React.Component {
         await this.setState({ selectedWorkflowId: existingObj[0].value });
         await localStorage.setItem("selectedWorkflowId", this.state.selectedWorkflowId)
         if (this.state.selectedWorkflow != '') {
-
             await this.closeWorkflowModal();
         }
     }
@@ -225,20 +224,23 @@ class FindPatient extends React.Component {
     }
 
     filterPatient(patientData) {
+        console.log("patientData", patientData)
         let filteredPatient = [];
         if (patientData != undefined) {
             patientData.forEach(element => {
-                filteredPatient.push({
-                    "identifier": element.identifiers[0].identifier,
-                    "given": element.person.preferredName.givenName,
-                    "middle": element.person.preferredName.middleName,
-                    "familyname": element.person.preferredName.familyName,
-                    "age": element.person.age,
-                    "gender": element.person.gender == "F" ? "Female" : "Male",
-                    "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
-                    "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
-                    "uuid": element.uuid
-                });
+                if (element) {
+                    filteredPatient.push({
+                        "identifier": element.identifiers[0].identifier,
+                        "given": element.person.preferredName.givenName,
+                        "middle": element.person.preferredName.middleName,
+                        "familyname": element.person.preferredName.familyName,
+                        "age": element.person.age,
+                        "gender": element.person.gender == "F" ? "Female" : "Male",
+                        "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
+                        "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
+                        "uuid": element.uuid
+                    });
+                }
             });
             return filteredPatient;
         }
@@ -260,7 +262,7 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
-    async  savePatient(e) {
+    async savePatient(e) {
         e.preventDefault()
         var data = [
             {

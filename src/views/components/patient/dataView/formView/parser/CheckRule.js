@@ -17,15 +17,15 @@ export default function CheckRule({
     setFieldTouched,
     touched,
     errors,
-    country,
-    handleAutoSelect,
+    country
 }) {
-    console.log("CheckRule", parsedRule, answers)
+
     const [visible, setVisible] = useState(true)
     const [autoVal, setAutoVal] = useState(null)
     useEffect(() => {
 
         if (parsedRule !== null) {
+           // console.log("CheckRule", parsedRule, name)
             checkCondition()
         }
     })
@@ -38,12 +38,13 @@ export default function CheckRule({
         let sepression = JSON.parse(parsedRule)
         if (sepression.hiddenWhen !== null && sepression.hiddenWhen !== undefined) {
             let isHide = await hideParser(sepression.hiddenWhen, values, display)
+           // console.log("isHide  vis",sepression,display, isHide)
             setVisible(isHide)
         }
         else if (sepression.autoselectWhen !== undefined && autoVal === null) {
 
-            let autoSelectVal = await autoSelectParser(sepression.autoselectWhen, values, display, answers, setFieldValue, fieldId, handleAutoSelect, setFieldTouched)
-            console.log("autoSelectVal ", autoSelectVal)
+            let autoSelectVal = await autoSelectParser(sepression.autoselectWhen, values, display, answers, setFieldValue, fieldId, setFieldTouched)
+           // console.log("autoSelectVal ", autoSelectVal)
             if (autoSelectVal) {
                 setAutoVal(autoSelectVal)
             }
@@ -56,18 +57,17 @@ export default function CheckRule({
         <>
             {
                 visible ?
-                    <WidgetSelector
-                        type={temType}
-                        setFieldValue={setFieldValue}
-                        values={values}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        setFieldTouched={setFieldTouched}
-                        touched={touched}
-                        errors={errors}
-                        country={country}
-                        handleAutoSelect={handleAutoSelect}
-                    />
+                        <WidgetSelector
+                            type={temType}
+                            setFieldValue={setFieldValue}
+                            values={values}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            setFieldTouched={setFieldTouched}
+                            touched={touched}
+                            errors={errors}
+                            country={country}
+                        />
                     : null
             }
         </>

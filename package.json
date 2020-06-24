@@ -88,7 +88,7 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "homepage": ".",
+    "homepage": "http://hydratest.ihsinformatics.com",
     "eslintConfig": {
         "extends": "react-app"
     },

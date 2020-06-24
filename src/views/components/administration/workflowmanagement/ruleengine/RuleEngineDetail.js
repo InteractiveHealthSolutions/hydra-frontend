@@ -34,8 +34,6 @@ function RuleEngineDetail(props) {
     ]);
 
     const [rowData, setRowData] = useState([]);
-
-
     useEffect(() => {
         if (props.ruleEngineList !== undefined) {
             setRowData(props.ruleEngineList.fields)
@@ -72,7 +70,7 @@ function RuleEngineDetail(props) {
         }
     }
 
-    // if (props.isloading) return <Loaders />;
+     if (props.isloading) return <Loaders />;
     return (
             <CardTemplate
                 title="Rule Engine"
