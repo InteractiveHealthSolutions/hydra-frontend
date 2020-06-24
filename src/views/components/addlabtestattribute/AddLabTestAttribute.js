@@ -76,6 +76,7 @@ class AddLabTestAttribute extends React.Component {
     }
     
     closeAddTestAttrModal() {
+        this.setState({showMultiSetOptions:false})
         this.props.close();
     }
     
@@ -83,14 +84,14 @@ class AddLabTestAttribute extends React.Component {
         console.log('add '+this.props.test);
         const {selectedDataType,multisetValues} = this.state;
         return(
-         <Modal show={this.props.show} onHide={() => this.closeAddTestAttrModal()} style={{ marginTop: '40px' }}>
+         <Modal show={this.props.show} onHide={() => this.closeAddTestAttrModal()} backdrop="static" style={{ marginTop: '40px' }}>
          <Modal.Header closeButton>
              <Modal.Title>Add Attribute Type</Modal.Title>
          </Modal.Header>
          <form onSubmit={this.handleSubmit}>
              <Modal.Body>
-             <div className="form-group required row">
-                        <label htmlFor="rconcept" class="col-sm-4 col-form-label">Lab Test Type</label>
+             <div className="form-group row">
+                        <label htmlFor="rconcept" class="col-sm-4 col-form-label required">Lab Test Type</label>
                         <div class="col-sm-8">
                           {
                             this.props.labTestAvailable  &&
@@ -103,8 +104,8 @@ class AddLabTestAttribute extends React.Component {
                           } 
                         </div>
                       </div>
-                      <div className="form-group required row">
-                        <label htmlFor="name" class="col-sm-4 col-form-label">Name</label>
+                      <div className="form-group row">
+                        <label htmlFor="name" class="col-sm-4 col-form-label required">Name</label>
                         <div class="col-sm-8">
                           <input type="text" className="form-control" name="name" required />
                         </div>
@@ -115,9 +116,9 @@ class AddLabTestAttribute extends React.Component {
                         <textarea class="form-control" rows="2" name="description"></textarea>
                         </div>
                       </div>
-                      <div class="form-group required row">
+                      <div class="form-group row">
                         <div className="col-sm-4">
-                        <label htmlFor="minocc" className="col-form-label">Is Required</label>
+                        <label htmlFor="minocc" className="col-form-label required">Is Required</label>
                         </div>
                           <div className="col-sm-8">
                             <div className="row">
@@ -148,8 +149,8 @@ class AddLabTestAttribute extends React.Component {
                           <input type="text" className="form-control" name="groupname" required />
                         </div>
                       </div>
-                      <div className="form-group required row">
-                        <label htmlFor="datatype" class="col-sm-4 col-form-label">Data Type</label>
+                      <div className="form-group row">
+                        <label htmlFor="datatype" class="col-sm-4 col-form-label requo">Data Type</label>
                         <div class="col-sm-8">
                           <Select
                             value={selectedDataType.label}
@@ -207,10 +208,8 @@ class AddLabTestAttribute extends React.Component {
                                             
              </Modal.Body>
              <Modal.Footer>
-                        <button type="button" onClick = {()=>{this.closeAddTestAttrModal()}}class="btn btn-danger">
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-success">
+                        
+                        <button type="submit" class="btn btn-primary">
                             Save
                         </button>
 
