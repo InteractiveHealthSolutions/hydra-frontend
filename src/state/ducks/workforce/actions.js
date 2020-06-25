@@ -37,7 +37,7 @@ export const fetchParticipantByUser = (userUUID) => async dispatch => {
 const getWorkForceByUserAction = (payload) => ({ type: types.GET_PARTICIPANT_BY_USER, payload })
 
 export const fetchParticipantSalaryType = () => dispatch =>
-  fetch(GET, "/hydra/participantSalaryType?v=full")
+  fetch(GET, "/hydra/participant-salary-type?v=full")
     .then(res => { dispatch(setParticipantSalaryTypeAction(res)) }).catch(displayError)
 
 const setParticipantSalaryTypeAction = (payload) => ({ type: types.GET_WORKFORCE_SALARY_TYPE, payload })

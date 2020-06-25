@@ -14,12 +14,13 @@ import {
     ADDRESS
 } from '../../../../../../utilities/constants/globalconstants'
 
+//need to refactor 
 export async function hideParser(sepression, values, type) {
     let isHide = await parseLogic(sepression, values, type)
     return isHide
 }
 
-export async function autoSelectParser(sepression, values, type, answers, setFieldValue, name, handleAutoSelect, setFieldTouched) {
+export async function autoSelectParser(sepression, values, type, answers, setFieldValue, name, setFieldTouched) {
     let targetFieldAnswer = ""
     let whenList = []
     for (let index = 0; index < sepression.length; index++) {
@@ -27,15 +28,15 @@ export async function autoSelectParser(sepression, values, type, answers, setFie
         targetFieldAnswer = element.targetFieldAnswer
         whenList = element.when
     }
-    console.log("isAutoSelectAble", whenList)
+   // console.log("isAutoSelectAble", whenList)
     let isAutoSelectAble = await parseLogic(whenList, values, type)
-    console.log("isAutoSelectAble", isAutoSelectAble)
+  //  console.log("isAutoSelectAble", isAutoSelectAble)
     if (isAutoSelectAble) {
         //find the concept against the values 
         let val = ""
         val = await answers ? answers.filter(element => element.concept.display === targetFieldAnswer) : null
         return {
-             name, value: {
+            name, value: {
                 label: val[0].concept.display,
                 value: val[0].concept.uuid
             }
@@ -60,23 +61,32 @@ export async function autoSelectParser(sepression, values, type, answers, setFie
 }
 
 
-
 function parseLogic(ruleArray, values, type) {
     var operator = ""
     var ruleFormatData = {}
     var ruleVal = []
     for (var i = 0; i < ruleArray.length; i++) {
         const element = ruleArray[i]
+       // console.log("hide Parser", element)
+
         if (typeof element == "string") {
             operator = element
         } else if (typeof element == "object") {
-            const questionId = element.questionId
-            const val = values["" + questionId + ""]   //getTypeValue(values, questionId, type)
-            console.log("getTypeValue", val, type)
+            //const questionId = element.questionId
+            const val = values["" + element.questionId + ""]
+            //getTypeValue(values, questionId, type)
+           // console.log("getTypeValue before", typeof val === 'string' || val instanceof String)
+            let displayLabel = ""
+            if (isString(val)) {
+                displayLabel = val ? val.split("#")[1] : ""
+            } else {
+                displayLabel = val
+            }
+            //console.log("getTypeValue vaue", displayLabel)
 
             ruleVal.push({
                 questionId: element.questionId,
-                value: val,
+                value: displayLabel,
                 rule: element
             })
         }
@@ -86,19 +96,26 @@ function parseLogic(ruleArray, values, type) {
         operator: operator,
         data: ruleVal
     }
-    console.log("getTypeValue", ruleFormatData)
+   // console.log("getTypeValue", ruleFormatData)
     return logicChecker(ruleFormatData)
+}
+
+function isString(value) {
+    return typeof value === 'string' || value instanceof String;
 }
 
 function logicChecker(ruleList) {
     if (ruleList.operator === "OR") {
         // check one by one 
+        if (ruleList.data.length <= 0) {
+            return true
+        }
         for (let index = 0; index < ruleList.data.length; index++) {
             const element = ruleList.data[index].rule;
             const val = ruleList.data[index].value
             // console.log("logicChecker", element, val)
             let orCondition = orLogic(element, val);
-            console.log("logicChecker f", orCondition)
+           // console.log("logicChecker f", orCondition)
             if (orCondition) {
                 return true
             }
@@ -122,34 +139,30 @@ function logicChecker(ruleList) {
 
 function orLogic(element, value) {
 
-    console.log("typeof ", value)
-    switch (typeof value) {
-        case "string":
-            console.log("typeof str", value)
-        case "object":
-            console.log("typeof object", value.label ? value.label : value[0])
-    }
+    //  console.log("typeof orLogic ", value ? element.equals.filter(data => data.uuid === value).length > 0 : true)
     if (element.notEquals !== null && element.notEquals !== undefined) {
-        switch (typeof value) {
-            case "string":
-                return value ? element.notEquals.filter(data => data.uuid !== value).length > 0 : false  //is contain (value !== element.notEquals[0].uuid)
-            case "object":
-                return value ? element.notEquals.filter(data => {
-                    return value.label ? data.uuid !== value.label :
-                        value.filter(item => item !== data.uuid)
-                }).length > 0 : false
+       // console.log("parse check In",value)
+        //need refactor
+        if (isString(value)) {
+            return value ? element.notEquals.filter(data => data.uuid !== value).length <= 0 : true
+        } else {
+            //consider the value is object type
+            return value ? element.notEquals.filter(data => {
+                return value.label ? data.uuid !== value.label :
+                    value.filter(item => item !== data.uuid)
+            }).length <= 0 : true
         }
 
     } else if (element.equals !== null && element.equals !== undefined) {
         // return value ? element.equals.filter(data => data.uuid === value).length > 0 : false
         switch (typeof value) {
             case "string":
-                return value ? element.equals.filter(data => data.uuid === value).length > 0 : false  //is contain (value !== element.notEquals[0].uuid)
+                return value ? element.equals.filter(data => data.uuid === value).length > 0 : true  //is contain (value !== element.notEquals[0].uuid)
             case "object":
                 return value ? element.equals.filter(data => {
                     return value.label ? data.uuid === value.label :
                         value.filter(item => item === data.uuid)
-                }).length > 0 : false
+                }).length > 0 : true
         }
     }
 
@@ -173,7 +186,7 @@ function andLogic(element, questionId) {
 }
 
 function getTypeValue(values, questionId, type) {
-    console.log("orLogic inside ", questionId, type, values["" + questionId])
+  // console.log("orLogic inside ", questionId, type, values["" + questionId])
     switch (type) {
         case TEXT_BOX:
             // console.log("orLogic inside " , values["" + questionId + ""])
