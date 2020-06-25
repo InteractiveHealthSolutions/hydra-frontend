@@ -36,7 +36,7 @@ const deleteAssetAction = (payload) => ({ type: types.DELETE_ASSET, payload })
 
 //assets type 
 export const saveAssetType = (assetType) => async dispatch =>
-  fetch(POST, "/hydra/assetType", assetType)
+  fetch(POST, "/hydra/asset-type", assetType)
     .then(res => dispatch(assetTypeAction(res))).catch(displayError)
 
 const assetTypeAction = (payload) => ({
@@ -45,20 +45,20 @@ const assetTypeAction = (payload) => ({
 })
 
 export const fetchAssetTypes = () => async dispatch =>
-  fetch(GET, "/hydra/assetType?v=full")
+  fetch(GET, "/hydra/asset-type?v=full")
     .then(res => dispatch(setAssetTypeAction(res))).catch(displayError)
 
 const setAssetTypeAction = (payload) => ({ type: types.GET_ALL_ASSET_TYPE, payload })
 
 
 export const saveAssetCategory = (category) => async dispatch =>
-  fetch(POST, "/hydra/assetCategory", category)
+  fetch(POST, "/hydra/asset-category", category)
     .then(res => dispatch(setAssetCategoryAction(res))).catch(displayError)
 
 const setAssetCategoryAction = (payload) => ({ type: types.CREATE_ASSET_CATEGORY, payload })
 
 export const fetchAssetCategory = () => async dispatch =>
-  fetch(GET, "/hydra/assetCategory?v=full")
+  fetch(GET, "/hydra/asset-category?v=full")
     .then(res => dispatch(setFetchAssetCategoryAction(res))).catch(displayError)
 
 const setFetchAssetCategoryAction = (payload) => ({ type: types.GET_ALL_ASSET_CATEGORY, payload })
