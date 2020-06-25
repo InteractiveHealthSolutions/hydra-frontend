@@ -60,13 +60,13 @@ const deleteEventAction = (payload) => ({ type: types.DELETE_EVENT, payload })
 
 
 export const saveEventType = (eventType) => async dispatch => {
-  fetch(POST, "/hydra/eventType", eventType)
+  fetch(POST, "/hydra/event-type", eventType)
     .then(res => dispatch(saveEventTypeAction(res))).catch(displayError)
 }
 const saveEventTypeAction = (payload) => ({ type: types.CREATE_EVENT_TYPE, payload })
 
 export const fetchEventTypes = () => async dispatch => {
-  fetch(GET, "/hydra/eventType?v=full")
+  fetch(GET, "/hydra/event-type?v=full")
     .then(res => dispatch(getEventTypeAction(res))).catch(displayError)
 }
 const getEventTypeAction = (payload) => ({ type: types.GET_ALL_EVENT_TYPE, payload })

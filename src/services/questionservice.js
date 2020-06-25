@@ -37,7 +37,7 @@ function saveField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -54,7 +54,7 @@ function saveEditedField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
