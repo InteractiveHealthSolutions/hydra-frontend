@@ -327,7 +327,7 @@ class UserList extends React.Component {
         }
         else {
             if(!/^[a-zA-Z ]+$/.test(user.familyname) || !/^[a-zA-Z ]+$/.test(user.givenname)) {
-               createNotification("error","Name cannot contain numbers");
+               createNotification("error","Name cannot contain numbers or special characters");
                return;
             }
             if (user.password !== user.confirmpassword) {
@@ -353,6 +353,11 @@ class UserList extends React.Component {
                     if(user.provider == 'yes' && this.props.createdUser != undefined) {
                         await this.props.saveProvider(providerJSON(this.props.createdUser.person, this.props.createdUser.systemId))
                     }
+                    await this.closeModal();
+                 
+                this.props.userError ? createNotification('error', 'User Not Created') :
+                    createNotification('success', 'User Created Successfully');
+                await this.props.getAllUsers();
                 }
                 else {
                     if(user.password=='') {
@@ -371,12 +376,13 @@ class UserList extends React.Component {
                     }
                    
                     await this.setState({ forEdit: false ,retire:false});
-                }
-                await this.closeModal();
+                    await this.closeModal();
                  
-                this.props.userError ? createNotification('error', 'User Not Created') :
-                    createNotification('success', 'User Registered Successfully');
+                this.props.userError ? createNotification('error', 'User Not Updated') :
+                    createNotification('success', 'User Updated Successfully');
                 await this.props.getAllUsers();
+                }
+                
             }
     
     

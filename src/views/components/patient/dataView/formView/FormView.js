@@ -18,7 +18,7 @@ function FormView({
     currentPatient,
     submitForm,
 }) {
-    const [reload, setReload] = useState(true)
+
     const yepSchema = formFields.reduce(CreateYupSchema, {});
     const validateSchema = yup.object().shape(yepSchema);
     const initialValues = {};
@@ -34,21 +34,6 @@ function FormView({
             initialValues[item.field.fieldId] = "";
         }
     });
-
-
-    function handleAutoSelect(name, val, setFieldValue, setFieldTouched) {
-        // debugger;
-        console.log("handleAutoSelect tt", name, val)
-        //  setFieldValue(name, val)
-       //  setFieldValue(name, val);
-        // setTimeout(() => setFieldTouched(name, true));
-        //initialValues[name] = val
-        var objSelect = document.getElementById(name);
-        console.log("objSelect",objSelect)
-        // document.querySelector('#'+name).value = 
-        // setReload(!reload)
-    }
-
 
     return (
         <div className="row">
@@ -79,12 +64,14 @@ function FormView({
                     enableReinitialize={true}
                     initialValues={initialValues}
                     // validationSchema={validateSchema}
+                    validateOnChange={false}
+                    validateOnBlur={false}
                     validate={(values) => {
                         // initialValues["1024"] = { label: "CHIKUNGUNYA FEVER", value: "120742AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
                         return FormValidation(formFields, values)
                     }}
                     onSubmit={(data) => {
-                        console.log(data)
+                       // console.log(data)
                         submitForm(data)
                     }}
                 >{({
@@ -116,7 +103,7 @@ function FormView({
                                                     touched={touched}
                                                     country={country}
                                                     setFieldTouched={setFieldTouched}
-                                                    handleAutoSelect={handleAutoSelect}
+                                              
                                                 /> : null}
 
                                             <div style={{ marginTop: '8px' }}></div>
@@ -124,8 +111,8 @@ function FormView({
                                     )) : null
 
                                 }
-                                <pre>{JSON.stringify(values, null, 2)}</pre>
-                                <pre>{JSON.stringify(errors, null, 2)}</pre>
+                                {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
+                                {/* <pre>{JSON.stringify(errors, null, 2)}</pre> */}
                             </CardTemplate>
                         </form>
                     )}

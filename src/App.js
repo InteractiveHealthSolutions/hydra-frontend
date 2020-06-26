@@ -1,31 +1,25 @@
 import React, { Suspense } from 'react';
 import { Router, MemoryRouter, Link, Route, HashRouter, BrowserRouter, Switch } from 'react-router-dom';
-import LogIn from './views/components/login/Login';
+import Login from './views/components/login/LoginContainer';
 import { history } from './history'
 import IdleTimer from 'react-idle-timer'
 import { PrivateRoute } from './views/components/route/PrivateRoute';
 import Homepage from './views/components/home/Homepage';
 import { userActions } from './store/actions';
 import Header from './views/components/header/Header';
-import WorkflowContainer from './views/components/workflow/WorkflowContainer'
-import Phase from './views/components/phases/Phase';
-import Component from './views/components/stages/Component';
+import Workflow from './views/components/Workflows/workflow/WorkflowContainer';
+import Phase from './views/components/Workflows/phases/PhaseContainer';
+import Component from './views/components/Workflows/stages/Component';
 import EventList from './views/components/events/eventlist/EventList';
 import EventCalendar from './views/components/events/eventcalender/EventCalendar';
 import EventPlanner from './views/components/events/eventplanner/EventPlanner';
 import EventClosureForm from './views/components/events/eventclosure/EventClosureForm';
-import Form from './views/components/form/FormContainer';
+import Form from './views/components/Workflows/form/FormContainer';
 import FindPatient from './views/components/patient/search/FindPatient'
 import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
-import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './views/components/manageLabTestAttribute/ManageLabTestAttribute'
-import TestOrderList from './views/components/labtestorder/TestOrderList'
-import AddTestOrder from './views/components/labtestorder/AddTestOrder';
-import SampleList from './views/components/labtestsample/samplelist';
 import Roles from './views/components/administration/roles/roles';
 import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList';
 import OptionList from './views/components/administration/workflowmanagement/questions/OptionList';
@@ -50,7 +44,13 @@ import Engine from './views/components/administration/workflowmanagement/ruleeng
 import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
-import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView'
+import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView';
+import ManageLabTest from './views/components/ManageLabTest/ManageLabTest'
+import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
+import ManageLabTestAttribute from './views/components/ManageLabTestAttribute/ManageLabTestAttribute'
+import TestOrderList from './views/components/labtestorder/TestOrderList'
+import AddTestOrder from './views/components/labtestorder/AddTestOrder';
+import SampleList from './views/components/labtestsample/samplelist';
 
 
 const Main = styled.main`
@@ -70,7 +70,6 @@ class App extends React.Component {
         this.onActive = this.onActive.bind(this);
         this.onIdle = this.onIdle.bind(this);
         this.state = {
-
             expanded: false
         }
     }
@@ -108,7 +107,7 @@ class App extends React.Component {
                 />
                 <Router history={history}>
                     <Switch>
-                        <Route exact path="/login" name="Login" component={LogIn} />
+                        <Route exact path="/login" name="Login" component={Login} />
                         <Route path="/" render={() => (
                             <div className="app">
                                 <Header ></Header>
@@ -118,7 +117,7 @@ class App extends React.Component {
                                             <CustomBreadcrumbs />
                                             <Switch>
                                                 <PrivateRoute exact path="/" name="Home" component={Homepage} />
-                                                <PrivateRoute exact path="/workflow" name="Workflow" component={WorkflowContainer} />
+                                                <PrivateRoute exact path="/workflow" name="Workflow" component={Workflow} />
                                                 <PrivateRoute exact path="/workflow/phase" component={Phase} />
                                                 <PrivateRoute exact path="/workflow/phase/stage" component={Component} />
                                                 <PrivateRoute exact path="/workflow/phase/stage/form" component={Form} />
@@ -132,6 +131,8 @@ class App extends React.Component {
                                                 <PrivateRoute exact path="/patient/detail/visit" component={Visits}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry" component={WorkflowFormViewContainer}/>
                                                 <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+                                                <PrivateRoute exact path="/patient/detail/dataentry/form" component={FormViewContainer}/>
+
                                                 <Route path="/administration" render={() => (
                                                     <>
                                                         <SideNav
@@ -273,7 +274,37 @@ class App extends React.Component {
                                                                             </Link>
                                                                         </NavText>
                                                                     </NavItem>
+                                                                    
                                                                 </NavItem>
+                                                                <NavItem eventKey="/labtest" onClick={this.toggleSidebar}>
+                                                                    <NavIcon>
+                                                                        <i class="fa fa-flask" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
+                                                                    </NavIcon>
+                                                                    <NavText>
+                                                                        Lab Test Management
+                                                                    </NavText>
+                                                                    <NavItem eventKey="/administration/manageLabTestAttribute" onClick={this.toggleSidebar}>
+
+                                                                        <NavText>
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/manageLabTestAttribute">
+                                                                                <i className="fa fa-flask" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                     Attribute
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                    <NavItem eventKey="/administration/manageLabTest" onClick={this.toggleSidebar}>
+
+                                                                        <NavText>
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/manageLabTest">
+                                                                                <i className="fa fa-flask" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                Lab Test       
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                    
+                                                                </NavItem>
+                                                                
+                                                                
 
                                                             </SideNav.Nav>
                                                         </SideNav>
@@ -292,6 +323,9 @@ class App extends React.Component {
                                                                 <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
                                                                 <Route path="/administration/options" component={OptionList} />
+                                                                <Route path="/administration/manageLabTestAttribute" component={ManageLabTestAttribute} />
+                                                                <Route path="/administration/manageLabTest" component={ManageLabTest} />
+
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
                                                         </Main>

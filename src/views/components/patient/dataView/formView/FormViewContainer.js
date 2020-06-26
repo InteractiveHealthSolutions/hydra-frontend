@@ -69,7 +69,7 @@ export default function FormViewContainer() {
       metadata: JSON.stringify(metadata)
     }
 
-   dispatch(formAction.formSubmission(formData))
+  // dispatch(formAction.formSubmission(formData))
   
   }
 
@@ -98,7 +98,7 @@ export default function FormViewContainer() {
             payload_type: "OBS_CODED",
             person_attribute: true,
             param_name: element.field.concept.uuid,
-            value: dataForm[element.field.fieldId]
+            value: dataForm[element.field.fieldId].split("#")[0]
           })
           break;
         case DATE_TIME_PICKER:

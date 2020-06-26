@@ -27,9 +27,13 @@ export const savePhase = (Phase) => async dispatch =>
 
 const phaseSaveAction = (payload) => ({ type: types.CREATE_PHASE, payload })
 
-export const getAllPhase = () => async dispatch =>
+export const getAllPhase = () => async dispatch => {
+  dispatch(setProject())
   fetch(GET, "/hydra/phase")
-    .then(res => dispatch(phaseGetAction(res))).catch(displayError)
+    .then(res => dispatch(phaseGetAction(res)))
+    .catch(displayError)
+}
+
 
 const phaseGetAction = payload => ({ type: types.GET_ALL_PHASE, payload })
 
@@ -37,25 +41,35 @@ const phaseGetAction = payload => ({ type: types.GET_ALL_PHASE, payload })
 
 export const saveWorkflowPhase = phase => async dispatch =>
   fetch(POST, "/hydra/workflowphases", phase)
-    .then(res => { dispatch(saveWorkflowPhaseAction(res)); dispatch(getAllWorkflowPhase()); dispatch(getAllPhase()) }).catch(displayError)
+    .then(res => {
+      dispatch(saveWorkflowPhaseAction(res))
+    }).catch((error) => {
+      console.error("workflowphases ", error)
+    })
 
 const saveWorkflowPhaseAction = payload => ({ type: types.CREATE_WORKFLOW_PHASE, payload })
 
 export const getAllWorkflowPhase = (filterWith) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/workflowphases")
-    .then(res => { dispatch(getWorkflowPhaseAction(filterPhases(res,filterWith))) }).catch(displayError)
+    .then((res) => {
+      console.log("workflowphases ", res)
+      dispatch(getWorkflowPhaseAction(filterPhases(res, filterWith)))
+    }).catch((error) => {
+      console.error("workflowphases ", error)
+      dispatch(setError(error))
+    })
 }
 
 const getWorkflowPhaseAction = payload => ({ type: types.GET_WORKFLOW_PHASE, payload })
 
-function filterPhases(workflowphaseData ,filterWith) {
+function filterPhases(workflowphaseData, filterWith) {
   let filteredPhases = [];
   let activeWorkflow = ""
-  if(filterWith === "dataview"){
-     activeWorkflow =   localStorage.getItem('selectedWorkflowId');
-  } else{
-     activeWorkflow =   localStorage.getItem('active-workflow-uuid');
+  if (filterWith === "dataview") {
+    activeWorkflow = localStorage.getItem('selectedWorkflowId');
+  } else {
+    activeWorkflow = localStorage.getItem('active-workflow-uuid');
   }
 
   workflowphaseData.workflowPhasesMap.forEach(element => {

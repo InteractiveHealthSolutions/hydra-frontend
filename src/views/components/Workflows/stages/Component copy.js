@@ -1,18 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Sortable from 'react-sortablejs';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { componentService } from '../../../services';
+import { componentService } from '../../../../services';
 import './component.css';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Card from '@material-ui/core/Card';
-import { componentAction } from '../../../state/ducks/stages'
+import { componentAction } from '../../../../state/ducks/stages'
 import { connect } from 'react-redux';
-import { WorkflowSideBackButton } from '../common/sidebutton/SideBackButton'
-import Loaders from "../common/loader/Loader"
-import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate';
+import Loaders from "../../common/loader/Loader"
+import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate';
 
 class Component extends React.Component {
     constructor(props) {
@@ -136,7 +134,7 @@ class Component extends React.Component {
                         <Card style={{ margin: '4px' }}>
                             <div className="row c-row" >
                                 <div className="col-sm-1 col-md-1 col-lg-1" style={{ cursor: 'pointer' }} onClick={((e) => this.handleClick(e, val))}>
-                                    <img className="component-icon" src={require('../../../assets/components.png')} alt="" />
+                                    <img className="component-icon" src={require('../../../../assets/components.png')} alt="" />
                                 </div>
                                 <div className="col-sm-10 col-md-10 col-lg-10" style={{ cursor: 'pointer' }} onClick={((e) => this.handleClick(e, val))} >
                                     <h6 className="list-content-component" > {val.hydramoduleComponent.name}</h6>
@@ -146,7 +144,9 @@ class Component extends React.Component {
                                 </div>
                             </div>
                         </Card>
-                    </li>))
+                    </li>
+                    
+                    ))
         });
         //     this.getAllComponentOptions()
         // });

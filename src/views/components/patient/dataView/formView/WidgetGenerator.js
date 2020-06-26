@@ -52,8 +52,7 @@ const WidgetGenerator = ({
     setFieldTouched,
     touched,
     errors,
-    country,
-    handleAutoSelect
+    country
 }) => (
 
     <CheckRule
@@ -67,7 +66,6 @@ const WidgetGenerator = ({
         touched={touched}
         errors={errors}
         country={country}
-        handleAutoSelect={handleAutoSelect}
     />
 
 

@@ -19,7 +19,7 @@ function saveConcept(concept) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(concept)
     };
-    return fetch(`/concept`, requestOptions)
+    return fetch(`${BASE_URL}/concept`, requestOptions)
         .then(handleResponse).then(conceptData => {
             //console.log("concept res", conceptData);
             return conceptData;
@@ -37,7 +37,7 @@ function saveField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`/hydra/hydraField`, requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -54,7 +54,7 @@ function saveEditedField(field) {
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(field)
     };
-    return fetch(`/hydra/hydraField`, requestOptions)
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
         .then(handleResponse).then(fieldData => {
             return fieldData;
         }, e => console.log('error', e)
@@ -70,8 +70,9 @@ function searchEncounterType(name) {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': token }
     };
-    return fetch(`/encountertype?q=${name}`, requestOptions)
+    return fetch(`${BASE_URL}/encountertype?q=${name}`, requestOptions)
         .then(handleResponse).then(encounterTypeData => {
+            console.log("encounterTypeData" , encounterTypeData)
             return encounterTypeData;
         }, e => console.log('error', e)
         ).catch(err => {
@@ -82,9 +83,9 @@ function searchEncounterType(name) {
 
 
 function handleResponse(response) {
-    if (!response.ok) {
-        throw Error(response.statusText + " - " + response.url)
-    }
+    // if (!response.ok) {
+    //     throw Error(response.statusText + " - " + response.url)
+    // }
     return response.text().then(text => {
         const data = text && JSON.parse(text);
         if (!response.ok) {

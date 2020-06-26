@@ -24,7 +24,7 @@ import './findpatient.css';
 import { patientAction } from '../../../../state/ducks/patient';
 
 import './findpatient.css';
-import {LoaderDots} from '../../common/loader/LoaderDots';
+import { LoaderDots } from '../../common/loader/LoaderDots';
 import moment from 'moment';
 import { AgGrid } from '../../../ui/AgGridTable/AgGrid'
 import CardTemplate from '../../../ui/cards/SimpleCard/CardTemplate'
@@ -105,7 +105,6 @@ class FindPatient extends React.Component {
         await this.setState({ selectedWorkflowId: existingObj[0].value });
         await localStorage.setItem("selectedWorkflowId", this.state.selectedWorkflowId)
         if (this.state.selectedWorkflow != '') {
-
             await this.closeWorkflowModal();
         }
     }
@@ -225,20 +224,23 @@ class FindPatient extends React.Component {
     }
 
     filterPatient(patientData) {
+        console.log("patientData", patientData)
         let filteredPatient = [];
         if (patientData != undefined) {
             patientData.forEach(element => {
-                filteredPatient.push({
-                    "identifier": element.identifiers[0].identifier,
-                    "given": element.person.preferredName.givenName,
-                    "middle": element.person.preferredName.middleName,
-                    "familyname": element.person.preferredName.familyName,
-                    "age": element.person.age,
-                    "gender": element.person.gender == "F" ? "Female" : "Male",
-                    "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
-                    "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
-                    "uuid": element.uuid
-                });
+                if (element) {
+                    filteredPatient.push({
+                        "identifier": element.identifiers[0].identifier,
+                        "given": element.person.preferredName.givenName,
+                        "middle": element.person.preferredName.middleName,
+                        "familyname": element.person.preferredName.familyName,
+                        "age": element.person.age,
+                        "gender": element.person.gender == "F" ? "Female" : "Male",
+                        "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
+                        "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
+                        "uuid": element.uuid
+                    });
+                }
             });
             return filteredPatient;
         }
@@ -260,7 +262,7 @@ class FindPatient extends React.Component {
             openAddPatientModal: true,
         })
     }
-    async  savePatient(e) {
+    async savePatient(e) {
         e.preventDefault()
         var data = [
             {
@@ -284,27 +286,27 @@ class FindPatient extends React.Component {
                 "payload_type": "DOB"
             },
             {
-                "param_name":"location",
-                "value":this.state.patient.location,
-                "payload_type":"LOCATION"
-       }];
-      var metadata = {
-            "authentication" : {
-                "USERNAME" : localStorage.getItem("username"),
-                "PASSWORD" : localStorage.getItem("password")
+                "param_name": "location",
+                "value": this.state.patient.location,
+                "payload_type": "LOCATION"
+            }];
+        var metadata = {
+            "authentication": {
+                "USERNAME": localStorage.getItem("username"),
+                "PASSWORD": localStorage.getItem("password")
             },
-            "ENCONTER_TYPE" : "Create Patient",
-            "WORKFLOW" : localStorage.getItem("selectedWorkflowId")
+            "ENCONTER_TYPE": "Create Patient",
+            "WORKFLOW": localStorage.getItem("selectedWorkflowId")
         }
         var patient = {
             data: JSON.stringify(data),
             metadata: JSON.stringify(metadata)
         }
-            await console.log(JSON.stringify(patient))
-            await this.props.savePatient(patient);
-            await createNotification('success','Patient Created');
-            await this.closeAddPatientModal()
-}
+        await console.log(JSON.stringify(patient))
+        await this.props.savePatient(patient);
+        await createNotification('success', 'Patient Created');
+        await this.closeAddPatientModal()
+    }
     closeAddPatientModal() {
         this.setState({
             openAddPatientModal: false,
@@ -346,10 +348,10 @@ class FindPatient extends React.Component {
         this.searchPatient(e);
     };
     onCellClicked = event => {
-        if(localStorage.getItem("selectedWorkflow")){
+        if (localStorage.getItem("selectedWorkflow")) {
 
             this.props.setActivePatient(event.data)
-        }else{
+        } else {
             this.openWorkflowModal()
         }
     };
@@ -409,7 +411,7 @@ class FindPatient extends React.Component {
                     }
                 >
                     {
-                        (this.props.searchLoading) ? <LoaderDots withMargin="true"  /> :
+                        (this.props.searchLoading) ? <LoaderDots withMargin="true" /> :
                             <AgGrid
                                 onGridReady={this.onGridReady}
                                 columnDefs={columnDefs}
@@ -437,13 +439,13 @@ class FindPatient extends React.Component {
                             <div className="form-group row" >
                                 <label htmlFor="personname" class="col-sm-4 col-form-label required">Person Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="personname" autoComplete="off" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.personname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="personname" autoComplete="off" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,25}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.personname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div className="form-group row" >
                                 <label htmlFor="familyname" class="col-sm-4 col-form-label required">Family Name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,15}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.familyname} onChange={this.handleChange} required />
+                                    <input type="text" className="form-control" name="familyname" pattern="[a-zA-Z]+\s?[a-zA-Z]{1,25}" placeholder="max 15 characters (no space)" maxlength="15" value={patient.familyname} onChange={this.handleChange} required />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -455,7 +457,7 @@ class FindPatient extends React.Component {
                                                 <input className="form-check-input" type="radio" name="gender" value="M" checked={patient.gender === 'M'} onChange={this.handleChange} required />
                                                 <label className="form-check-label" htmlFor="gender" >
                                                     Male
-                                    </label>
+                                               </label>
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
@@ -507,22 +509,31 @@ class FindPatient extends React.Component {
                         </form>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.openWorkflowModal} backdrop="static" onHide={() => this.setState({ openWorkflowModal: false })} style={{ marginTop: '80px' }}>
+
+                <Modal
+                    show={this.state.openWorkflowModal}
+                    backdrop="static"
+                    onHide={() => this.setState({ openWorkflowModal: false })}
+                    style={{ marginTop: '80px' }}>
                     <Modal.Header>
                         Select A Workflow
                 </Modal.Header>
-                    <Modal.Body>
-                        <RadioGroup aria-label="report" name="workflow" onChange={this.setWorkflow} >
-
+                    <Modal.Body style={{ height: '450px', overflowY: 'auto' }}>
+                        <RadioGroup
+                            aria-label="report"
+                            name="workflow"
+                            onChange={this.setWorkflow} >
+                            {console.log("workflowData", this.state.workflowData)}
                             {
-                                this.state.workflowData.map((value, i) => {
-                                    return (
-                                        <tr>
-                                            <td><FormControlLabel value={value.label} control={<Radio color="primary" />} /></td>
-                                            <td>{value.label}</td>
-                                        </tr>
-                                    )
-                                })
+                                this.state.workflowData.length > 0 ?
+                                    this.state.workflowData.map((value, i) => {
+                                        return (
+                                            <tr>
+                                                <td><FormControlLabel value={value.label} control={<Radio color="primary" />} /></td>
+                                                <td>{value.label}</td>
+                                            </tr>
+                                        )
+                                    }) : <LoaderDots withMargin="true" height={60} width={60} />
                             }
                         </RadioGroup>
                     </Modal.Body>
