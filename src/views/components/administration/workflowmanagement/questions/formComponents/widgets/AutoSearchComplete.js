@@ -29,8 +29,8 @@ class AutoSearchComplete extends Component {
         border: "1px solid #ced4da",
         borderRadius: ".25rem",
         margin: "0px 0px 10px 0px",
-        transition: "border-color .15s ease-in-out,box-shadow .15s ease-in-out"
-      }
+        transition: "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+      },
     };
 
     // Bind `this` context to functions of the class
@@ -46,7 +46,7 @@ class AutoSearchComplete extends Component {
   async componentWillReceiveProps(nextProps) {
     if (nextProps.conceptList !== undefined) {
       await this.setState({
-        autocompleteData: this.formatList(nextProps.conceptList.results)
+        autocompleteData: this.formatList(nextProps.conceptList.results),
       });
     }
   }
@@ -57,17 +57,21 @@ class AutoSearchComplete extends Component {
 
   formatList(list) {
     let array = [];
-   
-    list.forEach(element => {
-      if(this.props.parentComponent == "Options") {
+
+    list.forEach((element) => {
+      if (this.props.parentComponent == "Options") {
         array.push(this.formatItem(element));
       }
-      if(this.props.parentComponent == "Questions") {
-        if(element.conceptClass.display == 'Question') {
+      if (this.props.parentComponent == "Questions") {
+        if (
+          element.datatype.display == "Coded" ||
+          element.datatype.display == "Text" ||
+          element.datatype.display == "Numeric" ||
+          element.datatype.display == "Datetime"
+        ) {
           array.push(this.formatItem(element));
         }
       }
-      
     });
     return array;
   }
@@ -76,19 +80,21 @@ class AutoSearchComplete extends Component {
     let conceptDescription = element.descriptions
       ? element.descriptions[0]
       : "";
-    console.log("kjdfnfhihfoif ", element)
+    console.log("kjdfnfhihfoif ", element);
     conceptDescription = conceptDescription
       ? conceptDescription.description
       : undefined;
 
     var elementValue = element.display ? element.display : element;
     var elementKey = element.uuid ? element.uuid : "";
-    let shortName = ""
+    let shortName = "";
 
-    let names = element.names?element.names.filter(data => data.conceptNameType==="SHORT"): []
-    console.log("names ",names)
-    if(names.length>0) {
-      shortName = names[0].display
+    let names = element.names
+      ? element.names.filter((data) => data.conceptNameType === "SHORT")
+      : [];
+    console.log("names ", names);
+    if (names.length > 0) {
+      shortName = names[0].display;
     }
 
     return {
@@ -100,7 +106,7 @@ class AutoSearchComplete extends Component {
       uuid: element.uuid,
       controlId: this.props.controlId,
       variableName: shortName,
-      answers: element.answers ? element.answers : []
+      answers: element.answers ? element.answers : [],
     };
   }
 
@@ -122,7 +128,7 @@ class AutoSearchComplete extends Component {
    */
   onChange(e) {
     this.setState({
-      value: e.target.value
+      value: e.target.value,
     });
 
     this.props.onItemSelectedProp(this.formatItem(e.target.value));
@@ -143,10 +149,12 @@ class AutoSearchComplete extends Component {
    */
   async onSelect(val) {
     this.setState({
-      value: val
+      value: val,
     });
 
-    const o = this.state.autocompleteData.filter(option => option.value == val);
+    const o = this.state.autocompleteData.filter(
+      (option) => option.value == val
+    );
     console.log(o[0]);
     if (o) {
       await this.setState({ returnData: o[0] });
@@ -167,7 +175,7 @@ class AutoSearchComplete extends Component {
         style={{
           margin: "5px",
           padding: "5px",
-          background: isHighlighted ? "lightgray" : "white"
+          background: isHighlighted ? "lightgray" : "white",
         }}
       >
         {item.label}
@@ -189,14 +197,14 @@ class AutoSearchComplete extends Component {
     return item.value;
   }
 
-  autoInput = props => {
+  autoInput = (props) => {
     return (
       <input
         {...props}
         type="text"
         className="form-control"
         style={{ width: "100%", marginBottom: "10px" }}
-        pattern={this.props.pattern ? this.props.pattern : ''}
+        pattern={this.props.pattern ? this.props.pattern : ""}
       />
     );
   };
@@ -204,7 +212,12 @@ class AutoSearchComplete extends Component {
     const { title, isRequired } = this.props;
     return (
       <div className="form-group">
-        <label id="test" className={isRequired?"col-form-label required":"col-form-label "} style={{ display: "block" }} htmlFor={title}>
+        <label
+          id="test"
+          className={isRequired ? "col-form-label required" : "col-form-label "}
+          style={{ display: "block" }}
+          htmlFor={title}
+        >
           {title}
         </label>
         <Autocomplete
@@ -225,7 +238,7 @@ class AutoSearchComplete extends Component {
             position: "fixed",
             overflow: "auto",
             maxHeight: "50%", // TODO: don't cheat, let it flow to the bottom
-            zIndex: "998"
+            zIndex: "998",
           }}
           getItemValue={this.getItemValue}
           items={this.state.autocompleteData}
@@ -247,12 +260,12 @@ class AutoSearchComplete extends Component {
 //   });
 // }, 20000);
 
-const mapStateToProps = state => ({
-  conceptList: state.questions.concepts
+const mapStateToProps = (state) => ({
+  conceptList: state.questions.concepts,
 });
 
 const mapDispatchToProps = {
-  searchedConcepts: questionAction.searchConcept
+  searchedConcepts: questionAction.searchConcept,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AutoSearchComplete);
