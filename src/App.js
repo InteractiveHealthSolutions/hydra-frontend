@@ -45,9 +45,9 @@ import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
 import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView';
-import ManageLabTest from './views/components/ManageLabTest/ManageLabTest'
+import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
 import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './views/components/ManageLabTestAttribute/ManageLabTestAttribute'
+import ManageLabTestAttribute from './views/components/manageLabTestAttribute/ManageLabTestAttribute'
 import TestOrderList from './views/components/labtestorder/TestOrderList'
 import AddTestOrder from './views/components/labtestorder/AddTestOrder';
 import SampleList from './views/components/labtestsample/samplelist';
