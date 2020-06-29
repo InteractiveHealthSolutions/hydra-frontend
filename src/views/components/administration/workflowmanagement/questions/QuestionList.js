@@ -83,6 +83,10 @@ class QuestionList extends React.Component {
                 { title: "Text", key: "8d4a4ab4-c2cc-11de-8d13-0010c6dffd0f" },
                 { title: "Numeric", key: "8d4a4488-c2cc-11de-8d13-0010c6dffd0f" }
             ],
+            phoneDatatypes: [
+                { title: "", key: "0" },
+                { title: "Text", key: "8d4a4ab4-c2cc-11de-8d13-0010c6dffd0f" }
+            ],
             optionDatatype: {
                 title: "N/A",
                 key: "8d4a4c94-c2cc-11de-8d13-0010c6dffd0f"
@@ -115,6 +119,10 @@ class QuestionList extends React.Component {
                     title: "Date/ Time Picker",
                     key: "3d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
                 },
+                {
+                    title: "Phone Number",
+                    key: "3d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
+                },
                 // { title: "Age", key: "0d5e86fa-c2cc-11de-8d13-0010c6dffd0f" },
                 // { title: "Address", key: "2d5e86fa-c2cc-11de-8d13-0010c6dffd0f" },
             ],
@@ -135,13 +143,15 @@ class QuestionList extends React.Component {
             ],
             textWidgets: [
                 { title: "", key: "0" },
-                { title: "Textbox", key: "7d5e86fa-c2cc-11de-8d13-0010c6dffd0f" }
+                { title: "Textbox", key: "7d5e86fa-c2cc-11de-8d13-0010c6dffd0f" },
+                {
+                    title: "Phone Number", key: "3d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
+                }
             ],
             dateWidgets: [
                 { title: "", key: "0" },
                 {
-                    title: "Date/ Time Picker",
-                    key: "3d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
+                    title: "Date/ Time Picker", key: "3d5e86fa-c2cc-11de-8d13-0010c6dffd0f"
                 }
             ],
             otherWidgets: [
@@ -255,6 +265,8 @@ class QuestionList extends React.Component {
                 this.setState({ dataTypesToShow: this.state.codedDatatypes });
             } else if (e.value == "Textbox") {
                 this.setState({ dataTypesToShow: this.state.textBoxDatatypes });
+            } else if (e.value == "Phone Number") {
+                this.setState({ dataTypesToShow: this.state.phoneDatatypes });
             } else if (e.value == "Date/ Time Picker") {
                 this.setState({ dataTypesToShow: this.state.dateDatatypes });
             }
