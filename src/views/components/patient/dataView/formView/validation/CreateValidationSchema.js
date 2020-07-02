@@ -13,7 +13,8 @@ import {
     HEADING,
     AGE,
     ADDRESS,
-    BARCODE_READER
+    BARCODE_READER,
+    CHECK_DECIMAL
 } from '../../../../../../utilities/constants/globalconstants'
 
 export function CreateYupSchema(schema, config) {
@@ -61,12 +62,12 @@ export function FormValidation(questionList, formValues) {
                     } else if (items.maxLength && formValues[fieldName].length > items.minLength) {
                         errors[fieldName] = "Maximum length should be" + items.maxLength
                     }
-                    if (items.regix) {
-                        var rex = new RegExp(items.regix);
-                        if (!rex.test(formValues[fieldName])) {
-                            errors[fieldName] = "Your input value is not valid"
-                        }
-                    }
+                    // if (items.regix) {
+                    //     var rex = new RegExp(items.regix);
+                    //     if (!rex.test(formValues[fieldName])) {
+                    //         errors[fieldName] = "Your input value is not valid"
+                    //     }
+                    // }
 
 
                     break;
@@ -84,6 +85,8 @@ export function FormValidation(questionList, formValues) {
                     }
                     else if (items.maxValue && Number(formValues[fieldName]) < Number(items.maxValue)) {
                         errors[fieldName] = "Maximum value should be" + items.maxValue
+                    }else if(!items.allowDecimal && CHECK_DECIMAL.test(formValues[fieldName])){
+                        errors[fieldName] = "Decimal value is not allowed"
                     }
                     //check allow decimal                    
                     break;
