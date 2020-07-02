@@ -144,25 +144,25 @@ function orLogic(element, value) {
        // console.log("parse check In",value)
         //need refactor
         if (isString(value)) {
-            return value ? element.notEquals.filter(data => data.uuid !== value).length <= 0 : true
+            return value ? element.notEquals.filter(data => data.uuid !== value).length <= 0 : false
         } else {
             //consider the value is object type
             return value ? element.notEquals.filter(data => {
                 return value.label ? data.uuid !== value.label :
                     value.filter(item => item !== data.uuid)
-            }).length <= 0 : true
+            }).length <= 0 : false
         }
 
     } else if (element.equals !== null && element.equals !== undefined) {
         // return value ? element.equals.filter(data => data.uuid === value).length > 0 : false
         switch (typeof value) {
             case "string":
-                return value ? element.equals.filter(data => data.uuid === value).length > 0 : true  //is contain (value !== element.notEquals[0].uuid)
+                return value ? element.equals.filter(data => data.uuid === value).length > 0 : false  //is contain (value !== element.notEquals[0].uuid)
             case "object":
                 return value ? element.equals.filter(data => {
                     return value.label ? data.uuid === value.label :
                         value.filter(item => item === data.uuid)
-                }).length > 0 : true
+                }).length > 0 : false
         }
     }
 
