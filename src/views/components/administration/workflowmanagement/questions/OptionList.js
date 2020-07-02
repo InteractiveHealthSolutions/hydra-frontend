@@ -226,6 +226,7 @@ class OptionList extends React.Component {
                                 value={this.state.description}
                                 title="Description"
                                 title="Description"
+                                isRequired={true}
                                 onItemSelectedProp={this.onItemSelectedFunc}
                             ></TextArea>
                             <div className="form-group">

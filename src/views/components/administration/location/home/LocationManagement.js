@@ -65,6 +65,16 @@ class LocationManagement extends React.Component {
                     headerName: "stateProvince",
                     field: "stateProvince",
                     hide: true
+                },
+                {
+                    headerName: "parenLocation",
+                    field: "parentLocation",
+                    hide: true
+                },
+                {
+                    headerName: "tagsArray",
+                    field: "tagsArray",
+                    hide: true
                 }
             ],
             rowData: [],
@@ -103,6 +113,7 @@ class LocationManagement extends React.Component {
                 "label": "",
                 "value": ""
             },
+            defaultTags : []
 
 
         }
@@ -146,7 +157,10 @@ class LocationManagement extends React.Component {
                      "cityVillage" : element.cityVillage,
                      "stateProvince" : element.stateProvince,
                      "uuid" : element.uuid,
-                     "tags" : tagList.slice(0,-1)
+                     "tags" : tagList.slice(0,-1),
+                     "parentLocation" : element.parentLocation != null ? element.parentLocation.display : '',
+                     "tagsArray" : element.tags
+
                  })
              })
          }
@@ -191,11 +205,20 @@ class LocationManagement extends React.Component {
 
         console.log('onRowSelected: ' + event.node.data);
     };
-
+    createDefaultTags(tags) {
+        if(tags) {
+            tags.map(data => {
+                this.state.defaultTags.push({
+                    "label":data.display,
+                    "value":data.uuid})
+            });
+        }
+    }
     onCellClicked = (event) => {
 
         if (event.colDef.headerName === 'Edit') {
-            console.log("data", event.data)
+            console.log("data edit", event.data);
+            this.createDefaultTags(event.data.tagsArray)
             this.setState({
                 locationName: event.data.display,
                 address: event.data.address1,
@@ -214,6 +237,7 @@ class LocationManagement extends React.Component {
                     "value": event.data.stateProvince
                 },
                 stateProvince: event.data.stateProvince,
+                defaultParentLocation: event.data.parentLocation,
                 landmark: event.data.address2,
                 isEdit: true,
                 openModal: true,
@@ -248,15 +272,19 @@ class LocationManagement extends React.Component {
     closeModal() {
         this.setState({
             isEdit: false,
-            openModal: false
+            openModal: false,
+            colorCountryError: false,
+            colorCityError: false,
+            colorProvinceError: false
+
         })
     }
 
     async handleSubmit(e) {
-        e.preventDefault();
+        await e.preventDefault();
         var array  = this.state.rowData;
         var existingObj = array.filter(data => data.display == this.state.locationName);
-        if(JSON.stringify(existingObj) != '[]') {
+        if(JSON.stringify(existingObj) != '[]' && !this.state.isEdit) {
             createNotification('warning','Location with this name already exist');
             return;
         }
@@ -324,9 +352,9 @@ class LocationManagement extends React.Component {
                 await this.closeModal()
             }
             else {
-                await this.props.saveLocation(locationForm)
-                createNotification('success', 'Location Created')
-                await this.props.getAllLocation()
+                await this.props.saveLocation(locationForm);
+                createNotification('success', 'Location Created');
+                await this.props.getAllLocation();
                 await this.closeModal();
 
             }
@@ -468,6 +496,7 @@ class LocationManagement extends React.Component {
                     show={this.state.openModal}
                     onHide={() => this.closeModal()}
                     style={{ marginTop: '100px' }}
+                    backdrop="static"
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>Add Location</Modal.Title>
@@ -480,6 +509,7 @@ class LocationManagement extends React.Component {
                                     type='text'
                                     className='form-control'
                                     autoComplete='off'
+                                    pattern="^[a-zA-Z]+(?:[\s-][a-zA-Z]+[0-9]*)*$"
                                     value={this.state.locationName}
                                     name='locationName'
                                     onChange={this.handleChange}
@@ -561,7 +591,7 @@ class LocationManagement extends React.Component {
                                 <select className="form-control" name="parentLocation"
                                     value={this.state.parentLocation}
                                     onChange={this.handleChange}>
-                                    <option></option>
+                                    <option>{this.state.isEdit ? this.state.defaultParentLocation:''}</option>
                                     {this.state.arrayParentLocation}
                                 </select>
                             </div>
@@ -586,12 +616,12 @@ class LocationManagement extends React.Component {
                                     name='landmark'
                                     value={this.state.landmark}
                                     onChange={this.handleChange}
-
                                 />
                             </div>
                             <div className='form-group'>
                                 <label htmlFor='locationTag'>Location Tags</label>
                                 <Select
+                                    defaultValue={this.state.defaultTags}
                                     options={this.state.arrayLocationtag}
                                     onChange={this.handleChangeLocationTag}
                                     isMulti

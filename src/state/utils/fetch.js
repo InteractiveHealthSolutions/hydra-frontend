@@ -2,7 +2,7 @@ import { authenticationGenerator } from '../../utilities/helpers';
 import { userService } from '../../services/userservice';
 import { history } from '../../history';
 import { displayError, createNotification } from '../../utilities/helpers/helper'
-
+import {BASE_URL} from '../../utilities/constants/globalconstants'
 export default async (method, path, data) => {
   const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
     localStorage.getItem('password'));
@@ -10,12 +10,13 @@ export default async (method, path, data) => {
     method: method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'Accept': 'application/json'
     },
     body: JSON.stringify(data)
   };
 
-  return fetch(path, requestOptions)
+  return fetch(`${BASE_URL}/${path}`, requestOptions)
     .then(CheckError)
     .then((data) => {
       console.log("Fetch data ", data)
