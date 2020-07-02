@@ -87,8 +87,7 @@ export function FormValidation(questionList, formValues) {
                         errors[fieldName] = "Maximum value should be" + items.maxValue
                     }else if(!items.allowDecimal && CHECK_DECIMAL.test(formValues[fieldName])){
                         errors[fieldName] = "Decimal value is not allowed"
-                    }
-                    //check allow decimal                    
+                    }               
                     break;
                 case SINGLE_SELECT_DROPDOWN:
                     break;
