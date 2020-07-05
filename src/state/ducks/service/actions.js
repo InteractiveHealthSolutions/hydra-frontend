@@ -39,7 +39,7 @@ const deleteServiceAction = (payload) => ({ type: types.DELETE_SERVICE, payload 
 //service type
 export const saveServiceType = (serviceType) => async dispatch => {
   dispatch(setProject())
-  fetch(POST, "/hydra/serviceType", serviceType)
+  fetch(POST, "/hydra/service-type", serviceType)
     .then(res => dispatch(ServiceTypeAction(res))).catch(displayError)
 }
 const ServiceTypeAction = (payload) => ({
@@ -50,7 +50,7 @@ const ServiceTypeAction = (payload) => ({
 
 export const fetchServiceType = () => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "/hydra/serviceType?v=full")
+  fetch(GET, "/hydra/service-type?v=full")
     .then(res => dispatch(setServiceTypeAction(res))).catch(displayError)
 }
 

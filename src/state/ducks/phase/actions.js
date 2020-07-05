@@ -41,14 +41,24 @@ const phaseGetAction = payload => ({ type: types.GET_ALL_PHASE, payload })
 
 export const saveWorkflowPhase = phase => async dispatch =>
   fetch(POST, "/hydra/workflowphases", phase)
-    .then(res => dispatch(saveWorkflowPhaseAction(res))).catch(displayError)
+    .then(res => {
+      dispatch(saveWorkflowPhaseAction(res))
+    }).catch((error) => {
+      console.error("workflowphases ", error)
+    })
 
 const saveWorkflowPhaseAction = payload => ({ type: types.CREATE_WORKFLOW_PHASE, payload })
 
 export const getAllWorkflowPhase = (filterWith) => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/workflowphases")
-    .then(res => { dispatch(getWorkflowPhaseAction(filterPhases(res, filterWith))) }).catch(displayError)
+    .then((res) => {
+      console.log("workflowphases ", res)
+      dispatch(getWorkflowPhaseAction(filterPhases(res, filterWith)))
+    }).catch((error) => {
+      console.error("workflowphases ", error)
+      dispatch(setError(error))
+    })
 }
 
 const getWorkflowPhaseAction = payload => ({ type: types.GET_WORKFLOW_PHASE, payload })

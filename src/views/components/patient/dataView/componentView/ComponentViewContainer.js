@@ -8,23 +8,29 @@ import { history } from '../../../../../history'
 
 export default function ComponentViewContainer({ phaseUuid }) {
     const dispatch = useDispatch()
-    const { phaseComponents, componentForms, loading } = useSelector(state => ({
-        phaseComponents: state.stages.phaseComponents,
-        componentForms: state.formField.componentFormRelations,
-        loading: state.stages.loading
-    }))
+
+
     useEffect(() => {
         dispatch(componentAction.fetchPhaseComponent("dataview", phaseUuid))
         dispatch(formAction.getComponentFormRelation("dataview", phaseUuid))
     }, [])
 
 
+    const { phaseComponents, componentForms, loading } = useSelector(state => ({
+        phaseComponents: state.stages.phaseComponents,
+        componentForms: state.formField.componentFormRelations,
+        loading: state.stages.loading
+    }))
+
+
+
     function handleOnClick(evt, data) {
         console.log("clicked :: ", data)
-        localStorage.setItem("form",JSON.stringify(data))
+        localStorage.setItem("form", JSON.stringify(data))
         history.push('/patient/detail/dataentry/form')
     }
-
+    console.log("componentForms test", componentForms)
+    
     return loading ? <LoaderDots withMargin="true" height={40} width={40} /> :
         <ComponentView
             phaseComponents={phaseComponents}

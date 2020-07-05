@@ -34,49 +34,37 @@ function saveConcept(concept) {
 }
 
 function saveField(field) {
-  const token = authenticationGenerator.generateAuthenticationToken(
-    localStorage.getItem("username"),
-    localStorage.getItem("password")
-  );
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: token },
-    body: JSON.stringify(field),
-  };
-  return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
-    .then(handleResponse)
-    .then(
-      (fieldData) => {
-        return fieldData;
-      },
-      (e) => console.log("error", e)
-    )
-    .catch((err) => {
-      console.log("Error :: ", err);
-    });
+    const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
+        localStorage.getItem('password'));
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token },
+        body: JSON.stringify(field)
+    };
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
+        .then(handleResponse).then(fieldData => {
+            return fieldData;
+        }, e => console.log('error', e)
+        ).catch(err => {
+            console.log("Error :: ", err)
+        });
 }
 
 function saveEditedField(field) {
-  const token = authenticationGenerator.generateAuthenticationToken(
-    localStorage.getItem("username"),
-    localStorage.getItem("password")
-  );
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: token },
-    body: JSON.stringify(field),
-  };
-  return fetch(`${BASE_URL}/hydra/hydraField`, requestOptions)
-    .then(handleResponse)
-    .then(
-      (fieldData) => {
-        return fieldData;
-      },
-      (e) => console.log("error", e)
-    )
-    .catch((err) => {
-      console.log("Error :: ", err);
-    });
+    const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
+        localStorage.getItem('password'));
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token },
+        body: JSON.stringify(field)
+    };
+    return fetch(`${BASE_URL}/hydra/hydra-field`, requestOptions)
+        .then(handleResponse).then(fieldData => {
+            return fieldData;
+        }, e => console.log('error', e)
+        ).catch(err => {
+            console.log("Error :: ", err)
+        });
 }
 
 function searchEncounterType(name) {

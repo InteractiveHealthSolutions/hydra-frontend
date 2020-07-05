@@ -26,7 +26,7 @@ const ConceptSaveAction = (payload) => ({ type: types.CREATE_CONCEPT, payload })
 
 export const getAllQuestion = () => async dispatch => {
   dispatch(setProject())
-  fetch(GET, "/hydra/hydraField?v=full")
+  fetch(GET, "/hydra/hydra-field?v=full")
     .then(res => dispatch(QuestionGetAction(res))).catch(displayError)
 }
 
