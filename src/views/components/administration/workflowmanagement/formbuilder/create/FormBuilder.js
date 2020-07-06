@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { questionAction } from "../../../../../../state/ducks/questions";
 import { encounterAction } from "../../../../../../state/ducks/encounter";
 import { formAction } from "../../../../../../state/ducks/form";
+import {workflowAction} from '../../../../../../state/ducks/workflow'
 import AutoSearchComplete from "../formComponents/widgets/AutoSearchComplete";
 import './formbuilder.css';
 import DraggedFormItem from "../formComponents/widgets/DraggedFormItem";
@@ -73,7 +74,8 @@ class FormBuilder extends React.Component {
       formRetiredVal: false,
       CustomComponent: "",
       nestedSort: false,
-      dragSorting: false
+      dragSorting: false,
+      userWorkflow:[]
     };
     this.sortable = null;
     this.activeForm = []
@@ -125,6 +127,8 @@ class FormBuilder extends React.Component {
     this.activeForm = await JSON.parse(localStorage.getItem('active_form'))
     this.setActiveForm()
     await this.props.getAllEncounterType();
+    await this.props.getUserWorkflowByUser(localStorage.getItem('uuid'));
+   // await this.setState({userWorkflow:this.props.userWorkflow.results})
   }
 
   async setActiveForm() {
@@ -197,6 +201,11 @@ class FormBuilder extends React.Component {
       await this.setState({
         encounterTypes: nextProps.encounterTypeList.results
       });
+    }
+    if(nextProps.userWorkflow !== undefined && nextProps.userWorkflow.results !== undefined) {
+      await this.setState({
+        userWorkflow: nextProps.userWorkflow.results
+      })
     }
   }
 
@@ -348,6 +357,8 @@ class FormBuilder extends React.Component {
         defaultUUid = localStorage.getItem(`${element.uuid}-defaultValue`)
 
       }
+
+      
       let field = {
         name: element.label,
         field: element.uuid,
@@ -372,7 +383,8 @@ class FormBuilder extends React.Component {
         characters: "",
         isCore: localStorage.getItem(`${element.uuid}-isCore`) === "Yes" ? true : false,
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
-        children: children ? children : []
+        children: children ? children : [],
+      //  autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" ? localStorage.getItem(`${element.uuid}-autocomplete`)
       }
       if (element.dataType === 'Heading') {
         field.field = "4e1640ca-d264-4f8f-9210-66c535053393"
@@ -513,7 +525,7 @@ class FormBuilder extends React.Component {
 
   render() {
 
-    const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, hydramoduleFormId, defaultQuestion } = this.state;
+    const { addFormList, editeMood, currentObject, formRetiredVal, isEdit, userWorkflow,hydramoduleFormId, defaultQuestion } = this.state;
     var disabled = {}; if (formRetiredVal === true && isEdit === true) { disabled['disabled'] = 'disabled'; }
   //  console.log("addFormList ",  addFormList)
     return (
@@ -644,6 +656,7 @@ class FormBuilder extends React.Component {
                           key={index}
                           data={item}
                           editeMood={editeMood}
+                          workflow={userWorkflow}
                           handleDelete={this.handleDelete}
                         />
                       )
@@ -663,14 +676,18 @@ const mapStateToProps = state => ({
   formObject: state.formField.form,
   searchEncounterTypeList: state.encounter.searchEncounterType,
   isLoading: state.formField.loading,
-  isSubLoading: state.questions.loading
+  isSubLoading: state.questions.loading,
+  userWorkflow: state.workflow.userWorkflow,
+  formField: state.formField.formField
 });
 
 const mapDispatchToProps = {
   saveQuestion: questionAction.saveQuestion,
   getAllEncounterType: encounterAction.fetchEncounterType,
   saveFormFields: formAction.saveForm,
-  searchEncounterType: encounterAction.searchEncounterType
+  searchEncounterType: encounterAction.searchEncounterType,
+  getUserWorkflowByUser: workflowAction.getUserWorkflowByUser,
+  getFormFieldsByUUID: formAction.getFormFieldsByUUID
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormBuilder);

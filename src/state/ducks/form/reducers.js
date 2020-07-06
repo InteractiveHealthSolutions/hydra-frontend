@@ -10,10 +10,13 @@ const initialState = {
     form: {},
     forms: [],
     componentForms: [],
+    componentFormsList: [],
     formbyuuid: {},
     componentFormRelations: [],
     componentFormRelation: {},
-    formSubmission: {}
+    formSubmission: {},
+    formFields: [],
+    formField: []
 };
 
 const formReducer = createReducer(initialState)({
@@ -71,9 +74,23 @@ const formReducer = createReducer(initialState)({
         ...state,
         loading: false,
         formSubmission: payload
+    }),
+    [types.GET_COMPONENT_FORM_BY_COMPONENT]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        componentFormsList: payload
+    }),
+    [types.GET_FORM_FIELDS_BY_FORM]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        formFields: payload
+    }),
+    [types.GET_FORM_FIELD_BY_UUID]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        formField: payload
+
     })
-
-
 })
 
 export default formReducer

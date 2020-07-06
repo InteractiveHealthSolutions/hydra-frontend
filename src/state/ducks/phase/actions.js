@@ -86,6 +86,11 @@ export const deleteWorkflowPhase = (uuid) => async dispatch =>
 
 const deleteWorkflowPhaseAction = payload => ({ type: types.DELETE_WORKFLOW_PHASE, payload })
 
+export const getPhaseComponentByWorkflow = (uuid) => async dispatch =>
+  fetch(GET, "/hydra/phasecomponent?q=" + uuid)
+    .then(res => dispatch(getWorkflowPhaseByWorkflowAction(res))).catch((e) => console.log("Throws", e))
+
+const getWorkflowPhaseByWorkflowAction = payload => ({ type: types.GET_WORKFLOW_PHASE_BY_WORKFLOW, payload })
 
 const setProject = () => ({
   type: types.SET_PROJECT
