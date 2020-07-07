@@ -38,6 +38,7 @@ class QuestionConfiguration extends Component {
             regix: "",
             displayOrder: 1,
             mandatory: 'yes',
+            occurence: 'Earliest',
             allowCharacter: "",
             patientContacts: "",
             patientId: "",
@@ -361,8 +362,8 @@ class QuestionConfiguration extends Component {
 
     render() {
         const { datatype, uuid } = this.props
-        const { patientAge, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
-            , patientId, patientIdMandatory, patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
+        const { patientAge, showAutoCompleteOption, patientAgeMandatory, patientContacts, patientGender, patientGenderMandatory
+            , patientId, patientIdMandatory, occurence,patientGivenName, patientGivenNameMandatory, patientRelationship, patientRelationshipMandatory,
             patientFamilyName, headingTitle, allowDecimal, disabled, patientFamilyNameMandatory, allowFutureDate, allowPastDaate, dateformat, mandatory, minValue, maxValue, maxLength, regix, minLength, errorMsg, allowCharacter, isScorable, questionText, defaultValue } = this.state
         console.log("Naam dena d", defaultValue)
         return (
@@ -745,9 +746,9 @@ class QuestionConfiguration extends Component {
                             controlId="autocomplete"
                             title="Auto Populate Answer?"
                             name={uuid + "-autocomplete"}
-                            
+                            value={showAutoCompleteOption ? 'Yes' : 'No'}
                             handleRadioChange={this.handleRadioChange}
-                            options={[{ key: "1", title: "Yes" }, { key: "2", title: "No" }]}
+                            options={[{ key: "10", title: "Yes" }, { key: "20", title: "No" }]}
                         />
                 {
                     (datatype !== CONTACT_TRACING && this.state.showAutoCompleteOption) ? <> 
@@ -801,6 +802,15 @@ class QuestionConfiguration extends Component {
                     >
 
                     </Select>
+                    <RadioGroup
+                            controlId="autocompleteearliest"
+                            title="Occurence"
+                            name={uuid + "-autocompleteearliest"}
+                            value={occurence}
+                            handleRadioChange={this.handleRadioChange}
+                            options={[{ key: "30" + this.props.uuid, title: "Earliest" }, { key: "40" + this.props.uuid, title: "Latest" }]}
+                        />
+                       
 
                  
                     </>:""

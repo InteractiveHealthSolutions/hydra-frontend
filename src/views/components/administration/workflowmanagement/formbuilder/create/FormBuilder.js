@@ -388,7 +388,7 @@ class FormBuilder extends React.Component {
         children: children ? children : [],
         autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletefield`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletefield`) : null,
         autoCompleteFromComponentForm : localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletecomponent`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletecomponent`) : null,
-        
+        autoCompleteFromEarliest : localStorage.getItem(`${element.uuid}-autocompleteearliest`) == "Earliest" ? true : false
       }
       if (element.dataType === 'Heading') {
         field.field = "4e1640ca-d264-4f8f-9210-66c535053393"
