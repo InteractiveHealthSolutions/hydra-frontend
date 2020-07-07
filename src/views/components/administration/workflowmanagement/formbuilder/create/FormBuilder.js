@@ -18,6 +18,7 @@ import { LoaderDots } from "../../../../common/loader/LoaderDots";
 import Sortable from 'react-sortablejs';
 import * as _ from 'lodash';
 import { history } from '../../../../../../history';
+import { array } from "yup";
 
 class FormBuilder extends React.Component {
 
@@ -75,7 +76,9 @@ class FormBuilder extends React.Component {
       CustomComponent: "",
       nestedSort: false,
       dragSorting: false,
-      userWorkflow:[]
+      userWorkflow:[],
+      autoCompleteFormField:{},
+      autoCompleteFormComponent:{}
     };
     this.sortable = null;
     this.activeForm = []
@@ -230,11 +233,13 @@ class FormBuilder extends React.Component {
       createNotification("warning", "Please enter required field before submitting form.")
     }
   };
-
+  sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  
   async saveForm() {
-    const { formName, formRetiredVal, formDescription, hydramoduleFormId } = this.state
-    let formFieldList = await this.getAllField()
-  //  console.log("getAllField f",formFieldList )
+    const { formName, formRetiredVal, formDescription, hydramoduleFormId } = this.state;
+    let formFieldList = this.getAllField();
     let newform = {
       hydramoduleFormId: hydramoduleFormId,
       name: formName,
@@ -300,13 +305,12 @@ class FormBuilder extends React.Component {
     });
   }
 
-  getAllField() {
+  getAllField(element) {
     let array = []
     const { addFormList } = this.state
 
     //console.log("getAllField" ,addFormList)
-    addFormList.forEach(element => {
-    
+   addFormList.forEach(element => {
       let children = []
       if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
         children = [
@@ -357,8 +361,6 @@ class FormBuilder extends React.Component {
         defaultUUid = localStorage.getItem(`${element.uuid}-defaultValue`)
 
       }
-
-      
       let field = {
         name: element.label,
         field: element.uuid,
@@ -384,15 +386,17 @@ class FormBuilder extends React.Component {
         isCore: localStorage.getItem(`${element.uuid}-isCore`) === "Yes" ? true : false,
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
         children: children ? children : [],
-      //  autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" ? localStorage.getItem(`${element.uuid}-autocomplete`)
+        autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletefield`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletefield`) : null,
+        autoCompleteFromComponentForm : localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletecomponent`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletecomponent`) : null,
+        
       }
       if (element.dataType === 'Heading') {
         field.field = "4e1640ca-d264-4f8f-9210-66c535053393"
       }
-      array.push(field)
-    });
+    array.push(field)
+  });
 
-    return array
+    return array;
   };
 
   async setFieldList(object) {
@@ -678,7 +682,9 @@ const mapStateToProps = state => ({
   isLoading: state.formField.loading,
   isSubLoading: state.questions.loading,
   userWorkflow: state.workflow.userWorkflow,
-  formField: state.formField.formField
+  formField: state.formField.formField,
+  componentFormList: state.formField.componentFormsList,
+
 });
 
 const mapDispatchToProps = {
@@ -687,7 +693,10 @@ const mapDispatchToProps = {
   saveFormFields: formAction.saveForm,
   searchEncounterType: encounterAction.searchEncounterType,
   getUserWorkflowByUser: workflowAction.getUserWorkflowByUser,
-  getFormFieldsByUUID: formAction.getFormFieldsByUUID
+  getFormFieldsByUUID: formAction.getFormFieldsByUUID,
+  getComponentFormByComponent: formAction.getComponentFormByComponent,
+
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormBuilder);

@@ -146,6 +146,20 @@ const getComponentFormByComponentAction = payload => ({
   payload
 });
 
+export const getComponentFormByUUID = uuid => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/hydra/componentform/" + uuid)
+    .then(res => dispatch(getComponentFormByUUIDAction(res)))
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
+};
+const getComponentFormByUUIDAction = payload => ({
+  type: types.GET_COMPONENT_FORM_BY_UUID,
+  payload
+});
+
 export const getFormFieldsByForm = uuid => async dispatch => {
   dispatch(setProject())
   fetch(GET, "/hydra/form-field?q=" + uuid)
@@ -159,6 +173,7 @@ const getFormFieldsByFormAction = payload => ({
   type: types.GET_FORM_FIELDS_BY_FORM,
   payload
 });
+
 
 export const getFormFieldsByUUID = uuid => async dispatch => {
   dispatch(setProject())

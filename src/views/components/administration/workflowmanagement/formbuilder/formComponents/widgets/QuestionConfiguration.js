@@ -181,7 +181,7 @@ class QuestionConfiguration extends Component {
          this.setState({
              [controlId]: ev
          })
-         localStorage.setItem(`${name}`, JSON.stringify(ev));
+         localStorage.setItem(`${name}`, ev.value);
          this.createPhaseDropdown(ev.value)
          
  
@@ -209,10 +209,10 @@ class QuestionConfiguration extends Component {
          this.setState({
              [controlId]: ev
          })
-         localStorage.setItem(`${name}`, JSON.stringify(ev))
+         localStorage.setItem(`${name}`, ev.value)
          this.setState({selectedPhaseUUID:ev.value})
         let componentDropdown = [];
-        this.props.workflowPhase.   results.forEach(element => {
+        this.props.workflowPhase.results.forEach(element => {
             if(element.phaseUUID === this.state.selectedPhaseUUID) {
                 componentDropdown.push({
                     "label": element.hydramoduleComponent.name,
@@ -220,7 +220,7 @@ class QuestionConfiguration extends Component {
                 })
             }
         })
-
+      
         this.setState({componentDropdown: componentDropdown})
         //this.createComponentDropdown(ev.value);
      }
@@ -231,7 +231,8 @@ class QuestionConfiguration extends Component {
              [controlId]: ev
          });
          this.setState({selectedComponentForm:ev.value})
-         localStorage.setItem(`${name}`, JSON.stringify(ev));
+         localStorage.setItem(`${name}`, ev.value);
+    
          this.createFormDropdown(ev.value)
      }
      async createFormDropdown(value) {
@@ -250,7 +251,7 @@ class QuestionConfiguration extends Component {
             }
             
         })
-
+        
         await this.setState({formDropdown: formDropdown});
         }
        
@@ -261,10 +262,11 @@ class QuestionConfiguration extends Component {
              [controlId]: ev
          });
     //     this.setState({selectedComponentForm:ev.value})
-         localStorage.setItem(`${name}`, JSON.stringify(ev));
+         localStorage.setItem(`${name}`, ev.value);
          
      //    this.createFormDropdown(ev.value)
          this.createQuestionDropDown(ev.value);
+    
      }
 
     async createQuestionDropDown(value) {
@@ -280,16 +282,49 @@ class QuestionConfiguration extends Component {
         }
         this.setState({questionDropDown:questionDropdown});
     }
-    onHandleQuestionValue = (ev, name, controlId) => {
-        console.log("Naam dena", name, JSON.stringify(ev))
-         this.setState({
+    async onHandleQuestionValue(ev, name, controlId,uuid)  {
+        console.log("Naam dena", name, JSON.stringify(ev));
+        this.setState({
              [controlId]: ev
          });
     //     this.setState({selectedComponentForm:ev.value})
-         localStorage.setItem(`${name}`, JSON.stringify(ev));
+         localStorage.setItem(`${name}`, ev.value);
+         await this.props.getFormFieldsByUUID(localStorage.getItem(`${uuid}-question`));
+  //  this.sleep(60000);
+    if(this.props.formField != undefined) {
+      localStorage.setItem(`${uuid}-autocompletefield`,{
+        autoCompleteFormField:{
+            formFieldId: this.props.formField.formFieldId,
+            uuid: this.props.formField.uuid
+          }
+      })
+    }
+    await this.props.getComponentFormByComponent(localStorage.getItem(`${uuid}-component`));
+    if(this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
+        for(const element of this.props.componentFormList.results ){
+            if(element.component.uuid == localStorage.getItem(`${uuid}-component`) 
+            && element.form.uuid == localStorage.getItem(`${uuid}-form`) 
+            && element.workflow.uuid == localStorage.getItem(`${uuid}-Workflow`)
+            && element.phase.uuid == localStorage.getItem(`${uuid}-phase`)) {
+              
+
+                await localStorage.setItem(`${uuid}-autocompletecomponent`,{
+                   autoCompleteFormComponent: {
+                       componentFormId: element.componentFormId,
+                       uuid: element.uuid
+                     } 
+                })
+            
+            }
+        }
+        
+      }
+     
+     
+
          
      //    this.createFormDropdown(ev.value)
-         this.createQuestionDropDown(ev.value);
+//         this.createQuestionDropDown(ev.value);
      }
     onItemSelectedProp = (ev) => {
         this.setState({
@@ -762,7 +797,7 @@ class QuestionConfiguration extends Component {
                      title="question"
                      controlId="question"
                      options={this.state.questionDropDown}
-                     onChange={(evt) => this.onHandleQuestionValue(evt, `${uuid}-question`, "question")}
+                     onChange={(evt) => this.onHandleQuestionValue(evt, `${uuid}-question`, "question",`${uuid}`)}
                     >
 
                     </Select>
@@ -781,13 +816,16 @@ class QuestionConfiguration extends Component {
 const mapStateToProps = state => ({
     workflowPhase: state.phase.workPhase,
     componentFormList: state.formField.componentFormsList,
-    fieldList: state.formField.formFields
+    fieldList: state.formField.formFields,
+    formField: state.formField.formField,
+
   });
   
   const mapDispatchToProps = {
       getWorkflowPhaseByWorkflow: phaseAction.getPhaseComponentByWorkflow,
       getComponentFormByComponent: formAction.getComponentFormByComponent,
-      getFormFieldsByForm: formAction.getFormFieldsByForm
+      getFormFieldsByForm: formAction.getFormFieldsByForm,
+      getFormFieldsByUUID: formAction.getFormFieldsByUUID,
   }
   
   export default connect(mapStateToProps, mapDispatchToProps)(QuestionConfiguration);

@@ -90,6 +90,11 @@ const formReducer = createReducer(initialState)({
         loading: false,
         formField: payload
 
+    }),
+    [types.GET_COMPONENT_FORM_BY_UUID]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        componentFormRelation: payload
     })
 })
 
