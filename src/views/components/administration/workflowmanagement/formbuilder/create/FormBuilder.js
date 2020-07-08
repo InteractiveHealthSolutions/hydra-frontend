@@ -233,9 +233,7 @@ class FormBuilder extends React.Component {
       createNotification("warning", "Please enter required field before submitting form.")
     }
   };
-  sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
+ 
   
   async saveForm() {
     const { formName, formRetiredVal, formDescription, hydramoduleFormId } = this.state;
@@ -256,7 +254,7 @@ class FormBuilder extends React.Component {
       formDescription: ""
     })
     await createNotification("success", "Saved Successfully")
-    this.prevStep()
+ //   this.prevStep()
   }
 
   async validation() {
@@ -302,6 +300,12 @@ class FormBuilder extends React.Component {
       localStorage.removeItem(`${element.uuid}-patientRelationship`)
       localStorage.removeItem(`${element.uuid}-patientRelationshipMandatory`)
       localStorage.removeItem(`${element.uuid}-disabled`)
+      localStorage.removeItem(`${element.uuid}-autocomplete`)
+      localStorage.removeItem(`${element.uuid}-autocompletefield`)
+      localStorage.removeItem(`${element.uuid}-autocompletecomponent`)
+      localStorage.removeItem(`${element.uuid}-autocompleteearliest`)
+
+
     });
   }
 
@@ -311,6 +315,7 @@ class FormBuilder extends React.Component {
 
     //console.log("getAllField" ,addFormList)
    addFormList.forEach(element => {
+    
       let children = []
       if (element.uuid === "1e4640ca-d264-4f8f-9210-66c053553933") {
         children = [
@@ -386,8 +391,8 @@ class FormBuilder extends React.Component {
         isCore: localStorage.getItem(`${element.uuid}-isCore`) === "Yes" ? true : false,
         createPatient: localStorage.getItem(`${element.uuid}-patientContacts`) === "Yes" ? true : false,
         children: children ? children : [],
-        autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletefield`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletefield`) : null,
-        autoCompleteFromComponentForm : localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && JSON.stringify(localStorage.getItem(`${element.uuid}-autocompletecomponent`)) != '{}' ? localStorage.getItem(`${element.uuid}-autocompletecomponent`) : null,
+        autoCompleteFromFormField: localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && localStorage.getItem(`${element.uuid}-autocompletefield`) != undefined ? localStorage.getItem(`${element.uuid}-autocompletefield`) : null,
+        autoCompleteFromComponentForm : localStorage.getItem(`${element.uuid}-autocomplete`) == "Yes" && localStorage.getItem(`${element.uuid}-autocompletecomponent`) != undefined ? localStorage.getItem(`${element.uuid}-autocompletecomponent`) : null,
         autoCompleteFromEarliest : localStorage.getItem(`${element.uuid}-autocompleteearliest`) == "Earliest" ? true : false
       }
       if (element.dataType === 'Heading') {
@@ -498,8 +503,8 @@ class FormBuilder extends React.Component {
     // e.preventDefault()
     localStorage.removeItem('active_form')
     await this.removeLocalStorage()
-    history.push('/administration/form')
-    //this.props.prevStep()
+  //  history.push('/administration/form')
+ //   this.props.prevStep()
   }
   handleRetiredChecked = (param) => {
     this.setState({
