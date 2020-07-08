@@ -190,6 +190,7 @@ class QuestionConfiguration extends Component {
      async createPhaseDropdown(value) {
         await this.props.getWorkflowPhaseByWorkflow(value);
         let phaseDropdown = [];
+        await this.setState({phaseDropdown:[]});
         await this.props.workflowPhase.results.forEach(element => {
             var array  = phaseDropdown;
         
@@ -212,8 +213,23 @@ class QuestionConfiguration extends Component {
          })
          localStorage.setItem(`${name}`, ev.value)
          this.setState({selectedPhaseUUID:ev.value})
+        // let componentDropdown = [];
+        // this.props.workflowPhase.results.forEach(element => {
+        //     if(element.phaseUUID === this.state.selectedPhaseUUID) {
+        //         componentDropdown.push({
+        //             "label": element.hydramoduleComponent.name,
+        //             "value": element.hydramoduleComponent.uuid
+        //         })
+        //     }
+        // })
+      
+      //  this.setState({componentDropdown: componentDropdown})
+        this.createComponentDropDown(ev.value);
+     }
+     async createComponentDropDown(value) {
         let componentDropdown = [];
-        this.props.workflowPhase.results.forEach(element => {
+        await this.setState({componentDropdown : []})
+        await this.props.workflowPhase.results.forEach(element => {
             if(element.phaseUUID === this.state.selectedPhaseUUID) {
                 componentDropdown.push({
                     "label": element.hydramoduleComponent.name,
@@ -221,24 +237,24 @@ class QuestionConfiguration extends Component {
                 })
             }
         })
-      
-        this.setState({componentDropdown: componentDropdown})
-        //this.createComponentDropdown(ev.value);
+        
+        await this.setState({componentDropdown: componentDropdown})
      }
-  
      onHandleComponentValue = (ev, name, controlId) => {
         console.log("Naam dena", name, JSON.stringify(ev))
          this.setState({
              [controlId]: ev
          });
-         this.setState({selectedComponentForm:ev.value})
          localStorage.setItem(`${name}`, ev.value);
+
+         this.setState({selectedComponentForm:ev.value})
     
          this.createFormDropdown(ev.value)
      }
      async createFormDropdown(value) {
-        await this.props.getComponentFormByComponent(value);
-        let formDropdown = [];  
+        this.props.getComponentFormByComponent(value);
+        let formDropdown = []; 
+        await this.setState({formDropdown:[]}) 
         if(this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
             await this.props.componentFormList.results.forEach(element => {
             var array  = formDropdown;
@@ -273,6 +289,7 @@ class QuestionConfiguration extends Component {
     async createQuestionDropDown(value) {
         await this.props.getFormFieldsByForm(value);
         let questionDropdown=[];
+        this.setState({questionDropDown:[]})
         if(this.props.fieldList != undefined && this.props.fieldList.results != undefined) {
             await this.props.fieldList.results.forEach(element => {
                 questionDropdown.push({
@@ -281,7 +298,7 @@ class QuestionConfiguration extends Component {
                 })
             })
         }
-        this.setState({questionDropDown:questionDropdown});
+        await this.setState({questionDropDown:questionDropdown});
     }
     async onHandleQuestionValue(ev, name, controlId,uuid)  {
         console.log("Naam dena", name, JSON.stringify(ev));
