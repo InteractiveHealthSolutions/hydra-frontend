@@ -254,7 +254,7 @@ class FormBuilder extends React.Component {
       formDescription: ""
     })
     await createNotification("success", "Saved Successfully")
- //   this.prevStep()
+    this.prevStep()
   }
 
   async validation() {
@@ -503,7 +503,7 @@ class FormBuilder extends React.Component {
     // e.preventDefault()
     localStorage.removeItem('active_form')
     await this.removeLocalStorage()
-  //  history.push('/administration/form')
+   history.push('/administration/form')
  //   this.props.prevStep()
   }
   handleRetiredChecked = (param) => {
