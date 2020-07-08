@@ -38,7 +38,7 @@ class QuestionConfiguration extends Component {
             regix: "",
             displayOrder: 1,
             mandatory: 'yes',
-            occurence: 'Earliest',
+            occurence: "Earliest",
             allowCharacter: "",
             patientContacts: "",
             patientId: "",
@@ -76,6 +76,12 @@ class QuestionConfiguration extends Component {
     async componentWillReceiveProps(nextProps) {
         if(nextProps.workflow != undefined) {
             await this.setWorkflowOptions()
+        }
+        if(nextProps.componentFormList != undefined) {
+            await this.createFormDropdown(this.props.uuid);
+        }
+        if(nextProps.fieldList != undefined) {
+            await this.createQuestionDropDown()
         }
     }
     async setWorkflowOptions() {
@@ -187,6 +193,10 @@ class QuestionConfiguration extends Component {
          
  
      }
+
+     sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+      }
      async createPhaseDropdown(value) {
         await this.props.getWorkflowPhaseByWorkflow(value);
         let phaseDropdown = [];
@@ -240,7 +250,7 @@ class QuestionConfiguration extends Component {
         
         await this.setState({componentDropdown: componentDropdown})
      }
-     onHandleComponentValue = (ev, name, controlId) => {
+     async onHandleComponentValue(ev, name, controlId,uuid){
         console.log("Naam dena", name, JSON.stringify(ev))
          this.setState({
              [controlId]: ev
@@ -248,15 +258,21 @@ class QuestionConfiguration extends Component {
          localStorage.setItem(`${name}`, ev.value);
 
          this.setState({selectedComponentForm:ev.value})
-    
-         this.createFormDropdown(ev.value)
+         await this.props.getComponentFormByComponent(ev.value);
+         await this.sleep(30000)
+         await this.createFormDropdown(uuid)
      }
-     async createFormDropdown(value) {
-        this.props.getComponentFormByComponent(value);
-        let formDropdown = []; 
-        await this.setState({formDropdown:[]}) 
+     async createFormDropdown(uuid) {
+
         if(this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
-            await this.props.componentFormList.results.forEach(element => {
+            let formDropdown = []; 
+            await this.setState({formDropdown:[]}) 
+               
+            for(const element of this.props.componentFormList.results ){
+                
+                if(element.component.uuid == localStorage.getItem(`${uuid}-component`) 
+                && element.workflow.uuid == localStorage.getItem(`${uuid}-Workflow`)
+                && element.phase.uuid == localStorage.getItem(`${uuid}-phase`)) {
             var array  = formDropdown;
         
             var existingObj = array.filter(data => data.value == element.form.uuid);
@@ -267,13 +283,14 @@ class QuestionConfiguration extends Component {
                 });
             }
             
-        })
+        }
         
         await this.setState({formDropdown: formDropdown});
         }
        
      }
-     onHandleFormValue = (ev, name, controlId) => {
+    }
+    async onHandleFormValue(ev, name, controlId) {
         console.log("Naam dena", name, JSON.stringify(ev))
          this.setState({
              [controlId]: ev
@@ -282,23 +299,26 @@ class QuestionConfiguration extends Component {
          localStorage.setItem(`${name}`, ev.value);
          
      //    this.createFormDropdown(ev.value)
-         this.createQuestionDropDown(ev.value);
+         await this.props.getFormFieldsByForm(ev.value);
+
+         await this.createQuestionDropDown();
     
      }
 
-    async createQuestionDropDown(value) {
-        await this.props.getFormFieldsByForm(value);
-        let questionDropdown=[];
-        this.setState({questionDropDown:[]})
+    async createQuestionDropDown() {
+        
         if(this.props.fieldList != undefined && this.props.fieldList.results != undefined) {
+            let questionDropdown=[];
+        this.setState({questionDropDown:[]})
             await this.props.fieldList.results.forEach(element => {
                 questionDropdown.push({
                     "label":element.field.name,
                     "value": element.uuid
                 })
             })
+            await this.setState({questionDropDown:questionDropdown});
+
         }
-        await this.setState({questionDropDown:questionDropdown});
     }
     async onHandleQuestionValue(ev, name, controlId,uuid)  {
         console.log("Naam dena", name, JSON.stringify(ev));
@@ -306,38 +326,24 @@ class QuestionConfiguration extends Component {
              [controlId]: ev
          });
     //     this.setState({selectedComponentForm:ev.value})
-         localStorage.setItem(`${name}`, ev.value);
-         await this.props.getFormFieldsByUUID(localStorage.getItem(`${uuid}-question`));
-  //  this.sleep(60000);
-    if(this.props.formField != undefined) {
-      localStorage.setItem(`${uuid}-autocompletefield`,{
-        autoCompleteFormField:{
-            formFieldId: this.props.formField.formFieldId,
-            uuid: this.props.formField.uuid
-          }
-      })
-    }
-    await this.props.getComponentFormByComponent(localStorage.getItem(`${uuid}-component`));
-    if(this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
+        localStorage.setItem(`${name}`, ev.value);
+        await localStorage.setItem(`${uuid}-autocompletefield`,ev.value) 
+
+        //await this.props.getComponentFormByComponent(localStorage.getItem(`${uuid}-component`));
+        if(this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
         for(const element of this.props.componentFormList.results ){
             if(element.component.uuid == localStorage.getItem(`${uuid}-component`) 
             && element.form.uuid == localStorage.getItem(`${uuid}-form`) 
             && element.workflow.uuid == localStorage.getItem(`${uuid}-Workflow`)
             && element.phase.uuid == localStorage.getItem(`${uuid}-phase`)) {
-              
 
-                await localStorage.setItem(`${uuid}-autocompletecomponent`,{
-                   autoCompleteFormComponent: {
-                       componentFormId: element.componentFormId,
-                       uuid: element.uuid
-                     } 
-                })
+    
+                await localStorage.setItem(`${uuid}-autocompletecomponent`,
+                       element.uuid)
             
             }
         }
-        
       }
-     
      
 
          
@@ -804,7 +810,7 @@ class QuestionConfiguration extends Component {
                     title="form"
                     controlId="form"
                     options={this.state.formDropdown}
-                    onChange={(evt) => this.onHandleFormValue(evt, `${uuid}-form`, "form")}
+                    onChange={(evt) => this.onHandleFormValue(evt, `${uuid}-form`, "form",this.props.uuid)}
                     >
 
                     </Select>
@@ -815,7 +821,7 @@ class QuestionConfiguration extends Component {
                      title="question"
                      controlId="question"
                      options={this.state.questionDropDown}
-                     onChange={(evt) => this.onHandleQuestionValue(evt, `${uuid}-question`, "question",`${uuid}`)}
+                     onChange={(evt) => this.onHandleQuestionValue(evt, `${uuid}-question`, "question",this.props.uuid)}
                     >
 
                     </Select>
