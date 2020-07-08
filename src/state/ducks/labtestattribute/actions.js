@@ -11,7 +11,7 @@ import {
 import { displayError } from '../../../utilities/helpers/helper'
 
 export const getAllLabTestAttribute = () => async dispatch =>
-  fetch(GET, "/commonlab/labtestattributetype?v=full")
+  fetch(GET, "/commonlab/labtestattributetype")
     .then(res => dispatch(labtestattributeGetAction(res))).catch(displayError)
 
 const labtestattributeGetAction = payload => ({ type: types.GET_ALL_LABTESTATTRIBUTE, payload })

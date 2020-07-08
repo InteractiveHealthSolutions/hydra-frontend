@@ -130,6 +130,7 @@ export default function FormBuilderCard(props) {
             displayOrder ={props.data.displayOrder}
             dataField={props.data}
             editeMood ={props.editeMood}
+            workflow={props.workflow}
           />
         </CardContent>
       </Collapse>

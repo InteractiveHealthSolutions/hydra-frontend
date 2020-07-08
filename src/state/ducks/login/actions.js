@@ -16,12 +16,13 @@ export const login = (username, password) => dispatch => {
     }
   };
 
-  fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
+  fetch("/user?v=full&q="+username, requestOptions)
     .then(CheckError)
     .then(data => {
         localStorage.setItem('active_user', JSON.stringify(data.results[0].privileges))
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
+        localStorage.setItem('uuid',data.results[0].uuid);
         dispatch(success(username));
         history.push("/");
         console.log("login response", data)
