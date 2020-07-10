@@ -30,7 +30,7 @@
         "hashmap": "^2.4.0",
         "http-proxy-middleware": "^0.20.0",
         "jquery": "^3.4.1",
-        "lodash": "^4.17.10",
+        "lodash": "^4.17.19",
         "material-table": "^1.52.0",
         "material-ui": "^0.20.2",
         "mdbreact": "^4.22.1",
@@ -83,12 +83,13 @@
         "yup": "^0.28.3"
     },
     "scripts": {
-        "start": ".env.local. react-scripts start",
+        "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "homepage": "http://hydratest.ihsinformatics.com",
+    "proxy": "http://ihs.ihsinformatics.com:6815/openmrs/ws/rest/v1",
+    "homepage": ".",
     "eslintConfig": {
         "extends": "react-app"
     },

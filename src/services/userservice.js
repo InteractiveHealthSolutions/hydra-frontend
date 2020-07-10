@@ -19,7 +19,7 @@ function logInService(username, password) {
 
     
 
-    return fetch(`${BASE_URL}/user?v=full&q=${username}`, requestOptions)
+    return fetch(`/user?v=full&q=${username}`, requestOptions)
         .then(handleResponseLogin)
         .then(user => {
             if (user === 'authorized') {

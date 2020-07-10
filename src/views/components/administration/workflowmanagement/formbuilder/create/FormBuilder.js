@@ -236,13 +236,13 @@ class FormBuilder extends React.Component {
     }
     console.log("newform ", newform)
      await this.props.saveFormFields(newform)
-    await this.setState({
-      addFormList: [],
-      formName: "",
-      formDescription: ""
-    })
-    await createNotification("success", "Saved Successfully")
-    this.prevStep()
+    // await this.setState({
+    //   addFormList: [],
+    //   formName: "",
+    //   formDescription: ""
+    // })
+    // await createNotification("success", "Saved Successfully")
+    // this.prevStep()
   }
 
   async validation() {
