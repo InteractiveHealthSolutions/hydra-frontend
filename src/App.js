@@ -20,12 +20,6 @@ import PatientDetail from './views/components/patient/detail/PatientDetail';
 import PatientRegistration from './views/components/patient/create/PatientRegistration';
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
-import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './views/components/manageLabTestAttribute/ManageLabTestAttribute'
-import TestOrderList from './views/components/labtestorder/TestOrderList'
-import AddTestOrder from './views/components/labtestorder/AddTestOrder';
-import SampleList from './views/components/labtestsample/samplelist';
 import Roles from './views/components/administration/roles/roles';
 import QuestionList from './views/components/administration/workflowmanagement/questions/QuestionList';
 import OptionList from './views/components/administration/workflowmanagement/questions/OptionList';
@@ -50,7 +44,13 @@ import Engine from './views/components/administration/workflowmanagement/ruleeng
 import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
-import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView'
+import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView';
+import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
+import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
+import ManageLabTestAttribute from './views/components/manageLabTestAttribute/ManageLabTestAttribute'
+import TestOrderList from './views/components/labtestorder/TestOrderList'
+import AddTestOrder from './views/components/labtestorder/AddTestOrder';
+import SampleList from './views/components/labtestsample/samplelist';
 
 
 const Main = styled.main`
@@ -70,7 +70,6 @@ class App extends React.Component {
         this.onActive = this.onActive.bind(this);
         this.onIdle = this.onIdle.bind(this);
         this.state = {
-
             expanded: false
         }
     }
@@ -275,7 +274,37 @@ class App extends React.Component {
                                                                             </Link>
                                                                         </NavText>
                                                                     </NavItem>
+                                                                    
                                                                 </NavItem>
+                                                                <NavItem eventKey="/labtest" onClick={this.toggleSidebar}>
+                                                                    <NavIcon>
+                                                                        <i class="fa fa-flask" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
+                                                                    </NavIcon>
+                                                                    <NavText>
+                                                                        Lab Test Management
+                                                                    </NavText>
+                                                                    <NavItem eventKey="/administration/manageLabTestAttribute" onClick={this.toggleSidebar}>
+
+                                                                        <NavText>
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/manageLabTestAttribute">
+                                                                                <i className="fa fa-flask" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                     Attribute
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                    <NavItem eventKey="/administration/manageLabTest" onClick={this.toggleSidebar}>
+
+                                                                        <NavText>
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/manageLabTest">
+                                                                                <i className="fa fa-flask" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                Lab Test       
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                    
+                                                                </NavItem>
+                                                                
+                                                                
 
                                                             </SideNav.Nav>
                                                         </SideNav>
@@ -294,6 +323,9 @@ class App extends React.Component {
                                                                 <Route path="/administration/form/create" component={FormBuilder} />
                                                                 <Route path="/administration/questions" component={QuestionList} />
                                                                 <Route path="/administration/options" component={OptionList} />
+                                                                <Route path="/administration/manageLabTestAttribute" component={ManageLabTestAttribute} />
+                                                                <Route path="/administration/manageLabTest" component={ManageLabTest} />
+
                                                                 <Route path="/" component={Home} />
                                                             </Switch>
                                                         </Main>

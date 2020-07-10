@@ -151,6 +151,7 @@ class LocationManagement extends React.Component {
                  })
                  data.push({
                      "display" : element.display,
+                     "description" : element.description,
                      "country" : element.country,
                      "address1" : element.address1,
                      "address2" : element.address2,
@@ -237,7 +238,9 @@ class LocationManagement extends React.Component {
                     "value": event.data.stateProvince
                 },
                 stateProvince: event.data.stateProvince,
+                country: event.data.country,
                 defaultParentLocation: event.data.parentLocation,
+                parentLocation: event.data.parentLocation,
                 landmark: event.data.address2,
                 isEdit: true,
                 openModal: true,
@@ -348,13 +351,13 @@ class LocationManagement extends React.Component {
             if (this.state.isEdit) {
                 await this.props.editLocation(this.state.activeLocation, locationForm);
                 await createNotification('success', 'Location Updated');
-                await this.props.getAllLocation();
+                await window.location.reload();
                 await this.closeModal()
             }
             else {
                 await this.props.saveLocation(locationForm);
                 createNotification('success', 'Location Created');
-                await this.props.getAllLocation();
+                await window.location.reload();
                 await this.closeModal();
 
             }

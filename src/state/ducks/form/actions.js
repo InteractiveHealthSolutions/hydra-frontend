@@ -120,7 +120,7 @@ const setDeleteComponentFormRelations = payload => ({
 
 export const formSubmission = (formData) => async dispatch => {
   dispatch(setProject())
-  fetch(POST, "/hydra/formSubmission", formData)
+  fetch(POST, "/hydra/form-submission", formData)
     .then(res => dispatch(setFormSubmission(res)))
     .catch((error) => {
       console.error("componentform error ", error)
