@@ -47,8 +47,7 @@ export function FormValidation(questionList, formValues) {
         if (items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length <= 0)) {
             errors[fieldName] = items.errorMessage ? items.errorMessage : "Field is required"
         }
-        // console.log("Text Validation :: ", fieldTypeDisplayText)
-        if (formValues[fieldName]) {
+        else {
             switch (fieldTypeDisplayText) {
                 case TEXT_BOX:
                     // after implement all cases should do refactor cycle .
