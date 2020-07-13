@@ -6,3 +6,4 @@ export const ADD_TO_WORKFLOW = "ADD_TO_WORKFLOW";
 export const ACTIVE_WORKFLOW = "ACTIVE_WORKFLOW";
 export const API = "API";
 export const SET_PROJECT = "SET_PROJECT";
+export const USERWORKFLOW_BY_USER = "USERWORKFLOW_BY_USER"
