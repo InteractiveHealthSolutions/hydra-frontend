@@ -16,7 +16,7 @@ export default async (method, path, data) => {
     body: JSON.stringify(data)
   };
 
-  return fetch(path, requestOptions)
+  return fetch(`${BASE_URL}/${path}`, requestOptions)
     .then(CheckError)
     .then((data) => {
       console.log("Fetch data ", data)
