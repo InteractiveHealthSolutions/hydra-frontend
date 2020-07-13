@@ -81,6 +81,7 @@ export const logout = () => async dispatch => {
   localStorage.removeItem('password');
   localStorage.removeItem('activeTab');
   localStorage.removeItem('active_user');
+  localStorage.removeItem('uuid')
   dispatch(requestLogout())
   history.push('/login');
 }

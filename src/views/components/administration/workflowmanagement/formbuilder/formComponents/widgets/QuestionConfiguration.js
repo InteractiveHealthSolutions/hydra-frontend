@@ -311,10 +311,13 @@ class QuestionConfiguration extends Component {
             let questionDropdown=[];
         this.setState({questionDropDown:[]})
             await this.props.fieldList.results.forEach(element => {
-                questionDropdown.push({
-                    "label":element.field.name,
-                    "value": element.uuid
-                })
+                if(element.field.attributeName === this.props.datatype){
+                    questionDropdown.push({
+                        "label":element.field.name,
+                        "value": element.uuid
+                    })
+              
+                }
             })
             await this.setState({questionDropDown:questionDropdown});
 
