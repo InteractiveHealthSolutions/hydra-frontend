@@ -83,12 +83,13 @@
         "yup": "^0.28.3"
     },
     "scripts": {
-        "start": ".env.local. react-scripts start",
+        "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "homepage": "http://hydratest.ihsinformatics.com",
+    "proxy": "https://hydratest.ihsinformatics.com/openmrs/ws/rest/v1",
+    "homepage": ".",
     "eslintConfig": {
         "extends": "react-app"
     },
