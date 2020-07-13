@@ -323,37 +323,43 @@ class FormBuilder extends React.Component {
             name: "Given Name",
             field: "73e557b7-7eb0-4e96-2f1b-11c39534ec29",
             displayText: localStorage.getItem(`${element.uuid}-patientGivenName`),
-            mandatory: localStorage.getItem(`${element.uuid}-patientGivenNameMandatory`) === null ? false : true
+            mandatory: localStorage.getItem(`${element.uuid}-patientGivenNameMandatory`) === null ? false : true,
+            isCore: localStorage.getItem(`${element.uuid}-patientGivenNameMandatory`) === null ? false : true
           },
           {
             "name": "Family Name",
             "field": "73e557b7-7eb0-4e96-b1f2-11c39534e92c",
             "displayText": localStorage.getItem(`${element.uuid}-patientFamilyName`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientFamilyNameMandatory`) === null ? false : true
+            "mandatory": localStorage.getItem(`${element.uuid}-patientFamilyNameMandatory`) === null ? false : true,
+            "isCore": localStorage.getItem(`${element.uuid}-patientFamilyNameMandatory`) === null ? false : true
           },
           {
             "name": "Age",
             "field": "73e557b7-0be7-4e96-b1f2-11c39534ec29",
             "displayText": localStorage.getItem(`${element.uuid}-patientAge`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === null ? false : true
+            "mandatory": localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === null ? false : true,
+            "isCore": localStorage.getItem(`${element.uuid}-patientAgeMandatory`) === null ? false : true
           },
           {
             "name": "Gender",
             "field": "73eb7357-7eb0-4e96-b1f2-11c39534ec29",
             "displayText": localStorage.getItem(`${element.uuid}-patientGender`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === null ? false : true
+            "mandatory": localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === null ? false : true,
+            "isCore": localStorage.getItem(`${element.uuid}-patientGenderMandatory`) === null ? false : true
           },
           {
             "name": "Relationship",
             "field": "37e557b7-0be7-4e96-b1f2-11c395ec4329",
             "displayText": localStorage.getItem(`${element.uuid}-patientRelationship`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === null ? false : true
+            "mandatory": localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === null ? false : true,
+            "isCore": localStorage.getItem(`${element.uuid}-patientRelationshipMandatory`) === null ? false : true
           },
           {
             "name": "Identifier",
             "field": "37e557b7-7eb0-4e96-b1f2-11c395ec4329",
             "displayText": localStorage.getItem(`${element.uuid}-patientId`),
-            "mandatory": localStorage.getItem(`${element.uuid}-patientIdMandatory`) === null ? false : true
+            "mandatory": localStorage.getItem(`${element.uuid}-patientIdMandatory`) === null ? false : true,
+            "isCore": localStorage.getItem(`${element.uuid}-patientIdMandatory`) === null ? false : true
           },
         ]
       }
