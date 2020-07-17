@@ -16,6 +16,7 @@ import {
     BARCODE_READER,
     CHECK_DECIMAL
 } from '../../../../../../utilities/constants/globalconstants'
+import { TextBoxValidation } from "./TextBoxValidations";
 
 export function CreateYupSchema(schema, config) {
     //console.log("CreateYupSchema", config)
@@ -43,51 +44,16 @@ export function FormValidation(questionList, formValues) {
         const fieldName = items.field.fieldId
         const fieldType = items.field.attributeName
         const fieldTypeDisplayText = items.field.fieldType.display
-        // console.log("Form-Field", items.mandatory, fieldName, formValues[fieldName])
+        const fieldAttributesName = items.field.attributeName
         if (items.mandatory && (formValues[fieldName] === "" || formValues[fieldName] === null || formValues[fieldName].length <= 0)) {
             errors[fieldName] = items.errorMessage ? items.errorMessage : "Field is required"
         }
-        // console.log("Text Validation :: ", fieldTypeDisplayText)
-        if (formValues[fieldName]) {
+       else {
             switch (fieldTypeDisplayText) {
                 case TEXT_BOX:
-                    // after implement all cases should do refactor cycle .
-                    console.log("Text Validation", items.regix, formValues[fieldName])
-                    if (items.minLength && items.maxLength) {
-                        if (formValues[fieldName].length < items.minLength || formValues[fieldName].length > items.maxLength) {
-                            errors[fieldName] = "Minimum length should be" + items.minLength + " and Maximum length should be " + items.maxLength
-                        }
-                    } else if (items.minLength && formValues[fieldName].length < items.minLength) {
-                        errors[fieldName] = "Minimum length should be" + items.minLength
-                    } else if (items.maxLength && formValues[fieldName].length > items.minLength) {
-                        errors[fieldName] = "Maximum length should be" + items.maxLength
-                    }
-                    // if (items.regix) {
-                    //     var rex = new RegExp(items.regix);
-                    //     if (!rex.test(formValues[fieldName])) {
-                    //         errors[fieldName] = "Your input value is not valid"
-                    //     }
-                    // }
-
-
+                      errors[fieldName] = TextBoxValidation(items,formValues)
                     break;
-                case BARCODE_READER:
-                    // console.log("Barcode Reader ff ", items.minValue, items.maxValue)
-                    if (items.minValue && items.maxValue) {
-                        if (
-                            Number(formValues[fieldName]) > Number(items.minValue)
-                            && Number(formValues[fieldName]) < Number(items.maxValue)
-                        ) {
-                            errors[fieldName] = "Minimum value should be" + items.minLength + " and Maximum length should be " + items.maxLength
-                        }
-                    } else if (items.minValue && Number(formValues[fieldName]) > Number(items.minValue)) {
-                        errors[fieldName] = "Minimum value should be" + items.minValue
-                    }
-                    else if (items.maxValue && Number(formValues[fieldName]) < Number(items.maxValue)) {
-                        errors[fieldName] = "Maximum value should be" + items.maxValue
-                    }else if(!items.allowDecimal && CHECK_DECIMAL.test(formValues[fieldName])){
-                        errors[fieldName] = "Decimal value is not allowed"
-                    }               
+                case BARCODE_READER:       
                     break;
                 case SINGLE_SELECT_DROPDOWN:
                     break;
