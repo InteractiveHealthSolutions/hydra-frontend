@@ -5,8 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import ButtonRenderer from '../../../utilities/helpers/ButtonRenderer';
-import {labtestAction} from '../../../state/ducks/labtest'
-import AddLabTestAttribute from '../addlabtestattribute/AddLabTestAttribute'
+import {labtestAction} from '../../../state/ducks/labtest';
+import { createNotification } from '../../../utilities/helpers/helper';
+import AddLabTestAttribute from '../addlabtestattribute/AddLabTestAttribute';
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate';
+import { AgGrid } from '../../ui/AgGridTable/AgGrid';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import  './ManageLabTest.css';
@@ -19,31 +22,42 @@ class ManageLabTest extends React.Component {
           quickFilterText : null,
           openAddAttrModal : false,
           openViewAttrModel : false,
+          isLabTestAvailable: false,
           selectedTest : '',
           columnDefs : [
             {
-              headerName: "S.No.", field: "sno", width: 80
+              headerName: "S.No.", field: "sno", width: 110
             },
             {
-              headerName: "Test Type Name", field: "testType", width: 210
+              headerName: "Test Type Name", field: "testType", width: 250
             },
             {
-              headerName: "Short Name", field: "shortName", width: 200
+              headerName: "Short Name", field: "shortName", width: 250
             },
             {
-              headerName: "Test Group", field: "testGroup", width: 170
+              headerName: "Test Group", field: "testGroup", width: 250
             },  
             {
-              headerName: "Reference Concept", field: "referenceConcept", width: 210
+              headerName: "Reference Concept", field: "referenceConcept", width: 280
             },
             {
-              headerName: "View Attribute Types", field: "viewAttributeType", width: 200 ,
-              cellRenderer:'buttonRenderer'
+              headerName: "View",
+              field: "view",
+              template:
+                  `
+              <button className="btn-edite"><i class="fa fa-eye"></i></button>
+              `
+              , width: 100
             },
             {
-              headerName: "Add Attribute Types", field: "addAttributeType", width: 200,
-              cellRenderer:'buttonRenderer'
-            }
+              headerName: "Add",
+              field: "add",
+              template:
+                  `
+              <button className="btn-edite"><i class="fa fa-plus"></i></button>
+              `
+              , width: 100
+          }
           ],
           rowData: [],
           context: { componentParent: this },
@@ -60,7 +74,6 @@ class ManageLabTest extends React.Component {
       labtestlist: PropTypes.array.isRequired,
     };
     handleSubmit() {
-      alert('Closing modal');
       this.closeAddTestModal();
     }
     
@@ -87,8 +100,8 @@ class ManageLabTest extends React.Component {
           "shortName": element.shortName,
           "testType" :element.name,
           "referenceConcept":element.referenceConcept.name.name,
-          "viewAttributeType":"View",
-          "addAttributeType":"Add"
+          "view":"view",
+          "add":"add"
         })
         sno++;
       });
@@ -97,18 +110,17 @@ class ManageLabTest extends React.Component {
    
   
   closeAddTestAttrModal() {
-    this.setState({openAddAttrModal : false , selectedTest : ''});
+    this.setState({openAddAttrModal : false , selectedTest : '',isLabTestAvailable:false});
   }
   
     onCellClicked = event => {
-      if(event.value === "View"){
-        console.log('hi '+event.column.colId);
+      if(event.value === "view"){
+        createNotification('info','Feature under construction');
         //console.log('hi '+event.data.testType);
       }
-      else if(event.value === "Add") {
+      else if(event.value === "add") {
         //<AddLabTestAttribute testdata={event.data}/>
-        console.log('hi');
-        this.setState({openAddAttrModal : true , selectedTest : event.data});
+        this.setState({openAddAttrModal : true ,selectedTest : event.data, isLabTestAvailable:true});
       }
       else {
 
@@ -118,8 +130,25 @@ class ManageLabTest extends React.Component {
       this.setState({quickFilterText: event.target.value});
     };
     render() {
-        return( 
-          <div className="row lt-main-header">
+      const {rowData, columnDefs } = this.state;
+
+      return (
+        <>
+        <CardTemplate
+                  title="Manage Lab Test"
+                  action={<button type="button" onClick={() => this.openAddTestModal()} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add New Lab Test</button>}
+              >
+                  <div className="card-body rm-paadding">
+                      <AgGrid
+                          onGridReady={this.onGridReady}
+                          columnDefs={columnDefs}
+                          onRowSelected={this.onRowSelected}
+                          rowData={rowData}
+                          onCellClicked={this.onCellClicked}
+                      />
+                  </div>
+              </CardTemplate>
+       {/* <div className="row lt-main-header">
                 <div className="lt-heading col-sm-4 col-md-4 col-lg-4">
                   <h2 className="title">Manage Lab Test</h2>
                 </div>  
@@ -164,48 +193,48 @@ class ManageLabTest extends React.Component {
               </div>
               </div>
               </div>
-          </div>
+      </div>*/}
           <Modal show={this.state.openAddTestModal} onHide={() => this.closeAddTestModal()} style={{ marginTop: '40px' }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Test Type</Modal.Title>
                 </Modal.Header>
                 <form onSubmit={this.handleSubmit}>
                     <Modal.Body>
-                      <div className="form-group required row">
-                        <label htmlFor="rconcept" class="col-sm-4 col-form-label">Reference Concept</label>
-                        <div class="col-sm-8">
+                      <div className="form-group row">
+                        <label htmlFor="rconcept" class="col-sm-5 col-form-label required">Reference Concept</label>
+                        <div class="col-sm-7">
                           <input type="text" className="form-control" name="rconcept" required/>
                         </div>
                       </div>
-                      <div className="form-group required row">
-                        <label htmlFor="testname" class="col-sm-4 col-form-label">Test Name</label>
-                        <div class="col-sm-8">
+                      <div className="form-group row">
+                        <label htmlFor="testname" class="col-sm-5 col-form-label required">Test Name</label>
+                        <div class="col-sm-7">
                           <input type="text" className="form-control" name="testname" required />
                         </div>
                       </div>
                       <div className="form-group row">
-                        <label htmlFor="shortname" class="col-sm-4 col-form-label">Short Name</label>
-                        <div class="col-sm-8">
+                        <label htmlFor="shortname" class="col-sm-5 col-form-label">Short Name</label>
+                        <div class="col-sm-7">
                           <input type="text" className="form-control" name="shortname" />
                         </div>
                       </div>
                       <div className="form-group row">
-                        <label htmlFor="description" class="col-sm-4 col-form-label">Description</label>
-                        <div class="col-sm-8">
+                        <label htmlFor="description" class="col-sm-5 col-form-label">Description</label>
+                        <div class="col-sm-7">
                         <textarea class="form-control" rows="3" name="description"></textarea>
                         </div>
                       </div>
                       <div className="form-group row">
-                        <label htmlFor="testgroup" class="col-sm-4 col-form-label">Test Group</label>
-                        <div class="col-sm-8">
+                        <label htmlFor="testgroup" class="col-sm-5 col-form-label">Test Group</label>
+                        <div class="col-sm-7">
                           <input type="text" className="form-control" name="testgroup" />
                         </div>
                       </div>
-                      <div class="form-group required row">
-                        <div className="col-sm-4">
-                        <label htmlFor="specimen" className="col-form-label">Requires Specimen</label>
+                      <div class="form-group row">
+                        <div className="col-sm-5">
+                        <label htmlFor="specimen" className="col-form-label required">Requires Specimen</label>
                         </div>
-                          <div className="col-sm-8">
+                          <div className="col-sm-7">
                             <div className="row">
                                 <div className="col-sm-6">
                                     <div className="form-check">
@@ -238,7 +267,7 @@ class ManageLabTest extends React.Component {
                     </Modal.Footer>
                 </form>
 
-            </Modal>
+            </Modal>{/*
             <Modal show={this.state.openViewAttrModel} onHide={() => this.closeAddTestModal()} style={{ marginTop: '40px' }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Test Type</Modal.Title>
@@ -246,9 +275,11 @@ class ManageLabTest extends React.Component {
                     <Modal.Body>
                     </Modal.Body>
             </Modal>
-             <AddLabTestAttribute test = {this.state.selectedTest} labTestAvailable={true} show = {this.state.openAddAttrModal} close = {this.closeAddTestAttrModal}/>
             
-          </div>);
+          </div> */}
+          <AddLabTestAttribute test = {this.state.selectedTest} labTestAvailable={this.state.isLabTestAvailable} show = {this.state.openAddAttrModal} close = {this.closeAddTestAttrModal}/>
+
+          </>);
         
     }
 }

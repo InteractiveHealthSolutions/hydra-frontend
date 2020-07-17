@@ -6,6 +6,8 @@ import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import AddLabTestAttribute from '../addlabtestattribute/AddLabTestAttribute'
 import {labtestattributeAction} from '../../../state/ducks/labtestattribute'
+import CardTemplate from '../../ui/cards/SimpleCard/CardTemplate';
+import { AgGrid } from '../../ui/AgGridTable/AgGrid';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 import './ManageLabTestAttribute.css'
@@ -75,56 +77,75 @@ class ManageLabTestAttribute extends React.Component {
         }
       }
     render() {
-        return (
-            <div className="row main-header">
-            <div className="lt-heading col-sm-6 col-md-6 col-lg-6">
-              <h2 className="title">Manage Lab Test Attributes</h2>
-            </div>  
-            <div className="col-sm-6 col-md-6 col-lg-6">
+      const {rowData, columnDefs } = this.state;
 
-            <button type="button" onClick={() => this.setState({openAddAttrModal : true})} className="btn btn-sm btn-primary btn-add-test-att">
-               + Add Attribute Type
-            </button>
-            </div>
-        <div className="main-card card">
-          <div className="row card-header">
-          <div className="input-group search-btn">
-              <input type="text" name="quickFilter" id="quickFilter" placeholder = "Search..." onChange={this.onQuickFilterText} className="form-control bg-light border-0 small lt-input-search"  aria-label="Search" aria-describedby="basic-addon2" />
-                <div className="input-group-append">
-                  <button className="btn btn-primary" type="button">
-                      <i className="fas fa-search fa-sm"></i>
-                  </button>
-                </div>
-              </div>
-          </div>
-          <div className = "card-body">
-          <div className="d-flex justify-content-center">
-          <div className="ag-theme-balham" style={{ height: '415px',width: '100%'}}>
-          <AgGridReact
-              columnDefs={this.state.columnDefs}
-              rowData={this.state.rowData}
-              modules={AllCommunityModules}
-              onCellClicked={event => { this.onCellClicked(event) }}
-              enableSorting
-              enableFilter
-              rowAnimation
-              quickFilterText={this.state.quickFilterText}
-              enableRangeSelection={true}
-              pagination={true}
-              paginationPageSize="12"
-              isExternalFilterPresent={true}
-              enableColResize="true"
-          >                 
-          </AgGridReact>
-          </div>
-          </div>
-          </div>
-      </div>
+        return (
+          <>
+          <CardTemplate
+                    title="Manage Lab Test Attribute"
+                    action={<button type="button" onClick={() => this.setState({openAddAttrModal:true})} className="fp-btn btn btn-primary "><i class="fas fa-plus"></i> Add New Attribute</button>}
+                >
+                    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowData}
+                            onCellClicked={this.onCellClicked}
+                        />
+                    </div>
+                </CardTemplate>
+                <AddLabTestAttribute labTestAvailable={false} show = {this.state.openAddAttrModal} close = {this.closeAddTestAttrModal}/>
+   
+          </>
+      //       <div className="row main-header">
+      //       <div className="lt-heading col-sm-6 col-md-6 col-lg-6">
+      //         <h2 className="title">Manage Lab Test Attributes</h2>
+      //       </div>  
+      //       <div className="col-sm-6 col-md-6 col-lg-6">
+
+      //       <button type="button" onClick={() => this.setState({openAddAttrModal : true})} className="btn btn-sm btn-primary btn-add-test-att">
+      //          + Add Attribute Type
+      //       </button>
+      //       </div>
+      //   <div className="main-card card">
+      //     <div className="row card-header">
+      //     <div className="input-group search-btn">
+      //         <input type="text" name="quickFilter" id="quickFilter" placeholder = "Search..." onChange={this.onQuickFilterText} className="form-control bg-light border-0 small lt-input-search"  aria-label="Search" aria-describedby="basic-addon2" />
+      //           <div className="input-group-append">
+      //             <button className="btn btn-primary" type="button">
+      //                 <i className="fas fa-search fa-sm"></i>
+      //             </button>
+      //           </div>
+      //         </div>
+      //     </div>
+      //     <div className = "card-body">
+      //     <div className="d-flex justify-content-center">
+      //     <div className="ag-theme-balham" style={{ height: '415px',width: '100%'}}>
+      //     <AgGridReact
+      //         columnDefs={this.state.columnDefs}
+      //         rowData={this.state.rowData}
+      //         modules={AllCommunityModules}
+      //         onCellClicked={event => { this.onCellClicked(event) }}
+      //         enableSorting
+      //         enableFilter
+      //         rowAnimation
+      //         quickFilterText={this.state.quickFilterText}
+      //         enableRangeSelection={true}
+      //         pagination={true}
+      //         paginationPageSize="12"
+      //         isExternalFilterPresent={true}
+      //         enableColResize="true"
+      //     >                 
+      //     </AgGridReact>
+      //     </div>
+      //     </div>
+      //     </div>
+      // </div>
       
-      <AddLabTestAttribute labTestAvailable={false} show = {this.state.openAddAttrModal} close = {this.closeAddTestAttrModal}/>
 
         
-      </div>
+      // </div>
         );
     }
 }

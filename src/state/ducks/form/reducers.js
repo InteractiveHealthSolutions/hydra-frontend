@@ -13,7 +13,7 @@ const initialState = {
     formbyuuid: {},
     componentFormRelations: [],
     componentFormRelation: {},
-    formSubmission:{}
+    formSubmission: {}
 };
 
 const formReducer = createReducer(initialState)({
@@ -23,6 +23,12 @@ const formReducer = createReducer(initialState)({
         current: payload,
         loading: true,
         error: null
+    }),
+    [types.GET_ALL_FORM + REJECTED]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        searchLoading: false,
+        error: payload
     }),
     [types.CREATE_FORM]: (state, { payload }) => ({
         ...state,
