@@ -22,6 +22,7 @@ export const login = (username, password) => dispatch => {
         localStorage.setItem('active_user', JSON.stringify(data.results[0].privileges))
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
+        localStorage.setItem('uuid',data.results[0].uuid);
         dispatch(success(username));
         history.push("/");
         console.log("login response", data)
@@ -80,6 +81,7 @@ export const logout = () => async dispatch => {
   localStorage.removeItem('password');
   localStorage.removeItem('activeTab');
   localStorage.removeItem('active_user');
+  localStorage.removeItem('uuid')
   dispatch(requestLogout())
   history.push('/login');
 }

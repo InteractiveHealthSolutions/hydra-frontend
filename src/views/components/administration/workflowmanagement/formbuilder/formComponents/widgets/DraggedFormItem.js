@@ -7,6 +7,7 @@ export class DraggedFormItem extends Component {
     this.state = {
       dataToReturn: {},
       expanded: false,
+      workflow:[]
     }
   }
 
@@ -26,11 +27,18 @@ export class DraggedFormItem extends Component {
     // console.log("delete", e)
     this.props.handleDelete(e,key)
   }
-
+  componentWillReceiveProps(nextProps) {
+     if(nextProps.workflow != undefined) {
+       this.setState({
+         workflow : nextProps.workflow
+       })
+     }
+  }
   render() {
 
-    const { data, key, editeMood } = this.props;
-   // console.log("dragged data", data.displayOrder)
+    const { data, key, editeMood ,workflow} = this.props;
+    // console.log("dragged data", data.displayOrder)
+   // alert(this.state.workflow)
     return (
       <li
         key={data.uuid}
@@ -41,6 +49,7 @@ export class DraggedFormItem extends Component {
           data={data}
           editeMood={editeMood}
           handleDelete={this.handleDelete}
+          workflow={this.state.workflow}
         />
       </li>
     );

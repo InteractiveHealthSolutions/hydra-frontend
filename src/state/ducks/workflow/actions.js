@@ -62,7 +62,12 @@ export const getAllWorkflow = () => async dispatch => {
 
 const workflowGetAction = (payload) => ({ type: types.GET_ALL_WORKFLOW, payload })
 
+export const getUserWorkflowByUser = (uuid) => async dispatch => {
+  fetch(GET, "/hydra/userworkflow?v=full&q="+uuid)
+    .then(res => dispatch(userWorkflowByUser(res))).catch(displayError)
+}
 
+const userWorkflowByUser = (payload) => ({type: types.USERWORKFLOW_BY_USER, payload})
 
 
 //  Fetch all workflows not working  .... :(

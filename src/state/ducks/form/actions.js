@@ -132,6 +132,65 @@ const setFormSubmission = payload => ({
   payload
 });
 
+export const getComponentFormByComponent = uuid => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/hydra/componentform?q=" + uuid)
+    .then(res => dispatch(getComponentFormByComponentAction(res)))
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
+};
+const getComponentFormByComponentAction = payload => ({
+  type: types.GET_COMPONENT_FORM_BY_COMPONENT,
+  payload
+});
+
+export const getComponentFormByUUID = uuid => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/hydra/componentform/" + uuid)
+    .then(res => dispatch(getComponentFormByUUIDAction(res)))
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
+};
+const getComponentFormByUUIDAction = payload => ({
+  type: types.GET_COMPONENT_FORM_BY_UUID,
+  payload
+});
+
+export const getFormFieldsByForm = uuid => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/hydra/form-field?q=" + uuid)
+    .then(res => dispatch(getFormFieldsByFormAction(res)))
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
+};
+const getFormFieldsByFormAction = payload => ({
+  type: types.GET_FORM_FIELDS_BY_FORM,
+  payload
+});
+
+
+export const getFormFieldsByUUID = uuid => async dispatch => {
+  dispatch(setProject())
+  fetch(GET, "/hydra/form-field/" + uuid)
+    .then(res => dispatch(getFormFieldsByUUIDAction(res)))
+    .catch((error) => {
+      console.error("componentform error ", error)
+      dispatch(setError(error))
+    });
+};
+const getFormFieldsByUUIDAction = payload => ({
+  type: types.GET_FORM_FIELD_BY_UUID,
+  payload
+});
+
+
+
 const setProject = () => ({
   type: types.SET_PROJECT
 });

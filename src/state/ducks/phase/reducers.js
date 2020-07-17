@@ -58,6 +58,11 @@ const phaseReducer = createReducer(initialState)({
         loading: false,
         workPhase: payload
     }),
+    [types.GET_WORKFLOW_PHASE_BY_WORKFLOW]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        workPhase: payload
+    })
 
 })
 
