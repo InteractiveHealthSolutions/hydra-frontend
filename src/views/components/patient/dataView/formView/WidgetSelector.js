@@ -206,6 +206,7 @@ const WidgetSelector = ({
                     <input
                         placeholder=""
                         type="number"
+                        step="0.001"
                         name={fieldId}
                         className='form-control'
                         onChange={value => setFieldValue(fieldId, value.target.value)}

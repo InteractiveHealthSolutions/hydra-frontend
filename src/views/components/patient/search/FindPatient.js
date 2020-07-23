@@ -363,12 +363,12 @@ class FindPatient extends React.Component {
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.gridApi.sizeColumnsToFit();
-        window.addEventListener("resize", function () {
-             this.gridApi.sizeColumnsToFit();
-         })
-        // window.onresize = () => {
-        //     this.gridApi.sizeColumnsToFit();
-        // }
+        // window.addEventListener("resize", function () {
+        //      this.gridApi.sizeColumnsToFit();
+        //  })
+        window.onresize = () => {
+            this.gridApi.sizeColumnsToFit();
+        }
     }
 
     render() {

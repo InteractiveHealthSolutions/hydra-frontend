@@ -8,52 +8,64 @@ export function TextBoxValidation(items, formValues) {
     const fieldAttributesName = items.field.attributeName
     let resultanErrorMsg = ""
     if (fieldAttributesName === 'Numeric') {
-        resultanErrorMsg = numericValidations(items, formValues,fieldName)
+        resultanErrorMsg = numericValidations(items, formValues, fieldName)
     }
     if (fieldAttributesName === 'Text') {
-        resultanErrorMsg = textValidations(items, formValues,fieldName)
+        resultanErrorMsg = textValidations(items, formValues, fieldName)
     }
     return resultanErrorMsg;
 }
 
 
-function numericValidations(items, formValues,fieldName) {
+function numericValidations(items, formValues, fieldName) {
     let errorMsg = "";
+    console.log("Text Box ", items.minValue, items.maxValue)
+    console.log("Text Box ", Number(formValues[fieldName]), Number(items.minValue))
     if (items.minValue && items.maxValue) {
         if (
-            Number(formValues[fieldName]) > Number(items.minValue)
-            && Number(formValues[fieldName]) < Number(items.maxValue)
+            Number(formValues[fieldName]) < Number(items.minValue)
+            || Number(formValues[fieldName]) > Number(items.maxValue)
         ) {
             errorMsg =
-                items.errorMessage ? items.errorMessage :
-                    "Minimum value should be" + items.minLength + " and Maximum length should be " + items.maxLength
+                // items.errorMessage ? items.errorMessage :
+                "Minimum value should be  " + items.minValue + " and Maximum length should be  " + items.maxValue
         }
-    } else if (items.minValue && Number(formValues[fieldName]) > Number(items.minValue)) {
-        errorMsg = items.errorMessage ? items.errorMessage : "Minimum value should be" + items.minValue
+    } else if (items.minValue && Number(formValues[fieldName]) < Number(items.minValue)) {
+        // errorMsg = items.errorMessage ? items.errorMessage : 
+        errorMsg =   "Minimum value should be" + items.minValue
     }
-    else if (items.maxValue && Number(formValues[fieldName]) < Number(items.maxValue)) {
-        errorMsg = items.errorMessage ? items.errorMessage : "Maximum value should be" + items.maxValue
+    else if (items.maxValue && Number(formValues[fieldName]) > Number(items.maxValue)) {
+        // errorMsg = items.errorMessage ? items.errorMessage :
+        errorMsg =  "Maximum value should be" + items.maxValue
     }
 
     if (!items.allowDecimal && CHECK_DECIMAL.test(formValues[fieldName])) {
-        errorMsg = items.errorMessage ? items.errorMessage : "Decimal value is not allowed"
+         // errorMsg = items.errorMessage ? items.errorMessage : 
+         errorMsg = "Decimal value is not allowed"
     }
-
+    console.log("Text Box ", errorMsg)
     return errorMsg;
-
 }
 
-function textValidations(items, formValues,fieldName) {
+function textValidations(items, formValues, fieldName) {
     let errorMsg = "";
     if (items.minLength && items.maxLength) {
-        if (formValues[fieldName].length < items.minLength || formValues[fieldName].length > items.maxLength) {
+        if (
+            formValues[fieldName].length < items.minLength 
+            || formValues[fieldName].length > items.maxLength
+
+            ) {
             errorMsg = "Minimum length should be" + items.minLength + " and Maximum length should be " + items.maxLength
         }
     } else if (items.minLength && formValues[fieldName].length < items.minLength) {
         errorMsg = "Minimum length should be" + items.minLength
-    } else if (items.maxLength && formValues[fieldName].length > items.minLength) {
+    } else if (items.maxLength && formValues[fieldName].length > items.maxLength) {
         errorMsg = "Maximum length should be" + items.maxLength
     }
+    if (items.regix && items.regix.test(formValues[fieldName])) {
+        // errorMsg = items.errorMessage ? items.errorMessage : 
+        errorMsg = "Invalide input value(regix)"
+   }
 
     return errorMsg
 }
