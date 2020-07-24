@@ -41,7 +41,7 @@ class Visits extends React.Component {
                     headerName: "Enterer", field: "enterer", width: 200
                 },
                 {
-                    headerName: "isAutomated", field: "isAutomated", width: 200 , hide:true
+                    headerName: "isAutomated", field: "isAutomated", width: 200, hide: true
                 },
                 {
                     headerName: "View",
@@ -59,11 +59,11 @@ class Visits extends React.Component {
 
             ],
             rowClassRules: {
-              "qxr-row": function(params) {
-                  return params.data.isAutomated
-                  //return false;
-            }
-        },
+                "qxr-row": function (params) {
+                    return params.data.isAutomated
+                    //return false;
+                }
+            },
             rowData: [],
             openViewModal: false,
             activePatient: JSON.parse(localStorage.getItem('active-patient'))
@@ -74,7 +74,7 @@ class Visits extends React.Component {
     static propTypes = {
         encountersList: PropTypes.array.isRequired
     }
-    
+
     async componentDidMount() {
         await this.props.getEncountersForAPatient(this.state.activePatient.uuid);
         await console.log('encounters ' + JSON.stringify(this.props.encountersList))
@@ -107,7 +107,7 @@ class Visits extends React.Component {
                     "providers": providers.slice(0, -1),
                     "location": element.location != null ? element.location.display : '',
                     "enterer": element.auditInfo.creator.display,
-                    "isAutomated":element.auditInfo.creator.display == 'QXR-user'?true:false,
+                    "isAutomated": element.auditInfo.creator.display == 'QXR-user' ? true : false,
                     "obs": element.obs
                 })
             });
@@ -125,16 +125,16 @@ class Visits extends React.Component {
         window.onresize = () => {
             this.gridApi.sizeColumnsToFit();
         }
-        
 
-        
+
+
     }
-    
-   
+
+
     render() {
-        const { columnDefs, rowData ,rowClassRules} = this.state
+        const { columnDefs, rowData, rowClassRules } = this.state
         return (
-            <div className = "test">
+            <div className="test">
                 <CardTemplate
                     title="Patient Visits"
                 >
@@ -148,7 +148,13 @@ class Visits extends React.Component {
                     />
 
                 </CardTemplate>
-                <Modal show={this.state.openViewModal} onHide={() => this.closeViewModal()} backdrop="static" style={{ marginTop: '40px' }}>
+                <Modal 
+                    show={this.state.openViewModal}
+                    onHide={() => this.closeViewModal()}
+                    backdrop="static"
+                    style={{ marginTop: '80px' }}
+                    size="lg"
+                    >
                     <Modal.Header closeButton>
                         <Modal.Title>Encounter Observations</Modal.Title>
                     </Modal.Header>
@@ -159,7 +165,7 @@ class Visits extends React.Component {
                                     <div className="form-group row">
                                         <label className="col-form-label col-sm-4 " >{value.concept.display}</label>
                                         <div className="col-sm-8">
-                                          <input type="text" className="form-control" name="name" value={(value !== undefined && value.display !== undefined) ? value.display : value} disabled />
+                                            <input type="text" className="form-control" name="name" value={(value !== undefined && value.display !== undefined) ? value.display : value} disabled />
                                         </div>
                                     </div>
                                 )
@@ -170,44 +176,6 @@ class Visits extends React.Component {
                     </Modal.Footer>
                 </Modal>
             </div>
-
-            // <div className="row container-fluid l-main-container">
-            //     <div className="card fp-header" style={{ marginTop: '100px', marginLeft: '30px' }}>
-            //         <div className="card-header">
-            //             <div className="row">
-            //                 <div className="col-md-8 col-sm-4">
-            //                     <span className="text-muted">Patient Visits</span>
-            //                 </div>
-            //             </div>
-
-
-            //         </div>
-            //         <div className="card-body rm-paadding">
-            //             <div className="d-flex justify-content-center">
-            //                 <div className="ag-theme-balham" style={{ height: '415px', width: '100%' }}>
-            //                     <AgGridReact
-            //                         columnDefs={this.state.columnDefs}
-            //                         rowData={this.state.rowData}
-            //                         modules={AllCommunityModules}
-            //                         //context={this.state.context}
-            //                         //frameworkComponents={this.state.frameworkComponents}
-            //                         enableSorting
-            //                         enableFilter
-            //                         rowAnimation
-            //                         //quickFilterText={this.state.quickFilterText}
-            //                         enableRangeSelection={true}
-            //                         pagination={true}
-            //                         paginationPageSize="12"
-            //                         isExternalFilterPresent={true}
-            //                         enableColResize="true"
-            //                         onCellClicked={this.onCellClicked}
-            //                     >
-            //                     </AgGridReact>
-            //                 </div>
-            //             </div>
-            //         </div>
-            //     </div>
-
 
         )
     }
