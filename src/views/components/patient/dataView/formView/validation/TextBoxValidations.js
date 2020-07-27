@@ -28,15 +28,15 @@ function numericValidations(items, formValues, fieldName) {
         ) {
             errorMsg =
                 // items.errorMessage ? items.errorMessage :
-                "Minimum value should be  " + items.minValue + " and Maximum length should be  " + items.maxValue
+                "Minimum value should be   " + items.minValue + "  and Maximum length should be  " + items.maxValue
         }
     } else if (items.minValue && Number(formValues[fieldName]) < Number(items.minValue)) {
         // errorMsg = items.errorMessage ? items.errorMessage : 
-        errorMsg =   "Minimum value should be" + items.minValue
+        errorMsg =   "Minimum value should be  " + items.minValue
     }
     else if (items.maxValue && Number(formValues[fieldName]) > Number(items.maxValue)) {
         // errorMsg = items.errorMessage ? items.errorMessage :
-        errorMsg =  "Maximum value should be" + items.maxValue
+        errorMsg =  "Maximum value should be  " + items.maxValue
     }
 
     if (!items.allowDecimal && CHECK_DECIMAL.test(formValues[fieldName])) {
