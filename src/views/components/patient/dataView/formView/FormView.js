@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate'
-import WidgetGenerator from './WidgetGenerator'
 import { CreateYupSchema, FormValidation } from './validation/CreateValidationSchema'
 import * as yup from "yup";
+import CheckRule from './parser/CheckRule'
 import {
     Formik, Form,
 }
@@ -93,8 +93,9 @@ function FormView({
                                     formFields ? formFields.map((data, index) => (
                                         <>
                                             {(data.field.fieldType) ?
-                                                <WidgetGenerator
+                                                <CheckRule
                                                     type={data}
+                                                    temType ={data}
                                                     setFieldValue={setFieldValue}
                                                     values={values}
                                                     handleChange={handleChange}
@@ -112,7 +113,7 @@ function FormView({
 
                                 }
                                 {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
-                                {/* <pre>{JSON.stringify(errors, null, 2)}</pre> */}
+                                <pre>{JSON.stringify(errors, null, 2)}</pre>
                             </CardTemplate>
                         </form>
                     )}
