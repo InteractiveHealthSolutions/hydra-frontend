@@ -235,7 +235,7 @@ class FindPatient extends React.Component {
                         "middle": element.person.preferredName.middleName,
                         "familyname": element.person.preferredName.familyName,
                         "age": element.person.age,
-                        "gender": element.person.gender == "F" ? "Female" : "Male",
+                        "gender": element.person.gender === "F" ? "Female" : "Male",
                         "birthday": element.person.birthdate != null ? moment(element.person.birthdate).format('YYYY-MM-DD') : "",
                         "deathdate": element.person.deathDate != null ? moment(element.person.deathDate).format('YYYY-MM-DD') : "",
                         "uuid": element.uuid
