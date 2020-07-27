@@ -15,10 +15,14 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { AgGrid } from '../../../../ui/AgGridTable/AgGrid';
 import CardTemplate from '../../../../ui/cards/SimpleCard/CardTemplate';
+//import TabPanel from '../../../../ui/tabs/TabPanel';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+
 
 class LocationManagement extends React.Component {
 
-    constructor(props) {
+    constructor(props) { 
         super(props)
 
         this.state = {
@@ -77,8 +81,11 @@ class LocationManagement extends React.Component {
                     hide: true
                 }
             ],
-            rowData: [],
-            openModal: false,
+            rowDataGeoLocations: [],
+            rowDataFormLocations:[],
+            locationLevel : '',
+            openGModal: false,
+            openFModal: false,
             listItems: [],
             description: '',
             locationName: '',
@@ -101,6 +108,7 @@ class LocationManagement extends React.Component {
             colorCountryError: false,
             colorCityError: false,
             colorProvinceError: false,
+            locationTypeOptions: [],
             defaultCountry: {
                 "label": "",
                 "value": ""
@@ -118,20 +126,23 @@ class LocationManagement extends React.Component {
 
         }
         this.selectRef = React.createRef();
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleGSubmit = this.handleGSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleCountryChange = this.handleCountryChange.bind(this);
+      //  this.handleCountryChange = this.handleCountryChange.bind(this);
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
+        this.handleLocationTypeChange = this.handleLocationTypeChange.bind(this);
         this.handleChangeLocationTag = this.handleChangeLocationTag.bind(this);
     }
 
     async componentDidMount() {
         await this.props.getAllLocation();
         await this.props.getAllLocationTag();
+        await this.props.getAllLocationTypes();
         if (this.props.locationLists != undefined) {
+            await this.dataBuilder();
+            await this.locationTypeOptionBuilder();
             await this.setState({
-                rowData: this.dataBuilder(),
                 availableParentLocation: this.props.locationLists.results
             })
 
@@ -141,31 +152,71 @@ class LocationManagement extends React.Component {
 
 
     }
-    dataBuilder() {
+    locationTypeOptionBuilder() {
+        if (this.props.locationTypes != undefined && this.props.locationTypes.payload != undefined) {
+            this.setState({ locationTypeOptions: [] })
+            this.props.locationTypes.payload.locationTypes.forEach(element => {
+                this.state.locationTypeOptions.push({
+                    "label": element.name,
+                    "value": element.locationTypeId
+
+                })
+            });
+        }
+    }
+    async dataBuilder() {
          let data = [];
+         let dataForm = [];
          if(this.props.locationLists != undefined && this.props.locationLists.results != undefined) {
+             let toContinue = true;
              this.props.locationLists.results.forEach(element => {
+                 toContinue = true
                  let tagList= '';
                  element.tags.forEach(value => {
+                     if(value.display == 'Form Location')
+                     {
+                        toContinue = false;
+                     }
                      tagList = tagList + value.display + ","
                  })
-                 data.push({
-                     "display" : element.display,
-                     "description" : element.description,
-                     "country" : element.country,
-                     "address1" : element.address1,
-                     "address2" : element.address2,
-                     "cityVillage" : element.cityVillage,
-                     "stateProvince" : element.stateProvince,
-                     "uuid" : element.uuid,
-                     "tags" : tagList.slice(0,-1),
-                     "parentLocation" : element.parentLocation != null ? element.parentLocation.display : '',
-                     "tagsArray" : element.tags
-
-                 })
+                 if(toContinue) {
+                    data.push({
+                        "display" : element.display,
+                        "description" : element.description,
+                        "country" : element.country,
+                        "address1" : element.address1,
+                        "address2" : element.address2,
+                        "cityVillage" : element.cityVillage,
+                        "stateProvince" : element.stateProvince,
+                        "uuid" : element.uuid,
+                        "tags" : tagList.slice(0,-1),
+                        "parentLocation" : element.parentLocation != null ? element.parentLocation.display : '',
+                        "tagsArray" : element.tags
+   
+                    })
+                 }
+                 else {
+                    dataForm.push({
+                        "display" : element.display,
+                        "description" : element.description,
+                        "country" : element.country,
+                        "address1" : element.address1,
+                        "address2" : element.address2,
+                        "cityVillage" : element.cityVillage,
+                        "stateProvince" : element.stateProvince,
+                        "uuid" : element.uuid,
+                        "tags" : tagList.slice(0,-1),
+                        "parentLocation" : element.parentLocation != null ? element.parentLocation.display : '',
+                        "tagsArray" : element.tags
+   
+                    })
+                  
+                 }
+                 
              })
          }
-         return data
+         await this.setState({rowDataGeoLocations:data});
+         await this.setState({rowDataFormLocations:dataForm});
     }
     async createCountryDropDown() {
         let countryDropDown = [];
@@ -184,8 +235,9 @@ class LocationManagement extends React.Component {
     async componentWillReceiveProps(nextProps) {
 
         if (nextProps.locationLists !== undefined) {
+            await this.dataBuilder();
+
             await this.setState({
-                rowData: this.dataBuilder(),
                 availableParentLocation: nextProps.locationLists.results
             })
             if (this.state.availableParentLocation !== undefined) {
@@ -200,6 +252,9 @@ class LocationManagement extends React.Component {
                 this.populateDropDownLocationTag();
             }
         }
+        if (nextProps.locationTypes != undefined && nextProps.locationTypes.payload != undefined) {
+            await this.locationTypeOptionBuilder();
+        }
     }
 
     onRowSelected = (event) => {
@@ -211,7 +266,8 @@ class LocationManagement extends React.Component {
             tags.map(data => {
                 this.state.defaultTags.push({
                     "label":data.display,
-                    "value":data.uuid})
+                    "value":data.uuid
+                })
             });
         }
     }
@@ -243,7 +299,7 @@ class LocationManagement extends React.Component {
                 parentLocation: event.data.parentLocation,
                 landmark: event.data.address2,
                 isEdit: true,
-                openModal: true,
+                openGModal: true,
                 activeLocation: event.data.uuid
             })
         }
@@ -252,12 +308,20 @@ class LocationManagement extends React.Component {
         }
     };
 
-    openModal() {
+    openGModal() {
         this.resetForm();
         this.setState({
-            openModal: true,
+            openGModal: true,
             isEdit: false
         })
+    }
+    openFModal() {
+        this.resetForm();
+        this.setState({
+            openFModal: true,
+            isEdit: false
+        })
+   
     }
 
     resetForm() {
@@ -272,50 +336,37 @@ class LocationManagement extends React.Component {
         })
     }
 
-    closeModal() {
+    closeGModal() {
         this.setState({
             isEdit: false,
-            openModal: false,
+            openGModal: false,
             colorCountryError: false,
             colorCityError: false,
             colorProvinceError: false
 
         })
     }
+    closeFModal() {
+        this.setState({
+            isEdit: false,
+            openFModal: false,
+            colorCountryError: false,
+            colorCityError: false,
+            colorProvinceError: false
 
-    async handleSubmit(e) {
+        })
+    }
+    async handleGSubmit(e) {
         await e.preventDefault();
-        var array  = this.state.rowData;
+        var array  = this.state.rowDataGeoLocations;
         var existingObj = array.filter(data => data.display == this.state.locationName);
         if(JSON.stringify(existingObj) != '[]' && !this.state.isEdit) {
             createNotification('warning','Location with this name already exist');
             return;
         }
-        const { country, city, address, locationTag, parentLocation, landmark, locationName, stateProvince, description, activeLocation } = this.state
+        const { country, city, address, locationLevel, locationTag, parentLocation, landmark, locationName, stateProvince, description, activeLocation } = this.state
         let locationForm = {}
         let submit = true;
-        if (country == '') {
-            this.setState({ colorCountryError: true });
-            submit = false;
-        }
-        else {
-            this.setState({ colorCountryError: false });
-
-        }
-        if (city == '') {
-            this.setState({ colorCityError: true });
-            submit = false;
-        }
-        else {
-            this.setState({ colorCityError: false });
-        }
-        if (stateProvince == '') {
-            this.setState({ colorProvinceError: true });
-            submit = false;
-        }
-        else {
-            this.setState({ colorProvinceError: false });
-        }
         if (submit) {
             let tags = [];
             // if (locationTag)
@@ -326,11 +377,7 @@ class LocationManagement extends React.Component {
                 locationForm = {
                     name: locationName,
                     description: description,
-                    address1: address,
-                    address2: landmark,
-                    cityVillage: city,
-                    country : country,
-                    stateProvince: stateProvince,
+                    address9: locationLevel.toString(),
                     parentLocation: parentLocation,
                     tags: tags
                 }
@@ -339,11 +386,7 @@ class LocationManagement extends React.Component {
                 locationForm = {
                     name: locationName,
                     description: description,
-                    address1: address,
-                    address2: landmark,
-                    cityVillage: city,
-                    country : country,
-                    stateProvince: stateProvince,
+                    address9: locationLevel.toString(),
                     parentLocation: parentLocation
                 }
 
@@ -352,11 +395,11 @@ class LocationManagement extends React.Component {
                 await this.props.editLocation(this.state.activeLocation, locationForm);
                 await createNotification('success', 'Location Updated');
                 await window.location.reload();
-                await this.closeModal()
+                await this.closeModal();
             }
             else {
                 await this.props.saveLocation(locationForm);
-                createNotification('success', 'Location Created');
+                await createNotification('success', 'Location Created');
                 await window.location.reload();
                 await this.closeModal();
 
@@ -372,18 +415,9 @@ class LocationManagement extends React.Component {
             [e.target.name]: e.target.value
         })
     }
-    async handleCountryChange(country) {
-        await this.props.getChildLocations(country.value);
-        let provinceDropDown = [];
-        await this.props.childLocations.childLocations.forEach(element => {
-            provinceDropDown.push({
-                "label": element.display,
-                "value": element.uuid
-            })
-        })
-        await this.setState({ country: country.label })
-        await this.setState({ provinceDropDown: provinceDropDown })
-
+    async handleLocationTypeChange(level) {
+        await this.setState({ locationLevel: level.value })
+    
     }
     async handleProvinceChange(province) {
         await this.setState({ cityDropDown: [] })
@@ -473,38 +507,64 @@ class LocationManagement extends React.Component {
     }
 
     render() {
-        const { colorCountryError, rowData, columnDefs, colorCityError, colorProvinceError } = this.state;
+        const { colorCountryError, rowDataGeoLocations,rowDataFormLocations, columnDefs, colorCityError, colorProvinceError } = this.state;
 
         if (this.props.isloading) return <Loaders />;
         return (
             <>
                 <CardTemplate
                     title="Location Management"
-                    action={<button className="fp-btn btn btn-primary " onClick={() => this.openModal()}><i class="fas fa-plus"></i> Create New</button>}
+                    action={
+                    <> 
+                      <button className="fp-btn btn btn-primary " style={{marginLeft:"5px"}}onClick={() => this.openFModal()}><i class="fas fa-plus"></i> Create New Form Location</button>
+                      <button className="fp-btn btn btn-primary " onClick={() => this.openGModal()}><i class="fas fa-plus"></i> Create New Geographical Location</button>
+
+                    </>
+                    }
                 >
-                    <div className="card-body rm-paadding">
+                     <Tabs>
+    <TabList>
+      <Tab ><h6>Geographical Locations</h6></Tab>
+      <Tab><h6>Form Locations</h6></Tab>
+    </TabList>
+ 
+    <TabPanel>
+    <div className="card-body rm-paadding">
                         <AgGrid
                             onGridReady={this.onGridReady}
                             columnDefs={columnDefs}
                             onRowSelected={this.onRowSelected}
-                            rowData={rowData}
+                            rowData={rowDataGeoLocations}
                             onCellClicked={this.onCellClicked}
 
                         />
                     </div>
+   
+    </TabPanel>
+    <TabPanel>
+    <div className="card-body rm-paadding">
+                        <AgGrid
+                            onGridReady={this.onGridReady}
+                            columnDefs={columnDefs}
+                            onRowSelected={this.onRowSelected}
+                            rowData={rowDataFormLocations}
+                            onCellClicked={this.onCellClicked}
 
-                </CardTemplate>
-
-                <Modal
-                    show={this.state.openModal}
-                    onHide={() => this.closeModal()}
+                        />
+                    </div>
+   </TabPanel>
+  </Tabs>
+                    </CardTemplate>
+                    <Modal
+                    show={this.state.openGModal}
+                    onHide={() => this.closeGModal()}
                     style={{ marginTop: '100px' }}
                     backdrop="static"
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Location</Modal.Title>
+                        <Modal.Title>Add Geographical Location</Modal.Title>
                     </Modal.Header>
-                    <form onSubmit={this.handleSubmit}>
+                    <form onSubmit={this.handleGSubmit}>
                         <Modal.Body style={{ height: '309px', overflowY: 'auto' }} >
                             <div className='form-group '>
                                 <label htmlFor='locationName' className="required">Name</label>
@@ -530,65 +590,6 @@ class LocationManagement extends React.Component {
                                     onChange={this.handleChange}
                                 />
                             </div>
-                            <div className="form-group ">
-                                <label htmlFor="country" className="required">Country</label>
-                                <Select
-                                    ref={this.selectRef}
-                                    name="country"
-                                    required
-                                    options={this.state.countryDropDown}
-                                    onChange={this.handleCountryChange}
-                                    defaultValue={this.state.defaultCountry}
-                                    styles={{
-                                        control: (provided, state) =>
-                                            colorCountryError
-                                                ? {
-                                                    ...provided,
-                                                    boxShadow: "0 0 0 1px red !important",
-                                                    borderColor: "red !important"
-                                                }
-                                                : provided
-                                    }}
-                                />
-                            </div>
-                            <div className="form-group ">
-                                <label htmlFor="province" className="required">State/Province</label>
-                                <Select
-                                    required
-                                    options={this.state.provinceDropDown}
-                                    onChange={this.handleProvinceChange}
-                                    defaultValue={this.state.defaultProvince}
-                                    styles={{
-                                        control: (provided, state) =>
-                                            colorCityError
-                                                ? {
-                                                    ...provided,
-                                                    boxShadow: "0 0 0 1px red !important",
-                                                    borderColor: "red !important"
-                                                }
-                                                : provided
-                                    }}
-                                />
-                            </div>
-                            <div className="form-group ">
-                                <label htmlFor="city" className="required">City</label>
-                                <Select
-                                    required
-                                    options={this.state.cityDropDown}
-                                    onChange={this.handleCityChange}
-                                    defaultValue={this.state.defaultCity}
-                                    styles={{
-                                        control: (provided, state) =>
-                                            colorProvinceError
-                                                ? {
-                                                    ...provided,
-                                                    boxShadow: "0 0 0 1px red !important",
-                                                    borderColor: "red !important"
-                                                }
-                                                : provided
-                                    }}
-                                />
-                            </div>
                             <div className='form-group '>
                                 <label htmlFor='parentLocation' >Parent Location</label>
                                 <select className="form-control" name="parentLocation"
@@ -598,27 +599,13 @@ class LocationManagement extends React.Component {
                                     {this.state.arrayParentLocation}
                                 </select>
                             </div>
-                            <div className='form-group '>
-                                <label htmlFor='address' >Address</label>
-                                <input
-                                    type='text'
-                                    className='form-control'
-                                    autoComplete='off'
-                                    name='address'
-                                    value={this.state.address}
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className='form-group '>
-                                <label htmlFor='landmark' className="">Landmark</label>
-                                <input
-                                    type='text'
-                                    className='form-control'
-                                    autoComplete='off'
-                                    pattern='^[a-zA-Z\s]*$'
-                                    name='landmark'
-                                    value={this.state.landmark}
-                                    onChange={this.handleChange}
+                            <div className='form-group'>
+                                <label htmlFor='locationType'>Hierarchy Level</label>
+                                <Select
+                                   // defaultValue={this.state.defaultTags}
+                                    options={this.state.locationTypeOptions}
+                                    onChange={this.handleLocationTypeChange}
+                                   // isMulti
                                 />
                             </div>
                             <div className='form-group'>
@@ -640,7 +627,78 @@ class LocationManagement extends React.Component {
                         </Modal.Footer>
                     </form>
                 </Modal >
+                <Modal
+                    show={this.state.openFModal}
+                    onHide={() => this.closeFModal()}
+                    style={{ marginTop: '100px' }}
+                    backdrop="static"
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add Form Location</Modal.Title>
+                    </Modal.Header>
+                    <form onSubmit={this.handleFSubmit}>
+                        <Modal.Body style={{ height: '309px', overflowY: 'auto' }} >
+                            <div className='form-group '>
+                                <label htmlFor='locationName' className="required">Name</label>
+                                <input
+                                    type='text'
+                                    className='form-control'
+                                    autoComplete='off'
+                                    pattern="^[a-zA-Z]+(?:[\s-][a-zA-Z]+[0-9]*)*$"
+                                    value={this.state.locationName}
+                                    name='locationName'
+                                    onChange={this.handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className='form-group '>
+                                <label htmlFor='description'>Description</label>
+                                <textarea
+                                    type='text'
+                                    className='form-control'
+                                    autoComplete='off'
+                                    name='description'
+                                    value={this.state.description}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                            <div className='form-group '>
+                                <label htmlFor='parentLocation' >Parent Location</label>
+                                <select className="form-control" name="parentLocation"
+                                    value={this.state.parentLocation}
+                                    onChange={this.handleChange}>
+                                    <option>{this.state.isEdit ? this.state.defaultParentLocation:''}</option>
+                                    {this.state.arrayParentLocation}
+                                </select>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor='locationType'>Hierarchy Level</label>
+                                <Select
+                                   // defaultValue={this.state.defaultTags}
+                                    options={this.state.locationTypeOptions}
+                                    onChange={this.handleLocationTypeChange}
+                                   // isMulti
+                                />
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor='locationTag'>Location Tags</label>
+                                <Select
+                                    defaultValue={this.state.defaultTags}
+                                    options={this.state.arrayLocationtag}
+                                    onChange={this.handleChangeLocationTag}
+                                    isMulti
+                                />
+                            </div>
 
+
+
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type='submit' variant='primary'>Save
+                        </Button>
+                        </Modal.Footer>
+                    </form>
+                </Modal >               
             </>
         )
     }
@@ -653,7 +711,8 @@ const mapStateToProps = state => ({
     locationTagList: state.location.locationtag,
     locationListByTag: state.location.locationsForATag,
     childLocations: state.location.childLocations,
-    error: state.location.locationError
+    error: state.location.locationError,
+    locationTypes: state.location.locationTypes
 });
 
 const mapDispatchToProps = {
@@ -663,7 +722,9 @@ const mapDispatchToProps = {
     getAllLocationTag: locationAction.fetchLocationTags,
     getLocationByTag: locationAction.getLocationByTag,
     getChildLocations: locationAction.getChildLocations,
-    editLocation: locationAction.editLocation
+    editLocation: locationAction.editLocation,
+    getAllLocationTypes: locationAction.getAllLocationTypes
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LocationManagement) 

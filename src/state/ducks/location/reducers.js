@@ -12,7 +12,9 @@ const initialState = {
     locationtag: [],
     childLocations: [],
     locationsForATag: [],
-    locationError : false
+    locationError : false,
+    locationTypes : [],
+    locationType : {}
 };
 
 const locationReducer = createReducer(initialState)({
@@ -78,6 +80,16 @@ const locationReducer = createReducer(initialState)({
         
         ...state,
         locationError : false
+    }),
+    [types.GET_ALL_LOCATION_TYPES] : (state,payload) => ({
+        ...state,
+        locationTypes : payload,
+        loading : false
+    }),
+    [types.POST_LOCATION_TYPES] : (state, payload) => ({
+        ...state,
+        locationType : payload, 
+        loading : false
     })
 
 })

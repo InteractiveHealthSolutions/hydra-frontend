@@ -45,13 +45,13 @@ import Home from './views/components/administration/Home';
 import AdminBreadCrumbs from './views/components/breadcrumbs/AdminBreadCrumbs';
 import Visits from './views/components/patient/visit/Visit';
 import {WorkflowFormViewContainer, FormViewContainer} from './views/components/patient/dataView';
-import ManageLabTest from './views/components/manageLabTest/ManageLabTest'
+import ManageLabTest from './views/components/ManageLabTest/ManageLabTest'
 import AddLabTestAttribute from './views/components/addlabtestattribute/AddLabTestAttribute';
-import ManageLabTestAttribute from './views/components/manageLabTestAttribute/ManageLabTestAttribute'
+import ManageLabTestAttribute from './views/components/ManageLabTestAttribute/ManageLabTestAttribute'
 import TestOrderList from './views/components/labtestorder/TestOrderList'
 import AddTestOrder from './views/components/labtestorder/AddTestOrder';
 import SampleList from './views/components/labtestsample/samplelist';
-
+import Level from './views/components/administration/location/geographical-locations/levels/level'
 
 const Main = styled.main`
     position: relative;
@@ -185,15 +185,28 @@ class App extends React.Component {
 
                                                                 <NavItem eventKey="/administration/location" onClick={this.toggleSidebar}>
                                                                     <NavIcon>
-                                                                        <Link to="/administration/location">
                                                                             <i class="fas fa-map-marker-alt" style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
-                                                                        </Link>
                                                                     </NavIcon>
                                                                     <NavText>
-                                                                        <Link to="/administration/location">
-                                                                            Location Management
-                                                                        </Link>
-                                                                    </NavText>
+                                                                         Location Management
+                                                                      </NavText>
+                                                                      <NavItem eventKey="/administration/geographicallevel" onClick={this.toggleSidebar}>
+                                                                        <NavText >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/geographicallevel" >
+                                                                                <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                 Geographical Levels
+                                                                            </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                    <NavItem eventKey="/administration/location" onClick={this.toggleSidebar}>
+                                                                        <NavText >
+                                                                            <Link className={expanded ? "formLink" : ""} to="/administration/location" >
+                                                                                <i class="fas fa-cube" style={{ fontSize: '1em', verticalAlign: 'middle', marginRight: '10px' }} />
+                                                                                   View Location
+                                                                             </Link>
+                                                                        </NavText>
+                                                                    </NavItem>
+                                                                 
                                                                 </NavItem>
 
                                                                 {/* workflowmanagement */}
@@ -325,6 +338,7 @@ class App extends React.Component {
                                                                 <Route path="/administration/options" component={OptionList} />
                                                                 <Route path="/administration/manageLabTestAttribute" component={ManageLabTestAttribute} />
                                                                 <Route path="/administration/manageLabTest" component={ManageLabTest} />
+                                                                <Route path="/administration/geographicallevel" component={Level} />
 
                                                                 <Route path="/" component={Home} />
                                                             </Switch>

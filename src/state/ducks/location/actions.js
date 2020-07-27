@@ -9,6 +9,7 @@ import { REJECTED } from "../../../utilities/constants/globalconstants";
 import { handleResponse } from '../../../utilities/helpers/helper';
 import { displayError } from '../../../utilities/helpers/helper';
 import {createNotification} from '../../../utilities/helpers/helper'
+import { dispatch } from "react-advanced-form";
 
 // export const saveLocation = (Location) => ({
 //   type: types.API,
@@ -88,11 +89,21 @@ export const getLocationByTag = (tag) => async dispatch =>
 
 const locationByTagGetAction = (payload) => ({type: types.GET_LOCATION_BY_TAG,payload})
 const setProject = () => ({
-
+  
   type: types.SET_PROJECT
 
 });
 
+export const getAllLocationTypes = () => async dispatch => 
+   fetch(GET, "/hydra/location-type").then(res=>dispatch(locationTypesGetAction(res))).catch(displayError)
+
+const locationTypesGetAction = (payload) => ({type: types.GET_ALL_LOCATION_TYPES,payload})
+
+export const postLocationType = (locationType) => async dispatch =>
+   fetch(POST, "/hydra/location-type", locationType).then(res => dispatch(locationTypePostAction(res))).catch(displayError)
+
+const locationTypePostAction = (payload) => ({type: types.POST_LOCATION_TYPES, payload})
+   
 // const setError = payload => ({
 //   type: types.GET_ALL_LOCATION + REJECTED,
 //   payload

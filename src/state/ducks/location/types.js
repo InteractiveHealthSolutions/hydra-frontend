@@ -10,4 +10,6 @@ export const GET_ALL_LOCATION_TAG = "GET_ALL_LOCATION_TAG";
 export const API = "API";
 export const SET_PROJECT = "SET_PROJECT";
 export const SET_ERROR = "SET_ERROR";
-export const UNSET_ERROR = "UNSET_ERROR"
+export const UNSET_ERROR = "UNSET_ERROR";
+export const GET_ALL_LOCATION_TYPES = "GET_ALL_LOCATION_TYPES";
+export const POST_LOCATION_TYPES = "POST_LOCATION_TYPES"
