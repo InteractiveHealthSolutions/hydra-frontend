@@ -1,19 +1,24 @@
-import { authenticationGenerator } from '../../utilities/helpers';
-import { userService } from '../../services/userservice';
-import { history } from '../../history';
-import { displayError, createNotification } from '../../utilities/helpers/helper'
-import {BASE_URL} from '../../utilities/constants/globalconstants'
+import { authenticationGenerator } from "../../utilities/helpers";
+import { userService } from "../../services/userservice";
+import { history } from "../../history";
+import {
+  displayError,
+  createNotification,
+} from "../../utilities/helpers/helper";
+import { BASE_URL } from "../../utilities/constants/globalconstants";
 export default async (method, path, data) => {
-  const token = authenticationGenerator.generateAuthenticationToken(localStorage.getItem('username'),
-    localStorage.getItem('password'));
+  const token = authenticationGenerator.generateAuthenticationToken(
+    localStorage.getItem("username"),
+    localStorage.getItem("password")
+  );
   const requestOptions = {
     method: method,
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token,
-      'Accept': 'application/json'
+      "Content-Type": "application/json",
+      Authorization: token,
+      Accept: "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   };
 
   return fetch(`${BASE_URL}/${path}`, requestOptions)
