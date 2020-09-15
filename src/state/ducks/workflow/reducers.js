@@ -41,6 +41,11 @@ const workflowReducer = createReducer(initialState)({
          loading: false,
          workflows: payload
     }),
+    [types.USERWORKFLOW_BY_USER]: (state, { payload }) => ({
+        ...state,
+        loading: false,
+        userWorkflow: payload
+    })
 })
 
 export default workflowReducer
