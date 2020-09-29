@@ -25,7 +25,7 @@ export const login = (username, password) => dispatch => {
       localStorage.setItem('uuid', data.results[0].uuid);
       dispatch(success(username));
       history.push("/");
-      console.log("login response", data)
+      console.log("login response!", data)
     })
     .catch((error) => {
       dispatch(failure(error))
