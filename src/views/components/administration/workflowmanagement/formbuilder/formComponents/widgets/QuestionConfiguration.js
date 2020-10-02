@@ -314,8 +314,7 @@ class QuestionConfiguration extends Component {
                 if (element.field.attributeName === this.props.datatype) {
                     questionDropdown.push({
                         "label": element.field.name,
-                        "value": element.uuid,
-                        "id": element.id
+                        "value": element.id
                     })
 
                 }
@@ -331,7 +330,7 @@ class QuestionConfiguration extends Component {
         });
         //     this.setState({selectedComponentForm:ev.value})
         localStorage.setItem(`${name}`, ev.value);
-        await localStorage.setItem(`${uuid}-autocompletefield`, ev.id)
+        await localStorage.setItem(`${uuid}-autocompletefield`, ev.value)
 
         //await this.props.getComponentFormByComponent(localStorage.getItem(`${uuid}-component`));
         if (this.props.componentFormList != undefined && this.props.componentFormList.results != undefined) {
@@ -341,9 +340,9 @@ class QuestionConfiguration extends Component {
                     && element.workflow.uuid == localStorage.getItem(`${uuid}-Workflow`)
                     && element.phase.uuid == localStorage.getItem(`${uuid}-phase`)) {
 
-
+                    console.log(element.id)
                     await localStorage.setItem(`${uuid}-autocompletecomponent`,
-                        JSON.stringify(element))
+                        element.id)
 
                 }
             }
