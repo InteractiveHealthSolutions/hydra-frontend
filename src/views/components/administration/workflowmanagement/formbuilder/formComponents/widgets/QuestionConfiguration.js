@@ -343,7 +343,7 @@ class QuestionConfiguration extends Component {
 
 
                     await localStorage.setItem(`${uuid}-autocompletecomponent`,
-                        element)
+                        JSON.stringify(element))
 
                 }
             }
