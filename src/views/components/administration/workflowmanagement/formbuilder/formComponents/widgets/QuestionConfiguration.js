@@ -314,7 +314,7 @@ class QuestionConfiguration extends Component {
                 if (element.field.attributeName === this.props.datatype) {
                     questionDropdown.push({
                         "label": element.field.name,
-                        "value": element.id
+                        "value": element.uuid
                     })
 
                 }
@@ -342,7 +342,7 @@ class QuestionConfiguration extends Component {
 
                     console.log(element.id)
                     await localStorage.setItem(`${uuid}-autocompletecomponent`,
-                        element.id)
+                        element.uuid)
 
                 }
             }
