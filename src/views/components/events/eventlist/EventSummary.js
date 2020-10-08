@@ -103,7 +103,7 @@ export default function EventSummary({ openModal, closeModal, event }) {
             <Modal.Body style={{ overflowY: 'auto' }} >
                 <div className="form-group">
                     {
-                        (currentActiveEvent === '27f83f15-4980-42a7-8f3c-7e6468487084') ?
+                        (currentActiveEvent === '40513427-a6cf-4a9a-a64f-cad0a131533f') ?
                             <>
                                 <div className="row">
                                     <ExpansionPanel style={{ width: '100%', margin: '18px' }}>
