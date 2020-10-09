@@ -28,8 +28,8 @@ const setEvent = (Event) => ({ type: types.ACTIVE_EVENT, Event })
 export const saveEvent = (event) => async dispatch => {
   fetch(POST, "/hydra/event", event)
     .then(res => {
-     // console.log("saveEvent", res);
-      history.push('/events');
+      // console.log("saveEvent", res);
+      history.push('/event');
       dispatch(eventAction(res))
     }).catch(displayError)
 }
@@ -41,7 +41,7 @@ const eventAction = (payload) => ({
 })
 
 export const fetchEvents = () => async dispatch => {
-  dispatch(setProject())  
+  dispatch(setProject())
   fetch(GET, "/hydra/event?v=full")
     .then(res => {
       dispatch(setEventAction(res))
