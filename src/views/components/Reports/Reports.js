@@ -267,7 +267,7 @@ class Reports extends React.Component {
     }
 
     async populateFormDropdown(list) {
-      
+
         if (list) {
             let formDropDown = [];
             await list.forEach(element => {
@@ -344,7 +344,7 @@ class Reports extends React.Component {
         });
     }
 
-    downloadDump(ext) {
+    downloadDump(ext, customType) {
 
         if (this.state.currentReport == '') {
             createNotification('warning', 'Select a Report to download')
@@ -356,16 +356,17 @@ class Reports extends React.Component {
 
         }
         var parameterString = 'from=' + moment(this.state.startDumpDate).format('YYYY-MM-DD') + '&to=' + moment(this.state.endDumpDate).format('YYYY-MM-DD');
-        if (this.state.currentReport == 'encounters' || this.state.currentReport == 'patients') {
+        if (this.state.currentReport == 'encounters' || this.state.currentReport == 'patients' || this.state.currentReport == 'custom') {
             parameterString = parameterString + '&workflow=' + this.state.selectedWorkflow + '&form=' + this.state.selectedForm;
         }
-
+        console.log("PRE: ", parameterString)
         if (this.state[this.state.currentReport] != undefined) {
             this.state[this.state.currentReport].forEach(element => {
                 parameterString = parameterString + element.name + '=' + element.value.replace(/\s/g, '') + '&';
             })
         }
-
+        console.log("PRE: ", parameterString)
+        if (customType) parameterString = parameterString + '&custom-type=' + customType
         reportService.downloadDump(parameterString, this.state.currentReport, ext);
 
     }
@@ -734,7 +735,27 @@ class Reports extends React.Component {
                                                 </button>*/}
                                                 {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
                                         </tr>
-                                        {this.state.currentReport == 'encounters' &&
+
+                                        <tr style={{ height: '20px' }}>
+                                            <td>
+                                                <FormControlLabel value="custom" control={<Radio color="primary" />} />
+
+                                            </td>
+                                            <td>
+                                                Custom
+                                                </td>
+                                            <td>
+                                                For custom reports
+
+                                                </td>
+                                            <td align="center">
+                                                <button onClick={e => this.downloadDump('zip', 'screened-preexisting')}>Screened pre-existing conditions
+                                                </button>
+                                                {/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
+                                                </button>*/}
+                                                {/* <img src="https://img.icons8.com/office/40/000000/html-filetype.png" />*/}</td>
+                                        </tr>
+                                        {(this.state.currentReport == 'encounters') &&
                                             <tr style={{ backgroundColor: "#b1bfc4" }}>
                                                 <td></td>
                                                 <td colSpan={3}>
