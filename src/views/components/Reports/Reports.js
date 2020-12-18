@@ -750,6 +750,12 @@ class Reports extends React.Component {
                                                 </td>
                                             <td align="center">
                                                 <button onClick={e => this.downloadDump('zip', 'screened-preexisting')}>Screened pre-existing conditions
+                                                </button><br />
+                                                <button onClick={e => this.downloadDump('zip', 'screened-age-gender-condition')}>Screened By Age-Gender-Condition
+                                                </button><br />
+                                                <button onClick={e => this.downloadDump('zip', 'oxygen-age-gender')}>Oxygen Therapy By Age-Gender
+                                                </button><br />
+                                                <button onClick={e => this.downloadDump('zip', 'oxygen-age-gender-condition')}>Oxygen Therapy By Age-Gender-Condition
                                                 </button>
                                                 {/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>*/}
