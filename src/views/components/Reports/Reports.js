@@ -77,6 +77,11 @@ class Reports extends React.Component {
         }
         this.otherFilter = [];
         this.options = [];
+        this.reportOptions = [
+            { value: "custom_report", label: "Screened pre-existing conditions", parameterString: "screened-preexisting" },
+            { value: "custom_report", label: "Screened By Age-Gender-Condition", parameterString: "screened-age-gender-condition" },
+            { value: "custom_report", label: "Oxygen Therapy By Age-Gender", parameterString: "oxygen-age-gender" },
+            { value: "custom_report", label: "Oxygen Therapy By Age-Gender-Condition", parameterString: "oxygen-age-gender-condition" }]
         // this.formOptions = [];
         this.optionsTB = [];
         //this.isMounted = true;
@@ -297,6 +302,10 @@ class Reports extends React.Component {
         else if (event.value == 'form') {
             await this.setState({ selectedForm: event.label })
         }
+        else if (event.value === "custom_report") {
+            // this.downloadDump('zip', event.parameterString)
+            this.setState({ selectedCustomReport: event.parameterString })
+        }
         else {
             this.setState({ selectedPresumptiveTB: event.label })
         }
@@ -316,6 +325,16 @@ class Reports extends React.Component {
         // }
 
     }
+
+
+    handleCustomReportClick(e) {
+        if (!this.state.selectedCustomReport) {
+            createNotification('warning', 'Select a Report type to download')
+            return;
+        }
+        this.downloadDump('zip', this.state.selectedCustomReport)
+    }
+
     handleDateChangeRaw(e) {
         e.preventDefault();
     }
@@ -402,212 +421,7 @@ class Reports extends React.Component {
     }
     render() {
         return (
-            <CardTemplate
-            /*title={	
-                <div className="row">
-            	
-                    <div className="col-sm-2">
-                        <div className="row filter-label required">
-                            Province
-                   </div>
-                        <div className="row">
-                            <Select
-
-                                options={this.state.provinceDropDown}
-                                className="reports-select-dropdown"
-                                name="statetype"
-                                onChange={this.handleProvinceChange}
-
-                            />
-                        </div>
-                    </div>
-                    <div className="col-sm-2">
-                        <div className="row filter-label required">
-                            City
-                      </div>
-                        <div className="row">
-                            <Select
-
-                                options={this.state.cityDropDown}
-                                className="reports-select-dropdown"
-                                name="statetype"
-                                onChange={this.handleCityChange}
-
-                            />
-                        </div>
-                    </div>
-                    <div className="col-sm-2">
-                        <div className="row filter-location-label required">
-                            Location
-                   </div>
-                        <div className="row">
-                            <ReactMultiSelectCheckboxes
-                                options={this.state.locationDropDown}
-                                name="statetype"
-                                className="reports-location-dropdown"
-                                onChange={this.handleLocationChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-sm-2">
-                        <div className="row filter-label required">
-                            Start Date
-                     </div>
-                        <div className="row">
-                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.startDate} showMonthDropdown
-                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleStartChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                        </div>
-                    </div>
-                    <div className="col-sm-2">
-                        <div className="row filter-label required">
-                            End Date
-                  </div>
-                        <div className="row">
-                            <DatePicker className="form-control reports-date-picker" maxDate={new Date()} selected={this.state.endDate} showMonthDropdown
-                                showYearDropdown onChangeRaw={this.handleDateChangeRaw} onChange={this.handleEndChangeDate} dateFormat="yyyy-MM-dd" placeholderText="Click to select a date" required />
-                        </div>
-                    </div>
-
-                </div>
-            }*/
-            >
-                {/*<div className="row">
-                    <div className="col-sm-12">
-                        <div className="card inner-card">
-                            <RadioGroup aria-label="report" name="report" onChange={this.handleChange} >
-
-                                <table className="table table-bordered">
-                                    <thead className="thead-light">
-                                        <th style={{ width: "10px" }}>
-
-                                        </th>
-                                        <th style={{ width: "300px" }}>
-                                            Report Name
-                    </th>
-                                        <th>
-                                            Description
-                    </th>
-                                        <th style={{ width: "180px" }}>
-                                            Export
-                    </th>
-                                    </thead>
-                                    <tbody>
-                                        <tr style={{ height: '2px' }}>
-                                            <td>
-                                                <FormControlLabel value="facilityPatients" control={<Radio color="primary" />} />
-
-                                            </td>
-                                            <td>
-                                                Facility Patients
-                            </td>
-                                            <td>
-                                                This is a report
-                                                </td>
-                                            <td align="center">
-                                                <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
-                                                </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
-                                                </button>
-                                                </td>
-                                        </tr>
-
-                                        {this.state.currentReport == 'facilityPatients' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
-                                                <td colSpan={4}> <label style={{ marginLeft: "100px" }}>Additional Filters</label> <label className="dynamic-filter-label">Workflow </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}
-                                        <tr style={{ height: '20px' }}>
-                                            <td>
-                                                <FormControlLabel value="disaggregationPatients" control={<Radio color="primary" />} />
-
-                                            </td>
-                                            <td>
-                                                Age-Gender Disaggregation of Patients                                </td>
-                                            <td>
-                                                This is a report
-                                                </td>
-                                            <td align="center">
-                                                <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
-                                                </button>
-                                                <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
-                                                </button>
-                                                </td>
-                                        </tr>
-                                        {this.state.currentReport == 'disaggregationPatients' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
-                                                <td></td>
-                                                <td colSpan={3}>
-                                                    Additional Filters
-                                                  <label className="dynamic-filter-label">
-                                                        Workflow
-                                                  </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}
-                                        <tr style={{ height: '20px' }}>
-                                            <td>
-                                                <FormControlLabel value="diagnosedTbPatients" control={<Radio color="primary" />} />
-
-                                            </td>
-                                            <td>
-                                                Diagnosed TB Patients
-                                                </td>
-                                            <td>
-                                                This is a report
-                                                </td>
-                                            <td align="center">
-                                                <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
-                                                </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
-                                                </button>
-                                                </td>
-                                        </tr>
-                                        {this.state.currentReport == 'diagnosedTbPatients' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
-                                                <td></td>
-                                                <td colSpan={3}>
-                                                    Additional Filters
-                                                  <label className="dynamic-filter-label">
-                                                        Workflow
-                                                  </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
-                                                    <label style={{ marginLeft: "15px" }}>Presumptive TB</label> : <Select className="filter" options={this.optionsTB} name="pTb" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}
-                                        <tr style={{ height: '20px' }}>
-                                            <td>
-                                                <FormControlLabel value="presumptivePatients" control={<Radio color="primary" />} />
-                                            </td>
-                                            <td>
-                                                Presumptive Patients                                </td>
-                                            <td>
-                                                This is a report
-                                                </td>
-                                            <td align="center">
-                                                <button onClick={e => this.downloadReport('xlsx')}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
-                                                </button><button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
-                                                </button>
-                                                </td>
-                                        </tr>
-                                        {this.state.currentReport == 'presumptivePatients' &&
-                                            <tr style={{ backgroundColor: "#87CEEB" }}>
-                                                <td></td>
-                                                <td colSpan={3}>
-                                                    Additional Filters
-                                                  <label className="dynamic-filter-label">
-                                                        Workflow
-                                                  </label> : <Select className="filter" options={this.options} name="workflow" onChange={this.handleChangeDynamicFilters} />
-                                                    <label style={{ marginLeft: "15px" }}>Presumptive TB</label> : <Select className="filter" options={this.optionsTB} name="pTb" onChange={this.handleChangeDynamicFilters} />
-                                                </td></tr>}		
-                                    </tbody>
-                                </table>
-                            </RadioGroup>
-
-                        </div>
-                    </div>
-                </div>
-	*/}
-
-                {/*<div className="row">
-					
-                        <div className="col-sm-2">
-							<b>Dumps</b>
-						</div>	
-				</div>*/}
-
+            <CardTemplate>
                 <div className="row" align="center">
 
                     <b align="center">&nbsp;&nbsp;&nbsp;&nbsp;Filters: </b>
@@ -739,23 +553,15 @@ class Reports extends React.Component {
                                         <tr style={{ height: '20px' }}>
                                             <td>
                                                 <FormControlLabel value="custom" control={<Radio color="primary" />} />
-
                                             </td>
                                             <td>
                                                 Custom
                                                 </td>
                                             <td>
                                                 For custom reports
-
                                                 </td>
                                             <td align="center">
-                                                <button onClick={e => this.downloadDump('zip', 'screened-preexisting')}>Screened pre-existing conditions
-                                                </button><br />
-                                                <button onClick={e => this.downloadDump('zip', 'screened-age-gender-condition')}>Screened By Age-Gender-Condition
-                                                </button><br />
-                                                <button onClick={e => this.downloadDump('zip', 'oxygen-age-gender')}>Oxygen Therapy By Age-Gender
-                                                </button><br />
-                                                <button onClick={e => this.downloadDump('zip', 'oxygen-age-gender-condition')}>Oxygen Therapy By Age-Gender-Condition
+                                                <button onClick={e => this.handleCustomReportClick()}><img src="https://img.icons8.com/officel/40/000000/csv.png" />
                                                 </button>
                                                 {/* <button onClick={e => this.downloadReport('pdf')}> <img src="https://img.icons8.com/office/40/000000/pdf.png" />
                                                 </button>*/}
@@ -773,14 +579,19 @@ class Reports extends React.Component {
                                                   <Select className="filter" options={this.state.formOptions} name="form" onChange={this.handleChangeDynamicFilters} />
 
                                                 </td></tr>}
+                                        {(this.state.currentReport == 'custom') &&
+                                            <tr style={{ backgroundColor: "#b1bfc4" }}>
+                                                <td></td>
+                                                <td colSpan={3}>
+                                                    Report Type
+                                                  <Select className="filter" options={this.reportOptions} name="custom_report" onChange={this.handleChangeDynamicFilters} />
+                                                </td></tr>}
                                     </tbody>
                                 </table>
                             </RadioGroup>
-
                         </div>
                     </div>
                 </div>
-
             </CardTemplate>
         )
     }
