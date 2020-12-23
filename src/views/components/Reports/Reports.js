@@ -81,7 +81,10 @@ class Reports extends React.Component {
             { value: "custom_report", label: "Screened pre-existing conditions", parameterString: "screened-preexisting" },
             { value: "custom_report", label: "Screened By Age-Gender-Condition", parameterString: "screened-age-gender-condition" },
             { value: "custom_report", label: "Oxygen Therapy By Age-Gender", parameterString: "oxygen-age-gender" },
-            { value: "custom_report", label: "Oxygen Therapy By Age-Gender-Condition", parameterString: "oxygen-age-gender-condition" }]
+            { value: "custom_report", label: "Oxygen By Age-Gender-Condition", parameterString: "oxygen-age-gender-condition" },
+            { value: "custom_report", label: "Oxygen Therapy Average", parameterString: "oxygen-therapy-avg" },
+            { value: "custom_report", label: "Oxygen Therapy Average Age", parameterString: "oxygen-therapy-avg-age" },
+            { value: "custom_report", label: "Oxygen Therapy By Age-Gender-Condition", parameterString: "oxygen-therapy-age-gender-condition" }]
         // this.formOptions = [];
         this.optionsTB = [];
         //this.isMounted = true;
